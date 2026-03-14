@@ -1,181 +1,261 @@
 <script lang="ts">
-    import "./app.css";
+    import {
+        Avatar,
+        GradientButton,
+        Button,
+        Dropdown,
+        DropdownItem,
+        Toggle,
+    } from "flowbite-svelte";
+    import {
+        ChevronDownOutline,
+        ArrowRightOutline,
+        LanguageOutline,
+        CogOutline,
+    } from "flowbite-svelte-icons";
 
-    type QuickAction = {
-        label: string;
-        icon: "doc" | "text" | "gift";
-    };
-
-    type ToggleRow = {
-        label: string;
-        description?: string;
-        enabled: boolean;
-    };
-
-    const quickActions: QuickAction[] = [
-        { label: "文档翻译", icon: "doc" },
-        { label: "文本翻译", icon: "text" },
-        { label: "奖励中心", icon: "gift" }
-    ];
-
-    const toggleRows: ToggleRow[] = [
-        { label: "总是翻译该网站", enabled: false },
-        { label: "鼠标悬停: ＋ Ctrl 翻译/还原该段", enabled: false },
-        { label: "划词翻译: 显示小圆点", enabled: true },
-        { label: "总是翻译简体中文页面", enabled: false }
-    ];
-
-    const navItems = [
-        { label: "设置", icon: "gear" },
-        { label: "12.6.6", icon: "version" },
-        { label: "更多", icon: "more" }
-    ] as const;
+    import "../../assets/app.css";
+    import avatar from "../../lib/avatar";
 </script>
 
-<main class="popup-shell">
-    <section class="popup-card">
-        <header class="flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2.5">
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#e9e9eb] text-[15px]">
-                    🐺
-                </div>
-                <span class="text-[15px] font-medium text-[#50535a]">未登录</span>
-                <button class="pill pill-dark">
+<main class="min-w-80 bg-gray-200 dark:bg-gray-950 text-sm">
+    <section class="bg-white dark:bg-gray-900 p-4 rounded-b-2xl space-y-4">
+        <header class="flex items-center justify-between">
+            <div class="flex items-center justify-between gap-2">
+                <Avatar
+                    class="flex items-center justify-center h-6 w-6"
+                    src={avatar.dicebear("RenovZ", { chars: 1 })}
+                    size="xs"
+                />
+                <span class="text-xs">未登录</span>
+                <GradientButton
+                    color="purpleToBlue"
+                    pill
+                    class="py-1 px-2 text-xs"
+                >
                     <span>⚡</span>
                     <span>升级</span>
-                </button>
+                </GradientButton>
             </div>
 
-            <button class="pill pill-light">
-                <span class="text-[14px]">📱</span>
+            <!-- <Badge dismissable large color="gray" rounded class="text-xs">
+                <span>📱</span>
                 <span>下载手机 APP</span>
-                <span class="text-[#a6a8ae]">×</span>
-            </button>
+            </Badge> -->
         </header>
 
-        <section class="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-            <div class="selector-card">
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <p class="truncate text-[16px] font-medium text-[#3d4047]">简体中文（...</p>
-                        <p class="mt-1 text-[13px] text-[#90939a]">自动检测</p>
-                    </div>
-                    <span class="selector-arrow">⌄</span>
+        <section class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+            <Button
+                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 px-3 text-gray-900 dark:text-gray-100"
+            >
+                <div class="flex flex-col text-left">
+                    <span class="line-clamp-1 font-medium">英语(English)</span>
+                    <span class="text-gray-400 text-xs">自动检测</span>
                 </div>
-            </div>
+                <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
+            </Button>
+            <Dropdown simple>
+                <DropdownItem>Dashboard</DropdownItem>
+                <DropdownItem>Settings</DropdownItem>
+                <DropdownItem>Earnings</DropdownItem>
+                <DropdownItem>Separated link</DropdownItem>
+            </Dropdown>
 
-            <div class="flex items-center justify-center text-[22px] text-[#9d9fa6]">→</div>
+            <ArrowRightOutline class="shrink-0 h-6 w-6 text-gray-400" />
 
-            <div class="selector-card">
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <p class="truncate text-[16px] font-medium text-[#3d4047]">简体中文</p>
-                        <p class="mt-1 text-[13px] text-[#90939a]">目标语言</p>
-                    </div>
-                    <span class="selector-arrow">⌄</span>
+            <Button
+                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 px-3 text-gray-900 dark:text-gray-100"
+            >
+                <div class="flex flex-col text-left">
+                    <span class="line-clamp-1 font-medium">简体中文</span>
+                    <span class="text-gray-400 text-xs">目标语言</span>
                 </div>
-            </div>
+                <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
+            </Button>
+            <Dropdown simple>
+                <DropdownItem>Dashboard</DropdownItem>
+                <DropdownItem>Settings</DropdownItem>
+                <DropdownItem>Earnings</DropdownItem>
+                <DropdownItem>Separated link</DropdownItem>
+            </Dropdown>
         </section>
 
-        <section class="panel mt-4">
-            <div class="panel-row">
-                <div class="flex items-center gap-2 text-[15px] text-[#494c54]">
-                    <span class="font-medium">翻译服务：</span>
-                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#eef1ff] text-[11px]">
-                        ✦
-                    </span>
-                    <span>GLM-4 Flash</span>
-                    <span>⚠️</span>
-                </div>
-                <span class="selector-arrow">⌄</span>
+        <section class="bg-mist-100 dark:bg-mist-700 rounded-xl">
+            <div
+                class="py-2 px-3 rounded-t-xl flex items-center gap-2 hover:bg-mist-200/70 hover:dark:bg-mist-600"
+            >
+                <span class="font-medium">翻译服务：</span>
+                <button
+                    type="button"
+                    class="flex flex-1 justify-between items-center"
+                >
+                    <div class="flex flex-col text-left font-medium">
+                        简体中文
+                    </div>
+                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
+                </button>
+                <Dropdown simple placement="bottom-end">
+                    <DropdownItem>Dashboard</DropdownItem>
+                    <DropdownItem>Settings</DropdownItem>
+                    <DropdownItem>Earnings</DropdownItem>
+                    <DropdownItem>Separated link</DropdownItem>
+                </Dropdown>
             </div>
 
-            <div class="divider"></div>
-
-            <div class="panel-row">
-                <div class="flex items-center gap-2 text-[15px] text-[#656872]">
-                    <span>AI 专家：</span>
-                    <span class="font-medium text-[#454851]">通用</span>
-                </div>
-                <span class="selector-arrow">⌄</span>
+            <div
+                class="py-2 px-3 flex items-center gap-2 hover:bg-mist-200/70 hover:dark:bg-mist-600"
+            >
+                <span class="font-medium">AI 专家：</span>
+                <button
+                    type="button"
+                    class="flex flex-1 justify-between items-center"
+                >
+                    <div class="flex flex-col text-left font-medium">
+                        简体中文
+                    </div>
+                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
+                </button>
+                <Dropdown simple placement="bottom-end">
+                    <DropdownItem>Dashboard</DropdownItem>
+                    <DropdownItem>Settings</DropdownItem>
+                    <DropdownItem>Earnings</DropdownItem>
+                    <DropdownItem>Separated link</DropdownItem>
+                </Dropdown>
             </div>
 
-            <div class="divider"></div>
-
-            <div class="panel-row">
-                <div class="flex items-center gap-2 text-[15px] text-[#50535a]">
+            <div
+                class="py-2 px-3 rounded-b-xl flex justify-between items-center gap-2 hover:bg-mist-200/70 hover:dark:bg-mist-600"
+            >
+                <div class="font-medium flex items-center gap-2">
                     <span>启用 AI 精翻</span>
-                    <span class="badge-pro">Pro</span>
-                    <span class="inline-flex h-4 w-4 items-center justify-center rounded-full border border-[#d6d7db] text-[10px] text-[#a6a8ae]">
+                    <span
+                        class="inline-flex h-4 w-4 items-center justify-center rounded-full border border-gray-400 text-xs text-gray-400"
+                    >
                         ?
                     </span>
                 </div>
-                <button class="switch" aria-label="启用 AI 精翻" type="button">
-                    <span></span>
-                </button>
+                <Toggle
+                    size="small"
+                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
+                />
             </div>
         </section>
 
-        <section class="mt-4 flex items-center gap-3">
-            <button class="icon-action" type="button" aria-label="切换翻译模式">
-                <span class="text-[17px] leading-none">🈯</span>
-            </button>
-            <button class="primary-cta" type="button">翻译（⌥A）</button>
+        <section class="flex items-center gap-3">
+            <Button
+                pill
+                class="p-2! bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600"
+            >
+                <LanguageOutline class="shrink-0 h-6 w-6 text-primary-500" />
+            </Button>
+            <Button class="flex-1 rounded-xl text-base">翻译（⌥A）</Button>
         </section>
 
-        <section class="mt-5 space-y-3">
-            {#each toggleRows as row}
-                <div class="flex items-center justify-between gap-3">
-                    <div class="min-w-0">
-                        <p class="truncate text-[15px] text-[#3f424a]">{row.label}</p>
-                        {#if row.description}
-                            <p class="mt-1 text-[12px] text-[#91949b]">{row.description}</p>
-                        {/if}
-                    </div>
-                    <button
-                        class={`switch ${row.enabled ? "switch-on" : ""}`}
-                        aria-label={row.label}
-                        type="button"
-                    >
-                        <span></span>
-                    </button>
-                </div>
-            {/each}
-        </section>
-
-        <section class="mt-5 grid grid-cols-3 gap-3">
-            {#each quickActions as action}
-                <button class="quick-card" type="button">
-                    <span class={`quick-icon quick-icon-${action.icon}`}>
-                        {#if action.icon === "doc"}
-                            <span>📄</span>
-                        {:else if action.icon === "text"}
-                            <span>T</span>
-                        {:else}
-                            <span>🎁</span>
-                        {/if}
-                    </span>
-                    <span class="mt-1 text-[14px] text-[#555862]">{action.label}</span>
+        <section class="flex flex-col gap-3">
+            <div class="flex items-center justify-between gap-3">
+                <button type="button" class="min-w-0 flex items-center">
+                    <span class="font-medium">总是翻译该网站</span>
+                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
                 </button>
-            {/each}
+                <Dropdown simple placement="bottom-end">
+                    <DropdownItem>Dashboard</DropdownItem>
+                    <DropdownItem>Settings</DropdownItem>
+                    <DropdownItem>Earnings</DropdownItem>
+                    <DropdownItem>Separated link</DropdownItem>
+                </Dropdown>
+                <Toggle
+                    size="small"
+                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
+                    aria-label="总是翻译该网站"
+                />
+            </div>
+            <div class="flex items-center justify-between gap-3">
+                <button type="button" class="min-w-0 flex items-center">
+                    <span class="font-medium">
+                        鼠标悬停: ＋ Ctrl 翻译/还原该段
+                    </span>
+                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
+                </button>
+                <Dropdown simple placement="bottom-end">
+                    <DropdownItem>Dashboard</DropdownItem>
+                    <DropdownItem>Settings</DropdownItem>
+                    <DropdownItem>Earnings</DropdownItem>
+                    <DropdownItem>Separated link</DropdownItem>
+                </Dropdown>
+                <Toggle
+                    size="small"
+                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
+                    aria-label="鼠标悬停: ＋ Ctrl 翻译/还原该段"
+                />
+            </div>
+            <div class="flex items-center justify-between gap-3">
+                <button type="button" class="min-w-0 flex items-center">
+                    <span class="font-medium">划词翻译: 显示小圆点</span>
+                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
+                </button>
+                <Dropdown simple placement="bottom-end">
+                    <DropdownItem>Dashboard</DropdownItem>
+                    <DropdownItem>Settings</DropdownItem>
+                    <DropdownItem>Earnings</DropdownItem>
+                    <DropdownItem>Separated link</DropdownItem>
+                </Dropdown>
+                <Toggle
+                    size="small"
+                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
+                    aria-label="划词翻译: 显示小圆点"
+                />
+            </div>
+            <div class="flex items-center justify-between gap-3">
+                <div class="font-medium min-w-0 flex items-center">
+                    总是翻译简体中文页面
+                </div>
+                <Toggle
+                    size="small"
+                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
+                    aria-label="总是翻译简体中文页面"
+                />
+            </div>
+        </section>
+
+        <section class="grid grid-cols-3 gap-3 text-sm">
+            <Button
+                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 text-gray-900 dark:text-gray-100 px-1 gap-1"
+            >
+                <span>📄</span>
+                <span class="font-medium"> 文档翻译 </span>
+            </Button>
+            <Button
+                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 text-gray-900 dark:text-gray-100 px-1 gap-1"
+            >
+                <span>T</span>
+                <span class="font-medium"> 文本翻译 </span>
+            </Button>
+            <Button
+                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 text-gray-900 dark:text-gray-100 px-1 gap-1"
+            >
+                <span>🎁</span>
+                <span class="font-medium"> 奖励中心 </span>
+            </Button>
         </section>
     </section>
 
-    <footer class="footer-bar">
-        {#each navItems as item}
-            <button class="footer-item" type="button">
-                {#if item.icon === "gear"}
-                    <span class="text-[14px]">⚙</span>
-                    <span>{item.label}</span>
-                {:else if item.icon === "version"}
-                    <span class="text-[14px] text-[#b9bcc2]">{item.label}</span>
-                {:else}
-                    <span class="flex items-center gap-1">
-                        <span>{item.label}</span>
-                        <span class="text-[12px]">⌄</span>
-                    </span>
-                {/if}
+    <footer class="p-2 text-sm flex items-center justify-between">
+        <div class="flex items-center gap-1">
+            <CogOutline class="shrink-0 h-4 w-4" />
+            <span>设置</span>
+        </div>
+        <div class="text-gray-400">1.26.6</div>
+        <div>
+            <button type="button" class="min-w-0 flex items-center">
+                <span class="font-medium"> 更多 </span>
+                <ChevronDownOutline class="h-6 w-6 text-gray-400" />
             </button>
-        {/each}
+            <Dropdown simple placement="bottom-end">
+                <DropdownItem>Dashboard</DropdownItem>
+                <DropdownItem>Settings</DropdownItem>
+                <DropdownItem>Earnings</DropdownItem>
+                <DropdownItem>Separated link</DropdownItem>
+            </Dropdown>
+        </div>
     </footer>
 </main>
