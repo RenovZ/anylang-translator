@@ -22,6 +22,7 @@
         defaultPopupConfig,
         languageOptions,
         modelOptionsByProvider,
+        moreItems,
         quickActions,
         sourceLanguageOptions,
         targetLanguageOptions,
@@ -269,10 +270,14 @@
                 placement="bottom-end"
                 class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
             >
-                <DropdownItem>清除缓存</DropdownItem>
-                <DropdownItem>反馈当前页面翻译问题</DropdownItem>
-                <DropdownItem>去商店评价</DropdownItem>
-                <DropdownItem>关于我们</DropdownItem>
+                {#each moreItems as item}
+                    <DropdownItem>
+                        <span class="flex items-center gap-2">
+                            <span>{item.icon}</span>
+                            <span>{item.label}</span>
+                        </span>
+                    </DropdownItem>
+                {/each}
             </Dropdown>
         </div>
     </footer>

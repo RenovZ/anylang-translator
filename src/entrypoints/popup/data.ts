@@ -203,3 +203,25 @@ export const quickActions = [
   { label: "文本翻译", icon: "T" },
   { label: "工具箱", icon: "⚒️" },
 ];
+
+export const moreItems = [
+  { icon: "📙", label: "使用说明" },
+  { icon: "🕒", label: "临时切换默认译文模式为仅显示译文" },
+  { icon: "🪄", label: "切换为朗译所有区域" },
+  { icon: "💪", label: "开启侧边栏翻译" },
+  { icon: "⚡", label: "立即翻译到页面底部" },
+  { icon: "📘", label: "阅读本地电子书" },
+  { icon: "📗", label: "制作双语 EPUB 电子书" },
+  { icon: "📕", label: "BabelDOC 保留排版 PDF 翻译" },
+  { icon: "🗂️", label: "翻译本地 PDF 文件" },
+  { icon: "🟢", label: "AI 驱动的 PDF Pro 翻译" },
+  { icon: "🌐", label: "翻译 HTML/txt 文件" },
+  { icon: "🎞️", label: "翻译本地字幕文件" },
+  { icon: "⭕", label: "禁用悬浮球" },
+  { icon: "🖊️", label: "临时开启译文编辑" },
+  { icon: "🔥", label: "免费试用 Pro 会员" },
+  { icon: "🧹", label: "清除缓存" },
+  { icon: "💬", label: "反馈当前页面翻译问题" },
+  { icon: "👍", label: "去商店评价" },
+  { icon: "❤️", label: "关于 - 反馈" },
+];
