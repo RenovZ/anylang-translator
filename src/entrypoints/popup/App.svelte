@@ -2,12 +2,10 @@
     import {
         Avatar,
         GradientButton,
-        ButtonGroup,
         Button,
         Dropdown,
         DropdownItem,
         Toggle,
-        Tooltip,
     } from "flowbite-svelte";
     import {
         ChevronDownOutline,
@@ -19,15 +17,75 @@
 
     import "../../assets/app.css";
     import avatar from "../../lib/avatar";
-    import { configRows, languageOptions, quickActions, toggles } from "./data";
+    import {
+        configRows,
+        defaultPopupConfig,
+        languageOptions,
+        modelOptionsByProvider,
+        quickActions,
+        sourceLanguageOptions,
+        targetLanguageOptions,
+        toggles,
+        type ConfigRow,
+        type ConfigRowKey,
+    } from "./data";
+
+    let popupConfig = { ...defaultPopupConfig };
+    let toggleItems = toggles.map((item) => ({ ...item }));
+
+    $: popupConfig = {
+        ...popupConfig,
+        toggles: Object.fromEntries(
+            toggleItems.map((item) => [item.key, item.enabled]),
+        ),
+    };
+
+    function getConfigValue(key: ConfigRowKey) {
+        if (key === "provider") return popupConfig.provider;
+        if (key === "model") return popupConfig.model;
+        return popupConfig.promptPreset;
+    }
+
+    function getConfigOptions(row: ConfigRow) {
+        if (row.key === "model") {
+            return modelOptionsByProvider[popupConfig.provider] ?? row.options;
+        }
+        return row.options;
+    }
+
+    function updateConfig(key: ConfigRowKey, value: string) {
+        if (key === "provider") {
+            const nextModelOptions = modelOptionsByProvider[value] ?? [];
+            popupConfig = {
+                ...popupConfig,
+                provider: value,
+                model: nextModelOptions[0] ?? "",
+            };
+            return;
+        }
+
+        popupConfig = {
+            ...popupConfig,
+            [key]: value,
+        };
+    }
+
+    function updateLanguage(kind: "source" | "target", value: string) {
+        popupConfig = {
+            ...popupConfig,
+            ...(kind === "source"
+                ? { sourceLanguage: value }
+                : { targetLanguage: value }),
+        };
+    }
 </script>
 
-<main class="min-w-80 bg-gray-200 dark:bg-gray-950 text-sm">
-    <section class="bg-white dark:bg-gray-900 p-4 rounded-b-2xl space-y-4">
+<main class="min-w-80 bg-gray-200 text-sm dark:bg-gray-950">
+    <section class="space-y-4 rounded-b-2xl bg-white p-4 dark:bg-gray-900">
         <header class="flex items-center justify-between">
             <div class="flex items-center justify-between gap-2">
                 <Avatar
-                    class="flex items-center justify-center h-6 w-6"
+                    class="flex h-6 w-6 items-center justify-center"
                     src={avatar.dicebear("RenovZ", {
                         chars: 1,
                         backgroundType: ["gradientLinear"],
@@ -38,36 +96,25 @@
                 <GradientButton
                     color="purpleToBlue"
                     pill
-                    class="py-1 px-2 text-xs"
+                    class="px-2 py-1 text-xs"
                 >
                     <span>⚡</span>
                     <span>升级</span>
                 </GradientButton>
             </div>
-
-            <ButtonGroup>
-                <Button
-                    class="flex items-center gap-1 px-2 py-1 bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl text-gray-900 dark:text-gray-100"
-                >
-                    <Tooltip class="text-xs">工具箱</Tooltip>
-                    <ToolsOutline class="shrink-0 h-4 w-4" />
-                </Button>
-                <Button
-                    class="flex items-center gap-1 px-2 py-1 bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl text-gray-900 dark:text-gray-100"
-                >
-                    <Tooltip class="text-xs">设置</Tooltip>
-                    <CogOutline class="shrink-0 h-4 w-4" />
-                </Button>
-            </ButtonGroup>
         </header>
 
         <section class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
             <Button
-                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 px-3 text-gray-900 dark:text-gray-100"
+                class="rounded-xl bg-mist-100 px-3 py-2 text-gray-900 hover:bg-mist-200/70 dark:bg-mist-700 dark:text-gray-100 hover:dark:bg-mist-600"
             >
                 <div class="flex flex-col text-left">
-                    <span class="line-clamp-1 font-medium">英语(English)</span>
-                    <span class="text-gray-400 text-xs">自动检测</span>
+                    <span class="line-clamp-1 font-medium">
+                        {popupConfig.sourceLanguage}
+                    </span>
+                    <span class="text-xs text-gray-400">
+                        {languageOptions[0].hint}
+                    </span>
                 </div>
                 <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
             </Button>
@@ -75,20 +122,27 @@
                 simple
                 class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
             >
-                <DropdownItem>Dashboard</DropdownItem>
-                <DropdownItem>Settings</DropdownItem>
-                <DropdownItem>Earnings</DropdownItem>
-                <DropdownItem>Separated link</DropdownItem>
+                {#each sourceLanguageOptions as option}
+                    <DropdownItem
+                        on:click={() => updateLanguage("source", option)}
+                    >
+                        {option}
+                    </DropdownItem>
+                {/each}
             </Dropdown>
 
-            <ArrowRightOutline class="shrink-0 h-6 w-6 text-gray-400" />
+            <ArrowRightOutline class="h-6 w-6 shrink-0 text-gray-400" />
 
             <Button
-                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 px-3 text-gray-900 dark:text-gray-100"
+                class="rounded-xl bg-mist-100 px-3 py-2 text-gray-900 hover:bg-mist-200/70 dark:bg-mist-700 dark:text-gray-100 hover:dark:bg-mist-600"
             >
                 <div class="flex flex-col text-left">
-                    <span class="line-clamp-1 font-medium">简体中文</span>
-                    <span class="text-gray-400 text-xs">目标语言</span>
+                    <span class="line-clamp-1 font-medium">
+                        {popupConfig.targetLanguage}
+                    </span>
+                    <span class="text-xs text-gray-400">
+                        {languageOptions[1].hint}
+                    </span>
                 </div>
                 <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
             </Button>
@@ -96,29 +150,30 @@
                 simple
                 class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
             >
-                <DropdownItem>Dashboard</DropdownItem>
-                <DropdownItem>Settings</DropdownItem>
-                <DropdownItem>Earnings</DropdownItem>
-                <DropdownItem>Separated link</DropdownItem>
+                {#each targetLanguageOptions as option}
+                    <DropdownItem
+                        on:click={() => updateLanguage("target", option)}
+                    >
+                        {option}
+                    </DropdownItem>
+                {/each}
             </Dropdown>
         </section>
 
-        <section class="bg-mist-100 dark:bg-mist-700 rounded-xl">
+        <section class="rounded-xl bg-mist-100 dark:bg-mist-700">
             {#each configRows as row, index}
                 <div
-                    class="py-2 px-3 grid grid-cols-[88px_1fr] items-center hover:bg-mist-200/70 hover:dark:bg-mist-600"
-                    class:rounded-t-xl={index === 0}
                     class:rounded-b-xl={index === configRows.length - 1}
+                    class:rounded-t-xl={index === 0}
+                    class="grid grid-cols-[88px_1fr] items-center px-3 py-2 hover:bg-mist-200/70 hover:dark:bg-mist-600"
                 >
-                    <div class="font-medium">
-                        {row.label}
-                    </div>
+                    <div class="font-medium">{row.label}</div>
                     <button
                         type="button"
-                        class="flex flex-1 justify-between items-center"
+                        class="flex flex-1 items-center justify-between"
                     >
                         <div class="flex flex-col text-left font-medium">
-                            {row.value}
+                            {getConfigValue(row.key)}
                         </div>
                         <ChevronDownOutline class="h-6 w-6 text-gray-400" />
                     </button>
@@ -127,10 +182,13 @@
                         placement="bottom-end"
                         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
                     >
-                        <DropdownItem>Dashboard</DropdownItem>
-                        <DropdownItem>Settings</DropdownItem>
-                        <DropdownItem>Earnings</DropdownItem>
-                        <DropdownItem>Separated link</DropdownItem>
+                        {#each getConfigOptions(row) as option}
+                            <DropdownItem
+                                on:click={() => updateConfig(row.key, option)}
+                            >
+                                {option}
+                            </DropdownItem>
+                        {/each}
                     </Dropdown>
                 </div>
             {/each}
@@ -139,145 +197,71 @@
         <section class="flex items-center gap-3">
             <Button
                 pill
-                class="p-2! bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600"
+                class="bg-mist-100 p-2! hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600"
             >
-                <LanguageOutline class="shrink-0 h-6 w-6 text-primary-500" />
+                <LanguageOutline class="h-6 w-6 shrink-0 text-primary-500" />
             </Button>
             <Button class="flex-1 rounded-xl text-base">翻译（⌥A）</Button>
         </section>
 
         <section class="flex flex-col gap-3">
-            <div class="flex items-center justify-between gap-3">
-                <button
-                    type="button"
-                    class="min-w-0 flex items-center flex-nowrap"
-                >
-                    <span class="font-medium line-clamp-1">总是翻译该网站</span>
-                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
-                </button>
-                <Dropdown
-                    simple
-                    placement="bottom-end"
-                    class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
-                >
-                    <DropdownItem>总是翻译该网站</DropdownItem>
-                    <DropdownItem>不自动翻译该网站</DropdownItem>
-                </Dropdown>
-                <Toggle
-                    size="small"
-                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
-                    aria-label="总是翻译该网站"
-                />
-            </div>
-            <div class="flex items-center justify-between gap-3">
-                <button
-                    type="button"
-                    class="min-w-0 flex items-center flex-nowrap"
-                >
-                    <span class="font-medium mr-2">鼠标悬停:</span>
-                    <span class="font-medium line-clamp-1">
-                        ＋ Ctrl 翻译/还原该段
-                    </span>
-                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
-                </button>
-                <Dropdown
-                    simple
-                    placement="bottom-end"
-                    class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
-                >
-                    <DropdownItem>＋ Ctrl 翻译/还原该段</DropdownItem>
-                    <DropdownItem>＋ Shift 翻译/还原该段</DropdownItem>
-                    <DropdownItem>＋ Alt 翻译/还原该段</DropdownItem>
-                    <DropdownItem>＋ 长按鼠标左键</DropdownItem>
-                    <DropdownItem>直接翻译该段</DropdownItem>
-                    <DropdownItem>自定义快捷键(打开设置)</DropdownItem>
-                </Dropdown>
-                <Toggle
-                    size="small"
-                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
-                    aria-label="鼠标悬停: ＋ Ctrl 翻译/还原该段"
-                />
-            </div>
-            <div class="flex items-center justify-between gap-3">
-                <button
-                    type="button"
-                    class="min-w-0 flex items-center flex-nowrap"
-                >
-                    <span class="font-medium mr-2">划词翻译:</span>
-                    <span class="font-medium line-clamp-1">显示小圆点</span>
-                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
-                </button>
-                <Dropdown
-                    simple
-                    placement="bottom-end"
-                    class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
-                >
-                    <DropdownItem>直接触发</DropdownItem>
-                    <DropdownItem>显示图标</DropdownItem>
-                    <DropdownItem>显示小圆点</DropdownItem>
-                    <DropdownItem>按 Ctrl 触发</DropdownItem>
-                    <DropdownItem>按 Shift 触发</DropdownItem>
-                    <DropdownItem>按 Alt 触发</DropdownItem>
-                </Dropdown>
-                <Toggle
-                    size="small"
-                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
-                    aria-label="划词翻译: 显示小圆点"
-                />
-            </div>
-            <div class="flex items-center justify-between gap-3">
-                <div class="font-medium min-w-0 flex items-center line-clamp-1">
-                    总是翻译简体中文页面
+            {#each toggleItems as item}
+                <div class="flex items-center justify-between gap-3">
+                    <button
+                        type="button"
+                        class="flex min-w-0 items-center flex-nowrap"
+                    >
+                        <span class="line-clamp-1 font-medium"
+                            >{item.label}</span
+                        >
+                        {#if item.hasMenu}
+                            <ChevronDownOutline
+                                class="ms-2 h-6 w-6 text-gray-400"
+                            />
+                        {/if}
+                    </button>
+                    {#if item.options}
+                        <Dropdown
+                            simple
+                            placement="bottom-end"
+                            class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
+                        >
+                            {#each item.options as option}
+                                <DropdownItem>{option}</DropdownItem>
+                            {/each}
+                        </Dropdown>
+                    {/if}
+                    <Toggle
+                        bind:checked={item.enabled}
+                        size="small"
+                        spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
+                        aria-label={item.label}
+                    />
                 </div>
-                <Toggle
-                    size="small"
-                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
-                    aria-label="总是翻译简体中文页面"
-                />
-            </div>
-            <div class="flex items-center justify-between gap-3">
-                <div class="font-medium min-w-0 flex items-center line-clamp-1">
-                    自动开启双语字幕
-                </div>
-                <Toggle
-                    size="small"
-                    spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
-                    aria-label="自动开启双语字幕"
-                />
-            </div>
+            {/each}
         </section>
 
         <section class="grid grid-cols-3 gap-3 text-sm">
-            <Button
-                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 text-gray-900 dark:text-gray-100 px-1 gap-1"
-            >
-                <span>📄</span>
-                <span class="font-medium"> 文档翻译 </span>
-            </Button>
-            <Button
-                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 text-gray-900 dark:text-gray-100 px-1 gap-1"
-            >
-                <span>T</span>
-                <span class="font-medium"> 文本翻译 </span>
-            </Button>
-            <Button
-                class="bg-mist-100 hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600 rounded-xl py-2 text-gray-900 dark:text-gray-100 px-1 gap-1"
-            >
-                <span>⚒️</span>
-                <span class="font-medium"> 工具箱 </span>
-            </Button>
+            {#each quickActions as action}
+                <Button
+                    class="gap-1 rounded-xl bg-mist-100 px-1 py-2 text-gray-900 hover:bg-mist-200/70 dark:bg-mist-700 dark:text-gray-100 hover:dark:bg-mist-600"
+                >
+                    <span>{action.icon}</span>
+                    <span class="font-medium">{action.label}</span>
+                </Button>
+            {/each}
         </section>
     </section>
 
-    <footer class="p-2 text-sm flex items-center justify-between">
+    <footer class="flex items-center justify-between p-2 text-sm">
         <div class="flex items-center gap-1">
-            <CogOutline class="shrink-0 h-4 w-4" />
+            <CogOutline class="h-4 w-4 shrink-0" />
             <span>设置</span>
         </div>
-        <div class="text-gray-400">1.26.6</div>
+        <div class="text-gray-400">0.0.1</div>
         <div>
-            <button type="button" class="min-w-0 flex items-center">
-                <span class="font-medium"> 更多 </span>
+            <button type="button" class="flex min-w-0 items-center">
+                <span class="font-medium">更多</span>
                 <ChevronDownOutline class="h-6 w-6 text-gray-400" />
             </button>
             <Dropdown
@@ -285,10 +269,10 @@
                 placement="bottom-end"
                 class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
             >
-                <DropdownItem>Dashboard</DropdownItem>
-                <DropdownItem>Settings</DropdownItem>
-                <DropdownItem>Earnings</DropdownItem>
-                <DropdownItem>Separated link</DropdownItem>
+                <DropdownItem>清除缓存</DropdownItem>
+                <DropdownItem>反馈当前页面翻译问题</DropdownItem>
+                <DropdownItem>去商店评价</DropdownItem>
+                <DropdownItem>关于我们</DropdownItem>
             </Dropdown>
         </div>
     </footer>
