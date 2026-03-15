@@ -181,7 +181,7 @@
                     <Dropdown
                         simple
                         placement="bottom-end"
-                        class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
+                        class="max-h-72 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
                     >
                         {#each getConfigOptions(row) as option}
                             <DropdownItem
@@ -225,7 +225,7 @@
                         <Dropdown
                             simple
                             placement="bottom-end"
-                            class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
+                            class="bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
                         >
                             {#each item.options as option}
                                 <DropdownItem>{option}</DropdownItem>
