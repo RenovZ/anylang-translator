@@ -19,6 +19,7 @@
 
     import "../../assets/app.css";
     import avatar from "../../lib/avatar";
+    import { configRows, languageOptions, quickActions, toggles } from "./data";
 </script>
 
 <main class="min-w-80 bg-gray-200 dark:bg-gray-950 text-sm">
@@ -27,7 +28,10 @@
             <div class="flex items-center justify-between gap-2">
                 <Avatar
                     class="flex items-center justify-center h-6 w-6"
-                    src={avatar.dicebear("RenovZ", { chars: 1 })}
+                    src={avatar.dicebear("RenovZ", {
+                        chars: 1,
+                        backgroundType: ["gradientLinear"],
+                    })}
                     size="xs"
                 />
                 <span class="text-xs">未登录</span>
@@ -55,11 +59,6 @@
                     <CogOutline class="shrink-0 h-4 w-4" />
                 </Button>
             </ButtonGroup>
-
-            <!-- <Badge dismissable large color="gray" rounded class="text-xs">
-                <span>📱</span>
-                <span>下载手机 APP</span>
-            </Badge> -->
         </header>
 
         <section class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
@@ -105,78 +104,36 @@
         </section>
 
         <section class="bg-mist-100 dark:bg-mist-700 rounded-xl">
-            <div
-                class="py-2 px-3 rounded-t-xl flex items-center gap-2 hover:bg-mist-200/70 hover:dark:bg-mist-600"
-            >
-                <span class="font-medium">供应商：</span>
-                <button
-                    type="button"
-                    class="flex flex-1 justify-between items-center"
+            {#each configRows as row, index}
+                <div
+                    class="py-2 px-3 grid grid-cols-[88px_1fr] items-center hover:bg-mist-200/70 hover:dark:bg-mist-600"
+                    class:rounded-t-xl={index === 0}
+                    class:rounded-b-xl={index === configRows.length - 1}
                 >
-                    <div class="flex flex-col text-left font-medium">
-                        Ollama
+                    <div class="font-medium">
+                        {row.label}
                     </div>
-                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
-                </button>
-                <Dropdown
-                    simple
-                    placement="bottom-end"
-                    class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
-                >
-                    <DropdownItem>Dashboard</DropdownItem>
-                    <DropdownItem>Settings</DropdownItem>
-                    <DropdownItem>Earnings</DropdownItem>
-                    <DropdownItem>Separated link</DropdownItem>
-                </Dropdown>
-            </div>
-
-            <div
-                class="py-2 px-3 flex items-center gap-2 hover:bg-mist-200/70 hover:dark:bg-mist-600"
-            >
-                <span class="font-medium">模型：</span>
-                <button
-                    type="button"
-                    class="flex flex-1 justify-between items-center"
-                >
-                    <div class="flex flex-col text-left font-medium">
-                        qwen3.5-2b
-                    </div>
-                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
-                </button>
-                <Dropdown
-                    simple
-                    placement="bottom-end"
-                    class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
-                >
-                    <DropdownItem>Dashboard</DropdownItem>
-                    <DropdownItem>Settings</DropdownItem>
-                    <DropdownItem>Earnings</DropdownItem>
-                    <DropdownItem>Separated link</DropdownItem>
-                </Dropdown>
-            </div>
-
-            <div
-                class="py-2 px-3 rounded-b-xl flex justify-between items-center gap-2 hover:bg-mist-200/70 hover:dark:bg-mist-600"
-            >
-                <span class="font-medium">提示词：</span>
-                <button
-                    type="button"
-                    class="flex flex-1 justify-between items-center"
-                >
-                    <div class="flex flex-col text-left font-medium">通用</div>
-                    <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
-                </button>
-                <Dropdown
-                    simple
-                    placement="bottom-end"
-                    class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
-                >
-                    <DropdownItem>Dashboard</DropdownItem>
-                    <DropdownItem>Settings</DropdownItem>
-                    <DropdownItem>Earnings</DropdownItem>
-                    <DropdownItem>Separated link</DropdownItem>
-                </Dropdown>
-            </div>
+                    <button
+                        type="button"
+                        class="flex flex-1 justify-between items-center"
+                    >
+                        <div class="flex flex-col text-left font-medium">
+                            {row.value}
+                        </div>
+                        <ChevronDownOutline class="h-6 w-6 text-gray-400" />
+                    </button>
+                    <Dropdown
+                        simple
+                        placement="bottom-end"
+                        class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
+                    >
+                        <DropdownItem>Dashboard</DropdownItem>
+                        <DropdownItem>Settings</DropdownItem>
+                        <DropdownItem>Earnings</DropdownItem>
+                        <DropdownItem>Separated link</DropdownItem>
+                    </Dropdown>
+                </div>
+            {/each}
         </section>
 
         <section class="flex items-center gap-3">
@@ -203,10 +160,8 @@
                     placement="bottom-end"
                     class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
                 >
-                    <DropdownItem>Dashboard</DropdownItem>
-                    <DropdownItem>Settings</DropdownItem>
-                    <DropdownItem>Earnings</DropdownItem>
-                    <DropdownItem>Separated link</DropdownItem>
+                    <DropdownItem>总是翻译该网站</DropdownItem>
+                    <DropdownItem>不自动翻译该网站</DropdownItem>
                 </Dropdown>
                 <Toggle
                     size="small"
@@ -230,10 +185,12 @@
                     placement="bottom-end"
                     class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
                 >
-                    <DropdownItem>Dashboard</DropdownItem>
-                    <DropdownItem>Settings</DropdownItem>
-                    <DropdownItem>Earnings</DropdownItem>
-                    <DropdownItem>Separated link</DropdownItem>
+                    <DropdownItem>＋ Ctrl 翻译/还原该段</DropdownItem>
+                    <DropdownItem>＋ Shift 翻译/还原该段</DropdownItem>
+                    <DropdownItem>＋ Alt 翻译/还原该段</DropdownItem>
+                    <DropdownItem>＋ 长按鼠标左键</DropdownItem>
+                    <DropdownItem>直接翻译该段</DropdownItem>
+                    <DropdownItem>自定义快捷键(打开设置)</DropdownItem>
                 </Dropdown>
                 <Toggle
                     size="small"
@@ -255,10 +212,12 @@
                     placement="bottom-end"
                     class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80"
                 >
-                    <DropdownItem>Dashboard</DropdownItem>
-                    <DropdownItem>Settings</DropdownItem>
-                    <DropdownItem>Earnings</DropdownItem>
-                    <DropdownItem>Separated link</DropdownItem>
+                    <DropdownItem>直接触发</DropdownItem>
+                    <DropdownItem>显示图标</DropdownItem>
+                    <DropdownItem>显示小圆点</DropdownItem>
+                    <DropdownItem>按 Ctrl 触发</DropdownItem>
+                    <DropdownItem>按 Shift 触发</DropdownItem>
+                    <DropdownItem>按 Alt 触发</DropdownItem>
                 </Dropdown>
                 <Toggle
                     size="small"
