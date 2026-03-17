@@ -80,7 +80,7 @@
     let saveMessage = "";
     let loading = true;
     let saving = false;
-    let activeNavId: string = navItems[0].id;
+    let activeNavId = navItems[0].id;
 
     const topNavItems = navItems.filter((item) => item.position === "top");
     const bottomNavItems = navItems.filter(
