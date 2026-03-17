@@ -14,6 +14,7 @@
         CogOutline,
         ToolsOutline,
     } from "flowbite-svelte-icons";
+    import { browser } from "wxt/browser";
 
     import "../../assets/app.css";
     import avatar from "../../lib/avatar";
@@ -41,20 +42,20 @@
         ),
     };
 
-    function getConfigValue(key: ConfigRowKey) {
+    const getConfigValue = (key: ConfigRowKey) => {
         if (key === "provider") return popupConfig.provider;
         if (key === "model") return popupConfig.model;
         return popupConfig.promptPreset;
-    }
+    };
 
-    function getConfigOptions(row: ConfigRow) {
+    const getConfigOptions = (row: ConfigRow) => {
         if (row.key === "model") {
             return modelOptionsByProvider[popupConfig.provider] ?? row.options;
         }
         return row.options;
-    }
+    };
 
-    function updateConfig(key: ConfigRowKey, value: string) {
+    const updateConfig = (key: ConfigRowKey, value: string) => {
         if (key === "provider") {
             const nextModelOptions = modelOptionsByProvider[value] ?? [];
             popupConfig = {
@@ -69,16 +70,20 @@
             ...popupConfig,
             [key]: value,
         };
-    }
+    };
 
-    function updateLanguage(kind: "source" | "target", value: string) {
+    const updateLanguage = (kind: "source" | "target", value: string) => {
         popupConfig = {
             ...popupConfig,
             ...(kind === "source"
                 ? { sourceLanguage: value }
                 : { targetLanguage: value }),
         };
-    }
+    };
+
+    const openOptionsPage = () => {
+        browser.runtime.openOptionsPage();
+    };
 </script>
 
 <main class="min-w-80 bg-gray-200 text-sm dark:bg-gray-950">
@@ -257,7 +262,11 @@
     </section>
 
     <footer class="flex items-center justify-between p-2 text-sm">
-        <button type="button" class="flex items-center gap-1">
+        <button
+            type="button"
+            class="flex items-center gap-1"
+            onclick={openOptionsPage}
+        >
             <CogOutline class="h-4 w-4 shrink-0" />
             <span>设置</span>
         </button>
