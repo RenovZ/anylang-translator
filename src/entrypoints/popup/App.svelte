@@ -86,8 +86,8 @@
     };
 </script>
 
-<main class="min-w-80 bg-gray-200 text-sm dark:bg-gray-950">
-    <section class="space-y-4 rounded-b-2xl bg-white p-4 dark:bg-gray-900">
+<main class="min-w-80 bg-slate-200/80 text-sm dark:bg-slate-950/80">
+    <section class="space-y-4 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
         <header class="flex items-center justify-between">
             <div class="flex items-center justify-between gap-2">
                 <Avatar
@@ -112,17 +112,17 @@
 
         <section class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
             <Button
-                class="rounded-xl bg-mist-100 px-3 py-2 text-gray-900 hover:bg-mist-200/70 dark:bg-mist-700 dark:text-gray-100 hover:dark:bg-mist-600"
+                class="rounded-xl bg-slate-100 px-3 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600"
             >
                 <div class="flex flex-col text-left">
                     <span class="line-clamp-1 font-medium">
                         {popupConfig.sourceLanguage}
                     </span>
-                    <span class="text-xs text-gray-400">
+                    <span class="text-xs text-slate-400">
                         {languageOptions[0].hint}
                     </span>
                 </div>
-                <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
+                <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
             </Button>
             <Dropdown
                 simple
@@ -137,20 +137,20 @@
                 {/each}
             </Dropdown>
 
-            <ArrowRightOutline class="h-6 w-6 shrink-0 text-gray-400" />
+            <ArrowRightOutline class="h-6 w-6 shrink-0 text-slate-400" />
 
             <Button
-                class="rounded-xl bg-mist-100 px-3 py-2 text-gray-900 hover:bg-mist-200/70 dark:bg-mist-700 dark:text-gray-100 hover:dark:bg-mist-600"
+                class="rounded-xl bg-slate-100 px-3 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600"
             >
                 <div class="flex flex-col text-left">
                     <span class="line-clamp-1 font-medium">
                         {popupConfig.targetLanguage}
                     </span>
-                    <span class="text-xs text-gray-400">
+                    <span class="text-xs text-slate-400">
                         {languageOptions[1].hint}
                     </span>
                 </div>
-                <ChevronDownOutline class="ms-2 h-6 w-6 text-gray-400" />
+                <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
             </Button>
             <Dropdown
                 simple
@@ -166,12 +166,12 @@
             </Dropdown>
         </section>
 
-        <section class="rounded-xl bg-mist-100 dark:bg-mist-700">
+        <section class="rounded-xl bg-slate-100 dark:bg-slate-700">
             {#each configRows as row, index}
                 <div
                     class:rounded-b-xl={index === configRows.length - 1}
                     class:rounded-t-xl={index === 0}
-                    class="grid grid-cols-[88px_1fr] items-center px-3 py-2 hover:bg-mist-200/70 hover:dark:bg-mist-600"
+                    class="grid grid-cols-[88px_1fr] items-center px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600"
                 >
                     <div class="font-medium">{row.label}</div>
                     <button
@@ -181,7 +181,7 @@
                         <div class="flex flex-col text-left font-medium">
                             {getConfigValue(row.key)}
                         </div>
-                        <ChevronDownOutline class="h-6 w-6 text-gray-400" />
+                        <ChevronDownOutline class="h-6 w-6 text-slate-400" />
                     </button>
                     <Dropdown
                         simple
@@ -203,7 +203,7 @@
         <section class="flex items-center gap-3">
             <Button
                 pill
-                class="bg-mist-100 p-2! hover:bg-mist-200/70 dark:bg-mist-700 hover:dark:bg-mist-600"
+                class="bg-slate-100 p-2! hover:bg-slate-200/70 dark:bg-slate-700 hover:dark:bg-slate-600"
             >
                 <LanguageOutline class="h-6 w-6 shrink-0 text-primary-500" />
             </Button>
@@ -222,7 +222,7 @@
                         >
                         {#if item.hasMenu}
                             <ChevronDownOutline
-                                class="ms-2 h-6 w-6 text-gray-400"
+                                class="ms-2 h-6 w-6 text-slate-400"
                             />
                         {/if}
                     </button>
@@ -241,7 +241,7 @@
                         bind:checked={item.enabled}
                         size="small"
                         classes={{
-                            span: "me-0 cursor-pointer bg-gray-300 dark:bg-gray-500",
+                            span: "me-0 cursor-pointer bg-slate-200 dark:bg-slate-600",
                         }}
                         aria-label={item.label}
                     />
@@ -252,7 +252,7 @@
         <section class="grid grid-cols-3 gap-3 text-sm">
             {#each quickActions as action}
                 <Button
-                    class="gap-1 rounded-xl bg-mist-100 px-1 py-2 text-gray-900 hover:bg-mist-200/70 dark:bg-mist-700 dark:text-gray-100 hover:dark:bg-mist-600"
+                    class="gap-1 rounded-xl bg-slate-100 px-1 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600"
                 >
                     <span>{action.icon}</span>
                     <span class="font-medium">{action.label}</span>
@@ -270,11 +270,11 @@
             <CogOutline class="h-4 w-4 shrink-0" />
             <span>设置</span>
         </button>
-        <div class="text-gray-400">0.0.1</div>
+        <div class="text-slate-400">v0.0.1</div>
         <div>
             <button type="button" class="flex min-w-0 items-center">
                 <span class="font-medium">更多</span>
-                <ChevronDownOutline class="h-6 w-6 text-gray-400" />
+                <ChevronDownOutline class="h-6 w-6 text-slate-400" />
             </button>
             <Dropdown
                 simple
