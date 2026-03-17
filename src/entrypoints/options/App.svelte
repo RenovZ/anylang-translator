@@ -28,18 +28,46 @@
 
     const STORAGE_KEY = "options-config";
     const navItems = [
-        "基本设置",
-        "翻译服务",
-        "AI 专家",
-        "AI 术语库",
-        "视频字幕",
-        "输入框翻译",
-        "划词翻译",
-        "鼠标悬停",
-        "悬浮球",
-        "快捷键",
-        "导入/导出",
-        "关于",
+        { id: "general", label: "基本设置", position: "top" },
+        { id: "services", label: "翻译服务", position: "top" },
+        { id: "ai", label: "AI 专家", position: "top" },
+        { id: "terms", label: "AI 术语库", position: "top" },
+        { id: "writing", label: "AI Write", position: "top" },
+        { id: "subtitle", label: "视频字幕", position: "top" },
+        { id: "manga", label: "漫画/图片", position: "top" },
+        { id: "input", label: "输入框翻译", position: "top" },
+        { id: "selection-transiation", label: "划词翻译", position: "top" },
+        { id: "mouse-hover", label: "鼠标悬停", position: "top" },
+        { id: "floating", label: "悬浮球", position: "top" },
+        { id: "shortcuts", label: "快捷键", position: "top" },
+        { id: "advanced", label: "高级设置", position: "top" },
+        { id: "import-export", label: "导入/导出", position: "top" },
+        { id: "about", label: "关于", position: "top" },
+        {
+            id: "pricing",
+            link: "https://example.com/pricing",
+            label: "价格",
+            position: "bottom",
+        },
+        {
+            id: "docs",
+            link: "https://example.com/docs",
+            label: "使用文档",
+            position: "bottom",
+        },
+        {
+            id: "changelog",
+            link: "https://example.com/changelog",
+            label: "更新日志",
+            position: "bottom",
+        },
+        {
+            id: "feedback",
+            link: "https://example.com/feedback",
+            label: "问题反馈",
+            position: "bottom",
+        },
+        { id: "developer", label: "开发者设置", position: "bottom" },
     ];
 
     const defaultToggleModes = Object.fromEntries(
@@ -67,6 +95,7 @@
     let saveMessage = "";
     let loading = true;
     let saving = false;
+    let activeNavId = navItems[0].id;
 
     $: config = {
         ...config,
@@ -77,36 +106,65 @@
 
     $: isDirty = JSON.stringify(config) !== savedSnapshot;
 
-    onMount(async () => {
-        const result = await browser.storage.local.get(STORAGE_KEY);
-        const stored = result[STORAGE_KEY] as
-            | Partial<V2OptionsConfig>
-            | undefined;
+    onMount(() => {
+        const sections = navItems
+            .map((item) => document.getElementById(item.id))
+            .filter(Boolean) as HTMLElement[];
 
-        if (stored) {
-            config = {
-                ...createDefaultConfig(),
-                ...stored,
-                toggles: {
-                    ...defaultPopupConfig.toggles,
-                    ...stored.toggles,
-                },
-                toggleModes: {
-                    ...defaultToggleModes,
-                    ...stored.toggleModes,
-                },
-                alwaysTranslateSites: stored.alwaysTranslateSites?.length
-                    ? stored.alwaysTranslateSites
-                    : createDefaultConfig().alwaysTranslateSites,
-            };
-            toggleItems = toggles.map((item) => ({
-                ...item,
-                enabled: config.toggles[item.key] ?? item.enabled,
-            }));
-        }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const visible = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort(
+                        (a, b) =>
+                            a.boundingClientRect.top - b.boundingClientRect.top,
+                    );
 
-        savedSnapshot = JSON.stringify(config);
-        loading = false;
+                if (visible[0]?.target.id) {
+                    activeNavId = visible[0].target.id;
+                }
+            },
+            {
+                rootMargin: "-96px 0px -55% 0px",
+                threshold: [0.1, 0.25, 0.5],
+            },
+        );
+
+        sections.forEach((section) => observer.observe(section));
+
+        void (async () => {
+            const result = await browser.storage.local.get(STORAGE_KEY);
+            const stored = result[STORAGE_KEY] as
+                | Partial<V2OptionsConfig>
+                | undefined;
+
+            if (stored) {
+                config = {
+                    ...createDefaultConfig(),
+                    ...stored,
+                    toggles: {
+                        ...defaultPopupConfig.toggles,
+                        ...stored.toggles,
+                    },
+                    toggleModes: {
+                        ...defaultToggleModes,
+                        ...stored.toggleModes,
+                    },
+                    alwaysTranslateSites: stored.alwaysTranslateSites?.length
+                        ? stored.alwaysTranslateSites
+                        : createDefaultConfig().alwaysTranslateSites,
+                };
+                toggleItems = toggles.map((item) => ({
+                    ...item,
+                    enabled: config.toggles[item.key] ?? item.enabled,
+                }));
+            }
+
+            savedSnapshot = JSON.stringify(config);
+            loading = false;
+        })();
+
+        return () => observer.disconnect();
     });
 
     function getProviderModels(provider: string) {
@@ -184,10 +242,22 @@
             ),
         };
     }
+
+    function goToSection(id: string) {
+        activeNavId = id;
+        document.getElementById(id)?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }
 </script>
 
-<main class="min-h-screen bg-slate-100 text-sm text-slate-900">
-    <header class="bg-white/80 backdrop-blur-xs shadow sticky top-0 z-10">
+<main
+    class="min-h-screen bg-slate-100 dark:bg-slate-950/80 text-sm text-slate-900 dark:text-slate-50"
+>
+    <header
+        class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xs shadow sticky top-0 z-10"
+    >
         <div class="mx-auto flex items-center justify-between px-6 py-4">
             <div class="flex items-center gap-3">
                 <div class="rounded-xl bg-primary-500 p-2 text-white shadow-sm">
@@ -200,7 +270,31 @@
             </div>
 
             <div class="flex items-center gap-3">
+                <!-- <Button
+                    color="light"
+                    class="rounded-xl px-4 py-2 border-none shadow-md"
+                >
+                    价格
+                </Button>
                 <Button
+                    color="light"
+                    class="rounded-xl px-4 py-2 border-none shadow-md"
+                >
+                    使用文档
+                </Button>
+                <Button
+                    color="light"
+                    class="rounded-xl px-4 py-2 border-none shadow-md"
+                >
+                    更新日志
+                </Button>
+                <Button
+                    color="light"
+                    class="rounded-xl px-4 py-2 border-none shadow-md"
+                >
+                    问题反馈
+                </Button> -->
+                <!-- <Button
                     color="light"
                     class="rounded-xl px-4 py-2 border-none shadow-md"
                 >
@@ -211,7 +305,7 @@
                     class="rounded-xl px-4 py-2 border-none shadow-md"
                 >
                     T 文本翻译
-                </Button>
+                </Button> -->
                 <Button
                     color="light"
                     class="rounded-xl px-4 py-2 border-none shadow-md"
@@ -223,25 +317,28 @@
     </header>
 
     <div class="mx-auto grid max-w-7xl grid-cols-[240px_1fr] gap-8 px-6 py-8">
-        <aside class="rounded-2xl bg-white p-4 shadow-md sticky top-0 z-10">
+        <aside
+            class="sticky top-24 z-10 h-[calc(100vh-8rem)] overflow-y-auto rounded-2xl bg-white/80 dark:bg-slate-900/80 p-4 shadow-md"
+        >
             <div class="space-y-1">
-                {#each navItems as item, index}
+                {#each navItems as item}
                     <button
                         type="button"
+                        onclick={() => goToSection(item.id)}
                         class={`flex w-full items-center rounded-2xl px-4 py-3 text-left transition ${
-                            index === 0
-                                ? "bg-secondary-50 font-semibold text-primary-600"
-                                : "text-slate-600 hover:bg-slate-50"
+                            activeNavId === item.id
+                                ? "bg-slate-100 dark:bg-slate-600 font-semibold text-primary-600"
+                                : "text-slate-600 dark:text-slate-100 hover:bg-slate-50 hover:dark:bg-slate-700"
                         }`}
                     >
-                        {item}
+                        {item.label}
                     </button>
                 {/each}
             </div>
         </aside>
 
         <section
-            class="rounded-[28px] border border-slate-200 bg-white p-8 shadow-[0_10px_28px_rgba(15,23,42,0.06)]"
+            class="rounded-2xl bg-white/80 dark:bg-slate-900/80 p-8 shadow-md"
         >
             <div class="flex items-start justify-between gap-6">
                 <div>
@@ -288,7 +385,10 @@
             </div>
 
             <div class="mt-10 space-y-10">
-                <div class="grid grid-cols-[1fr_220px] items-start gap-8">
+                <section
+                    id="basic-settings"
+                    class="grid scroll-mt-28 grid-cols-[1fr_220px] items-start gap-8"
+                >
                     <div>
                         <div class="text-lg font-semibold">目标语言</div>
                         <p class="mt-1 text-sm text-slate-400">
@@ -309,9 +409,12 @@
                             <option value={option}>{option}</option>
                         {/each}
                     </select>
-                </div>
+                </section>
 
-                <div class="grid grid-cols-[1fr_220px] items-start gap-8">
+                <section
+                    id="translation-service"
+                    class="grid scroll-mt-28 grid-cols-[1fr_220px] items-start gap-8"
+                >
                     <div>
                         <div class="text-lg font-semibold">翻译服务</div>
                         <p class="mt-1 text-sm text-slate-400">
@@ -337,7 +440,7 @@
                             点此测试服务
                         </div>
                     </div>
-                </div>
+                </section>
 
                 <div
                     class="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-5"
@@ -348,7 +451,10 @@
                     <ChevronDownOutline class="h-5 w-5 text-slate-400" />
                 </div>
 
-                <div class="grid grid-cols-[1fr_220px] items-start gap-8">
+                <section
+                    id="interface-language"
+                    class="grid scroll-mt-28 grid-cols-[1fr_220px] items-start gap-8"
+                >
                     <div>
                         <div class="text-lg font-semibold">界面语言</div>
                         <p class="mt-1 text-sm text-slate-400">
@@ -368,9 +474,12 @@
                         <option value="简体中文">简体中文</option>
                         <option value="English">English</option>
                     </select>
-                </div>
+                </section>
 
-                <div class="grid grid-cols-[1fr_220px] items-start gap-8">
+                <section
+                    id="model-settings"
+                    class="grid scroll-mt-28 grid-cols-[1fr_220px] items-start gap-8"
+                >
                     <div>
                         <div class="text-lg font-semibold">默认模型</div>
                         <p class="mt-1 text-sm text-slate-400">
@@ -391,9 +500,12 @@
                             <option value={option}>{option}</option>
                         {/each}
                     </select>
-                </div>
+                </section>
 
-                <div class="grid grid-cols-[1fr_220px] items-start gap-8">
+                <section
+                    id="prompt-preset"
+                    class="grid scroll-mt-28 grid-cols-[1fr_220px] items-start gap-8"
+                >
                     <div>
                         <div class="text-lg font-semibold">提示词方案</div>
                         <p class="mt-1 text-sm text-slate-400">
@@ -414,9 +526,12 @@
                             <option value={option}>{option}</option>
                         {/each}
                     </select>
-                </div>
+                </section>
 
-                <div class="grid grid-cols-[1fr_220px] items-start gap-8">
+                <section
+                    id="always-translate-sites"
+                    class="grid scroll-mt-28 grid-cols-[1fr_220px] items-start gap-8"
+                >
                     <div>
                         <div class="text-lg font-semibold">总是翻译的网站</div>
                         <p class="mt-1 text-sm text-slate-400">
@@ -443,7 +558,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </section>
 
                 <div class="rounded-2xl bg-slate-50 p-4">
                     <div class="space-y-3">
@@ -470,7 +585,10 @@
                     </div>
                 </div>
 
-                <div class="grid gap-4">
+                <section
+                    id="behavior-preferences"
+                    class="grid scroll-mt-28 gap-4"
+                >
                     {#each toggleItems as item}
                         <div
                             class="grid grid-cols-[1fr_auto] items-start gap-6 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"
@@ -507,9 +625,12 @@
                             />
                         </div>
                     {/each}
-                </div>
+                </section>
 
-                <div class="rounded-2xl bg-slate-950 p-5 text-slate-100">
+                <section
+                    id="save-status"
+                    class="scroll-mt-28 rounded-2xl bg-slate-950 p-5 text-slate-100"
+                >
                     <div class="text-sm text-slate-400">状态</div>
                     <div class="mt-2 font-medium">
                         {#if loading}
@@ -522,7 +643,7 @@
                             当前配置已同步
                         {/if}
                     </div>
-                </div>
+                </section>
             </div>
         </section>
     </div>

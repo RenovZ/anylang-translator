@@ -86,7 +86,7 @@
     };
 </script>
 
-<main class="min-w-80 bg-slate-200/80 text-sm dark:bg-slate-950/80">
+<main class="min-w-80 bg-slate-100 text-sm dark:bg-slate-950/80">
     <section class="space-y-4 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
         <header class="flex items-center justify-between">
             <div class="flex items-center justify-between gap-2">
