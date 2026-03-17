@@ -1,36 +1,20 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { Avatar, Button, GradientButton, Toggle } from "flowbite-svelte";
-    import {
-        ChevronDownOutline,
-        CogOutline,
-        WandMagicSparklesSolid,
-    } from "flowbite-svelte-icons";
+    import { Button, Toggle } from "flowbite-svelte";
     import { browser } from "wxt/browser";
+    import { WandMagicSparklesSolid } from "flowbite-svelte-icons";
 
     import "../../assets/app.css";
-    import avatar from "../../lib/avatar";
+    import GeneralSettings from "./components/GeneralSettings.svelte";
+    import type { V2OptionsConfig } from "./types";
     import {
         defaultPopupConfig,
         modelOptionsByProvider,
         promptPresetOptions,
         providerOptions,
-        targetLanguageOptions,
         toggles,
-        type PopupConfig,
+        type ToggleItem,
     } from "../popup/data";
-
-    type V2OptionsConfig = PopupConfig & {
-        toggleModes: Record<string, string>;
-        alwaysTranslateSites: string[];
-        neverTranslateSites: string[];
-        alwaysTranslateLanguages: string[];
-        neverTranslateLanguages: string[];
-        uiLanguage: string;
-        translationPreference: string;
-        translationStyle: string;
-        richTextTranslate: boolean;
-    };
 
     const STORAGE_KEY = "options-config";
     const navItems = [
@@ -49,32 +33,12 @@
         { id: "advanced", label: "高级设置", position: "top" },
         { id: "import-export", label: "导入/导出", position: "top" },
         { id: "about", label: "关于", position: "top" },
-        {
-            id: "pricing",
-            link: "https://example.com/pricing",
-            label: "价格",
-            position: "bottom",
-        },
-        {
-            id: "docs",
-            link: "https://example.com/docs",
-            label: "使用文档",
-            position: "bottom",
-        },
-        {
-            id: "changelog",
-            link: "https://example.com/changelog",
-            label: "更新日志",
-            position: "bottom",
-        },
-        {
-            id: "feedback",
-            link: "https://example.com/feedback",
-            label: "问题反馈",
-            position: "bottom",
-        },
+        { id: "pricing", label: "价格", position: "bottom" },
+        { id: "docs", label: "使用文档", position: "bottom" },
+        { id: "changelog", label: "更新日志", position: "bottom" },
+        { id: "feedback", label: "问题反馈", position: "bottom" },
         { id: "developer", label: "开发者设置", position: "bottom" },
-    ];
+    ] as const;
 
     const defaultToggleModes = Object.fromEntries(
         toggles
@@ -101,16 +65,22 @@
         translationPreference: "双语对照",
         translationStyle: "无",
         richTextTranslate: true,
+        textColor: "#FFFFFF",
+        fontScale: "100",
+        fontWeight: "400",
+        italicTranslate: false,
+        customFontEnabled: false,
+        customFontFamily: "无",
     });
 
     let config = createDefaultConfig();
-    let toggleItems = toggles.map((item) => ({ ...item }));
+    let toggleItems: ToggleItem[] = toggles.map((item) => ({ ...item }));
     let newSite = "";
     let savedSnapshot = JSON.stringify(config);
     let saveMessage = "";
     let loading = true;
     let saving = false;
-    let activeNavId = navItems[0].id;
+    let activeNavId: string = navItems[0].id;
 
     const topNavItems = navItems.filter((item) => item.position === "top");
     const bottomNavItems = navItems.filter(
@@ -195,14 +165,7 @@
     }
 
     function updateField(
-        key:
-            | "targetLanguage"
-            | "provider"
-            | "model"
-            | "promptPreset"
-            | "uiLanguage"
-            | "translationPreference"
-            | "translationStyle",
+        key: "provider" | "model" | "promptPreset",
         value: string,
     ) {
         if (key === "provider") {
@@ -221,21 +184,11 @@
         };
     }
 
-    function updateToggleMode(key: string, value: string) {
-        config = {
-            ...config,
-            toggleModes: {
-                ...config.toggleModes,
-                [key]: value,
-            },
-        };
-    }
-
     async function saveOptions() {
         saving = true;
         await browser.storage.local.set({ [STORAGE_KEY]: config });
         savedSnapshot = JSON.stringify(config);
-        saveMessage = "v2 设置已保存";
+        saveMessage = "设置已保存";
         saving = false;
     }
 
@@ -244,40 +197,6 @@
         toggleItems = toggles.map((item) => ({ ...item }));
         await saveOptions();
         saveMessage = "已恢复默认设置";
-    }
-
-    function addSite() {
-        const site = newSite.trim();
-        if (!site || config.alwaysTranslateSites.includes(site)) return;
-        config = {
-            ...config,
-            alwaysTranslateSites: [...config.alwaysTranslateSites, site],
-        };
-        newSite = "";
-    }
-
-    function removeSite(site: string) {
-        config = {
-            ...config,
-            alwaysTranslateSites: config.alwaysTranslateSites.filter(
-                (item) => item !== site,
-            ),
-        };
-    }
-
-    function addRuleItem(
-        key:
-            | "alwaysTranslateLanguages"
-            | "neverTranslateLanguages"
-            | "neverTranslateSites",
-        value: string,
-    ) {
-        const next = value.trim();
-        if (!next || config[key].includes(next)) return;
-        config = {
-            ...config,
-            [key]: [...config[key], next],
-        };
     }
 
     function goToSection(id: string) {
@@ -290,10 +209,10 @@
 </script>
 
 <main
-    class="min-h-screen bg-slate-100 dark:bg-slate-950/80 text-sm text-slate-900 dark:text-slate-50"
+    class="min-h-screen bg-slate-100 text-sm text-slate-900 dark:bg-slate-950/80 dark:text-slate-50"
 >
     <header
-        class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xs shadow sticky top-0 z-10"
+        class="sticky top-0 z-10 bg-white/80 shadow backdrop-blur-xs dark:bg-slate-900/80"
     >
         <div class="mx-auto flex items-center justify-between px-6 py-4">
             <div class="flex items-center gap-3">
@@ -309,7 +228,7 @@
             <div class="flex items-center gap-3">
                 <Button
                     color="light"
-                    class="rounded-xl px-4 py-2 border-none shadow-md"
+                    class="rounded-xl border-none px-4 py-2 shadow-md"
                 >
                     ⚒️ 工具箱
                 </Button>
@@ -319,7 +238,7 @@
 
     <div class="mx-auto grid max-w-7xl grid-cols-[240px_1fr] gap-8 px-6 py-8">
         <aside
-            class="sticky top-24 z-10 h-[calc(100vh-8rem)] overflow-y-auto rounded-2xl bg-white/80 dark:bg-slate-900/80 p-4 shadow-md flex flex-col justify-between"
+            class="sticky top-24 z-10 flex h-[calc(100vh-8rem)] flex-col justify-between overflow-y-auto rounded-2xl bg-white/80 p-4 shadow-md dark:bg-slate-900/80"
         >
             <div class="space-y-1">
                 {#each topNavItems as item}
@@ -328,8 +247,8 @@
                         onclick={() => goToSection(item.id)}
                         class={`flex w-full items-center rounded-2xl px-4 py-3 text-left transition ${
                             activeNavId === item.id
-                                ? "bg-slate-100 dark:bg-slate-600 font-semibold text-primary-600"
-                                : "text-slate-600 dark:text-slate-100 hover:bg-slate-50 hover:dark:bg-slate-700"
+                                ? "bg-slate-100 font-semibold text-primary-600 dark:bg-slate-600"
+                                : "text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700"
                         }`}
                     >
                         {item.label}
@@ -344,8 +263,8 @@
                         onclick={() => goToSection(item.id)}
                         class={`flex w-full items-center rounded-2xl px-4 py-3 text-left transition ${
                             activeNavId === item.id
-                                ? "bg-slate-100 dark:bg-slate-600 font-semibold text-primary-600"
-                                : "text-slate-600 dark:text-slate-100 hover:bg-slate-50 hover:dark:bg-slate-700"
+                                ? "bg-slate-100 font-semibold text-primary-600 dark:bg-slate-600"
+                                : "text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700"
                         }`}
                     >
                         {item.label}
@@ -354,847 +273,275 @@
             </div>
         </aside>
 
-        <section
-            class="rounded-2xl bg-white/80 dark:bg-slate-900/80 p-8 shadow-md"
-        >
-            <div class="flex items-start justify-between gap-6">
-                <div>
-                    <h1 class="text-2xl font-semibold">基本设置</h1>
+        <div>
+            <GeneralSettings
+                bind:config
+                bind:toggleItems
+                bind:newSite
+                {loading}
+                {saving}
+                {isDirty}
+                {getProviderModels}
+                {saveOptions}
+                {resetOptions}
+            />
+
+            <section
+                id="services"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <div class="mb-4">
+                    <h2 class="text-lg font-semibold">翻译服务</h2>
+                    <p class="mt-1 text-sm text-slate-400">
+                        选择模型供应商和当前默认模型。
+                    </p>
                 </div>
-                <div class="flex items-center gap-3 text-primary-600">
-                    <button type="button" onclick={saveOptions}>清除缓存</button
-                    >
-                    <button type="button" onclick={resetOptions}
-                        >重置设置</button
-                    >
-                </div>
-            </div>
-
-            <div class="mt-8 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <Avatar
-                        class="h-14 w-14"
-                        src={avatar.dicebear("RenovZ", {
-                            chars: 1,
-                            backgroundType: ["gradientLinear"],
-                        })}
-                        size="lg"
-                    />
-                    <div>
-                        <div class="font-medium">未登录</div>
-                        <div class="text-sm text-slate-400">
-                            登录后可开通会员
-                        </div>
-                    </div>
-                </div>
-                <GradientButton
-                    color="purpleToBlue"
-                    class="rounded-xl px-4 py-2"
-                    disabled={loading || saving || !isDirty}
-                    onclick={saveOptions}
-                >
-                    {#if saving}保存中...{:else}保存当前设置{/if}
-                </GradientButton>
-            </div>
-
-            <div class="mt-10 space-y-6">
-                <section
-                    id="general"
-                    class="scroll-mt-28 rounded-2xl bg-slate-50 p-6"
-                >
-                    <div class="flex items-start justify-between gap-6">
-                        <div>
-                            <h2 class="text-lg font-semibold">基本设置</h2>
-                        </div>
-                        <div
-                            class="flex items-center gap-4 text-sm text-primary-600"
-                        >
-                            <button type="button" onclick={saveOptions}
-                                >清除缓存</button
-                            >
-                            <button type="button" onclick={resetOptions}
-                                >重置设置</button
-                            >
-                        </div>
-                    </div>
-
-                    <div class="mt-8 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <Avatar
-                                class="h-14 w-14"
-                                src={avatar.dicebear("RenovZ", {
-                                    chars: 1,
-                                    backgroundType: ["gradientLinear"],
-                                })}
-                                size="lg"
-                            />
-                            <div>
-                                <div class="font-medium">未登录</div>
-                            </div>
-                        </div>
-                        <div class="text-sm text-primary-600">
-                            登录后可开通会员
-                        </div>
-                    </div>
-
-                    <div class="mt-10 space-y-10">
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    目标语言
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    指定您希望将内容翻译成的语言
-                                </p>
-                            </div>
-                            <select
-                                value={config.targetLanguage}
-                                onchange={(event) =>
-                                    updateField(
-                                        "targetLanguage",
-                                        (
-                                            event.currentTarget as HTMLSelectElement
-                                        ).value,
-                                    )}
-                                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                            >
-                                {#each targetLanguageOptions as option}
-                                    <option value={option}>{option}</option>
-                                {/each}
-                            </select>
-                        </div>
-
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    翻译服务
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    选择一项翻译服务
-                                </p>
-                            </div>
-                            <div class="space-y-3">
-                                <select
-                                    value={config.provider}
-                                    onchange={(event) =>
-                                        updateField(
-                                            "provider",
-                                            (
-                                                event.currentTarget as HTMLSelectElement
-                                            ).value,
-                                        )}
-                                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                                >
-                                    {#each providerOptions as option}
-                                        <option value={option}>{option}</option>
-                                    {/each}
-                                </select>
-                                <div
-                                    class="text-right text-sm text-primary-600"
-                                >
-                                    点此测试服务
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            class="rounded-xl border border-slate-200 bg-white px-4 py-5"
-                        >
-                            <div class="flex items-center justify-between">
-                                <div class="font-medium text-slate-700">
-                                    展开更多自定义选项 👉
-                                </div>
-                                <ChevronDownOutline
-                                    class="h-5 w-5 text-slate-400"
-                                />
-                            </div>
-                            <div
-                                class="mt-5 grid grid-cols-[1fr_auto] items-start gap-6"
-                            >
-                                <div>
-                                    <div class="font-medium">
-                                        启用富文本翻译
-                                    </div>
-                                    <p class="mt-1 text-sm text-slate-400">
-                                        开启富文本翻译可保留原文的链接和样式效果
-                                    </p>
-                                    <button
-                                        type="button"
-                                        class="mt-5 text-sm font-medium text-slate-500 underline"
-                                    >
-                                        恢复为默认设置
-                                    </button>
-                                </div>
-                                <Toggle
-                                    bind:checked={config.richTextTranslate}
-                                    size="small"
-                                    classes={{
-                                        span: "me-0 cursor-pointer bg-gray-300",
-                                    }}
-                                    aria-label="启用富文本翻译"
-                                />
-                            </div>
-                        </div>
-
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    界面语言
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    界面语言设置影响控制面板的显示语言，和翻译的目标语言无关
-                                </p>
-                            </div>
-                            <select
-                                value={config.uiLanguage}
-                                onchange={(event) =>
-                                    updateField(
-                                        "uiLanguage",
-                                        (
-                                            event.currentTarget as HTMLSelectElement
-                                        ).value,
-                                    )}
-                                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                            >
-                                <option value="简体中文">简体中文</option>
-                                <option value="English">English</option>
-                            </select>
-                        </div>
-
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    翻译偏好
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    选择翻译后的显示方式：双语对照或仅显示译文
-                                </p>
-                            </div>
-                            <select
-                                value={config.translationPreference}
-                                onchange={(event) =>
-                                    updateField(
-                                        "translationPreference",
-                                        (
-                                            event.currentTarget as HTMLSelectElement
-                                        ).value,
-                                    )}
-                                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                            >
-                                <option value="双语对照">双语对照</option>
-                                <option value="仅显示译文">仅显示译文</option>
-                            </select>
-                        </div>
-
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    总是翻译的网站
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    当网站为下列域名时，会自动翻译为目标语言
-                                </p>
-                                <div class="mt-3 text-sm text-primary-600">
-                                    批量操作
-                                </div>
-                            </div>
-                            <button
-                                type="button"
-                                class="rounded-xl bg-slate-700 px-5 py-3 font-medium text-white"
-                                onclick={addSite}
-                            >
-                                添加
-                            </button>
-                        </div>
-
-                        <div class="rounded-xl bg-slate-100 p-4">
-                            <div class="space-y-3">
-                                {#each config.alwaysTranslateSites as site}
-                                    <div
-                                        class="flex items-center justify-between pb-3 last:pb-0"
-                                    >
-                                        <span class="font-medium text-slate-600"
-                                            >{site}</span
-                                        >
-                                        <div
-                                            class="flex items-center gap-4 text-primary-600"
-                                        >
-                                            <button type="button">编辑</button>
-                                            <button
-                                                type="button"
-                                                onclick={() => removeSite(site)}
-                                                >删除</button
-                                            >
-                                        </div>
-                                    </div>
-                                {/each}
-                            </div>
-                        </div>
-
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    不自动翻译的网站
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    当网站为下列域名时，将不会自动进行翻译。此规则优先于语言设置。
-                                </p>
-                            </div>
-                            <button
-                                type="button"
-                                class="rounded-xl bg-slate-700 px-5 py-3 font-medium text-white"
-                                onclick={() =>
-                                    addRuleItem(
-                                        "neverTranslateSites",
-                                        "example.com",
-                                    )}
-                            >
-                                添加
-                            </button>
-                        </div>
-
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    总是翻译的语言
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    当页面语言为下列语言时，会自动翻译为目标语言。
-                                </p>
-                            </div>
-                            <select
-                                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                            >
-                                <option>编辑</option>
-                                {#each config.alwaysTranslateLanguages as language}
-                                    <option>{language}</option>
-                                {/each}
-                            </select>
-                        </div>
-
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    永不翻译的语言
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    当页面中某一段落的语言为下列语言时，将跳过翻译
-                                </p>
-                            </div>
-                            <select
-                                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                            >
-                                <option>编辑</option>
-                                {#each config.neverTranslateLanguages as language}
-                                    <option>{language}</option>
-                                {/each}
-                            </select>
-                        </div>
-
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    译文显示样式
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    区分译文的样式，具体可参考下列示例
-                                </p>
-                                <div
-                                    class="mt-6 space-y-3 text-lg text-slate-700"
-                                >
-                                    <p>
-                                        Night gathers, and now my watch begins.
-                                        It shall not end until my death.
-                                    </p>
-                                    <p class="text-base text-slate-600">
-                                        长夜将至，我从今开始守望，至死方休。我将不娶妻、不封地、不生子。
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="space-y-3">
-                                <select
-                                    value={config.translationStyle}
-                                    onchange={(event) =>
-                                        updateField(
-                                            "translationStyle",
-                                            (
-                                                event.currentTarget as HTMLSelectElement
-                                            ).value,
-                                        )}
-                                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                                >
-                                    <option value="无">无</option>
-                                    <option value="背景色">背景色</option>
-                                    <option value="斜体">斜体</option>
-                                </select>
-                                <button
-                                    type="button"
-                                    class="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-600"
-                                >
-                                    <span>自定义颜色和大小</span>
-                                    <span>›</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    class="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-600"
-                                >
-                                    <span>设置字体</span>
-                                    <span>›</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    class="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-600"
-                                >
-                                    <span>预览全部样式</span>
-                                    <span>›</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div
-                            class="grid grid-cols-[1fr_220px] items-start gap-8"
-                        >
-                            <div>
-                                <div class="text-lg font-semibold">
-                                    当页面语言和目标语言为相近语言时，为译文添加背景色
-                                </div>
-                                <p class="mt-1 text-sm text-slate-400">
-                                    当页面语言和目标语言为相近语言时，通过给译文添加背景色来区分原文，方便对照阅读。
-                                </p>
-                            </div>
-                            <Toggle
-                                bind:checked={config.richTextTranslate}
-                                size="small"
-                                classes={{
-                                    span: "me-0 cursor-pointer bg-gray-300",
-                                }}
-                                aria-label="当页面语言和目标语言为相近语言时，为译文添加背景色"
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                <section
-                    id="services"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <div class="mb-4">
-                        <h2 class="text-lg font-semibold">翻译服务</h2>
-                        <p class="mt-1 text-sm text-slate-400">
-                            选择模型供应商和当前默认模型。
-                        </p>
-                    </div>
-                    <div class="grid gap-4 md:grid-cols-2">
-                        <label class="space-y-2">
-                            <span class="font-medium">供应商</span>
-                            <select
-                                value={config.provider}
-                                onchange={(event) =>
-                                    updateField(
-                                        "provider",
-                                        (
-                                            event.currentTarget as HTMLSelectElement
-                                        ).value,
-                                    )}
-                                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                            >
-                                {#each providerOptions as option}
-                                    <option value={option}>{option}</option>
-                                {/each}
-                            </select>
-                        </label>
-                        <label class="space-y-2">
-                            <span class="font-medium">默认模型</span>
-                            <select
-                                value={config.model}
-                                onchange={(event) =>
-                                    updateField(
-                                        "model",
-                                        (
-                                            event.currentTarget as HTMLSelectElement
-                                        ).value,
-                                    )}
-                                class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                            >
-                                {#each getProviderModels(config.provider) as option}
-                                    <option value={option}>{option}</option>
-                                {/each}
-                            </select>
-                        </label>
-                    </div>
-                </section>
-
-                <section
-                    id="ai"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <div class="mb-4">
-                        <h2 class="text-lg font-semibold">AI 专家</h2>
-                        <p class="mt-1 text-sm text-slate-400">
-                            选择默认的提示词方案和 AI 专家模式。
-                        </p>
-                    </div>
-                    <select
-                        value={config.promptPreset}
-                        onchange={(event) =>
-                            updateField(
-                                "promptPreset",
-                                (event.currentTarget as HTMLSelectElement)
-                                    .value,
-                            )}
-                        class="w-full max-w-sm rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                    >
-                        {#each promptPresetOptions as option}
-                            <option value={option}>{option}</option>
-                        {/each}
-                    </select>
-                </section>
-
-                <section
-                    id="terms"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">AI 术语库</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        这里可以放术语表、术语优先级和导入规则。当前先保留为独立卡片，便于后续扩展。
-                    </p>
-                </section>
-
-                <section
-                    id="writing"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">AI Write</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        写作增强、润色和风格改写入口可以放在这里。
-                    </p>
-                </section>
-
-                <section
-                    id="subtitle"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">视频字幕</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        自动开启双语字幕等视频场景设置。
-                    </p>
-                    <div
-                        class="mt-4 flex items-center justify-between rounded-xl bg-white px-4 py-3"
-                    >
-                        <span class="font-medium">自动开启双语字幕</span>
-                        <Toggle
-                            bind:checked={toggleItems[4].enabled}
-                            size="small"
-                            classes={{
-                                span: "me-0 cursor-pointer bg-gray-300",
-                            }}
-                            aria-label="自动开启双语字幕"
-                        />
-                    </div>
-                </section>
-
-                <section
-                    id="manga"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">漫画/图片</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        图片识别和漫画翻译相关能力入口。
-                    </p>
-                </section>
-
-                <section
-                    id="input"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">输入框翻译</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        输入框内翻译和改写相关设置。
-                    </p>
-                </section>
-
-                <section
-                    id="selection-transiation"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <div class="mb-4">
-                        <h2 class="text-lg font-semibold">划词翻译</h2>
-                        <p class="mt-1 text-sm text-slate-400">
-                            控制划词翻译触发方式。
-                        </p>
-                    </div>
-                    <div class="grid gap-4">
-                        <div
-                            class="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-[1fr_auto] md:items-center"
-                        >
-                            <select
-                                value={config.toggleModes[toggleItems[2].key]}
-                                onchange={(event) =>
-                                    updateToggleMode(
-                                        toggleItems[2].key,
-                                        (
-                                            event.currentTarget as HTMLSelectElement
-                                        ).value,
-                                    )}
-                                class="w-full max-w-md rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-primary-400"
-                            >
-                                {#each toggleItems[2].options ?? [] as option}
-                                    <option value={option}>{option}</option>
-                                {/each}
-                            </select>
-                            <Toggle
-                                bind:checked={toggleItems[2].enabled}
-                                size="small"
-                                classes={{
-                                    span: "me-0 cursor-pointer bg-gray-300",
-                                }}
-                                aria-label={toggleItems[2].label}
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                <section
-                    id="mouse-hover"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <div class="mb-4">
-                        <h2 class="text-lg font-semibold">鼠标悬停</h2>
-                        <p class="mt-1 text-sm text-slate-400">
-                            控制悬停翻译触发方式。
-                        </p>
-                    </div>
-                    <div
-                        class="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-[1fr_auto] md:items-center"
-                    >
+                <div class="grid gap-4 md:grid-cols-2">
+                    <label class="space-y-2">
+                        <span class="font-medium">供应商</span>
                         <select
-                            value={config.toggleModes[toggleItems[1].key]}
+                            value={config.provider}
                             onchange={(event) =>
-                                updateToggleMode(
-                                    toggleItems[1].key,
+                                updateField(
+                                    "provider",
                                     (event.currentTarget as HTMLSelectElement)
                                         .value,
                                 )}
-                            class="w-full max-w-md rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 outline-none transition focus:border-primary-400"
+                            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
                         >
-                            {#each toggleItems[1].options ?? [] as option}
+                            {#each providerOptions as option}
                                 <option value={option}>{option}</option>
                             {/each}
                         </select>
-                        <Toggle
-                            bind:checked={toggleItems[1].enabled}
-                            size="small"
-                            classes={{
-                                span: "me-0 cursor-pointer bg-gray-300",
-                            }}
-                            aria-label={toggleItems[1].label}
-                        />
-                    </div>
-                </section>
-
-                <section
-                    id="floating"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">悬浮球</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        悬浮球显示和交互配置。
-                    </p>
-                    <div
-                        class="mt-4 flex items-center justify-between rounded-xl bg-white px-4 py-3"
-                    >
-                        <span class="font-medium">总是翻译该网站</span>
-                        <Toggle
-                            bind:checked={toggleItems[0].enabled}
-                            size="small"
-                            classes={{
-                                span: "me-0 cursor-pointer bg-gray-300",
-                            }}
-                            aria-label={toggleItems[0].label}
-                        />
-                    </div>
-                </section>
-
-                <section
-                    id="shortcuts"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">快捷键</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        这里可以放快捷键说明和跳转到浏览器快捷键页面。
-                    </p>
-                </section>
-
-                <section
-                    id="advanced"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">高级设置</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        展开更多自定义选项、高级规则和实验能力。
-                    </p>
-                    <div
-                        class="mt-4 flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-4"
-                    >
-                        <span class="font-medium text-slate-700"
-                            >展开更多自定义选项</span
-                        >
-                        <ChevronDownOutline class="h-5 w-5 text-slate-400" />
-                    </div>
-                </section>
-
-                <section
-                    id="import-export"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">导入/导出</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        导出当前配置、导入历史配置。
-                    </p>
-                </section>
-
-                <section
-                    id="about"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">关于</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        版本信息、版权信息和产品说明。
-                    </p>
-                </section>
-
-                <section
-                    id="pricing"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">价格</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        会员方案和价格说明。
-                    </p>
-                </section>
-
-                <section
-                    id="docs"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">使用文档</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        产品说明和使用教程入口。
-                    </p>
-                </section>
-
-                <section
-                    id="changelog"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">更新日志</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        查看近期版本变更记录。
-                    </p>
-                </section>
-
-                <section
-                    id="feedback"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">问题反馈</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        反馈当前页面翻译问题和产品建议。
-                    </p>
-                </section>
-
-                <section
-                    id="developer"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <h2 class="text-lg font-semibold">开发者设置</h2>
-                    <p class="mt-1 text-sm text-slate-400">
-                        调试模式、日志级别和开发辅助能力。
-                    </p>
-                </section>
-
-                <section
-                    id="always-translate-sites"
-                    class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-                >
-                    <div class="mb-4">
-                        <h2 class="text-lg font-semibold">总是翻译的网站</h2>
-                        <p class="mt-1 text-sm text-slate-400">
-                            当网站为下列域名时，会自动翻译为目标语言。
-                        </p>
-                    </div>
-                    <div class="grid gap-3 md:grid-cols-[1fr_auto]">
-                        <input
-                            bind:value={newSite}
-                            type="text"
-                            placeholder="example.com"
+                    </label>
+                    <label class="space-y-2">
+                        <span class="font-medium">默认模型</span>
+                        <select
+                            value={config.model}
+                            onchange={(event) =>
+                                updateField(
+                                    "model",
+                                    (event.currentTarget as HTMLSelectElement)
+                                        .value,
+                                )}
                             class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
-                        />
-                        <button
-                            type="button"
-                            class="rounded-2xl bg-slate-700 px-5 py-3 font-medium text-white"
-                            onclick={addSite}>添加</button
                         >
-                    </div>
-                    <div class="mt-4 space-y-3 rounded-2xl bg-white p-4">
-                        {#each config.alwaysTranslateSites as site}
-                            <div
-                                class="flex items-center justify-between border-b border-slate-200 pb-3 last:border-b-0 last:pb-0"
-                            >
-                                <span class="font-medium text-slate-700"
-                                    >{site}</span
-                                >
-                                <div
-                                    class="flex items-center gap-4 text-primary-600"
-                                >
-                                    <button type="button">编辑</button>
-                                    <button
-                                        type="button"
-                                        onclick={() => removeSite(site)}
-                                        >删除</button
-                                    >
-                                </div>
-                            </div>
-                        {/each}
-                    </div>
-                </section>
+                            {#each getProviderModels(config.provider) as option}
+                                <option value={option}>{option}</option>
+                            {/each}
+                        </select>
+                    </label>
+                </div>
+            </section>
 
-                <section
-                    id="save-status"
-                    class="scroll-mt-28 rounded-2xl bg-slate-950 p-5 text-slate-100"
+            <section
+                id="ai"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <div class="mb-4">
+                    <h2 class="text-lg font-semibold">AI 专家</h2>
+                    <p class="mt-1 text-sm text-slate-400">
+                        选择默认的提示词方案和 AI 专家模式。
+                    </p>
+                </div>
+                <select
+                    value={config.promptPreset}
+                    onchange={(event) =>
+                        updateField(
+                            "promptPreset",
+                            (event.currentTarget as HTMLSelectElement).value,
+                        )}
+                    class="w-full max-w-sm rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-primary-400"
                 >
-                    <div class="text-sm text-slate-400">状态</div>
-                    <div class="mt-2 font-medium">
-                        {#if loading}
-                            正在读取浏览器本地存储...
-                        {:else if saveMessage}
-                            {saveMessage}
-                        {:else if isDirty}
-                            你有尚未保存的改动
-                        {:else}
-                            当前配置已同步
-                        {/if}
-                    </div>
-                </section>
-            </div>
-        </section>
+                    {#each promptPresetOptions as option}
+                        <option value={option}>{option}</option>
+                    {/each}
+                </select>
+            </section>
+
+            <section
+                id="terms"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">AI 术语库</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    这里可以放术语表、术语优先级和导入规则。
+                </p>
+            </section>
+            <section
+                id="writing"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">AI Write</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    写作增强、润色和风格改写入口可以放在这里。
+                </p>
+            </section>
+            <section
+                id="subtitle"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">视频字幕</h2>
+                <div
+                    class="mt-4 flex items-center justify-between rounded-xl bg-white px-4 py-3"
+                >
+                    <span class="font-medium">自动开启双语字幕</span><Toggle
+                        bind:checked={toggleItems[4].enabled}
+                        size="small"
+                        classes={{ span: "me-0 cursor-pointer bg-gray-300" }}
+                        aria-label="自动开启双语字幕"
+                    />
+                </div>
+            </section>
+            <section
+                id="manga"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">漫画/图片</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    图片识别和漫画翻译相关能力入口。
+                </p>
+            </section>
+            <section
+                id="input"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">输入框翻译</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    输入框内翻译和改写相关设置。
+                </p>
+            </section>
+            <section
+                id="selection-transiation"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">划词翻译</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    控制划词翻译触发方式。
+                </p>
+            </section>
+            <section
+                id="mouse-hover"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">鼠标悬停</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    控制悬停翻译触发方式。
+                </p>
+            </section>
+            <section
+                id="floating"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">悬浮球</h2>
+                <div
+                    class="mt-4 flex items-center justify-between rounded-xl bg-white px-4 py-3"
+                >
+                    <span class="font-medium">总是翻译该网站</span><Toggle
+                        bind:checked={toggleItems[0].enabled}
+                        size="small"
+                        classes={{ span: "me-0 cursor-pointer bg-gray-300" }}
+                        aria-label={toggleItems[0].label}
+                    />
+                </div>
+            </section>
+            <section
+                id="shortcuts"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">快捷键</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    这里可以放快捷键说明和跳转到浏览器快捷键页面。
+                </p>
+            </section>
+            <section
+                id="advanced"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">高级设置</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    展开更多自定义选项、高级规则和实验能力。
+                </p>
+            </section>
+            <section
+                id="import-export"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">导入/导出</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    导出当前配置、导入历史配置。
+                </p>
+            </section>
+            <section
+                id="about"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">关于</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    版本信息、版权信息和产品说明。
+                </p>
+            </section>
+            <section
+                id="pricing"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">价格</h2>
+                <p class="mt-1 text-sm text-slate-400">会员方案和价格说明。</p>
+            </section>
+            <section
+                id="docs"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">使用文档</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    产品说明和使用教程入口。
+                </p>
+            </section>
+            <section
+                id="changelog"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">更新日志</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    查看近期版本变更记录。
+                </p>
+            </section>
+            <section
+                id="feedback"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">问题反馈</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    反馈当前页面翻译问题和产品建议。
+                </p>
+            </section>
+            <section
+                id="developer"
+                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+            >
+                <h2 class="text-lg font-semibold">开发者设置</h2>
+                <p class="mt-1 text-sm text-slate-400">
+                    调试模式、日志级别和开发辅助能力。
+                </p>
+            </section>
+
+            <section
+                id="save-status"
+                class="scroll-mt-28 rounded-2xl bg-slate-950 p-5 text-slate-100"
+            >
+                <div class="text-sm text-slate-400">状态</div>
+                <div class="mt-2 font-medium">
+                    {#if loading}
+                        正在读取浏览器本地存储...
+                    {:else if saveMessage}
+                        {saveMessage}
+                    {:else if isDirty}
+                        你有尚未保存的改动
+                    {:else}
+                        当前配置已同步
+                    {/if}
+                </div>
+            </section>
+        </div>
     </div>
 </main>
