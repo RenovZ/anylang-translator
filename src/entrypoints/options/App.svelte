@@ -80,7 +80,7 @@
     let saveMessage = "";
     let loading = true;
     let saving = false;
-    let activeNavId = navItems[0].id;
+    let activeNavId: string = navItems[0].id;
 
     const topNavItems = navItems.filter((item) => item.position === "top");
     const bottomNavItems = navItems.filter(
@@ -95,32 +95,17 @@
     };
 
     $: isDirty = JSON.stringify(config) !== savedSnapshot;
+    $: activeNavLabel =
+        navItems.find((item) => item.id === activeNavId)?.label ?? "设置";
 
     onMount(() => {
-        const sections = navItems
-            .map((item) => document.getElementById(item.id))
-            .filter(Boolean) as HTMLElement[];
+        syncActiveNavWithHash();
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const visible = entries
-                    .filter((entry) => entry.isIntersecting)
-                    .sort(
-                        (a, b) =>
-                            a.boundingClientRect.top - b.boundingClientRect.top,
-                    );
+        const handleHashChange = () => {
+            syncActiveNavWithHash();
+        };
 
-                if (visible[0]?.target.id) {
-                    activeNavId = visible[0].target.id;
-                }
-            },
-            {
-                rootMargin: "-96px 0px -55% 0px",
-                threshold: [0.1, 0.25, 0.5],
-            },
-        );
-
-        sections.forEach((section) => observer.observe(section));
+        window.addEventListener("hashchange", handleHashChange);
 
         void (async () => {
             const result = await browser.storage.local.get(STORAGE_KEY);
@@ -154,7 +139,9 @@
             loading = false;
         })();
 
-        return () => observer.disconnect();
+        return () => {
+            window.removeEventListener("hashchange", handleHashChange);
+        };
     });
 
     function getProviderModels(provider: string) {
@@ -199,12 +186,23 @@
         saveMessage = "已恢复默认设置";
     }
 
+    function syncActiveNavWithHash() {
+        const hash = window.location.hash.replace(/^#/, "");
+        if (hash && navItems.some((item) => item.id === hash)) {
+            activeNavId = hash;
+            return;
+        }
+
+        activeNavId = navItems[0].id;
+    }
+
     function goToSection(id: string) {
-        activeNavId = id;
-        document.getElementById(id)?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
+        if (window.location.hash === `#${id}`) {
+            activeNavId = id;
+            return;
+        }
+
+        window.location.hash = id;
     }
 </script>
 
@@ -225,14 +223,12 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <Button
-                    color="light"
-                    class="rounded-xl border-none px-4 py-2 shadow-md"
-                >
-                    ⚒️ 工具箱
-                </Button>
-            </div>
+            <Button
+                color="light"
+                class="rounded-xl border-none px-4 py-2 shadow-md"
+            >
+                ⚒️ 工具箱
+            </Button>
         </div>
     </header>
 
@@ -242,8 +238,8 @@
         >
             <div class="space-y-1">
                 {#each topNavItems as item}
-                    <button
-                        type="button"
+                    <a
+                        href={`#${item.id}`}
                         onclick={() => goToSection(item.id)}
                         class={`flex w-full items-center rounded-2xl px-4 py-3 text-left transition ${
                             activeNavId === item.id
@@ -252,14 +248,14 @@
                         }`}
                     >
                         {item.label}
-                    </button>
+                    </a>
                 {/each}
             </div>
 
             <div class="space-y-1">
                 {#each bottomNavItems as item}
-                    <button
-                        type="button"
+                    <a
+                        href={`#${item.id}`}
                         onclick={() => goToSection(item.id)}
                         class={`flex w-full items-center rounded-2xl px-4 py-3 text-left transition ${
                             activeNavId === item.id
@@ -268,27 +264,23 @@
                         }`}
                     >
                         {item.label}
-                    </button>
+                    </a>
                 {/each}
             </div>
         </aside>
 
-        <div>
+        {#if activeNavId === "general"}
             <GeneralSettings
                 bind:config
                 bind:toggleItems
                 bind:newSite
-                {loading}
-                {saving}
-                {isDirty}
-                {getProviderModels}
                 {saveOptions}
                 {resetOptions}
+                {getProviderModels}
             />
-
+        {:else if activeNavId === "services"}
             <section
-                id="services"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                class="rounded-2xl border border-slate-200 bg-slate-50 p-6"
             >
                 <div class="mb-4">
                     <h2 class="text-lg font-semibold">翻译服务</h2>
@@ -333,10 +325,9 @@
                     </label>
                 </div>
             </section>
-
+        {:else if activeNavId === "ai"}
             <section
-                id="ai"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                class="rounded-2xl border border-slate-200 bg-slate-50 p-6"
             >
                 <div class="mb-4">
                     <h2 class="text-lg font-semibold">AI 专家</h2>
@@ -358,190 +349,53 @@
                     {/each}
                 </select>
             </section>
-
+        {:else if activeNavId === "subtitle"}
             <section
-                id="terms"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">AI 术语库</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    这里可以放术语表、术语优先级和导入规则。
-                </p>
-            </section>
-            <section
-                id="writing"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">AI Write</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    写作增强、润色和风格改写入口可以放在这里。
-                </p>
-            </section>
-            <section
-                id="subtitle"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                class="rounded-2xl border border-slate-200 bg-slate-50 p-6"
             >
                 <h2 class="text-lg font-semibold">视频字幕</h2>
                 <div
                     class="mt-4 flex items-center justify-between rounded-xl bg-white px-4 py-3"
                 >
-                    <span class="font-medium">自动开启双语字幕</span><Toggle
+                    <span class="font-medium">自动开启双语字幕</span>
+                    <Toggle
                         bind:checked={toggleItems[4].enabled}
                         size="small"
-                        classes={{ span: "me-0 cursor-pointer bg-gray-300" }}
+                        classes={{
+                            span: "me-0 cursor-pointer bg-gray-300",
+                        }}
                         aria-label="自动开启双语字幕"
                     />
                 </div>
             </section>
+        {:else if activeNavId === "floating"}
             <section
-                id="manga"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">漫画/图片</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    图片识别和漫画翻译相关能力入口。
-                </p>
-            </section>
-            <section
-                id="input"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">输入框翻译</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    输入框内翻译和改写相关设置。
-                </p>
-            </section>
-            <section
-                id="selection-transiation"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">划词翻译</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    控制划词翻译触发方式。
-                </p>
-            </section>
-            <section
-                id="mouse-hover"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">鼠标悬停</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    控制悬停翻译触发方式。
-                </p>
-            </section>
-            <section
-                id="floating"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                class="rounded-2xl border border-slate-200 bg-slate-50 p-6"
             >
                 <h2 class="text-lg font-semibold">悬浮球</h2>
                 <div
                     class="mt-4 flex items-center justify-between rounded-xl bg-white px-4 py-3"
                 >
-                    <span class="font-medium">总是翻译该网站</span><Toggle
+                    <span class="font-medium">总是翻译该网站</span>
+                    <Toggle
                         bind:checked={toggleItems[0].enabled}
                         size="small"
-                        classes={{ span: "me-0 cursor-pointer bg-gray-300" }}
+                        classes={{
+                            span: "me-0 cursor-pointer bg-gray-300",
+                        }}
                         aria-label={toggleItems[0].label}
                     />
                 </div>
             </section>
+        {:else}
             <section
-                id="shortcuts"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
+                class="rounded-2xl border border-slate-200 bg-slate-50 p-6"
             >
-                <h2 class="text-lg font-semibold">快捷键</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    这里可以放快捷键说明和跳转到浏览器快捷键页面。
+                <h2 class="text-lg font-semibold">{activeNavLabel}</h2>
+                <p class="mt-2 text-sm text-slate-400">
+                    当前只显示这个模块的独立内容区域，后续可以继续单独完善。
                 </p>
             </section>
-            <section
-                id="advanced"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">高级设置</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    展开更多自定义选项、高级规则和实验能力。
-                </p>
-            </section>
-            <section
-                id="import-export"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">导入/导出</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    导出当前配置、导入历史配置。
-                </p>
-            </section>
-            <section
-                id="about"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">关于</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    版本信息、版权信息和产品说明。
-                </p>
-            </section>
-            <section
-                id="pricing"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">价格</h2>
-                <p class="mt-1 text-sm text-slate-400">会员方案和价格说明。</p>
-            </section>
-            <section
-                id="docs"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">使用文档</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    产品说明和使用教程入口。
-                </p>
-            </section>
-            <section
-                id="changelog"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">更新日志</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    查看近期版本变更记录。
-                </p>
-            </section>
-            <section
-                id="feedback"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">问题反馈</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    反馈当前页面翻译问题和产品建议。
-                </p>
-            </section>
-            <section
-                id="developer"
-                class="scroll-mt-28 rounded-2xl border border-slate-200 bg-slate-50 p-6"
-            >
-                <h2 class="text-lg font-semibold">开发者设置</h2>
-                <p class="mt-1 text-sm text-slate-400">
-                    调试模式、日志级别和开发辅助能力。
-                </p>
-            </section>
-
-            <section
-                id="save-status"
-                class="scroll-mt-28 rounded-2xl bg-slate-950 p-5 text-slate-100"
-            >
-                <div class="text-sm text-slate-400">状态</div>
-                <div class="mt-2 font-medium">
-                    {#if loading}
-                        正在读取浏览器本地存储...
-                    {:else if saveMessage}
-                        {saveMessage}
-                    {:else if isDirty}
-                        你有尚未保存的改动
-                    {:else}
-                        当前配置已同步
-                    {/if}
-                </div>
-            </section>
-        </div>
+        {/if}
     </div>
 </main>
