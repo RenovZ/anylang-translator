@@ -235,7 +235,9 @@
                     <Toggle
                         bind:checked={item.enabled}
                         size="small"
-                        spanClass="me-0 cursor-pointer bg-gray-300 dark:bg-gray-500"
+                        classes={{
+                            span: "me-0 cursor-pointer bg-gray-300 dark:bg-gray-500",
+                        }}
                         aria-label={item.label}
                     />
                 </div>
@@ -255,10 +257,10 @@
     </section>
 
     <footer class="flex items-center justify-between p-2 text-sm">
-        <div class="flex items-center gap-1">
+        <button type="button" class="flex items-center gap-1">
             <CogOutline class="h-4 w-4 shrink-0" />
             <span>设置</span>
-        </div>
+        </button>
         <div class="text-gray-400">0.0.1</div>
         <div>
             <button type="button" class="flex min-w-0 items-center">
