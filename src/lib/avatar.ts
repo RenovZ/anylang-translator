@@ -14,7 +14,7 @@ const dicebear = (username: string | undefined, options = {}) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const anylang = (options = {}) => {
-  const defaultOptions = { seed: "anylang bot" };
+  const defaultOptions = { seed: 'anylang bot' };
   const avatar = createAvatar(bottts, {
     ...options,
     ...defaultOptions
