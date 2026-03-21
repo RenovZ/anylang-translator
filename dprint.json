@@ -1,0 +1,55 @@
+{
+  "typescript": {
+    "indentWidth": 4,
+    "quoteStyle": "preferSingle"
+  },
+  "json": {
+    "indentWidth": 4
+  },
+  "markdown": {},
+  "malva": {
+    "indentWidth": 4
+  },
+  "markup": {
+    "printWidth": 180,
+    "indentWidth": 4,
+    "quotes": "single",
+    "formatComments": true,
+    "scriptIndent": true,
+    "html.scriptIndent": true,
+    "svelte.scriptIndent": true,
+    "styleIndent": true,
+    "html.styleIndent": true,
+    "svelte.styleIndent": true,
+    "closingBracketSameLine": true,
+    "maxAttrsPerLine": 10,
+    "html.normal.selfClosing": true,
+    "html.void.selfClosing": true,
+    "component.selfClosing": true,
+    "svg.selfClosing": true,
+    "mathml.selfClosing": true,
+    "strictSvelteAttr": true,
+    "svelteAttrShorthand": true,
+    "svelteDirectiveShorthand": true
+  },
+  "toml": {
+    "indentWidth": 4
+  },
+  "dockerfile": {},
+  "biome": {},
+  "ruff": {},
+  "jupyter": {},
+  "excludes": ["**/node_modules", "**/*-lock.json", "**/*-lock.yaml", "src/api", "swagger.yaml"],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.91.2.wasm",
+    "https://plugins.dprint.dev/json-0.19.3.wasm",
+    "https://plugins.dprint.dev/markdown-0.17.1.wasm",
+    "https://plugins.dprint.dev/toml-0.6.2.wasm",
+    "https://plugins.dprint.dev/dockerfile-0.3.2.wasm",
+    "https://plugins.dprint.dev/biome-0.6.0.wasm",
+    "https://plugins.dprint.dev/ruff-0.3.9.wasm",
+    "https://plugins.dprint.dev/jupyter-0.1.4.wasm",
+    "https://plugins.dprint.dev/g-plane/markup_fmt-v0.10.0.wasm",
+    "https://plugins.dprint.dev/g-plane/malva-v0.5.1.wasm"
+  ]
+}
