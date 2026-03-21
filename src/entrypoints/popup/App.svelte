@@ -24,7 +24,6 @@
     type ConfigRow,
     type ConfigRowKey
   } from './data';
-  import i18n from '@/lib/i18n';
 
   let popupConfig = { ...defaultPopupConfig };
   let toggleItems = toggles.map((item) => ({ ...item }));
@@ -90,7 +89,7 @@
         <span class="text-xs">未登录</span>
         <GradientButton color="purpleToBlue" pill class="px-2 py-1 text-xs">
           <span>⚡</span>
-          <span>{i18n('Upgrade')}</span>
+          <span>Upgrade</span>
         </GradientButton>
       </div>
     </header>
@@ -111,7 +110,7 @@
       <Dropdown
         simple
         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-        {#each sourceLanguageOptions as option}
+        {#each sourceLanguageOptions as option (option)}
           <DropdownItem on:click={() => updateLanguage('source', option)}>
             {option}
           </DropdownItem>
@@ -135,7 +134,7 @@
       <Dropdown
         simple
         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-        {#each targetLanguageOptions as option}
+        {#each targetLanguageOptions as option (option)}
           <DropdownItem on:click={() => updateLanguage('target', option)}>
             {option}
           </DropdownItem>
@@ -144,7 +143,7 @@
     </section>
 
     <section class="rounded-xl bg-slate-100 dark:bg-slate-700">
-      {#each configRows as row, index}
+      {#each configRows as row, index (row.key)}
         <div
           class:rounded-b-xl={index === configRows.length - 1}
           class:rounded-t-xl={index === 0}
@@ -160,7 +159,7 @@
             simple
             placement="bottom-end"
             class="max-h-72 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-            {#each getConfigOptions(row) as option}
+            {#each getConfigOptions(row) as option (option)}
               <DropdownItem on:click={() => updateConfig(row.key, option)}>
                 {option}
               </DropdownItem>
@@ -180,7 +179,7 @@
     </section>
 
     <section class="flex flex-col gap-3">
-      {#each toggleItems as item}
+      {#each toggleItems as item (item.key)}
         <div class="flex items-center justify-between gap-3">
           <button type="button" class="flex min-w-0 flex-nowrap items-center">
             <span class="line-clamp-1 font-medium">{item.label}</span>
@@ -193,7 +192,7 @@
               simple
               placement="bottom-end"
               class="bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-              {#each item.options as option}
+              {#each item.options as option (option)}
                 <DropdownItem>{option}</DropdownItem>
               {/each}
             </Dropdown>
@@ -210,7 +209,7 @@
     </section>
 
     <section class="grid grid-cols-3 gap-3 text-sm">
-      {#each quickActions as action}
+      {#each quickActions as action (action.label)}
         <Button
           class="gap-1 rounded-xl bg-slate-100 px-1 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
           <span>{action.icon}</span>
@@ -235,7 +234,7 @@
         simple
         placement="bottom-end"
         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-        {#each moreItems as item}
+        {#each moreItems as item (item.label)}
           <DropdownItem>
             <span class="flex items-center gap-2">
               <span>{item.icon}</span>

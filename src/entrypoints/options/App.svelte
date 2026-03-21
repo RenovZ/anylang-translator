@@ -213,7 +213,7 @@
     <aside
       class="sticky top-24 z-10 flex h-[calc(100vh-8rem)] flex-col justify-between overflow-y-auto rounded-2xl bg-white/80 p-4 shadow-md dark:bg-slate-900/80">
       <div class="space-y-1">
-        {#each topNavItems as item}
+        {#each topNavItems as item (item.id)}
           <a
             href={`#${item.id}`}
             onclick={() => goToSection(item.id)}
@@ -228,7 +228,7 @@
       </div>
 
       <div class="space-y-1">
-        {#each bottomNavItems as item}
+        {#each bottomNavItems as item (item.id)}
           <a
             href={`#${item.id}`}
             onclick={() => goToSection(item.id)}
@@ -244,13 +244,7 @@
     </aside>
 
     {#if activeNavId === 'general'}
-      <GeneralSettings
-        bind:config
-        bind:toggleItems
-        bind:newSite
-        {saveOptions}
-        {resetOptions}
-        {getProviderModels} />
+      <GeneralSettings bind:config bind:newSite {saveOptions} {resetOptions} {getProviderModels} />
     {:else if activeNavId === 'services'}
       <section class="rounded-2xl border border-slate-200 bg-slate-50 p-6">
         <div class="mb-4">
@@ -265,7 +259,7 @@
               onchange={(event) =>
                 updateField('provider', (event.currentTarget as HTMLSelectElement).value)}
               class="focus:border-primary-400 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 transition outline-none">
-              {#each providerOptions as option}
+              {#each providerOptions as option (option)}
                 <option value={option}>{option}</option>
               {/each}
             </select>
@@ -277,7 +271,7 @@
               onchange={(event) =>
                 updateField('model', (event.currentTarget as HTMLSelectElement).value)}
               class="focus:border-primary-400 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 transition outline-none">
-              {#each getProviderModels(config.provider) as option}
+              {#each getProviderModels(config.provider) as option (option)}
                 <option value={option}>{option}</option>
               {/each}
             </select>
@@ -295,7 +289,7 @@
           onchange={(event) =>
             updateField('promptPreset', (event.currentTarget as HTMLSelectElement).value)}
           class="focus:border-primary-400 w-full max-w-sm rounded-2xl border border-slate-200 bg-white px-4 py-3 transition outline-none">
-          {#each promptPresetOptions as option}
+          {#each promptPresetOptions as option (option)}
             <option value={option}>{option}</option>
           {/each}
         </select>

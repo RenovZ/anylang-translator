@@ -3,11 +3,10 @@
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
   import avatar from '../../../lib/avatar';
-  import { providerOptions, targetLanguageOptions, type ToggleItem } from '../../popup/data';
+  import { providerOptions, targetLanguageOptions } from '../../popup/data';
   import type { V2OptionsConfig } from '../types';
 
   export let config: V2OptionsConfig;
-  export let toggleItems: ToggleItem[];
   export let newSite = '';
   export let saveOptions: () => void | Promise<void>;
   export let resetOptions: () => void | Promise<void>;
@@ -112,7 +111,7 @@
         size="lg" />
       <Button class="border-none font-medium shadow-md">登录</Button>
     </div>
-    <a href="#" class="text-primary-600 text-sm hover:underline"> 登录后可开通会员 </a>
+    <button type="button" class="text-primary-600 text-sm hover:underline">登录后可开通会员</button>
   </div>
 
   <div class="mt-10 space-y-10">
@@ -126,7 +125,7 @@
         onchange={(event) =>
           updateField('targetLanguage', (event.currentTarget as HTMLSelectElement).value)}
         class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-        {#each targetLanguageOptions as option}
+        {#each targetLanguageOptions as option (option)}
           <option value={option}>{option}</option>
         {/each}
       </select>
@@ -143,7 +142,7 @@
           onchange={(event) =>
             updateField('provider', (event.currentTarget as HTMLSelectElement).value)}
           class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-          {#each providerOptions as option}
+          {#each providerOptions as option (option)}
             <option value={option}>{option}</option>
           {/each}
         </select>
@@ -225,7 +224,7 @@
 
     <div class="rounded-xl bg-slate-100 p-4">
       <div class="space-y-3">
-        {#each config.alwaysTranslateSites as site}
+        {#each config.alwaysTranslateSites as site (site)}
           <div class="flex items-center justify-between pb-3 last:pb-0">
             <span class="font-medium text-slate-600">{site}</span>
             <div class="text-primary-600 flex items-center gap-4">
@@ -262,7 +261,7 @@
       <select
         class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
         <option>编辑</option>
-        {#each config.alwaysTranslateLanguages as language}
+        {#each config.alwaysTranslateLanguages as language (language)}
           <option>{language}</option>
         {/each}
       </select>
@@ -276,7 +275,7 @@
       <select
         class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
         <option>编辑</option>
-        {#each config.neverTranslateLanguages as language}
+        {#each config.neverTranslateLanguages as language (language)}
           <option>{language}</option>
         {/each}
       </select>
@@ -297,7 +296,7 @@
           onchange={(event) =>
             updateField('translationStyle', (event.currentTarget as HTMLSelectElement).value)}
           class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-          {#each styleOptions as option}
+          {#each styleOptions as option (option.label)}
             <option value={option.label}>{option.label}</option>
           {/each}
         </select>
@@ -387,7 +386,7 @@
     </div>
 
     <div class="space-y-7">
-      {#each styleOptions as option}
+      {#each styleOptions as option (option.label)}
         <label class="block">
           <div class="flex items-start gap-3">
             <input
