@@ -6,8 +6,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const workspaceRoot = path.resolve(__dirname, '..');
 const sourceRoot = path.join(workspaceRoot, 'src');
-const outputFile = path.join(workspaceRoot, 'src/locales/en/messages.json');
+const outputFile = path.join(workspaceRoot, 'public/_locales/en/messages.json');
 const includeExtensions = new Set(['.ts', '.js', '.svelte']);
+const validKeyPattern = /^[A-Za-z0-9_]+$/;
 
 async function walk(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -47,6 +48,12 @@ function extractMessages(content) {
       continue;
     }
 
+    if (!validKeyPattern.test(key)) {
+      throw new Error(
+        `Invalid i18n key "${key}". Chrome extension message keys only allow ASCII letters, numbers, and underscores.`
+      );
+    }
+
     messages.push({
       key,
       value: {
@@ -59,11 +66,20 @@ function extractMessages(content) {
   return messages;
 }
 
-async function readJsonIfExists(filePath) {
-  try {
-    return JSON.parse(await readFile(filePath, 'utf8'));
-  } catch {
-    return {};
+function assertNoConflictingDefinitions(messagesByKey, nextMessage) {
+  const existing = messagesByKey.get(nextMessage.key);
+
+  if (!existing) {
+    return;
+  }
+
+  const sameMessage = existing.message === nextMessage.value.message;
+  const sameDescription = existing.description === nextMessage.value.description;
+
+  if (!sameMessage || !sameDescription) {
+    throw new Error(
+      `Conflicting i18n definitions for key "${nextMessage.key}". Keep one defaultValue/description per key.`
+    );
   }
 }
 
@@ -74,13 +90,14 @@ async function main() {
   for (const file of files) {
     const content = await readFile(file, 'utf8');
     for (const message of extractMessages(content)) {
+      assertNoConflictingDefinitions(extracted, message);
       extracted.set(message.key, message.value);
     }
   }
 
-  const existing = await readJsonIfExists(outputFile);
-  const merged = { ...existing, ...Object.fromEntries(extracted) };
-  const sorted = Object.fromEntries(Object.entries(merged).sort(([a], [b]) => a.localeCompare(b)));
+  const sorted = Object.fromEntries(
+    Array.from(extracted.entries()).sort(([a], [b]) => a.localeCompare(b))
+  );
 
   await mkdir(path.dirname(outputFile), { recursive: true });
   await writeFile(outputFile, `${JSON.stringify(sorted, null, 2)}\n`, 'utf8');
