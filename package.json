@@ -5,6 +5,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "i18n-parser": "i18next 'locales/**' -o '$LOCALE/$NAMESPACE.json'",
+    "i18n-server": "node i18next/server.js",
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
@@ -13,26 +15,47 @@
     "zip:firefox": "wxt zip -b firefox",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "postinstall": "wxt prepare",
-    "update": "npm-check-updates"
+    "update": "npm-check-updates",
+    "dprint": "dprint fmt",
+    "lint": "prettier --check . && eslint .",
+    "fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@tailwindcss/postcss": "^4.2.1",
     "@tsconfig/svelte": "^5.0.8",
+    "@types/eslint": "^9.6.1",
     "@wxt-dev/module-svelte": "^2.0.4",
-    "flowbite": "^4.0.1",
-    "flowbite-svelte": "^1.31.0",
-    "flowbite-svelte-icons": "^3.1.0",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-svelte": "^3.16.0",
+    "express": "^5.2.1",
+    "globals": "^17.4.0",
+    "i18next-fs-backend": "^2.6.1",
+    "i18next-http-backend": "^3.0.2",
+    "i18next-http-middleware": "^3.9.2",
     "npm-check-updates": "^19.6.3",
     "postcss": "^8.5.8",
-    "svelte": "^5.53.12",
+    "prettier": "^3.8.1",
+    "prettier-plugin-svelte": "^3.5.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "svelte-check": "^4.4.5",
-    "tailwindcss": "^4.2.1",
+    "svelte-eslint-parser": "^1.6.0",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.1",
     "wxt": "^0.20.18"
   },
   "dependencies": {
     "@dicebear/collection": "^9.4.0",
-    "@dicebear/core": "^9.4.0"
+    "@dicebear/core": "^9.4.0",
+    "flowbite": "^4.0.1",
+    "flowbite-svelte": "^1.31.0",
+    "flowbite-svelte-icons": "^3.1.0",
+    "i18next": "^25.10.2",
+    "i18next-browser-languagedetector": "^8.2.1",
+    "svelte": "^5.53.12",
+    "tailwindcss": "^4.2.1"
   }
 }
