@@ -1,0 +1,600 @@
+{
+  "extensionDescription": {
+    "message": "תרגום דפי האינטרנט בזמן אמת באמצעות גוגל או יאנדקס."
+  },
+  "pageActionTitle": {
+    "message": "תרגם דף זה"
+  },
+  "lblTranslate": {
+    "message": "לתרגם את הדף הזה?"
+  },
+  "lblTranslating": {
+    "message": "התרגום מתבצע..."
+  },
+  "lblError": {
+    "message": "לא ניתן לתרגם דף זה"
+  },
+  "lblAlwaysTranslate": {
+    "message": "תמיד תתרגם מ- $LANGUAGE_NAME$",
+    "placeholders": {
+      "LANGUAGE_NAME": {
+        "content": "$1",
+        "example": "English"
+      }
+    }
+  },
+  "lblTargetLanguage": {
+    "message": "השפה שנבחרה היא: $TARGET_LANGUAGE_NUM$",
+    "placeholders": {
+      "TARGET_LANGUAGE_NUM": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "btnReset": {
+    "message": "איפוס"
+  },
+  "btnTranslate": {
+    "message": "תרגם"
+  },
+  "btnOptions": {
+    "message": "אפשרויות"
+  },
+  "btnRestore": {
+    "message": "הצג את המקור"
+  },
+  "btnTryAgain": {
+    "message": "נסה שוב"
+  },
+  "btnOpenOnGoogleTranslate": {
+    "message": "פתח בגוגל תרגום"
+  },
+  "btnDonate": {
+    "message": "תרומה"
+  },
+  "btnNeverTranslate": {
+    "message": "לעולם אל תתרגם דף זה"
+  },
+  "btnMobileOriginal": {
+    "message": "מקורי"
+  },
+  "btnMobileTranslated": {
+    "message": "תורגם"
+  },
+  "optionsNeverTranslate": {
+    "message": "לעולם אל תתרגם דפים אלו"
+  },
+  "optionsAlwaysTranslate": {
+    "message": "תרגם תמיד את השפה הזו"
+  },
+  "optionPopupConfig": {
+    "message": "הראה את חלון הקופץ לנייד"
+  },
+  "optionPopupThreeFingers": {
+    "message": "בלחיצה על המסך עם שלוש אצבעות"
+  },
+  "msgOpenOnYandexTranslator": {
+    "message": "פתח בתרגום יאנדקס"
+  },
+  "lblOthers": {
+    "message": "שונות"
+  },
+  "btnMoreOptions": {
+    "message": "אפשרויות נוספות"
+  },
+  "lblPlsDonate": {
+    "message": "תרמו ועזרו למפתח"
+  },
+  "msgTranslateFor": {
+    "message": "תרגם ל$LANGUAGE_NAME$",
+    "placeholders": {
+      "LANGUAGE_NAME": {
+        "content": "$1",
+        "example": "English"
+      }
+    }
+  },
+  "lblShowContextMenu": {
+    "message": "הראה את האפשרות לתרגם את הדף בתפריט ההקשר"
+  },
+  "msgYes": {
+    "message": "כן"
+  },
+  "msgNo": {
+    "message": "לא"
+  },
+  "btnAlwaysTranslate": {
+    "message": "תרגם תמיד אתר זה"
+  },
+  "lblAlwaysTranslateSites": {
+    "message": "תרגם תמיד אתרים אלה"
+  },
+  "lblDarkMode": {
+    "message": "מצב כהה"
+  },
+  "lblShowReleaseNotes": {
+    "message": "הראה הערות שחרור בעת העדכון"
+  },
+  "lblShowTranslateSelectedButton": {
+    "message": "הראה את הלחצן לתרגום הטקסט שנבחר"
+  },
+  "msgAutomatic": {
+    "message": "אוטומטי"
+  },
+  "msgTranslateSelectedText": {
+    "message": "תרגם טקסט נבחר"
+  },
+  "lblShowTranslateSelectedContextMenu": {
+    "message": "הצג את האפשרות לתרגם את הטקסט שנבחר בתפריט ההקשר"
+  },
+  "lblNeverTranslateLangs": {
+    "message": "לעולם לא לתרגם דפים אלו"
+  },
+  "btnNeverTranslateThisLanguage": {
+    "message": "לעולם לא לתרגם משפה זו"
+  },
+  "lblShowOriginalTextWhenHovering": {
+    "message": "הראה טקסט מקורי בעת ריחוף"
+  },
+  "msgLanguages": {
+    "message": "שפות"
+  },
+  "msgSites": {
+    "message": "אתרים"
+  },
+  "msgTranslations": {
+    "message": "תרגומים"
+  },
+  "msgStyle": {
+    "message": "סגנון"
+  },
+  "msgHotkeys": {
+    "message": "מקשי קיצור"
+  },
+  "lblMakeDonation": {
+    "message": "תרומה"
+  },
+  "lblReleaseNotes": {
+    "message": "הערות שחרור"
+  },
+  "lblReport": {
+    "message": "לדווח על בעיה"
+  },
+  "lblSettings": {
+    "message": "הגדרות"
+  },
+  "lblAdd": {
+    "message": "הוספה"
+  },
+  "lblShowTranslatedWhenHovering": {
+    "message": "הראה טקסט מתורגם בעת ריחוף"
+  },
+  "lblKeyboardShortcuts": {
+    "message": "קיצורי מקשים"
+  },
+  "msgThanksForUseExtension": {
+    "message": "תודה על השימוש בתוסף זה."
+  },
+  "msgIWillBeGrateful": {
+    "message": "אודה בכל לבב אם אקבל ממך תרומה."
+  },
+  "lblShowTranslatedHoveringSites": {
+    "message": "הראה טקסט מתורגם בעת ריחוף באתרים אלה"
+  },
+  "popupBlueWhenSiteIsTranslated": {
+    "message": "הפוך את סמל הקופץ לכחול כאשר האתר מתורגם"
+  },
+  "more": {
+    "message": "יותר"
+  },
+  "less": {
+    "message": "פחות"
+  },
+  "dontShowIfIsNotValidText": {
+    "message": "אל תציג אם הטקסט שנבחר אינו חוקי"
+  },
+  "dontShowIfPageLangIsTargetLang": {
+    "message": "אל תראה אם ​​שפת העמוד היא שפת היעד"
+  },
+  "dontShowIfPageLangIsUnknown": {
+    "message": "אל תציג אם שפת העמוד אינה ידועה"
+  },
+  "dontShowIfSelectedTextIsTargetLang": {
+    "message": "אל תציג אם שפת הטקסט שנבחרה היא שפת היעד"
+  },
+  "dontShowIfSelectedTextIsUnknown": {
+    "message": "אל תציג אם שפת הטקסט שנבחרה אינה ידועה"
+  },
+  "lblShowTranslatedWhenHoveringThisSite": {
+    "message": "הראה תרגום בעת ריחוף מעל אתר זה"
+  },
+  "lblShowTranslatedWhenHoveringThisLang": {
+    "message": "הצג תרגום כאשר אני מרחף עם העכבר מעל אתרים ב: $LANGUAGE_NAME$",
+    "placeholders": {
+      "LANGUAGE_NAME": {
+        "content": "$1",
+        "example": "English"
+      }
+    }
+  },
+  "lblShowTranslatedHoveringLangs": {
+    "message": "הראה טקסט מתורגם כשאתה מרחף מעל אתרים עם שפות אלה"
+  },
+  "msgNoTranslateSelectedText": {
+    "message": "אל תתרגם את הטקסט שנבחר"
+  },
+  "btnListen": {
+    "message": "האזנה"
+  },
+  "btnStopListening": {
+    "message": "הפסק האזנה"
+  },
+  "btnApply": {
+    "message": "החלה"
+  },
+  "swapTranslationService": {
+    "message": "מעבר בין שירותי תרגום"
+  },
+  "swapPopup": {
+    "message": "מעבר בין ממשק פשוט למורכב"
+  },
+  "lblTranslateInterface": {
+    "message": "תרגם את הממשק"
+  },
+  "lblButtonInTheAddressBar": {
+    "message": "הצג כפתור בשורת הכתובת"
+  },
+  "lblPageTranslationService": {
+    "message": "שירותי תרגום לדף"
+  },
+  "lblTextTranslationService": {
+    "message": "שירות תרגום לטקסט"
+  },
+  "msgStorage": {
+    "message": "אחסון"
+  },
+  "lblTranslationCache": {
+    "message": "מטמון תרגום"
+  },
+  "lblStorageUsed": {
+    "message": "אחסון בשימוש:"
+  },
+  "deleteTranslationCache": {
+    "message": "מחק מטמון תרגום"
+  },
+  "lblPersonalSettings": {
+    "message": "הגדרות אישיות"
+  },
+  "backupToFile": {
+    "message": "גבה לקובץ"
+  },
+  "restoreFromFile": {
+    "message": "שחזר מקובץ"
+  },
+  "resetToDefault": {
+    "message": "שחזר הגדרות ברירת מחדל"
+  },
+  "doYouWantToDeleteTranslationCache": {
+    "message": "האם ברצונך למחוק התרגום המטומן?"
+  },
+  "doYouWantOverwriteAllSettings": {
+    "message": "לשכתב את כל ההגדרות הקיימות מתוך נתוני הגיבוי?"
+  },
+  "fileIsCorrupted": {
+    "message": "הקובץ כנראה פגום"
+  },
+  "doYouWantRestoreSettings": {
+    "message": "האם ברצונך לשחזר את התוסף להגדרת ברירת מחדל?"
+  },
+  "lblTtsSpeed": {
+    "message": "הקראת טקסט - מהירות קול"
+  },
+  "lblTtsVolume": {
+    "message": "עוצמת קול של טקסט לדיבור"
+  },
+  "enterShortcut": {
+    "message": "הקלד קיצור דרך"
+  },
+  "hotkeyError_ctrlOrAlt": {
+    "message": "הוסף/לחץ Ctrl או Alt"
+  },
+  "hotkeyError_letter": {
+    "message": "הקלד אות"
+  },
+  "hotkeyError_invalid": {
+    "message": "צירוף לא חוקי"
+  },
+  "lblSwitchTranslatedAndOriginal": {
+    "message": "החלף בין תרגום אל השפה המקורית"
+  },
+  "lblRestorePageToOriginal": {
+    "message": "החזרת הדף לשפת המקור"
+  },
+  "lblTranslatePageToTargetLanguage": {
+    "message": "תרגום הדף לשפת היעד"
+  },
+  "lblTranslateTag_pre": {
+    "message": "אפשר תרגום עבור $HTML_TAG_NAME$",
+    "placeholders": {
+      "HTML_TAG_NAME": {
+        "content": "<PRE>"
+      }
+    }
+  },
+  "lbldontsortresults": {
+    "message": "אל תמיין את תוצאות התרגום"
+  },
+  "lbltranslatedynamicallycreatedcontent": {
+    "message": "תרגום בצורה דינאמית יוצרת תוכן"
+  },
+  "calculatestorage": {
+    "message": "חשב"
+  },
+  "donatewithpaypal": {
+    "message": "תרומה דרך PayPal"
+  },
+  "lblAutoTranslateWhenClickingALink": {
+    "message": "תרגם באופן אוטומטי ברגע שאתה לוחץ על קישור ונפתח לך דף זהה"
+  },
+  "openNativeShortcutManager": {
+    "message": "פתח את מנהל מקשי הקיצור המקורי"
+  },
+  "lblKeyboardShortcutsSpecial": {
+    "message": "קיצורי מקשים מיוחדים"
+  },
+  "lblTranslateSelectedWhenPressTwice": {
+    "message": "תרגם טקסט נבחר בעת לחיצה על $SHORTCUT_KEY$ פעמיים",
+    "placeholders": {
+      "SHORTCUT_KEY": {
+        "content": "[Ctrl]"
+      }
+    }
+  },
+  "lblTranslateTextOverMouseWhenPressTwice": {
+    "message": "תרגם את הטקסט מעל סמן העכבר בעת לחיצה על $SHORTCUT_KEY$ פעמיים",
+    "placeholders": {
+      "SHORTCUT_KEY": {
+        "content": "[Ctrl]"
+      }
+    }
+  },
+  "translateClickingOnce": {
+    "message": "תרגם את הדף על ידי לחיצה אחת על הכפתור בשורת הכתובת. (כדי לראות את החלון הקופץ, לחץ לחיצה ימנית)"
+  },
+  "btnShowPopup": {
+    "message": "הצג חלון קופץ"
+  },
+  "msgToTranslateThisDocument": {
+    "message": "כדי לתרגם מסמך זה $DOC_TYPE$ יש צורך להמיר אותו ל-HTML",
+    "placeholders": {
+      "DOC_TYPE": {
+        "content": "$1",
+        "example": "(.pdf)"
+      }
+    }
+  },
+  "msgSelectServiceConversion": {
+    "message": "בחר שירות לביצוע המרה זו"
+  },
+  "msgDownloadingDocument": {
+    "message": "מוריד את המסמך..."
+  },
+  "msgSendDocument": {
+    "message": "שלח מסמך"
+  },
+  "msgErrorDownloadingDocument": {
+    "message": "שגיאה בהורדת המסמך"
+  },
+  "msgFileLargerThan": {
+    "message": "שירות זה אינו תומך בקבצים גדולים מ $FILE_SIZE$",
+    "placeholders": {
+      "FILE_SIZE": {
+        "content": "$1",
+        "example": "10 MB"
+      }
+    }
+  },
+  "msgPDFtoHTML": {
+    "message": "PDF ל-HTML"
+  },
+  "msgTranslatePDF": {
+    "message": "תרגם PDF"
+  },
+  "msgOpenTranslatedPDF": {
+    "message": "פתח PDF מתורגם"
+  },
+  "btncopy": {
+    "message": "עותק"
+  },
+  "msgRecents": {
+    "message": "אחרונים"
+  },
+  "msgAll": {
+    "message": "הכול"
+  },
+  "msgPleaseWait": {
+    "message": "נא להמתין..."
+  },
+  "msgUnknownLanguage": {
+    "message": "לא ידוע"
+  },
+  "btnReplace": {
+    "message": "החלף"
+  },
+  "lblHotTranslatedSelectedText": {
+    "message": "החלפה מיידית של הטקסט הנבחר בתרגומו"
+  },
+  "optionsAddToCustomDictionary": {
+    "message": "הוסף למילון מותאם אישית (זה מאפשר לך לדלג על מילים מסוימות במהלך תרגום דפי אינטרנט)"
+  },
+  "msgSelectTargetLanguage": {
+    "message": "תרגם אתרים לשפת יעד זו"
+  },
+  "msgSelectTargetLanguageForText": {
+    "message": "תרגם טקסט נבחר לשפת יעד זו"
+  },
+  "msgFavoriteLanguages": {
+    "message": "שפות מועדפות"
+  },
+  "lblFavoriteLanguage": {
+    "message": "שפה מועדפת $FAVORITE_LANGUAGE_NUM$",
+    "placeholders": {
+      "FAVORITE_LANGUAGE_NUM": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "lblSelectPopupInterfaceStyle": {
+    "message": "בחר סגנון ממשק קופץ"
+  },
+  "msgInterfaceSimple": {
+    "message": "פָּשׁוּט"
+  },
+  "msgInterfaceComplex": {
+    "message": "מורכב"
+  },
+  "lblTranslatePageInto": {
+    "message": "לתרגם עמוד ל $LANGUAGE_NAME$?",
+    "placeholders": {
+      "LANGUAGE_NAME": {
+        "content": "$1",
+        "example": "German"
+      }
+    }
+  },
+  "lblPageTranslateInto": {
+    "message": "הדף תורגם ל $LANGUAGE_NAME$",
+    "placeholders": {
+      "LANGUAGE_NAME": {
+        "content": "$1",
+        "example": "German"
+      }
+    }
+  },
+  "msgChooseAnotherLanguage": {
+    "message": "בחר שפה אחרת"
+  },
+  "msgHasBeenUpdated": {
+    "message": "תוסף $EXTENSION_NAME$ עודכן לגרסה $EXTENSION_VERSION$.",
+    "placeholders": {
+      "EXTENSION_NAME": {
+        "content": "#EXTENSION_NAME#",
+        "example": "TWP - Translate Web Pages"
+      },
+      "EXTENSION_VERSION": {
+        "content": "#EXTENSION_VERSION#",
+        "example": "9.7"
+      }
+    }
+  },
+  "msgDonationRecipient": {
+    "message": "התרומה שלך עוברת למפתח של תוסף $EXTENSION_NAME$.",
+    "placeholders": {
+      "EXTENSION_NAME": {
+        "content": "#EXTENSION_NAME#",
+        "example": "TWP - Translate Web Pages"
+      }
+    }
+  },
+  "donationText": {
+    "message": "אני מפתח, מעדכן ותומך בהרחבה זו במשך יותר מחמש שנים. מדהים לראות שיש לנו למעלה מ-600,000 משתמשים יומיים.\n\nאודה לך אם תוכל לעזור לי כלכלית באמצעות Paypal או על ידי הפיכתך לחבר בפטראון שלי, התרומה שלך עוזרת לי להמשיך ולהביא שיפורים להרחבה זו.\n\nתודה לכל מי שכבר תרם לפרויקט זה."
+  },
+  "lblEnableDiskCache": {
+    "message": "אפשר מטמון תרגום מתמיד (מטמון בדיסק)"
+  },
+  "selectOriginalLanguage": {
+    "message": "בחר את שפת האתר המקורית"
+  },
+  "selectTargetLanguage": {
+    "message": "בחר שפת יעד"
+  },
+  "msgImproveTranslation": {
+    "message": "שפר את התרגום"
+  },
+  "lblExperimental": {
+    "message": "ניסיוני"
+  },
+  "msgPrivacy": {
+    "message": "פרטיות"
+  },
+  "selectToEnableTranslationService": {
+    "message": "בחר את שירותי התרגום שבהם ברצונך להשתמש"
+  },
+  "useAlternativeService": {
+    "message": "השתמש בשקט בשירות תרגום חלופי אם שפת היעד הנוכחית אינה נתמכת על ידי שירות התרגום שנבחר"
+  },
+  "msgDefaultLanguage": {
+    "message": "שפה ברירת מחדל"
+  },
+  "msgExtUILanguage": {
+    "message": "שפת ממשק המשתמש של ההרחבה"
+  },
+  "msgSetDeepLAlert": {
+    "message": "האם אתה בטוח שברצונך להגדיר את שירות התרגום ל-DeepL?\nכרטיסייה חדשה תיפתח, והתרגום יתבצע שם."
+  },
+  "lblTextToSpeechService": {
+    "message": "שירות טקסט לדיבור"
+  },
+  "msgDeepLTabReasoOpened": {
+    "message": "כרטיסייה זו נפתחה כי לחצת כדי לתרגם טקסט נבחר באמצעות DeepL."
+  },
+  "msgDontShowAgain": {
+    "message": "אל תראה שוב"
+  },
+  "msgTranslatePage": {
+    "message": "לתרגם עמוד?"
+  },
+  "msgPageTranslated": {
+    "message": "עמוד מתורגם"
+  },
+  "msgTranslateFromTo": {
+    "message": "$FROM_LANGUAGE$ עד $TO_LANGUAGE$",
+    "placeholders": {
+      "FROM_LANGUAGE": {
+        "content": "$1",
+        "example": "German"
+      },
+      "TO_LANGUAGE": {
+        "content": "$2",
+        "example": "English"
+      }
+    }
+  },
+  "btnUndoTranslation": {
+    "message": "לבטל"
+  },
+  "msgAutoDetect": {
+    "message": "זיהוי אוטומטי"
+  },
+  "msgEnableIframePageTranslation": {
+    "message": "אפשר תרגום דפים ב- $IFRAME_TAG$",
+    "placeholders": {
+      "IFRAME_TAG": {
+        "content": "<IFRAME>"
+      }
+    }
+  },
+  "btnTranslateRestoreThisFrame": {
+    "message": "תרגם/שחזר את המסגרת הזו"
+  },
+  "msgWhenShowMobilePopup": {
+    "message": "מתי להציג את החלון הקופץ לנייד"
+  },
+  "msgWhenNecessary": {
+    "message": "בעת צורך"
+  },
+  "msgOnlyWhenItouch3Fingers": {
+    "message": "רק כשאני נוגע בשלוש אצבעות על המסך"
+  },
+  "msgAlwaysShow": {
+    "message": "תמיד להציג"
+  },
+  "btnKeepOnScreen": {
+    "message": "השאר על המסך"
+  },
+  "btnChangePosition": {
+    "message": "שנה מיקום"
+  }
+}

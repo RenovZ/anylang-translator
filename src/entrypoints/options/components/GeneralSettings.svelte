@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Avatar, Toggle } from "flowbite-svelte";
+    import { Avatar, Toggle, Button } from "flowbite-svelte";
     import { ChevronDownOutline } from "flowbite-svelte-icons";
 
     import avatar from "../../../lib/avatar";
@@ -120,15 +120,17 @@
         <div class="flex items-center gap-4">
             <Avatar
                 class="h-14 w-14"
-                src={avatar.dicebear("RenovZ", {
+                src={avatar.anylang({
                     chars: 1,
                     backgroundType: ["gradientLinear"],
                 })}
                 size="lg"
             />
-            <div class="font-medium">未登录</div>
+            <Button class="font-medium shadow-md border-none">登录</Button>
         </div>
-        <div class="text-sm text-primary-600">登录后可开通会员</div>
+        <a href="#" class="text-sm text-primary-600 hover:underline">
+            登录后可开通会员
+        </a>
     </div>
 
     <div class="mt-10 space-y-10">
