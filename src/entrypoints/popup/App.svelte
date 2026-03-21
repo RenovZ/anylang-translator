@@ -8,6 +8,7 @@
     ToolsOutline
   } from 'flowbite-svelte-icons';
   import { browser } from 'wxt/browser';
+  import { i18n } from '../../lib/i18n';
 
   import '../../assets/app.css';
   import avatar from '../../lib/avatar';
@@ -89,7 +90,7 @@
         <span class="text-xs">未登录</span>
         <GradientButton color="purpleToBlue" pill class="px-2 py-1 text-xs">
           <span>⚡</span>
-          <span>Upgrade</span>
+          <span>{i18n('popup.upgrade', { defaultValue: 'Upgrade' })}</span>
         </GradientButton>
       </div>
     </header>

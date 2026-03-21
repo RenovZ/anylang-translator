@@ -5,8 +5,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "i18n-parser": "i18next 'locales/**' -o '$LOCALE/$NAMESPACE.json'",
-    "i18n-server": "node i18next/server.js",
+    "i18n:extract": "node scripts/extract-i18n.mjs",
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
     "build": "wxt build",
@@ -30,11 +29,7 @@
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-svelte": "^3.16.0",
-    "express": "^5.2.1",
     "globals": "^17.4.0",
-    "i18next-fs-backend": "^2.6.1",
-    "i18next-http-backend": "^3.0.2",
-    "i18next-http-middleware": "^3.9.2",
     "npm-check-updates": "^19.6.3",
     "postcss": "^8.5.8",
     "prettier": "^3.8.1",
@@ -53,8 +48,6 @@
     "flowbite": "^4.0.1",
     "flowbite-svelte": "^1.31.0",
     "flowbite-svelte-icons": "^3.1.0",
-    "i18next": "^25.10.2",
-    "i18next-browser-languagedetector": "^8.2.1",
     "svelte": "^5.53.12",
     "tailwindcss": "^4.2.1"
   }

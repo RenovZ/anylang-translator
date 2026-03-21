@@ -9,17 +9,7 @@ export default defineConfig({
   },
   vite: () => ({
     server: {
-      host: '0.0.0.0',
-      proxy: {
-        // '/api/v3': {
-        //   target: 'http://localhost:9080',
-        //   changeOrigin: true
-        // },
-        '/locales': {
-          target: 'http://localhost:4170',
-          changeOrigin: true
-        }
-      }
+      host: '0.0.0.0'
     },
     test: { include: ['src/**/*.{test,spec}.{js,ts}'] }
   })
