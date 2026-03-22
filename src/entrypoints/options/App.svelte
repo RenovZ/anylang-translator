@@ -1,29 +1,35 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button, Toggle } from 'flowbite-svelte';
+  import { Button } from 'flowbite-svelte';
   import { browser } from 'wxt/browser';
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
 
   import { i18n } from '../../lib/i18n';
   import '../../assets/app.css';
+  import AboutSettings from './components/AboutSettings.svelte';
+  import AdvancedSettings from './components/AdvancedSettings.svelte';
   import AiExpertSettings from './components/AiExpertSettings.svelte';
   import AiTermsSettings from './components/AiTermsSettings.svelte';
   import AiWriteSettings from './components/AiWriteSettings.svelte';
+  import ChangelogSettings from './components/ChangelogSettings.svelte';
+  import DeveloperSettings from './components/DeveloperSettings.svelte';
+  import DocumentationSettings from './components/DocumentationSettings.svelte';
+  import FeedbackSettings from './components/FeedbackSettings.svelte';
+  import FloatingBallSettings from './components/FloatingBallSettings.svelte';
   import GeneralSettings from './components/GeneralSettings.svelte';
+  import ImportExportSettings from './components/ImportExportSettings.svelte';
   import InputTranslationSettings from './components/InputTranslationSettings.svelte';
   import MangaImageSettings from './components/MangaImageSettings.svelte';
   import MouseHoverSettings from './components/MouseHoverSettings.svelte';
+  import PricingSettings from './components/PricingSettings.svelte';
   import SelectionTranslationSettings from './components/SelectionTranslationSettings.svelte';
-  import Section from './components/Section.svelte';
-  import SectionRow from './components/SectionRow.svelte';
   import ServicesSettings from './components/ServicesSettings.svelte';
+  import ShortcutsSettings from './components/ShortcutsSettings.svelte';
   import SubtitleSettings from './components/SubtitleSettings.svelte';
   import type { V2OptionsConfig } from './types';
   import {
     defaultPopupConfig,
     modelOptionsByProvider,
-    promptPresetOptions,
-    providerOptions,
     toggles,
     type ToggleItem
   } from '../popup/data';
@@ -493,267 +499,25 @@
     {:else if activeNavId === 'mouse-hover'}
       <MouseHoverSettings {config} {toggleItems} {getToggleConfig} {updateToggleMode} />
     {:else if activeNavId === 'floating'}
-      <Section
-        id="floating"
-        title={i18n('options_floating_title', { defaultValue: 'Floating ball' })}
-        description={i18n('options_floating_description', {
-          defaultValue: 'Quick translation floating ball settings on page edges.'
-        })}>
-        <SectionRow
-          title={i18n('options_floating_strategy_title', { defaultValue: 'Current strategy' })}
-          description={i18n('options_floating_strategy_description', {
-            defaultValue:
-              'Floating ball follows page translation rules; standalone behavior controls are planned for later versions.'
-          })}>
-          <div
-            class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            {i18n('options_floating_strategy_body', {
-              defaultValue:
-                'The floating ball does not save its own switch yet and follows page translation and site rules.'
-            })}
-          </div>
-        </SectionRow>
-        <SectionRow
-          title={i18n('options_floating_site_rule_title', { defaultValue: 'Site rules' })}
-          description={i18n('options_floating_site_rule_description', {
-            defaultValue:
-              'To adjust auto-translation sites, open the site list in General settings.'
-          })}>
-          <Button color="light" class="w-full rounded-xl border-none shadow-md"
-            >{i18n('options_floating_site_rule_button', {
-              defaultValue: 'View site rule guide'
-            })}</Button>
-        </SectionRow>
-      </Section>
+      <FloatingBallSettings />
     {:else if activeNavId === 'shortcuts'}
-      <Section
-        id="shortcuts"
-        title={i18n('options_shortcuts_title', { defaultValue: 'Shortcuts' })}
-        description={i18n('options_shortcuts_description', {
-          defaultValue: 'Customize global and in-page shortcuts.'
-        })}>
-        <SectionRow
-          title={i18n('options_shortcuts_window_title', {
-            defaultValue: 'Standalone translation window'
-          })}
-          description={i18n('options_shortcuts_window_description', {
-            defaultValue: 'Global shortcut to open the standalone translation window'
-          })}>
-          <div class="flex items-center justify-end gap-2">
-            <kbd
-              class="rounded-lg border border-slate-200 bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-800"
-              >Alt</kbd>
-            <span>+</span>
-            <kbd
-              class="rounded-lg border border-slate-200 bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-800"
-              >T</kbd>
-          </div>
-        </SectionRow>
-      </Section>
+      <ShortcutsSettings />
     {:else if activeNavId === 'advanced'}
-      <Section
-        id="advanced"
-        title={i18n('options_advanced_title', { defaultValue: 'Advanced settings' })}
-        description={i18n('options_advanced_description', {
-          defaultValue: 'More low-level and experimental feature settings.'
-        })}>
-        <SectionRow
-          title={i18n('options_advanced_chinese_page_title', { defaultValue: 'Chinese pages' })}
-          description={i18n('options_advanced_chinese_page_description', {
-            defaultValue: 'Control whether Chinese (Simplified) pages are translated by default.'
-          })}>
-          <div class="flex items-center justify-end">
-            <Toggle
-              bind:checked={toggleItems[3].enabled}
-              size="small"
-              classes={{ span: 'me-0 cursor-pointer bg-gray-300' }}
-              aria-label={toggleItems[3].label} />
-          </div>
-        </SectionRow>
-        <SectionRow
-          title={i18n('options_advanced_experimental_title', {
-            defaultValue: 'Experimental features'
-          })}
-          description={i18n('options_advanced_experimental_description', {
-            defaultValue: 'More experimental toggles will be added gradually in future versions.'
-          })}>
-          <div
-            class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            {i18n('options_advanced_experimental_body', {
-              defaultValue:
-                'Only advanced options already wired to storage are kept to avoid showing unsavable temporary switches.'
-            })}
-          </div>
-        </SectionRow>
-      </Section>
+      <AdvancedSettings {toggleItems} />
     {:else if activeNavId === 'import-export'}
-      <Section
-        id="import-export"
-        title={i18n('options_import_export_title', { defaultValue: 'Import/Export' })}
-        description={i18n('options_import_export_description', {
-          defaultValue: 'Back up or restore all your configuration data.'
-        })}>
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
-            <h3 class="font-semibold">
-              {i18n('options_export_card_title', { defaultValue: 'Export config' })}
-            </h3>
-            <p class="mt-2 text-sm text-slate-500">
-              {i18n('options_export_card_description', {
-                defaultValue: 'Save all current settings to a file'
-              })}
-            </p>
-            <Button color="light" class="mt-4 w-full rounded-xl border-none shadow-md"
-              >{i18n('options_export_button', { defaultValue: 'Export' })}</Button>
-          </div>
-          <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
-            <h3 class="font-semibold">
-              {i18n('options_import_card_title', { defaultValue: 'Import config' })}
-            </h3>
-            <p class="mt-2 text-sm text-slate-500">
-              {i18n('options_import_card_description', {
-                defaultValue: 'Restore settings from a backup file'
-              })}
-            </p>
-            <Button color="light" class="mt-4 w-full rounded-xl border-none shadow-md"
-              >{i18n('options_import_button', { defaultValue: 'Import' })}</Button>
-          </div>
-        </div>
-      </Section>
+      <ImportExportSettings />
     {:else if activeNavId === 'about'}
-      <Section
-        id="about"
-        title={i18n('options_about_title', { defaultValue: 'About' })}
-        description={i18n('options_about_description', {
-          defaultValue: 'Learn about the Immersive Translate extension.'
-        })}>
-        <div class="flex flex-col items-center justify-center py-8">
-          <div class="bg-primary-500 mb-4 rounded-2xl p-4 text-white shadow-lg">
-            <WandMagicSparklesSolid class="h-10 w-10" />
-          </div>
-          <h3 class="text-xl font-bold">
-            {i18n('options_about_product_name', { defaultValue: 'Immersive Translate' })}
-          </h3>
-          <p class="mt-2 text-slate-500">
-            {i18n('options_about_version', { defaultValue: 'Version 0.0.1' })}
-          </p>
-          <div class="mt-6 flex gap-4">
-            <Button color="light" class="rounded-xl border-none shadow-md"
-              >{i18n('options_about_check_update', { defaultValue: 'Check for updates' })}</Button>
-            <Button color="light" class="rounded-xl border-none shadow-md"
-              >{i18n('options_about_website', { defaultValue: 'Official website' })}</Button>
-          </div>
-        </div>
-      </Section>
+      <AboutSettings />
     {:else if activeNavId === 'pricing'}
-      <Section
-        id="pricing"
-        title={i18n('options_pricing_title', { defaultValue: 'Pricing' })}
-        description={i18n('options_pricing_description', {
-          defaultValue: 'Upgrade to Pro to unlock more advanced features and premium services.'
-        })}>
-        <div class="border-primary-200 bg-primary-50 rounded-2xl border-2 p-8 text-center">
-          <h3 class="text-primary-700 text-2xl font-bold">
-            {i18n('options_pricing_pro_title', { defaultValue: 'Pro membership' })}
-          </h3>
-          <p class="text-primary-600/80 mt-2">
-            {i18n('options_pricing_pro_description', {
-              defaultValue: 'Enjoy premium services like DeepL and OpenAI translation'
-            })}
-          </p>
-          <Button class="mt-6 rounded-xl border-none px-8 py-3 shadow-md"
-            >{i18n('options_pricing_upgrade_button', { defaultValue: 'Upgrade now' })}</Button>
-        </div>
-      </Section>
+      <PricingSettings />
     {:else if activeNavId === 'docs'}
-      <Section
-        id="docs"
-        title={i18n('options_docs_title', { defaultValue: 'Documentation' })}
-        description={i18n('options_docs_description', {
-          defaultValue: 'Read detailed feature guides and tutorials.'
-        })}>
-        <SectionRow
-          title={i18n('options_docs_official_title', { defaultValue: 'Official docs' })}
-          description={i18n('options_docs_official_description', {
-            defaultValue: 'Detailed docs and FAQ for all features'
-          })}>
-          <Button color="light" class="w-full rounded-xl border-none shadow-md"
-            >{i18n('options_docs_open_button', { defaultValue: 'Open docs' })}</Button>
-        </SectionRow>
-      </Section>
+      <DocumentationSettings />
     {:else if activeNavId === 'changelog'}
-      <Section
-        id="changelog"
-        title={i18n('options_changelog_title', { defaultValue: 'Changelog' })}
-        description={i18n('options_changelog_description', {
-          defaultValue: 'View recent updates and new features.'
-        })}>
-        <div class="space-y-6 border-l-2 border-slate-200 pl-6">
-          <div class="relative">
-            <div
-              class="bg-primary-500 absolute top-1 -left-7.75 h-4 w-4 rounded-full border-4 border-white">
-            </div>
-            <h3 class="font-semibold">v0.0.1</h3>
-            <p class="mt-1 text-sm text-slate-500">2024-01-01</p>
-            <ul class="mt-3 list-disc space-y-1 pl-4 text-sm text-slate-600">
-              <li>{i18n('options_changelog_item_1', { defaultValue: 'Initial release' })}</li>
-              <li>
-                {i18n('options_changelog_item_2', {
-                  defaultValue: 'Supports multiple AI translation services'
-                })}
-              </li>
-              <li>
-                {i18n('options_changelog_item_3', {
-                  defaultValue: 'Supports bilingual webpage translation'
-                })}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </Section>
+      <ChangelogSettings />
     {:else if activeNavId === 'feedback'}
-      <Section
-        id="feedback"
-        title={i18n('options_feedback_title', { defaultValue: 'Feedback' })}
-        description={i18n('options_feedback_description', {
-          defaultValue: 'Found an issue or have ideas? Tell us.'
-        })}>
-        <SectionRow
-          title={i18n('options_feedback_submit_title', { defaultValue: 'Submit feedback' })}
-          description={i18n('options_feedback_submit_description', {
-            defaultValue: 'Open a GitHub issue or join community discussions'
-          })}>
-          <div class="space-y-3">
-            <Button color="light" class="w-full rounded-xl border-none shadow-md"
-              >{i18n('options_feedback_github_button', { defaultValue: 'GitHub Issues' })}</Button>
-            <Button color="light" class="w-full rounded-xl border-none shadow-md"
-              >{i18n('options_feedback_discord_button', {
-                defaultValue: 'Join Discord community'
-              })}</Button>
-          </div>
-        </SectionRow>
-      </Section>
+      <FeedbackSettings />
     {:else if activeNavId === 'developer'}
-      <Section
-        id="developer"
-        title={i18n('options_developer_title', { defaultValue: 'Developer settings' })}
-        description={i18n('options_developer_description', {
-          defaultValue: 'Advanced options for developer debugging and testing.'
-        })}>
-        <SectionRow
-          title={i18n('options_developer_debug_title', { defaultValue: 'Debug capability' })}
-          description={i18n('options_developer_debug_description', {
-            defaultValue: 'No standalone persisted developer debug switch is currently provided.'
-          })}>
-          <div
-            class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            {i18n('options_developer_debug_body', {
-              defaultValue:
-                'For troubleshooting, use extension management page, console logs, and feedback entry.'
-            })}
-          </div>
-        </SectionRow>
-      </Section>
+      <DeveloperSettings />
     {/if}
   </div>
 </main>
