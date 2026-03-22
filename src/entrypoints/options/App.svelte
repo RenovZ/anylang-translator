@@ -212,7 +212,7 @@
   <header class="sticky top-0 z-10 bg-white/80 shadow backdrop-blur-xs dark:bg-slate-900/80">
     <div class="mx-auto flex items-center justify-between px-6 py-4">
       <div class="flex items-center gap-3">
-        <div class="bg-primary-500 rounded-xl p-2 text-white shadow-sm">
+        <div class="bg-primary-500 rounded-xl p-2 text-white shadow-md">
           <WandMagicSparklesSolid class="h-5 w-5" />
         </div>
         <div class="flex items-center gap-3">
@@ -306,7 +306,7 @@
         title="AI 术语库"
         description="管理您的专属翻译术语库，确保专业词汇翻译的一致性。">
         <SectionRow title="术语库状态" description="当前未开启自定义术语库">
-          <Button class="w-full rounded-xl shadow-md">开启术语库</Button>
+          <Button class="w-full rounded-xl shadow-md border-none">开启术语库</Button>
         </SectionRow>
         <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center text-slate-500">
           开启后可在此添加和管理专业术语
@@ -325,7 +325,7 @@
         <SectionRow
           title="推荐用法"
           description="当前可先在弹出面板中选择模型与提示词后使用写作能力。">
-          <Button color="light" class="w-full rounded-xl shadow-sm">查看即将上线的能力</Button>
+          <Button color="light" class="w-full rounded-xl shadow-md border-none">查看即将上线的能力</Button>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'subtitle'}
@@ -351,7 +351,7 @@
           </div>
         </SectionRow>
         <SectionRow title="适用场景" description="适用于漫画对白、截图与无字幕图片内容的翻译。">
-          <Button color="light" class="w-full rounded-xl shadow-sm">查看图片翻译说明</Button>
+          <Button color="light" class="w-full rounded-xl shadow-md border-none">查看图片翻译说明</Button>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'input'}
@@ -428,7 +428,7 @@
         <SectionRow
           title="站点规则"
           description="如需调整自动翻译网站，请前往基本设置中的站点列表。">
-          <Button color="light" class="w-full rounded-xl shadow-sm">查看站点规则说明</Button>
+          <Button color="light" class="w-full rounded-xl shadow-md border-none">查看站点规则说明</Button>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'shortcuts'}
@@ -469,12 +469,12 @@
           <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
             <h3 class="font-semibold">导出配置</h3>
             <p class="mt-2 text-sm text-slate-500">将当前所有设置保存为文件</p>
-            <Button color="light" class="mt-4 w-full rounded-xl shadow-sm">导出</Button>
+            <Button color="light" class="mt-4 w-full rounded-xl shadow-md border-none">导出</Button>
           </div>
           <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
             <h3 class="font-semibold">导入配置</h3>
             <p class="mt-2 text-sm text-slate-500">从备份文件中恢复设置</p>
-            <Button color="light" class="mt-4 w-full rounded-xl shadow-sm">导入</Button>
+            <Button color="light" class="mt-4 w-full rounded-xl shadow-md border-none">导入</Button>
           </div>
         </div>
       </Section>
@@ -487,8 +487,8 @@
           <h3 class="text-xl font-bold">沉浸式翻译</h3>
           <p class="mt-2 text-slate-500">版本 0.0.1</p>
           <div class="mt-6 flex gap-4">
-            <Button color="light" class="rounded-xl shadow-sm">检查更新</Button>
-            <Button color="light" class="rounded-xl shadow-sm">官方网站</Button>
+            <Button color="light" class="rounded-xl shadow-md border-none">检查更新</Button>
+            <Button color="light" class="rounded-xl shadow-md border-none">官方网站</Button>
           </div>
         </div>
       </Section>
@@ -500,13 +500,13 @@
         <div class="border-primary-200 bg-primary-50 rounded-2xl border-2 p-8 text-center">
           <h3 class="text-primary-700 text-2xl font-bold">Pro 会员</h3>
           <p class="text-primary-600/80 mt-2">畅享 DeepL、OpenAI 等顶级翻译服务</p>
-          <Button class="mt-6 rounded-xl px-8 py-3 shadow-md">立即升级</Button>
+          <Button class="mt-6 rounded-xl px-8 py-3 shadow-md border-none">立即升级</Button>
         </div>
       </Section>
     {:else if activeNavId === 'docs'}
       <Section id="docs" title="使用文档" description="查看详细的功能介绍和使用教程。">
         <SectionRow title="官方文档" description="包含所有功能的详细说明和常见问题解答">
-          <Button color="light" class="w-full rounded-xl shadow-sm">前往查看</Button>
+          <Button color="light" class="w-full rounded-xl shadow-md border-none">前往查看</Button>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'changelog'}
@@ -530,8 +530,8 @@
       <Section id="feedback" title="问题反馈" description="遇到问题或有新想法？欢迎告诉我们。">
         <SectionRow title="提交反馈" description="在 GitHub 上提交 Issue 或加入社区讨论">
           <div class="space-y-3">
-            <Button color="light" class="w-full rounded-xl shadow-sm">GitHub Issues</Button>
-            <Button color="light" class="w-full rounded-xl shadow-sm">加入 Discord 社区</Button>
+            <Button color="light" class="w-full rounded-xl shadow-md border-none">GitHub Issues</Button>
+            <Button color="light" class="w-full rounded-xl shadow-md border-none">加入 Discord 社区</Button>
           </div>
         </SectionRow>
       </Section>
