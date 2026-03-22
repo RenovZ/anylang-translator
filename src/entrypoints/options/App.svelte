@@ -932,7 +932,7 @@
         <div class="space-y-6 border-l-2 border-slate-200 pl-6">
           <div class="relative">
             <div
-              class="bg-primary-500 absolute top-1 -left-[31px] h-4 w-4 rounded-full border-4 border-white">
+              class="bg-primary-500 absolute top-1 -left-7.75 h-4 w-4 rounded-full border-4 border-white">
             </div>
             <h3 class="font-semibold">v0.0.1</h3>
             <p class="mt-1 text-sm text-slate-500">2024-01-01</p>

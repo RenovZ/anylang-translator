@@ -404,7 +404,7 @@
               value={config.textColor}
               onchange={(event) =>
                 updateField('textColor', (event.currentTarget as HTMLInputElement).value)}
-              class="h-[50px] w-full rounded-xl border border-slate-300 bg-white p-2" />
+              class="h-12.5 w-full rounded-xl border border-slate-300 bg-white p-2" />
           </label>
           <label class="grid grid-cols-[1fr_200px] items-center gap-4">
             <span class="text-slate-600"
