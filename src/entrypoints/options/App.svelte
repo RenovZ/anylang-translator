@@ -4,6 +4,7 @@
   import { browser } from 'wxt/browser';
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
 
+  import { i18n } from '../../lib/i18n';
   import '../../assets/app.css';
   import GeneralSettings from './components/GeneralSettings.svelte';
   import Section from './components/Section.svelte';
@@ -20,31 +21,185 @@
 
   const STORAGE_KEY = 'options-config';
   const navItems = [
-    { id: 'general', label: '基本设置', position: 'top' },
-    { id: 'services', label: '翻译服务', position: 'top' },
-    { id: 'ai', label: 'AI 专家', position: 'top' },
-    { id: 'terms', label: 'AI 术语库', position: 'top' },
-    { id: 'writing', label: 'AI Write', position: 'top' },
-    { id: 'subtitle', label: '视频字幕', position: 'top' },
-    { id: 'manga', label: '漫画/图片', position: 'top' },
-    { id: 'input', label: '输入框翻译', position: 'top' },
-    { id: 'selection-transiation', label: '划词翻译', position: 'top' },
-    { id: 'mouse-hover', label: '鼠标悬停', position: 'top' },
-    { id: 'floating', label: '悬浮球', position: 'top' },
-    { id: 'shortcuts', label: '快捷键', position: 'top' },
-    { id: 'advanced', label: '高级设置', position: 'top' },
-    { id: 'import-export', label: '导入/导出', position: 'top' },
-    { id: 'about', label: '关于', position: 'top' },
-    { id: 'pricing', label: '价格', position: 'bottom' },
-    { id: 'docs', label: '使用文档', position: 'bottom' },
-    { id: 'changelog', label: '更新日志', position: 'bottom' },
-    { id: 'feedback', label: '问题反馈', position: 'bottom' },
-    { id: 'developer', label: '开发者设置', position: 'bottom' }
+    {
+      id: 'general',
+      label: i18n('options_nav_general', { defaultValue: 'General settings' }),
+      position: 'top'
+    },
+    {
+      id: 'services',
+      label: i18n('options_nav_services', { defaultValue: 'Translation services' }),
+      position: 'top'
+    },
+    { id: 'ai', label: i18n('options_nav_ai', { defaultValue: 'AI experts' }), position: 'top' },
+    {
+      id: 'terms',
+      label: i18n('options_nav_terms', { defaultValue: 'AI terminology' }),
+      position: 'top'
+    },
+    {
+      id: 'writing',
+      label: i18n('options_nav_writing', { defaultValue: 'AI Write' }),
+      position: 'top'
+    },
+    {
+      id: 'subtitle',
+      label: i18n('options_nav_subtitle', { defaultValue: 'Video subtitles' }),
+      position: 'top'
+    },
+    {
+      id: 'manga',
+      label: i18n('options_nav_manga', { defaultValue: 'Manga/Images' }),
+      position: 'top'
+    },
+    {
+      id: 'input',
+      label: i18n('options_nav_input', { defaultValue: 'Input translation' }),
+      position: 'top'
+    },
+    {
+      id: 'selection-transiation',
+      label: i18n('options_nav_selection_translation', { defaultValue: 'Selection translation' }),
+      position: 'top'
+    },
+    {
+      id: 'mouse-hover',
+      label: i18n('options_nav_mouse_hover', { defaultValue: 'Mouse hover' }),
+      position: 'top'
+    },
+    {
+      id: 'floating',
+      label: i18n('options_nav_floating', { defaultValue: 'Floating ball' }),
+      position: 'top'
+    },
+    {
+      id: 'shortcuts',
+      label: i18n('options_nav_shortcuts', { defaultValue: 'Shortcuts' }),
+      position: 'top'
+    },
+    {
+      id: 'advanced',
+      label: i18n('options_nav_advanced', { defaultValue: 'Advanced settings' }),
+      position: 'top'
+    },
+    {
+      id: 'import-export',
+      label: i18n('options_nav_import_export', { defaultValue: 'Import/Export' }),
+      position: 'top'
+    },
+    {
+      id: 'about',
+      label: i18n('options_nav_about', { defaultValue: 'About' }),
+      position: 'top'
+    },
+    {
+      id: 'pricing',
+      label: i18n('options_nav_pricing', { defaultValue: 'Pricing' }),
+      position: 'bottom'
+    },
+    {
+      id: 'docs',
+      label: i18n('options_nav_docs', { defaultValue: 'Documentation' }),
+      position: 'bottom'
+    },
+    {
+      id: 'changelog',
+      label: i18n('options_nav_changelog', { defaultValue: 'Changelog' }),
+      position: 'bottom'
+    },
+    {
+      id: 'feedback',
+      label: i18n('options_nav_feedback', { defaultValue: 'Feedback' }),
+      position: 'bottom'
+    },
+    {
+      id: 'developer',
+      label: i18n('options_nav_developer', { defaultValue: 'Developer settings' }),
+      position: 'bottom'
+    }
   ] as const;
 
   const defaultToggleModes = Object.fromEntries(
-    toggles.filter((item) => item.options?.length).map((item) => [item.key, item.options![0]])
+    toggles.filter((item) => item.options?.length).map((item) => [item.key, item.options![0].value])
   );
+
+  const legacyLanguageMap: Record<string, string> = {
+    自动检测: 'auto',
+    简体中文: 'zh-Hans',
+    '英语(English)': 'en',
+    英语: 'en',
+    English: 'en',
+    日语: 'ja',
+    韩语: 'ko',
+    法语: 'fr',
+    德语: 'de'
+  };
+
+  const legacyPromptPresetMap: Record<string, string> = {
+    通用: 'general',
+    智能选择: 'smart_select',
+    意译大师: 'paraphrase_master',
+    段落总结专家: 'paragraph_summary_expert',
+    英文简化大师: 'english_simplify_master',
+    'Twitter 翻译增强器': 'twitter_enhancer',
+    科技类翻译大师: 'tech_translation_master',
+    'Reddit 翻译增强器': 'reddit_enhancer',
+    学术论文翻译师: 'paper_translation_expert',
+    新闻媒体译者: 'news_media_translator',
+    音乐专家: 'music_expert',
+    医学翻译大师: 'medical_translation_master',
+    法律行业译者: 'legal_industry_translator',
+    'GitHub 翻译增强器': 'github_enhancer',
+    游戏译者: 'game_translator',
+    电商翻译大师: 'ecommerce_translation_master',
+    金融翻译顾问: 'finance_translation_consultant',
+    小说译者: 'novel_translator',
+    'AO3 译者': 'ao3_translator',
+    电子书译者: 'ebook_translator',
+    设计师: 'designer',
+    中英杂杂: 'mixed_zh_en',
+    'Web3 翻译大师': 'web3_translation_master',
+    更多翻译专家: 'more_translation_experts'
+  };
+
+  const legacyToggleModeMap: Record<string, Record<string, string>> = {
+    alwaysTranslateSite: {
+      总是翻译该网站: 'always_translate_site',
+      不自动翻译该网站: 'never_auto_translate_site'
+    },
+    hoverTrigger: {
+      '＋ Ctrl 翻译/还原该段': 'ctrl',
+      '＋ Shift 翻译/还原该段': 'shift',
+      '＋ Alt 翻译/还原该段': 'alt',
+      '＋ 长按鼠标左键': 'long_press_left_click',
+      直接翻译该段: 'direct',
+      '自定义快捷键(打开设置)': 'custom_shortcut'
+    },
+    selectionTrigger: {
+      直接触发: 'direct',
+      显示图标: 'icon',
+      显示小圆点: 'dot',
+      '按 Ctrl 触发': 'ctrl',
+      '按 Shift 触发': 'shift',
+      '按 Alt 触发': 'alt'
+    }
+  };
+
+  function normalizeLanguage(value: string, fallback: string) {
+    if (!value) return fallback;
+    return legacyLanguageMap[value] ?? value;
+  }
+
+  function normalizePromptPreset(value: string) {
+    return legacyPromptPresetMap[value] ?? value;
+  }
+
+  function normalizeToggleModes(toggleModes: Record<string, string> | undefined) {
+    const next = { ...defaultToggleModes, ...toggleModes };
+    return Object.fromEntries(
+      Object.entries(next).map(([key, value]) => [key, legacyToggleModeMap[key]?.[value] ?? value])
+    );
+  }
 
   const createDefaultConfig = (): V2OptionsConfig => ({
     ...structuredClone(defaultPopupConfig),
@@ -59,18 +214,18 @@
       'news.ycombinator.com'
     ],
     neverTranslateSites: [],
-    alwaysTranslateLanguages: ['英语', '日语'],
-    neverTranslateLanguages: ['简体中文'],
-    uiLanguage: '简体中文',
-    translationPreference: '双语对照',
-    translationStyle: '无',
+    alwaysTranslateLanguages: ['en', 'ja'],
+    neverTranslateLanguages: ['zh-Hans'],
+    uiLanguage: 'zh-Hans',
+    translationPreference: 'bilingual',
+    translationStyle: 'none',
     richTextTranslate: true,
     textColor: '#FFFFFF',
     fontScale: '100',
     fontWeight: '400',
     italicTranslate: false,
     customFontEnabled: false,
-    customFontFamily: '无'
+    customFontFamily: 'none'
   });
 
   let config = createDefaultConfig();
@@ -91,7 +246,9 @@
   };
 
   $: isDirty = JSON.stringify(config) !== savedSnapshot;
-  $: activeNavLabel = navItems.find((item) => item.id === activeNavId)?.label ?? '设置';
+  $: activeNavLabel =
+    navItems.find((item) => item.id === activeNavId)?.label ??
+    i18n('options_nav_fallback_settings', { defaultValue: 'Settings' });
 
   onMount(() => {
     syncActiveNavWithHash();
@@ -110,14 +267,59 @@
         config = {
           ...createDefaultConfig(),
           ...stored,
+          sourceLanguage: normalizeLanguage(
+            stored.sourceLanguage ?? '',
+            defaultPopupConfig.sourceLanguage
+          ),
+          targetLanguage: normalizeLanguage(
+            stored.targetLanguage ?? '',
+            defaultPopupConfig.targetLanguage
+          ),
+          promptPreset: normalizePromptPreset(
+            stored.promptPreset ?? defaultPopupConfig.promptPreset
+          ),
+          alwaysTranslateLanguages: (stored.alwaysTranslateLanguages ?? []).map((item) =>
+            normalizeLanguage(item, item)
+          ),
+          neverTranslateLanguages: (stored.neverTranslateLanguages ?? []).map((item) =>
+            normalizeLanguage(item, item)
+          ),
+          uiLanguage: normalizeLanguage(stored.uiLanguage ?? '', 'zh-Hans'),
+          translationPreference:
+            stored.translationPreference === '双语对照'
+              ? 'bilingual'
+              : stored.translationPreference === '仅显示译文'
+                ? 'translation_only'
+                : (stored.translationPreference ?? 'bilingual'),
+          translationStyle:
+            stored.translationStyle === '无'
+              ? 'none'
+              : stored.translationStyle === '虚线下划线'
+                ? 'dashed_underline'
+                : stored.translationStyle === '直线下划线'
+                  ? 'solid_underline'
+                  : stored.translationStyle === '虚线边框'
+                    ? 'dashed_border'
+                    : stored.translationStyle === '实线边框'
+                      ? 'solid_border'
+                      : stored.translationStyle === '模糊效果（学习模式）'
+                        ? 'blur_learning'
+                        : stored.translationStyle === '透明效果'
+                          ? 'transparent'
+                          : stored.translationStyle === '点状下划线'
+                            ? 'dotted_underline'
+                            : stored.translationStyle === '分割线'
+                              ? 'divider'
+                              : stored.translationStyle === '高亮'
+                                ? 'highlight'
+                                : (stored.translationStyle ?? 'none'),
+          customFontFamily:
+            stored.customFontFamily === '无' ? 'none' : (stored.customFontFamily ?? 'none'),
           toggles: {
             ...defaultPopupConfig.toggles,
             ...stored.toggles
           },
-          toggleModes: {
-            ...defaultToggleModes,
-            ...stored.toggleModes
-          },
+          toggleModes: normalizeToggleModes(stored.toggleModes),
           alwaysTranslateSites: stored.alwaysTranslateSites?.length
             ? stored.alwaysTranslateSites
             : createDefaultConfig().alwaysTranslateSites
@@ -176,7 +378,7 @@
     saving = true;
     await browser.storage.local.set({ [STORAGE_KEY]: config });
     savedSnapshot = JSON.stringify(config);
-    saveMessage = '设置已保存';
+    saveMessage = i18n('options_status_saved', { defaultValue: 'Settings saved' });
     saving = false;
   }
 
@@ -184,7 +386,7 @@
     config = createDefaultConfig();
     toggleItems = toggles.map((item) => ({ ...item }));
     await saveOptions();
-    saveMessage = '已恢复默认设置';
+    saveMessage = i18n('options_status_reset', { defaultValue: 'Defaults restored' });
   }
 
   function syncActiveNavWithHash() {
@@ -216,12 +418,14 @@
           <WandMagicSparklesSolid class="h-5 w-5" />
         </div>
         <div class="flex items-center gap-3">
-          <span class="text-lg font-semibold">沉浸式翻译</span>
+          <span class="text-lg font-semibold"
+            >{i18n('options_title_extension_name', { defaultValue: 'Immersive Translate' })}</span>
           <span class="text-slate-400">v0.0.1</span>
         </div>
       </div>
 
-      <Button color="light" class="rounded-xl border-none px-4 py-2 shadow-md">⚒️ 工具箱</Button>
+      <Button color="light" class="rounded-xl border-none px-4 py-2 shadow-md"
+        >⚒️ {i18n('options_button_toolbox', { defaultValue: 'Toolbox' })}</Button>
     </div>
   </header>
 
@@ -262,8 +466,17 @@
     {#if activeNavId === 'general'}
       <GeneralSettings bind:config bind:newSite {saveOptions} {resetOptions} {getProviderModels} />
     {:else if activeNavId === 'services'}
-      <Section id="services" title="翻译服务" description="选择模型供应商和当前默认模型。">
-        <SectionRow title="供应商" description="选择您偏好的 AI 模型供应商">
+      <Section
+        id="services"
+        title={i18n('options_services_title', { defaultValue: 'Translation services' })}
+        description={i18n('options_services_description', {
+          defaultValue: 'Choose your model provider and default model.'
+        })}>
+        <SectionRow
+          title={i18n('options_services_provider_title', { defaultValue: 'Provider' })}
+          description={i18n('options_services_provider_description', {
+            defaultValue: 'Choose your preferred AI model provider'
+          })}>
           <select
             value={config.provider}
             onchange={(event) =>
@@ -274,7 +487,11 @@
             {/each}
           </select>
         </SectionRow>
-        <SectionRow title="默认模型" description="选择该供应商下的具体模型">
+        <SectionRow
+          title={i18n('options_services_default_model_title', { defaultValue: 'Default model' })}
+          description={i18n('options_services_default_model_description', {
+            defaultValue: 'Choose a model under the selected provider'
+          })}>
           <select
             value={config.model}
             onchange={(event) =>
@@ -287,15 +504,24 @@
         </SectionRow>
       </Section>
     {:else if activeNavId === 'ai'}
-      <Section id="ai" title="AI 专家" description="选择默认的提示词方案和 AI 专家模式。">
-        <SectionRow title="提示词方案" description="选择适合您当前场景的提示词预设">
+      <Section
+        id="ai"
+        title={i18n('options_ai_title', { defaultValue: 'AI experts' })}
+        description={i18n('options_ai_description', {
+          defaultValue: 'Choose default prompt preset and AI expert mode.'
+        })}>
+        <SectionRow
+          title={i18n('options_ai_prompt_preset_title', { defaultValue: 'Prompt preset' })}
+          description={i18n('options_ai_prompt_preset_description', {
+            defaultValue: 'Choose the prompt preset for your current scenario'
+          })}>
           <select
             value={config.promptPreset}
             onchange={(event) =>
               updateField('promptPreset', (event.currentTarget as HTMLSelectElement).value)}
             class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-            {#each promptPresetOptions as option (option)}
-              <option value={option}>{option}</option>
+            {#each promptPresetOptions as option (option.value)}
+              <option value={option.value}>{option.label}</option>
             {/each}
           </select>
         </SectionRow>
@@ -303,72 +529,147 @@
     {:else if activeNavId === 'terms'}
       <Section
         id="terms"
-        title="AI 术语库"
-        description="管理您的专属翻译术语库，确保专业词汇翻译的一致性。">
-        <SectionRow title="术语库状态" description="当前未开启自定义术语库">
-          <Button class="w-full rounded-xl shadow-md border-none">开启术语库</Button>
+        title={i18n('options_terms_title', { defaultValue: 'AI terminology' })}
+        description={i18n('options_terms_description', {
+          defaultValue: 'Manage your translation glossary for consistent terms.'
+        })}>
+        <SectionRow
+          title={i18n('options_terms_status_title', { defaultValue: 'Glossary status' })}
+          description={i18n('options_terms_status_description', {
+            defaultValue: 'Custom glossary is currently disabled'
+          })}>
+          <Button class="w-full rounded-xl border-none shadow-md"
+            >{i18n('options_terms_enable_button', { defaultValue: 'Enable glossary' })}</Button>
         </SectionRow>
         <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center text-slate-500">
-          开启后可在此添加和管理专业术语
+          {i18n('options_terms_empty_hint', {
+            defaultValue: 'After enabling, you can add and manage terms here'
+          })}
         </div>
       </Section>
     {:else if activeNavId === 'writing'}
-      <Section id="writing" title="AI Write" description="配置 AI 辅助写作和润色功能。">
+      <Section
+        id="writing"
+        title={i18n('options_writing_title', { defaultValue: 'AI Write' })}
+        description={i18n('options_writing_description', {
+          defaultValue: 'Configure AI writing assistance and polishing features.'
+        })}>
         <SectionRow
-          title="功能状态"
-          description="当前版本已预留 AI 写作入口，后续将开放可保存的风格和场景预设。">
+          title={i18n('options_writing_status_title', { defaultValue: 'Feature status' })}
+          description={i18n('options_writing_status_description', {
+            defaultValue:
+              'This version includes an entry point; saveable style and scenario presets will be added later.'
+          })}>
           <div
             class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            写作模板、语气偏好和自动润色规则将在后续版本中开放。
+            {i18n('options_writing_status_body', {
+              defaultValue:
+                'Writing templates, tone preferences, and auto-polish rules will be available in future versions.'
+            })}
           </div>
         </SectionRow>
         <SectionRow
-          title="推荐用法"
-          description="当前可先在弹出面板中选择模型与提示词后使用写作能力。">
-          <Button color="light" class="w-full rounded-xl shadow-md border-none">查看即将上线的能力</Button>
+          title={i18n('options_writing_usage_title', { defaultValue: 'Recommended usage' })}
+          description={i18n('options_writing_usage_description', {
+            defaultValue:
+              'For now, choose model and prompt in popup panel first, then use writing capability.'
+          })}>
+          <Button color="light" class="w-full rounded-xl border-none shadow-md"
+            >{i18n('options_writing_view_soon_button', {
+              defaultValue: 'View upcoming capabilities'
+            })}</Button>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'subtitle'}
-      <Section id="subtitle" title="视频字幕" description="配置在线视频的双语字幕翻译功能。">
-        <SectionRow title="自动开启双语字幕" description="在支持的视频网站自动显示双语字幕">
+      <Section
+        id="subtitle"
+        title={i18n('options_subtitle_title', { defaultValue: 'Video subtitles' })}
+        description={i18n('options_subtitle_description', {
+          defaultValue: 'Configure bilingual subtitle translation for online videos.'
+        })}>
+        <SectionRow
+          title={i18n('options_subtitle_auto_title', {
+            defaultValue: 'Auto-enable bilingual subtitles'
+          })}
+          description={i18n('options_subtitle_auto_description', {
+            defaultValue: 'Automatically show bilingual subtitles on supported sites'
+          })}>
           <div class="flex items-center justify-end">
             <Toggle
               bind:checked={toggleItems[4].enabled}
               size="small"
               classes={{ span: 'me-0 cursor-pointer bg-gray-300' }}
-              aria-label="自动开启双语字幕" />
+              aria-label={i18n('options_subtitle_auto_aria', {
+                defaultValue: 'Auto-enable bilingual subtitles'
+              })} />
           </div>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'manga'}
-      <Section id="manga" title="漫画/图片" description="配置图片和漫画的翻译识别设置。">
+      <Section
+        id="manga"
+        title={i18n('options_manga_title', { defaultValue: 'Manga/Images' })}
+        description={i18n('options_manga_description', {
+          defaultValue: 'Configure translation recognition settings for images and manga.'
+        })}>
         <SectionRow
-          title="图片识别"
-          description="该能力将沿用主翻译服务配置，并在后续版本开放更细粒度的 OCR 选项。">
+          title={i18n('options_manga_ocr_title', { defaultValue: 'Image recognition' })}
+          description={i18n('options_manga_ocr_description', {
+            defaultValue:
+              'This capability follows main translation service settings; granular OCR options will arrive later.'
+          })}>
           <div
             class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            当前无需单独配置 OCR 引擎，使用时会直接继承全局翻译服务。
+            {i18n('options_manga_ocr_body', {
+              defaultValue:
+                'No standalone OCR engine config is needed now; global service config is reused.'
+            })}
           </div>
         </SectionRow>
-        <SectionRow title="适用场景" description="适用于漫画对白、截图与无字幕图片内容的翻译。">
-          <Button color="light" class="w-full rounded-xl shadow-md border-none">查看图片翻译说明</Button>
+        <SectionRow
+          title={i18n('options_manga_scene_title', { defaultValue: 'Applicable scenarios' })}
+          description={i18n('options_manga_scene_description', {
+            defaultValue: 'Useful for manga dialogue, screenshots, and subtitle-free image content.'
+          })}>
+          <Button color="light" class="w-full rounded-xl border-none shadow-md"
+            >{i18n('options_manga_guide_button', {
+              defaultValue: 'View image translation guide'
+            })}</Button>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'input'}
-      <Section id="input" title="输入框翻译" description="在输入框中快速翻译您输入的内容。">
-        <SectionRow title="功能状态" description="输入框翻译的触发条件正在整理为统一的快捷键体系。">
+      <Section
+        id="input"
+        title={i18n('options_input_title', { defaultValue: 'Input translation' })}
+        description={i18n('options_input_description', {
+          defaultValue: 'Quickly translate content typed in input fields.'
+        })}>
+        <SectionRow
+          title={i18n('options_input_status_title', { defaultValue: 'Feature status' })}
+          description={i18n('options_input_status_description', {
+            defaultValue: 'Trigger conditions are being unified into one shortcut system.'
+          })}>
           <div
             class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            当前版本保留入口说明，实际快捷键开关将在快捷键设置稳定后开放。
+            {i18n('options_input_status_body', {
+              defaultValue:
+                'This version keeps the entry hint; the actual shortcut switch will be added once shortcut settings stabilize.'
+            })}
           </div>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'selection-transiation'}
       <Section
         id="selection-transiation"
-        title="划词翻译"
-        description="选中文本后快速查看翻译结果。">
-        <SectionRow title="触发方式" description="选择划词后如何触发翻译">
+        title={i18n('options_selection_title', { defaultValue: 'Selection translation' })}
+        description={i18n('options_selection_description', {
+          defaultValue: 'Quickly view translations after selecting text.'
+        })}>
+        <SectionRow
+          title={i18n('options_selection_trigger_title', { defaultValue: 'Trigger mode' })}
+          description={i18n('options_selection_trigger_description', {
+            defaultValue: 'Choose how selection translation is triggered'
+          })}>
           <select
             value={config.toggleModes.selectionTrigger}
             onchange={(event) =>
@@ -377,12 +678,16 @@
                 (event.currentTarget as HTMLSelectElement).value
               )}
             class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-            {#each getToggleConfig('selectionTrigger')?.options ?? [] as option}
-              <option value={option}>{option}</option>
+            {#each getToggleConfig('selectionTrigger')?.options ?? [] as option (option.value)}
+              <option value={option.value}>{option.label}</option>
             {/each}
           </select>
         </SectionRow>
-        <SectionRow title="启用状态" description="控制是否显示划词翻译入口">
+        <SectionRow
+          title={i18n('options_selection_enabled_title', { defaultValue: 'Enabled status' })}
+          description={i18n('options_selection_enabled_description', {
+            defaultValue: 'Control whether the selection translation entry is shown'
+          })}>
           <div class="flex items-center justify-end">
             <Toggle
               bind:checked={toggleItems[2].enabled}
@@ -393,19 +698,32 @@
         </SectionRow>
       </Section>
     {:else if activeNavId === 'mouse-hover'}
-      <Section id="mouse-hover" title="鼠标悬停" description="鼠标悬停在段落上时自动翻译。">
-        <SectionRow title="触发快捷键" description="选择悬停翻译的组合键">
+      <Section
+        id="mouse-hover"
+        title={i18n('options_hover_title', { defaultValue: 'Mouse hover' })}
+        description={i18n('options_hover_description', {
+          defaultValue: 'Automatically translate when hovering over paragraphs.'
+        })}>
+        <SectionRow
+          title={i18n('options_hover_shortcut_title', { defaultValue: 'Trigger shortcut' })}
+          description={i18n('options_hover_shortcut_description', {
+            defaultValue: 'Choose the shortcut combination for hover translation'
+          })}>
           <select
             value={config.toggleModes.hoverTrigger}
             onchange={(event) =>
               updateToggleMode('hoverTrigger', (event.currentTarget as HTMLSelectElement).value)}
             class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-            {#each getToggleConfig('hoverTrigger')?.options ?? [] as option}
-              <option value={option}>{option}</option>
+            {#each getToggleConfig('hoverTrigger')?.options ?? [] as option (option.value)}
+              <option value={option.value}>{option.label}</option>
             {/each}
           </select>
         </SectionRow>
-        <SectionRow title="启用状态" description="控制是否允许通过悬停快速翻译当前段落">
+        <SectionRow
+          title={i18n('options_hover_enabled_title', { defaultValue: 'Enabled status' })}
+          description={i18n('options_hover_enabled_description', {
+            defaultValue: 'Control whether hover can quickly translate current paragraph'
+          })}>
           <div class="flex items-center justify-end">
             <Toggle
               bind:checked={toggleItems[1].enabled}
@@ -416,24 +734,52 @@
         </SectionRow>
       </Section>
     {:else if activeNavId === 'floating'}
-      <Section id="floating" title="悬浮球" description="页面边缘的快捷翻译悬浮球设置。">
+      <Section
+        id="floating"
+        title={i18n('options_floating_title', { defaultValue: 'Floating ball' })}
+        description={i18n('options_floating_description', {
+          defaultValue: 'Quick translation floating ball settings on page edges.'
+        })}>
         <SectionRow
-          title="当前策略"
-          description="悬浮球沿用页面翻译规则，在后续版本中开放独立行为配置。">
+          title={i18n('options_floating_strategy_title', { defaultValue: 'Current strategy' })}
+          description={i18n('options_floating_strategy_description', {
+            defaultValue:
+              'Floating ball follows page translation rules; standalone behavior controls are planned for later versions.'
+          })}>
           <div
             class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            当前悬浮球不会单独保存开关，而是根据页面翻译状态与站点规则决定显示行为。
+            {i18n('options_floating_strategy_body', {
+              defaultValue:
+                'The floating ball does not save its own switch yet and follows page translation and site rules.'
+            })}
           </div>
         </SectionRow>
         <SectionRow
-          title="站点规则"
-          description="如需调整自动翻译网站，请前往基本设置中的站点列表。">
-          <Button color="light" class="w-full rounded-xl shadow-md border-none">查看站点规则说明</Button>
+          title={i18n('options_floating_site_rule_title', { defaultValue: 'Site rules' })}
+          description={i18n('options_floating_site_rule_description', {
+            defaultValue:
+              'To adjust auto-translation sites, open the site list in General settings.'
+          })}>
+          <Button color="light" class="w-full rounded-xl border-none shadow-md"
+            >{i18n('options_floating_site_rule_button', {
+              defaultValue: 'View site rule guide'
+            })}</Button>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'shortcuts'}
-      <Section id="shortcuts" title="快捷键" description="自定义全局和页面内的快捷键。">
-        <SectionRow title="独立翻译窗口" description="全局唤起独立翻译界面的快捷键">
+      <Section
+        id="shortcuts"
+        title={i18n('options_shortcuts_title', { defaultValue: 'Shortcuts' })}
+        description={i18n('options_shortcuts_description', {
+          defaultValue: 'Customize global and in-page shortcuts.'
+        })}>
+        <SectionRow
+          title={i18n('options_shortcuts_window_title', {
+            defaultValue: 'Standalone translation window'
+          })}
+          description={i18n('options_shortcuts_window_description', {
+            defaultValue: 'Global shortcut to open the standalone translation window'
+          })}>
           <div class="flex items-center justify-end gap-2">
             <kbd
               class="rounded-lg border border-slate-200 bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-800"
@@ -446,8 +792,17 @@
         </SectionRow>
       </Section>
     {:else if activeNavId === 'advanced'}
-      <Section id="advanced" title="高级设置" description="更多底层和实验性功能配置。">
-        <SectionRow title="简体中文页面" description="控制是否默认翻译简体中文页面。">
+      <Section
+        id="advanced"
+        title={i18n('options_advanced_title', { defaultValue: 'Advanced settings' })}
+        description={i18n('options_advanced_description', {
+          defaultValue: 'More low-level and experimental feature settings.'
+        })}>
+        <SectionRow
+          title={i18n('options_advanced_chinese_page_title', { defaultValue: 'Chinese pages' })}
+          description={i18n('options_advanced_chinese_page_description', {
+            defaultValue: 'Control whether Chinese (Simplified) pages are translated by default.'
+          })}>
           <div class="flex items-center justify-end">
             <Toggle
               bind:checked={toggleItems[3].enabled}
@@ -456,61 +811,124 @@
               aria-label={toggleItems[3].label} />
           </div>
         </SectionRow>
-        <SectionRow title="实验性功能" description="更多实验开关将在后续版本中逐步加入。">
+        <SectionRow
+          title={i18n('options_advanced_experimental_title', {
+            defaultValue: 'Experimental features'
+          })}
+          description={i18n('options_advanced_experimental_description', {
+            defaultValue: 'More experimental toggles will be added gradually in future versions.'
+          })}>
           <div
             class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            当前仅保留已接入存储模型的高级选项，避免展示无法保存的临时开关。
+            {i18n('options_advanced_experimental_body', {
+              defaultValue:
+                'Only advanced options already wired to storage are kept to avoid showing unsavable temporary switches.'
+            })}
           </div>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'import-export'}
-      <Section id="import-export" title="导入/导出" description="备份或恢复您的所有配置数据。">
+      <Section
+        id="import-export"
+        title={i18n('options_import_export_title', { defaultValue: 'Import/Export' })}
+        description={i18n('options_import_export_description', {
+          defaultValue: 'Back up or restore all your configuration data.'
+        })}>
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
-            <h3 class="font-semibold">导出配置</h3>
-            <p class="mt-2 text-sm text-slate-500">将当前所有设置保存为文件</p>
-            <Button color="light" class="mt-4 w-full rounded-xl shadow-md border-none">导出</Button>
+            <h3 class="font-semibold">
+              {i18n('options_export_card_title', { defaultValue: 'Export config' })}
+            </h3>
+            <p class="mt-2 text-sm text-slate-500">
+              {i18n('options_export_card_description', {
+                defaultValue: 'Save all current settings to a file'
+              })}
+            </p>
+            <Button color="light" class="mt-4 w-full rounded-xl border-none shadow-md"
+              >{i18n('options_export_button', { defaultValue: 'Export' })}</Button>
           </div>
           <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
-            <h3 class="font-semibold">导入配置</h3>
-            <p class="mt-2 text-sm text-slate-500">从备份文件中恢复设置</p>
-            <Button color="light" class="mt-4 w-full rounded-xl shadow-md border-none">导入</Button>
+            <h3 class="font-semibold">
+              {i18n('options_import_card_title', { defaultValue: 'Import config' })}
+            </h3>
+            <p class="mt-2 text-sm text-slate-500">
+              {i18n('options_import_card_description', {
+                defaultValue: 'Restore settings from a backup file'
+              })}
+            </p>
+            <Button color="light" class="mt-4 w-full rounded-xl border-none shadow-md"
+              >{i18n('options_import_button', { defaultValue: 'Import' })}</Button>
           </div>
         </div>
       </Section>
     {:else if activeNavId === 'about'}
-      <Section id="about" title="关于" description="了解沉浸式翻译扩展信息。">
+      <Section
+        id="about"
+        title={i18n('options_about_title', { defaultValue: 'About' })}
+        description={i18n('options_about_description', {
+          defaultValue: 'Learn about the Immersive Translate extension.'
+        })}>
         <div class="flex flex-col items-center justify-center py-8">
           <div class="bg-primary-500 mb-4 rounded-2xl p-4 text-white shadow-lg">
             <WandMagicSparklesSolid class="h-10 w-10" />
           </div>
-          <h3 class="text-xl font-bold">沉浸式翻译</h3>
-          <p class="mt-2 text-slate-500">版本 0.0.1</p>
+          <h3 class="text-xl font-bold">
+            {i18n('options_about_product_name', { defaultValue: 'Immersive Translate' })}
+          </h3>
+          <p class="mt-2 text-slate-500">
+            {i18n('options_about_version', { defaultValue: 'Version 0.0.1' })}
+          </p>
           <div class="mt-6 flex gap-4">
-            <Button color="light" class="rounded-xl shadow-md border-none">检查更新</Button>
-            <Button color="light" class="rounded-xl shadow-md border-none">官方网站</Button>
+            <Button color="light" class="rounded-xl border-none shadow-md"
+              >{i18n('options_about_check_update', { defaultValue: 'Check for updates' })}</Button>
+            <Button color="light" class="rounded-xl border-none shadow-md"
+              >{i18n('options_about_website', { defaultValue: 'Official website' })}</Button>
           </div>
         </div>
       </Section>
     {:else if activeNavId === 'pricing'}
       <Section
         id="pricing"
-        title="价格"
-        description="升级 Pro 会员，解锁更多高级功能和优质翻译服务。">
+        title={i18n('options_pricing_title', { defaultValue: 'Pricing' })}
+        description={i18n('options_pricing_description', {
+          defaultValue: 'Upgrade to Pro to unlock more advanced features and premium services.'
+        })}>
         <div class="border-primary-200 bg-primary-50 rounded-2xl border-2 p-8 text-center">
-          <h3 class="text-primary-700 text-2xl font-bold">Pro 会员</h3>
-          <p class="text-primary-600/80 mt-2">畅享 DeepL、OpenAI 等顶级翻译服务</p>
-          <Button class="mt-6 rounded-xl px-8 py-3 shadow-md border-none">立即升级</Button>
+          <h3 class="text-primary-700 text-2xl font-bold">
+            {i18n('options_pricing_pro_title', { defaultValue: 'Pro membership' })}
+          </h3>
+          <p class="text-primary-600/80 mt-2">
+            {i18n('options_pricing_pro_description', {
+              defaultValue: 'Enjoy premium services like DeepL and OpenAI translation'
+            })}
+          </p>
+          <Button class="mt-6 rounded-xl border-none px-8 py-3 shadow-md"
+            >{i18n('options_pricing_upgrade_button', { defaultValue: 'Upgrade now' })}</Button>
         </div>
       </Section>
     {:else if activeNavId === 'docs'}
-      <Section id="docs" title="使用文档" description="查看详细的功能介绍和使用教程。">
-        <SectionRow title="官方文档" description="包含所有功能的详细说明和常见问题解答">
-          <Button color="light" class="w-full rounded-xl shadow-md border-none">前往查看</Button>
+      <Section
+        id="docs"
+        title={i18n('options_docs_title', { defaultValue: 'Documentation' })}
+        description={i18n('options_docs_description', {
+          defaultValue: 'Read detailed feature guides and tutorials.'
+        })}>
+        <SectionRow
+          title={i18n('options_docs_official_title', { defaultValue: 'Official docs' })}
+          description={i18n('options_docs_official_description', {
+            defaultValue: 'Detailed docs and FAQ for all features'
+          })}>
+          <Button color="light" class="w-full rounded-xl border-none shadow-md"
+            >{i18n('options_docs_open_button', { defaultValue: 'Open docs' })}</Button>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'changelog'}
-      <Section id="changelog" title="更新日志" description="查看最近的版本更新内容和新功能。">
+      <Section
+        id="changelog"
+        title={i18n('options_changelog_title', { defaultValue: 'Changelog' })}
+        description={i18n('options_changelog_description', {
+          defaultValue: 'View recent updates and new features.'
+        })}>
         <div class="space-y-6 border-l-2 border-slate-200 pl-6">
           <div class="relative">
             <div
@@ -519,28 +937,61 @@
             <h3 class="font-semibold">v0.0.1</h3>
             <p class="mt-1 text-sm text-slate-500">2024-01-01</p>
             <ul class="mt-3 list-disc space-y-1 pl-4 text-sm text-slate-600">
-              <li>初始版本发布</li>
-              <li>支持多种 AI 翻译服务</li>
-              <li>支持网页双语对照翻译</li>
+              <li>{i18n('options_changelog_item_1', { defaultValue: 'Initial release' })}</li>
+              <li>
+                {i18n('options_changelog_item_2', {
+                  defaultValue: 'Supports multiple AI translation services'
+                })}
+              </li>
+              <li>
+                {i18n('options_changelog_item_3', {
+                  defaultValue: 'Supports bilingual webpage translation'
+                })}
+              </li>
             </ul>
           </div>
         </div>
       </Section>
     {:else if activeNavId === 'feedback'}
-      <Section id="feedback" title="问题反馈" description="遇到问题或有新想法？欢迎告诉我们。">
-        <SectionRow title="提交反馈" description="在 GitHub 上提交 Issue 或加入社区讨论">
+      <Section
+        id="feedback"
+        title={i18n('options_feedback_title', { defaultValue: 'Feedback' })}
+        description={i18n('options_feedback_description', {
+          defaultValue: 'Found an issue or have ideas? Tell us.'
+        })}>
+        <SectionRow
+          title={i18n('options_feedback_submit_title', { defaultValue: 'Submit feedback' })}
+          description={i18n('options_feedback_submit_description', {
+            defaultValue: 'Open a GitHub issue or join community discussions'
+          })}>
           <div class="space-y-3">
-            <Button color="light" class="w-full rounded-xl shadow-md border-none">GitHub Issues</Button>
-            <Button color="light" class="w-full rounded-xl shadow-md border-none">加入 Discord 社区</Button>
+            <Button color="light" class="w-full rounded-xl border-none shadow-md"
+              >{i18n('options_feedback_github_button', { defaultValue: 'GitHub Issues' })}</Button>
+            <Button color="light" class="w-full rounded-xl border-none shadow-md"
+              >{i18n('options_feedback_discord_button', {
+                defaultValue: 'Join Discord community'
+              })}</Button>
           </div>
         </SectionRow>
       </Section>
     {:else if activeNavId === 'developer'}
-      <Section id="developer" title="开发者设置" description="供开发者调试和测试的高级选项。">
-        <SectionRow title="调试能力" description="当前版本暂未提供单独的开发者调试持久化开关。">
+      <Section
+        id="developer"
+        title={i18n('options_developer_title', { defaultValue: 'Developer settings' })}
+        description={i18n('options_developer_description', {
+          defaultValue: 'Advanced options for developer debugging and testing.'
+        })}>
+        <SectionRow
+          title={i18n('options_developer_debug_title', { defaultValue: 'Debug capability' })}
+          description={i18n('options_developer_debug_description', {
+            defaultValue: 'No standalone persisted developer debug switch is currently provided.'
+          })}>
           <div
             class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            如需排查问题，建议通过浏览器扩展管理页、控制台日志和问题反馈入口进行诊断。
+            {i18n('options_developer_debug_body', {
+              defaultValue:
+                'For troubleshooting, use extension management page, console logs, and feedback entry.'
+            })}
           </div>
         </SectionRow>
       </Section>

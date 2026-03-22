@@ -1,4 +1,11 @@
+import { i18n } from '../../lib/i18n';
+
 export type ConfigRowKey = 'provider' | 'model' | 'promptPreset';
+
+export type LocalizedOption = {
+  value: string;
+  label: string;
+};
 
 export type ConfigRow = {
   key: ConfigRowKey;
@@ -12,7 +19,7 @@ export type ToggleItem = {
   label: string;
   enabled: boolean;
   hasMenu: boolean;
-  options?: string[];
+  options?: LocalizedOption[];
 };
 
 export type PopupConfig = {
@@ -24,14 +31,48 @@ export type PopupConfig = {
   toggles: Record<string, boolean>;
 };
 
-export const sourceLanguageOptions = ['自动检测', '英语(English)', '日语', '韩语', '法语', '德语'];
+const languageLabelByValue: Record<string, string> = {
+  auto: i18n('popup_language_auto', { defaultValue: 'Auto detect' }),
+  'zh-Hans': i18n('popup_language_zh_hans', { defaultValue: 'Chinese (Simplified)' }),
+  en: i18n('popup_language_en', { defaultValue: 'English' }),
+  ja: i18n('popup_language_ja', { defaultValue: 'Japanese' }),
+  ko: i18n('popup_language_ko', { defaultValue: 'Korean' }),
+  fr: i18n('popup_language_fr', { defaultValue: 'French' }),
+  de: i18n('popup_language_de', { defaultValue: 'German' })
+};
 
-export const targetLanguageOptions = ['简体中文', '英语(English)', '日语', '韩语', '法语', '德语'];
+export const sourceLanguageOptions: LocalizedOption[] = [
+  { value: 'auto', label: languageLabelByValue.auto },
+  { value: 'en', label: languageLabelByValue.en },
+  { value: 'ja', label: languageLabelByValue.ja },
+  { value: 'ko', label: languageLabelByValue.ko },
+  { value: 'fr', label: languageLabelByValue.fr },
+  { value: 'de', label: languageLabelByValue.de }
+];
+
+export const targetLanguageOptions: LocalizedOption[] = [
+  { value: 'zh-Hans', label: languageLabelByValue['zh-Hans'] },
+  { value: 'en', label: languageLabelByValue.en },
+  { value: 'ja', label: languageLabelByValue.ja },
+  { value: 'ko', label: languageLabelByValue.ko },
+  { value: 'fr', label: languageLabelByValue.fr },
+  { value: 'de', label: languageLabelByValue.de }
+];
 
 export const languageOptions = [
-  { value: '英语(English)', hint: '自动检测' },
-  { value: '简体中文', hint: '目标语言' }
+  {
+    value: 'en',
+    hint: i18n('popup_language_source_hint', { defaultValue: 'Auto detect' })
+  },
+  {
+    value: 'zh-Hans',
+    hint: i18n('popup_language_target_hint', { defaultValue: 'Target language' })
+  }
 ];
+
+export function getLanguageLabel(value: string): string {
+  return languageLabelByValue[value] ?? value;
+}
 
 export const providerOptions = [
   'OpenAI',
@@ -80,92 +121,256 @@ export const modelOptionsByProvider: Record<string, string[]> = {
   OpenRouter: ['openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0-flash-001']
 };
 
-export const promptPresetOptions = [
-  '通用',
-  '智能选择',
-  '意译大师',
-  '段落总结专家',
-  '英文简化大师',
-  'Twitter 翻译增强器',
-  '科技类翻译大师',
-  'Reddit 翻译增强器',
-  '学术论文翻译师',
-  '新闻媒体译者',
-  '音乐专家',
-  '医学翻译大师',
-  '法律行业译者',
-  'GitHub 翻译增强器',
-  '游戏译者',
-  '电商翻译大师',
-  '金融翻译顾问',
-  '小说译者',
-  'AO3 译者',
-  '电子书译者',
-  '设计师',
-  '中英杂杂',
-  'Web3 翻译大师',
-  '更多翻译专家'
+export const promptPresetOptions: LocalizedOption[] = [
+  { value: 'general', label: i18n('popup_prompt_preset_general', { defaultValue: 'General' }) },
+  {
+    value: 'smart_select',
+    label: i18n('popup_prompt_preset_smart_select', { defaultValue: 'Smart selection' })
+  },
+  {
+    value: 'paraphrase_master',
+    label: i18n('popup_prompt_preset_paraphrase_master', { defaultValue: 'Paraphrase master' })
+  },
+  {
+    value: 'paragraph_summary_expert',
+    label: i18n('popup_prompt_preset_paragraph_summary', {
+      defaultValue: 'Paragraph summary expert'
+    })
+  },
+  {
+    value: 'english_simplify_master',
+    label: i18n('popup_prompt_preset_english_simplify', {
+      defaultValue: 'English simplification master'
+    })
+  },
+  {
+    value: 'twitter_enhancer',
+    label: i18n('popup_prompt_preset_twitter_enhancer', {
+      defaultValue: 'Twitter translation enhancer'
+    })
+  },
+  {
+    value: 'tech_translation_master',
+    label: i18n('popup_prompt_preset_tech_translation', { defaultValue: 'Tech translation master' })
+  },
+  {
+    value: 'reddit_enhancer',
+    label: i18n('popup_prompt_preset_reddit_enhancer', {
+      defaultValue: 'Reddit translation enhancer'
+    })
+  },
+  {
+    value: 'paper_translation_expert',
+    label: i18n('popup_prompt_preset_paper_translation', {
+      defaultValue: 'Academic paper translator'
+    })
+  },
+  {
+    value: 'news_media_translator',
+    label: i18n('popup_prompt_preset_news_media', { defaultValue: 'News media translator' })
+  },
+  {
+    value: 'music_expert',
+    label: i18n('popup_prompt_preset_music', { defaultValue: 'Music expert' })
+  },
+  {
+    value: 'medical_translation_master',
+    label: i18n('popup_prompt_preset_medical', { defaultValue: 'Medical translation master' })
+  },
+  {
+    value: 'legal_industry_translator',
+    label: i18n('popup_prompt_preset_legal', { defaultValue: 'Legal industry translator' })
+  },
+  {
+    value: 'github_enhancer',
+    label: i18n('popup_prompt_preset_github_enhancer', {
+      defaultValue: 'GitHub translation enhancer'
+    })
+  },
+  {
+    value: 'game_translator',
+    label: i18n('popup_prompt_preset_game', { defaultValue: 'Game translator' })
+  },
+  {
+    value: 'ecommerce_translation_master',
+    label: i18n('popup_prompt_preset_ecommerce', { defaultValue: 'E-commerce translation master' })
+  },
+  {
+    value: 'finance_translation_consultant',
+    label: i18n('popup_prompt_preset_finance', { defaultValue: 'Finance translation consultant' })
+  },
+  {
+    value: 'novel_translator',
+    label: i18n('popup_prompt_preset_novel', { defaultValue: 'Novel translator' })
+  },
+  {
+    value: 'ao3_translator',
+    label: i18n('popup_prompt_preset_ao3', { defaultValue: 'AO3 translator' })
+  },
+  {
+    value: 'ebook_translator',
+    label: i18n('popup_prompt_preset_ebook', { defaultValue: 'E-book translator' })
+  },
+  { value: 'designer', label: i18n('popup_prompt_preset_designer', { defaultValue: 'Designer' }) },
+  {
+    value: 'mixed_zh_en',
+    label: i18n('popup_prompt_preset_mixed_zh_en', { defaultValue: 'Mixed Chinese-English' })
+  },
+  {
+    value: 'web3_translation_master',
+    label: i18n('popup_prompt_preset_web3', { defaultValue: 'Web3 translation master' })
+  },
+  {
+    value: 'more_translation_experts',
+    label: i18n('popup_prompt_preset_more_experts', { defaultValue: 'More translation experts' })
+  }
 ];
+
+const promptPresetLabelByValue = Object.fromEntries(
+  promptPresetOptions.map((option) => [option.value, option.label])
+);
+
+export function getPromptPresetLabel(value: string): string {
+  return promptPresetLabelByValue[value] ?? value;
+}
 
 export const configRows: ConfigRow[] = [
   {
     key: 'provider',
-    label: '供应商',
+    label: i18n('popup_config_provider', { defaultValue: 'Provider' }),
     value: 'Ollama',
     options: providerOptions
   },
   {
     key: 'model',
-    label: '模型',
+    label: i18n('popup_config_model', { defaultValue: 'Model' }),
     value: modelOptionsByProvider.Ollama[0],
     options: modelOptionsByProvider.Ollama
   },
   {
     key: 'promptPreset',
-    label: '提示词',
-    value: '通用',
-    options: promptPresetOptions
+    label: i18n('popup_config_prompt_preset', { defaultValue: 'Prompt preset' }),
+    value: promptPresetOptions[0]?.value ?? '',
+    options: promptPresetOptions.map((option) => option.value)
   }
 ];
 
 export const toggles: ToggleItem[] = [
   {
     key: 'alwaysTranslateSite',
-    label: '总是翻译该网站',
+    label: i18n('popup_toggle_always_translate_site', {
+      defaultValue: 'Always translate this site'
+    }),
     enabled: false,
     hasMenu: true,
-    options: ['总是翻译该网站', '不自动翻译该网站']
+    options: [
+      {
+        value: 'always_translate_site',
+        label: i18n('popup_toggle_mode_always_translate_site', {
+          defaultValue: 'Always translate this site'
+        })
+      },
+      {
+        value: 'never_auto_translate_site',
+        label: i18n('popup_toggle_mode_never_auto_translate_site', {
+          defaultValue: 'Do not auto-translate this site'
+        })
+      }
+    ]
   },
   {
     key: 'hoverTrigger',
-    label: '鼠标悬停: ＋ Ctrl 翻译/还原该段',
+    label: i18n('popup_toggle_hover_trigger', {
+      defaultValue: 'Hover trigger: + Ctrl to translate/restore paragraph'
+    }),
     enabled: true,
     hasMenu: true,
     options: [
-      '＋ Ctrl 翻译/还原该段',
-      '＋ Shift 翻译/还原该段',
-      '＋ Alt 翻译/还原该段',
-      '＋ 长按鼠标左键',
-      '直接翻译该段',
-      '自定义快捷键(打开设置)'
+      {
+        value: 'ctrl',
+        label: i18n('popup_toggle_mode_hover_ctrl', {
+          defaultValue: '+ Ctrl to translate/restore paragraph'
+        })
+      },
+      {
+        value: 'shift',
+        label: i18n('popup_toggle_mode_hover_shift', {
+          defaultValue: '+ Shift to translate/restore paragraph'
+        })
+      },
+      {
+        value: 'alt',
+        label: i18n('popup_toggle_mode_hover_alt', {
+          defaultValue: '+ Alt to translate/restore paragraph'
+        })
+      },
+      {
+        value: 'long_press_left_click',
+        label: i18n('popup_toggle_mode_hover_long_press', {
+          defaultValue: '+ Long press left mouse button'
+        })
+      },
+      {
+        value: 'direct',
+        label: i18n('popup_toggle_mode_hover_direct', {
+          defaultValue: 'Directly translate paragraph'
+        })
+      },
+      {
+        value: 'custom_shortcut',
+        label: i18n('popup_toggle_mode_hover_custom_shortcut', {
+          defaultValue: 'Custom shortcut (open settings)'
+        })
+      }
     ]
   },
   {
     key: 'selectionTrigger',
-    label: '划词翻译: 显示小圆点',
+    label: i18n('popup_toggle_selection_trigger', {
+      defaultValue: 'Selection translation: Show small dot'
+    }),
     enabled: true,
     hasMenu: true,
-    options: ['直接触发', '显示图标', '显示小圆点', '按 Ctrl 触发', '按 Shift 触发', '按 Alt 触发']
+    options: [
+      {
+        value: 'direct',
+        label: i18n('popup_toggle_mode_selection_direct', { defaultValue: 'Direct trigger' })
+      },
+      {
+        value: 'icon',
+        label: i18n('popup_toggle_mode_selection_icon', { defaultValue: 'Show icon' })
+      },
+      {
+        value: 'dot',
+        label: i18n('popup_toggle_mode_selection_dot', { defaultValue: 'Show small dot' })
+      },
+      {
+        value: 'ctrl',
+        label: i18n('popup_toggle_mode_selection_ctrl', { defaultValue: 'Trigger with Ctrl' })
+      },
+      {
+        value: 'shift',
+        label: i18n('popup_toggle_mode_selection_shift', { defaultValue: 'Trigger with Shift' })
+      },
+      {
+        value: 'alt',
+        label: i18n('popup_toggle_mode_selection_alt', { defaultValue: 'Trigger with Alt' })
+      }
+    ]
   },
   {
     key: 'alwaysTranslateChinesePage',
-    label: '总是翻译简体中文页面',
+    label: i18n('popup_toggle_always_translate_chinese_page', {
+      defaultValue: 'Always translate Chinese (Simplified) pages'
+    }),
     enabled: false,
     hasMenu: false
   },
   {
     key: 'autoBilingualSubtitle',
-    label: '自动开启双语字幕',
+    label: i18n('popup_toggle_auto_bilingual_subtitle', {
+      defaultValue: 'Auto-enable bilingual subtitles'
+    }),
     enabled: false,
     hasMenu: false
   }
@@ -181,29 +386,101 @@ export const defaultPopupConfig: PopupConfig = {
 };
 
 export const quickActions = [
-  { label: '文档翻译', icon: '📄' },
-  { label: '文本翻译', icon: 'T' },
-  { label: '工具箱', icon: '⚒️' }
+  {
+    label: i18n('popup_quick_action_doc_translate', { defaultValue: 'Document Translate' }),
+    icon: '📄'
+  },
+  {
+    label: i18n('popup_quick_action_text_translate', { defaultValue: 'Text Translate' }),
+    icon: 'T'
+  },
+  { label: i18n('popup_quick_action_toolbox', { defaultValue: 'Toolbox' }), icon: '⚒️' }
 ];
 
 export const moreItems = [
-  { icon: '📙', label: '使用说明' },
-  { icon: '🕒', label: '临时切换默认译文模式为仅显示译文' },
-  { icon: '🪄', label: '切换为朗译所有区域' },
-  { icon: '💪', label: '开启侧边栏翻译' },
-  { icon: '⚡', label: '立即翻译到页面底部' },
-  { icon: '📘', label: '阅读本地电子书' },
-  { icon: '📗', label: '制作双语 EPUB 电子书' },
-  { icon: '📕', label: 'BabelDOC 保留排版 PDF 翻译' },
-  { icon: '🗂️', label: '翻译本地 PDF 文件' },
-  { icon: '🟢', label: 'AI 驱动的 PDF Pro 翻译' },
-  { icon: '🌐', label: '翻译 HTML/txt 文件' },
-  { icon: '🎞️', label: '翻译本地字幕文件' },
-  { icon: '⭕', label: '禁用悬浮球' },
-  { icon: '🖊️', label: '临时开启译文编辑' },
-  { icon: '🔥', label: '免费试用 Pro 会员' },
-  { icon: '🧹', label: '清除缓存' },
-  { icon: '💬', label: '反馈当前页面翻译问题' },
-  { icon: '👍', label: '去商店评价' },
-  { icon: '❤️', label: '关于 - 反馈' }
+  { icon: '📙', label: i18n('popup_more_item_user_guide', { defaultValue: 'User guide' }) },
+  {
+    icon: '🕒',
+    label: i18n('popup_more_item_temp_translation_only', {
+      defaultValue: 'Temporarily set default mode to translation-only'
+    })
+  },
+  {
+    icon: '🪄',
+    label: i18n('popup_more_item_translate_all_regions', {
+      defaultValue: 'Switch to translating all regions'
+    })
+  },
+  {
+    icon: '💪',
+    label: i18n('popup_more_item_enable_sidebar', { defaultValue: 'Enable sidebar translation' })
+  },
+  {
+    icon: '⚡',
+    label: i18n('popup_more_item_translate_to_bottom', {
+      defaultValue: 'Translate to page bottom now'
+    })
+  },
+  {
+    icon: '📘',
+    label: i18n('popup_more_item_read_local_ebook', { defaultValue: 'Read local e-book' })
+  },
+  {
+    icon: '📗',
+    label: i18n('popup_more_item_make_bilingual_epub', {
+      defaultValue: 'Create bilingual EPUB e-book'
+    })
+  },
+  {
+    icon: '📕',
+    label: i18n('popup_more_item_babeldoc_pdf_translate', {
+      defaultValue: 'BabelDOC layout-preserving PDF translation'
+    })
+  },
+  {
+    icon: '🗂️',
+    label: i18n('popup_more_item_local_pdf_translate', { defaultValue: 'Translate local PDF file' })
+  },
+  {
+    icon: '🟢',
+    label: i18n('popup_more_item_ai_pdf_pro_translate', {
+      defaultValue: 'AI-powered PDF Pro translation'
+    })
+  },
+  {
+    icon: '🌐',
+    label: i18n('popup_more_item_html_txt_translate', { defaultValue: 'Translate HTML/txt files' })
+  },
+  {
+    icon: '🎞️',
+    label: i18n('popup_more_item_subtitle_file_translate', {
+      defaultValue: 'Translate local subtitle files'
+    })
+  },
+  {
+    icon: '⭕',
+    label: i18n('popup_more_item_disable_floating_ball', { defaultValue: 'Disable floating ball' })
+  },
+  {
+    icon: '🖊️',
+    label: i18n('popup_more_item_enable_edit_translation', {
+      defaultValue: 'Temporarily enable translation editing'
+    })
+  },
+  {
+    icon: '🔥',
+    label: i18n('popup_more_item_try_pro', { defaultValue: 'Try Pro membership for free' })
+  },
+  { icon: '🧹', label: i18n('popup_more_item_clear_cache', { defaultValue: 'Clear cache' }) },
+  {
+    icon: '💬',
+    label: i18n('popup_more_item_feedback_page_translation', {
+      defaultValue: 'Report translation issue on this page'
+    })
+  },
+  { icon: '👍', label: i18n('popup_more_item_rate_store', { defaultValue: 'Rate in store' }) },
+  {
+    icon: '❤️',
+    label: i18n('popup_more_item_about_feedback', { defaultValue: 'About - Feedback' })
+  }
 ];

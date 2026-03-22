@@ -15,6 +15,8 @@
   import {
     configRows,
     defaultPopupConfig,
+    getLanguageLabel,
+    getPromptPresetLabel,
     languageOptions,
     modelOptionsByProvider,
     moreItems,
@@ -45,6 +47,18 @@
       return modelOptionsByProvider[popupConfig.provider] ?? row.options;
     }
     return row.options;
+  };
+
+  const getConfigOptionLabel = (key: ConfigRowKey, value: string) => {
+    if (key === 'promptPreset') {
+      return getPromptPresetLabel(value);
+    }
+    return value;
+  };
+
+  const getConfigDisplayValue = (key: ConfigRowKey) => {
+    const value = getConfigValue(key);
+    return key === 'promptPreset' ? getPromptPresetLabel(value) : value;
   };
 
   const updateConfig = (key: ConfigRowKey, value: string) => {
@@ -100,7 +114,7 @@
         class="rounded-xl bg-slate-100 px-3 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <div class="flex flex-col text-left">
           <span class="line-clamp-1 font-medium">
-            {popupConfig.sourceLanguage}
+            {getLanguageLabel(popupConfig.sourceLanguage)}
           </span>
           <span class="text-xs text-slate-400">
             {languageOptions[0].hint}
@@ -111,9 +125,9 @@
       <Dropdown
         simple
         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-        {#each sourceLanguageOptions as option (option)}
-          <DropdownItem on:click={() => updateLanguage('source', option)}>
-            {option}
+        {#each sourceLanguageOptions as option (option.value)}
+          <DropdownItem on:click={() => updateLanguage('source', option.value)}>
+            {option.label}
           </DropdownItem>
         {/each}
       </Dropdown>
@@ -124,7 +138,7 @@
         class="rounded-xl bg-slate-100 px-3 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <div class="flex flex-col text-left">
           <span class="line-clamp-1 font-medium">
-            {popupConfig.targetLanguage}
+            {getLanguageLabel(popupConfig.targetLanguage)}
           </span>
           <span class="text-xs text-slate-400">
             {languageOptions[1].hint}
@@ -135,9 +149,9 @@
       <Dropdown
         simple
         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-        {#each targetLanguageOptions as option (option)}
-          <DropdownItem on:click={() => updateLanguage('target', option)}>
-            {option}
+        {#each targetLanguageOptions as option (option.value)}
+          <DropdownItem on:click={() => updateLanguage('target', option.value)}>
+            {option.label}
           </DropdownItem>
         {/each}
       </Dropdown>
@@ -152,7 +166,7 @@
           <div class="font-medium">{row.label}</div>
           <button type="button" class="flex flex-1 items-center justify-between">
             <div class="flex flex-col text-left font-medium">
-              {getConfigValue(row.key)}
+              {getConfigDisplayValue(row.key)}
             </div>
             <ChevronDownOutline class="h-6 w-6 text-slate-400" />
           </button>
@@ -162,7 +176,7 @@
             class="max-h-72 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
             {#each getConfigOptions(row) as option (option)}
               <DropdownItem on:click={() => updateConfig(row.key, option)}>
-                {option}
+                {getConfigOptionLabel(row.key, option)}
               </DropdownItem>
             {/each}
           </Dropdown>
@@ -176,7 +190,8 @@
         class="bg-slate-100 p-2! hover:bg-slate-200/70 dark:bg-slate-700 hover:dark:bg-slate-600">
         <LanguageOutline class="text-primary-500 h-6 w-6 shrink-0" />
       </Button>
-      <Button class="flex-1 rounded-xl text-base">翻译（⌥A）</Button>
+      <Button class="flex-1 rounded-xl text-base"
+        >{i18n('popup_translate_button', { defaultValue: 'Translate (⌥A)' })}</Button>
     </section>
 
     <section class="flex flex-col gap-3">
@@ -193,8 +208,8 @@
               simple
               placement="bottom-end"
               class="bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-              {#each item.options as option (option)}
-                <DropdownItem>{option}</DropdownItem>
+              {#each item.options as option (option.value)}
+                <DropdownItem>{option.label}</DropdownItem>
               {/each}
             </Dropdown>
           {/if}
@@ -223,12 +238,12 @@
   <footer class="flex items-center justify-between p-2 text-sm">
     <button type="button" class="flex items-center gap-1" onclick={openOptionsPage}>
       <CogOutline class="h-4 w-4 shrink-0" />
-      <span>设置</span>
+      <span>{i18n('popup_footer_settings', { defaultValue: 'Settings' })}</span>
     </button>
     <div class="text-slate-400">v0.0.1</div>
     <div>
       <button type="button" class="flex min-w-0 items-center">
-        <span class="font-medium">更多</span>
+        <span class="font-medium">{i18n('popup_footer_more', { defaultValue: 'More' })}</span>
         <ChevronDownOutline class="h-6 w-6 text-slate-400" />
       </button>
       <Dropdown

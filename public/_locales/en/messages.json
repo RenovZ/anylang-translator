@@ -1,6 +1,840 @@
 {
+  "options_about_check_update": {
+    "message": "Check for updates"
+  },
+  "options_about_description": {
+    "message": "Learn about the Immersive Translate extension."
+  },
+  "options_about_product_name": {
+    "message": "Immersive Translate"
+  },
+  "options_about_title": {
+    "message": "About"
+  },
+  "options_about_version": {
+    "message": "Version 0.0.1"
+  },
+  "options_about_website": {
+    "message": "Official website"
+  },
+  "options_advanced_chinese_page_description": {
+    "message": "Control whether Chinese (Simplified) pages are translated by default."
+  },
+  "options_advanced_chinese_page_title": {
+    "message": "Chinese pages"
+  },
+  "options_advanced_description": {
+    "message": "More low-level and experimental feature settings."
+  },
+  "options_advanced_experimental_body": {
+    "message": "Only advanced options already wired to storage are kept to avoid showing unsavable temporary switches."
+  },
+  "options_advanced_experimental_description": {
+    "message": "More experimental toggles will be added gradually in future versions."
+  },
+  "options_advanced_experimental_title": {
+    "message": "Experimental features"
+  },
+  "options_advanced_title": {
+    "message": "Advanced settings"
+  },
+  "options_ai_description": {
+    "message": "Choose default prompt preset and AI expert mode."
+  },
+  "options_ai_prompt_preset_description": {
+    "message": "Choose the prompt preset for your current scenario"
+  },
+  "options_ai_prompt_preset_title": {
+    "message": "Prompt preset"
+  },
+  "options_ai_title": {
+    "message": "AI experts"
+  },
+  "options_button_toolbox": {
+    "message": "Toolbox"
+  },
+  "options_changelog_description": {
+    "message": "View recent updates and new features."
+  },
+  "options_changelog_item_1": {
+    "message": "Initial release"
+  },
+  "options_changelog_item_2": {
+    "message": "Supports multiple AI translation services"
+  },
+  "options_changelog_item_3": {
+    "message": "Supports bilingual webpage translation"
+  },
+  "options_changelog_title": {
+    "message": "Changelog"
+  },
+  "options_developer_debug_body": {
+    "message": "For troubleshooting, use extension management page, console logs, and feedback entry."
+  },
+  "options_developer_debug_description": {
+    "message": "No standalone persisted developer debug switch is currently provided."
+  },
+  "options_developer_debug_title": {
+    "message": "Debug capability"
+  },
+  "options_developer_description": {
+    "message": "Advanced options for developer debugging and testing."
+  },
+  "options_developer_title": {
+    "message": "Developer settings"
+  },
+  "options_docs_description": {
+    "message": "Read detailed feature guides and tutorials."
+  },
+  "options_docs_official_description": {
+    "message": "Detailed docs and FAQ for all features"
+  },
+  "options_docs_official_title": {
+    "message": "Official docs"
+  },
+  "options_docs_open_button": {
+    "message": "Open docs"
+  },
+  "options_docs_title": {
+    "message": "Documentation"
+  },
+  "options_export_button": {
+    "message": "Export"
+  },
+  "options_export_card_description": {
+    "message": "Save all current settings to a file"
+  },
+  "options_export_card_title": {
+    "message": "Export config"
+  },
+  "options_feedback_description": {
+    "message": "Found an issue or have ideas? Tell us."
+  },
+  "options_feedback_discord_button": {
+    "message": "Join Discord community"
+  },
+  "options_feedback_github_button": {
+    "message": "GitHub Issues"
+  },
+  "options_feedback_submit_description": {
+    "message": "Open a GitHub issue or join community discussions"
+  },
+  "options_feedback_submit_title": {
+    "message": "Submit feedback"
+  },
+  "options_feedback_title": {
+    "message": "Feedback"
+  },
+  "options_floating_description": {
+    "message": "Quick translation floating ball settings on page edges."
+  },
+  "options_floating_site_rule_button": {
+    "message": "View site rule guide"
+  },
+  "options_floating_site_rule_description": {
+    "message": "To adjust auto-translation sites, open the site list in General settings."
+  },
+  "options_floating_site_rule_title": {
+    "message": "Site rules"
+  },
+  "options_floating_strategy_body": {
+    "message": "The floating ball does not save its own switch yet and follows page translation and site rules."
+  },
+  "options_floating_strategy_description": {
+    "message": "Floating ball follows page translation rules; standalone behavior controls are planned for later versions."
+  },
+  "options_floating_strategy_title": {
+    "message": "Current strategy"
+  },
+  "options_floating_title": {
+    "message": "Floating ball"
+  },
+  "options_general_add_button": {
+    "message": "Add"
+  },
+  "options_general_always_translate_languages_description": {
+    "message": "When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts."
+  },
+  "options_general_always_translate_languages_title": {
+    "message": "Always-translate languages"
+  },
+  "options_general_always_translate_sites_description": {
+    "message": "When current site matches these domains, content will auto-translate to target language"
+  },
+  "options_general_always_translate_sites_title": {
+    "message": "Always-translate sites"
+  },
+  "options_general_batch_ops": {
+    "message": "Batch operations"
+  },
+  "options_general_custom_color_size": {
+    "message": "Custom color and size"
+  },
+  "options_general_custom_font_input": {
+    "message": "Use custom font"
+  },
+  "options_general_delete_button": {
+    "message": "Delete"
+  },
+  "options_general_edit_button": {
+    "message": "Edit"
+  },
+  "options_general_expand_custom_options": {
+    "message": "Expand more custom options"
+  },
+  "options_general_font_scale": {
+    "message": "Font scale (%)"
+  },
+  "options_general_font_weight": {
+    "message": "Font weight"
+  },
+  "options_general_header_clear_cache": {
+    "message": "Clear cache"
+  },
+  "options_general_header_reset": {
+    "message": "Reset settings"
+  },
+  "options_general_italic": {
+    "message": "Set italic style"
+  },
+  "options_general_login_button": {
+    "message": "Log in"
+  },
+  "options_general_login_hint": {
+    "message": "Unlock membership after login"
+  },
+  "options_general_never_translate_languages_description": {
+    "message": "When a paragraph language is one of these, translation is skipped"
+  },
+  "options_general_never_translate_languages_title": {
+    "message": "Never-translate languages"
+  },
+  "options_general_never_translate_sites_description": {
+    "message": "When current site matches these domains, auto-translation is disabled. This rule has higher priority than language rules."
+  },
+  "options_general_never_translate_sites_title": {
+    "message": "Never auto-translate sites"
+  },
+  "options_general_preference_bilingual": {
+    "message": "Bilingual"
+  },
+  "options_general_preference_translation_only": {
+    "message": "Translation only"
+  },
+  "options_general_preview_all_styles": {
+    "message": "Preview all styles"
+  },
+  "options_general_restore_default": {
+    "message": "Restore default settings"
+  },
+  "options_general_restore_default_color": {
+    "message": "Restore default color"
+  },
+  "options_general_rich_text_aria": {
+    "message": "Enable rich text translation"
+  },
+  "options_general_rich_text_description": {
+    "message": "Preserve original links and style effects in rich text translation"
+  },
+  "options_general_rich_text_title": {
+    "message": "Enable rich text translation"
+  },
+  "options_general_service_description": {
+    "message": "Choose a translation service"
+  },
+  "options_general_service_test": {
+    "message": "Test this service"
+  },
+  "options_general_service_title": {
+    "message": "Translation service"
+  },
+  "options_general_set_font": {
+    "message": "Set font"
+  },
+  "options_general_similar_language_bg_aria": {
+    "message": "Add background color when page and target languages are similar"
+  },
+  "options_general_similar_language_bg_description": {
+    "message": "When page and target languages are similar, add a background to translated text for easier side-by-side reading."
+  },
+  "options_general_similar_language_bg_title": {
+    "message": "Add background color when page and target languages are similar"
+  },
+  "options_general_site_placeholder": {
+    "message": "example.com"
+  },
+  "options_general_style_blur_learning": {
+    "message": "Blur (learning mode)"
+  },
+  "options_general_style_dashed_border": {
+    "message": "Dashed border"
+  },
+  "options_general_style_dashed_underline": {
+    "message": "Dashed underline"
+  },
+  "options_general_style_divider": {
+    "message": "Divider"
+  },
+  "options_general_style_dotted_underline": {
+    "message": "Dotted underline"
+  },
+  "options_general_style_highlight": {
+    "message": "Highlight"
+  },
+  "options_general_style_none": {
+    "message": "None"
+  },
+  "options_general_style_solid_border": {
+    "message": "Solid border"
+  },
+  "options_general_style_solid_underline": {
+    "message": "Solid underline"
+  },
+  "options_general_style_transparent": {
+    "message": "Transparent"
+  },
+  "options_general_target_language_description": {
+    "message": "Set the language you want content translated into"
+  },
+  "options_general_target_language_title": {
+    "message": "Target language"
+  },
+  "options_general_text_color": {
+    "message": "Text color"
+  },
+  "options_general_title": {
+    "message": "General settings"
+  },
+  "options_general_translation_preference_description": {
+    "message": "Choose display mode after translation: bilingual or translation-only"
+  },
+  "options_general_translation_preference_title": {
+    "message": "Translation preference"
+  },
+  "options_general_translation_style_description": {
+    "message": "Distinguish translated text styles; see examples below"
+  },
+  "options_general_translation_style_title": {
+    "message": "Translation display style"
+  },
+  "options_general_ui_language_description": {
+    "message": "UI language affects panel display language and does not change translation target language"
+  },
+  "options_general_ui_language_en": {
+    "message": "English"
+  },
+  "options_general_ui_language_title": {
+    "message": "UI language"
+  },
+  "options_general_ui_language_zh_hans": {
+    "message": "Chinese (Simplified)"
+  },
+  "options_hover_description": {
+    "message": "Automatically translate when hovering over paragraphs."
+  },
+  "options_hover_enabled_description": {
+    "message": "Control whether hover can quickly translate current paragraph"
+  },
+  "options_hover_enabled_title": {
+    "message": "Enabled status"
+  },
+  "options_hover_shortcut_description": {
+    "message": "Choose the shortcut combination for hover translation"
+  },
+  "options_hover_shortcut_title": {
+    "message": "Trigger shortcut"
+  },
+  "options_hover_title": {
+    "message": "Mouse hover"
+  },
+  "options_import_button": {
+    "message": "Import"
+  },
+  "options_import_card_description": {
+    "message": "Restore settings from a backup file"
+  },
+  "options_import_card_title": {
+    "message": "Import config"
+  },
+  "options_import_export_description": {
+    "message": "Back up or restore all your configuration data."
+  },
+  "options_import_export_title": {
+    "message": "Import/Export"
+  },
+  "options_input_description": {
+    "message": "Quickly translate content typed in input fields."
+  },
+  "options_input_status_body": {
+    "message": "This version keeps the entry hint; the actual shortcut switch will be added once shortcut settings stabilize."
+  },
+  "options_input_status_description": {
+    "message": "Trigger conditions are being unified into one shortcut system."
+  },
+  "options_input_status_title": {
+    "message": "Feature status"
+  },
+  "options_input_title": {
+    "message": "Input translation"
+  },
+  "options_manga_description": {
+    "message": "Configure translation recognition settings for images and manga."
+  },
+  "options_manga_guide_button": {
+    "message": "View image translation guide"
+  },
+  "options_manga_ocr_body": {
+    "message": "No standalone OCR engine config is needed now; global service config is reused."
+  },
+  "options_manga_ocr_description": {
+    "message": "This capability follows main translation service settings; granular OCR options will arrive later."
+  },
+  "options_manga_ocr_title": {
+    "message": "Image recognition"
+  },
+  "options_manga_scene_description": {
+    "message": "Useful for manga dialogue, screenshots, and subtitle-free image content."
+  },
+  "options_manga_scene_title": {
+    "message": "Applicable scenarios"
+  },
+  "options_manga_title": {
+    "message": "Manga/Images"
+  },
+  "options_nav_about": {
+    "message": "About"
+  },
+  "options_nav_advanced": {
+    "message": "Advanced settings"
+  },
+  "options_nav_ai": {
+    "message": "AI experts"
+  },
+  "options_nav_changelog": {
+    "message": "Changelog"
+  },
+  "options_nav_developer": {
+    "message": "Developer settings"
+  },
+  "options_nav_docs": {
+    "message": "Documentation"
+  },
+  "options_nav_fallback_settings": {
+    "message": "Settings"
+  },
+  "options_nav_feedback": {
+    "message": "Feedback"
+  },
+  "options_nav_floating": {
+    "message": "Floating ball"
+  },
+  "options_nav_general": {
+    "message": "General settings"
+  },
+  "options_nav_import_export": {
+    "message": "Import/Export"
+  },
+  "options_nav_input": {
+    "message": "Input translation"
+  },
+  "options_nav_manga": {
+    "message": "Manga/Images"
+  },
+  "options_nav_mouse_hover": {
+    "message": "Mouse hover"
+  },
+  "options_nav_pricing": {
+    "message": "Pricing"
+  },
+  "options_nav_selection_translation": {
+    "message": "Selection translation"
+  },
+  "options_nav_services": {
+    "message": "Translation services"
+  },
+  "options_nav_shortcuts": {
+    "message": "Shortcuts"
+  },
+  "options_nav_subtitle": {
+    "message": "Video subtitles"
+  },
+  "options_nav_terms": {
+    "message": "AI terminology"
+  },
+  "options_nav_writing": {
+    "message": "AI Write"
+  },
+  "options_pricing_description": {
+    "message": "Upgrade to Pro to unlock more advanced features and premium services."
+  },
+  "options_pricing_pro_description": {
+    "message": "Enjoy premium services like DeepL and OpenAI translation"
+  },
+  "options_pricing_pro_title": {
+    "message": "Pro membership"
+  },
+  "options_pricing_title": {
+    "message": "Pricing"
+  },
+  "options_pricing_upgrade_button": {
+    "message": "Upgrade now"
+  },
+  "options_selection_description": {
+    "message": "Quickly view translations after selecting text."
+  },
+  "options_selection_enabled_description": {
+    "message": "Control whether the selection translation entry is shown"
+  },
+  "options_selection_enabled_title": {
+    "message": "Enabled status"
+  },
+  "options_selection_title": {
+    "message": "Selection translation"
+  },
+  "options_selection_trigger_description": {
+    "message": "Choose how selection translation is triggered"
+  },
+  "options_selection_trigger_title": {
+    "message": "Trigger mode"
+  },
+  "options_services_default_model_description": {
+    "message": "Choose a model under the selected provider"
+  },
+  "options_services_default_model_title": {
+    "message": "Default model"
+  },
+  "options_services_description": {
+    "message": "Choose your model provider and default model."
+  },
+  "options_services_provider_description": {
+    "message": "Choose your preferred AI model provider"
+  },
+  "options_services_provider_title": {
+    "message": "Provider"
+  },
+  "options_services_title": {
+    "message": "Translation services"
+  },
+  "options_shortcuts_description": {
+    "message": "Customize global and in-page shortcuts."
+  },
+  "options_shortcuts_title": {
+    "message": "Shortcuts"
+  },
+  "options_shortcuts_window_description": {
+    "message": "Global shortcut to open the standalone translation window"
+  },
+  "options_shortcuts_window_title": {
+    "message": "Standalone translation window"
+  },
+  "options_status_reset": {
+    "message": "Defaults restored"
+  },
+  "options_status_saved": {
+    "message": "Settings saved"
+  },
+  "options_subtitle_auto_aria": {
+    "message": "Auto-enable bilingual subtitles"
+  },
+  "options_subtitle_auto_description": {
+    "message": "Automatically show bilingual subtitles on supported sites"
+  },
+  "options_subtitle_auto_title": {
+    "message": "Auto-enable bilingual subtitles"
+  },
+  "options_subtitle_description": {
+    "message": "Configure bilingual subtitle translation for online videos."
+  },
+  "options_subtitle_title": {
+    "message": "Video subtitles"
+  },
+  "options_terms_description": {
+    "message": "Manage your translation glossary for consistent terms."
+  },
+  "options_terms_empty_hint": {
+    "message": "After enabling, you can add and manage terms here"
+  },
+  "options_terms_enable_button": {
+    "message": "Enable glossary"
+  },
+  "options_terms_status_description": {
+    "message": "Custom glossary is currently disabled"
+  },
+  "options_terms_status_title": {
+    "message": "Glossary status"
+  },
+  "options_terms_title": {
+    "message": "AI terminology"
+  },
+  "options_title_extension_name": {
+    "message": "Immersive Translate"
+  },
+  "options_writing_description": {
+    "message": "Configure AI writing assistance and polishing features."
+  },
+  "options_writing_status_body": {
+    "message": "Writing templates, tone preferences, and auto-polish rules will be available in future versions."
+  },
+  "options_writing_status_description": {
+    "message": "This version includes an entry point; saveable style and scenario presets will be added later."
+  },
+  "options_writing_status_title": {
+    "message": "Feature status"
+  },
+  "options_writing_title": {
+    "message": "AI Write"
+  },
+  "options_writing_usage_description": {
+    "message": "For now, choose model and prompt in popup panel first, then use writing capability."
+  },
+  "options_writing_usage_title": {
+    "message": "Recommended usage"
+  },
+  "options_writing_view_soon_button": {
+    "message": "View upcoming capabilities"
+  },
+  "popup_config_model": {
+    "message": "Model"
+  },
+  "popup_config_prompt_preset": {
+    "message": "Prompt preset"
+  },
+  "popup_config_provider": {
+    "message": "Provider"
+  },
+  "popup_footer_more": {
+    "message": "More"
+  },
+  "popup_footer_settings": {
+    "message": "Settings"
+  },
   "popup_guest": {
     "message": "Guest"
+  },
+  "popup_language_auto": {
+    "message": "Auto detect"
+  },
+  "popup_language_de": {
+    "message": "German"
+  },
+  "popup_language_en": {
+    "message": "English"
+  },
+  "popup_language_fr": {
+    "message": "French"
+  },
+  "popup_language_ja": {
+    "message": "Japanese"
+  },
+  "popup_language_ko": {
+    "message": "Korean"
+  },
+  "popup_language_source_hint": {
+    "message": "Auto detect"
+  },
+  "popup_language_target_hint": {
+    "message": "Target language"
+  },
+  "popup_language_zh_hans": {
+    "message": "Chinese (Simplified)"
+  },
+  "popup_more_item_about_feedback": {
+    "message": "About - Feedback"
+  },
+  "popup_more_item_ai_pdf_pro_translate": {
+    "message": "AI-powered PDF Pro translation"
+  },
+  "popup_more_item_babeldoc_pdf_translate": {
+    "message": "BabelDOC layout-preserving PDF translation"
+  },
+  "popup_more_item_clear_cache": {
+    "message": "Clear cache"
+  },
+  "popup_more_item_disable_floating_ball": {
+    "message": "Disable floating ball"
+  },
+  "popup_more_item_enable_edit_translation": {
+    "message": "Temporarily enable translation editing"
+  },
+  "popup_more_item_enable_sidebar": {
+    "message": "Enable sidebar translation"
+  },
+  "popup_more_item_feedback_page_translation": {
+    "message": "Report translation issue on this page"
+  },
+  "popup_more_item_html_txt_translate": {
+    "message": "Translate HTML/txt files"
+  },
+  "popup_more_item_local_pdf_translate": {
+    "message": "Translate local PDF file"
+  },
+  "popup_more_item_make_bilingual_epub": {
+    "message": "Create bilingual EPUB e-book"
+  },
+  "popup_more_item_rate_store": {
+    "message": "Rate in store"
+  },
+  "popup_more_item_read_local_ebook": {
+    "message": "Read local e-book"
+  },
+  "popup_more_item_subtitle_file_translate": {
+    "message": "Translate local subtitle files"
+  },
+  "popup_more_item_temp_translation_only": {
+    "message": "Temporarily set default mode to translation-only"
+  },
+  "popup_more_item_translate_all_regions": {
+    "message": "Switch to translating all regions"
+  },
+  "popup_more_item_translate_to_bottom": {
+    "message": "Translate to page bottom now"
+  },
+  "popup_more_item_try_pro": {
+    "message": "Try Pro membership for free"
+  },
+  "popup_more_item_user_guide": {
+    "message": "User guide"
+  },
+  "popup_prompt_preset_ao3": {
+    "message": "AO3 translator"
+  },
+  "popup_prompt_preset_designer": {
+    "message": "Designer"
+  },
+  "popup_prompt_preset_ebook": {
+    "message": "E-book translator"
+  },
+  "popup_prompt_preset_ecommerce": {
+    "message": "E-commerce translation master"
+  },
+  "popup_prompt_preset_english_simplify": {
+    "message": "English simplification master"
+  },
+  "popup_prompt_preset_finance": {
+    "message": "Finance translation consultant"
+  },
+  "popup_prompt_preset_game": {
+    "message": "Game translator"
+  },
+  "popup_prompt_preset_general": {
+    "message": "General"
+  },
+  "popup_prompt_preset_github_enhancer": {
+    "message": "GitHub translation enhancer"
+  },
+  "popup_prompt_preset_legal": {
+    "message": "Legal industry translator"
+  },
+  "popup_prompt_preset_medical": {
+    "message": "Medical translation master"
+  },
+  "popup_prompt_preset_mixed_zh_en": {
+    "message": "Mixed Chinese-English"
+  },
+  "popup_prompt_preset_more_experts": {
+    "message": "More translation experts"
+  },
+  "popup_prompt_preset_music": {
+    "message": "Music expert"
+  },
+  "popup_prompt_preset_news_media": {
+    "message": "News media translator"
+  },
+  "popup_prompt_preset_novel": {
+    "message": "Novel translator"
+  },
+  "popup_prompt_preset_paper_translation": {
+    "message": "Academic paper translator"
+  },
+  "popup_prompt_preset_paragraph_summary": {
+    "message": "Paragraph summary expert"
+  },
+  "popup_prompt_preset_paraphrase_master": {
+    "message": "Paraphrase master"
+  },
+  "popup_prompt_preset_reddit_enhancer": {
+    "message": "Reddit translation enhancer"
+  },
+  "popup_prompt_preset_smart_select": {
+    "message": "Smart selection"
+  },
+  "popup_prompt_preset_tech_translation": {
+    "message": "Tech translation master"
+  },
+  "popup_prompt_preset_twitter_enhancer": {
+    "message": "Twitter translation enhancer"
+  },
+  "popup_prompt_preset_web3": {
+    "message": "Web3 translation master"
+  },
+  "popup_quick_action_doc_translate": {
+    "message": "Document Translate"
+  },
+  "popup_quick_action_text_translate": {
+    "message": "Text Translate"
+  },
+  "popup_quick_action_toolbox": {
+    "message": "Toolbox"
+  },
+  "popup_toggle_always_translate_chinese_page": {
+    "message": "Always translate Chinese (Simplified) pages"
+  },
+  "popup_toggle_always_translate_site": {
+    "message": "Always translate this site"
+  },
+  "popup_toggle_auto_bilingual_subtitle": {
+    "message": "Auto-enable bilingual subtitles"
+  },
+  "popup_toggle_hover_trigger": {
+    "message": "Hover trigger: + Ctrl to translate/restore paragraph"
+  },
+  "popup_toggle_mode_always_translate_site": {
+    "message": "Always translate this site"
+  },
+  "popup_toggle_mode_hover_alt": {
+    "message": "+ Alt to translate/restore paragraph"
+  },
+  "popup_toggle_mode_hover_ctrl": {
+    "message": "+ Ctrl to translate/restore paragraph"
+  },
+  "popup_toggle_mode_hover_custom_shortcut": {
+    "message": "Custom shortcut (open settings)"
+  },
+  "popup_toggle_mode_hover_direct": {
+    "message": "Directly translate paragraph"
+  },
+  "popup_toggle_mode_hover_long_press": {
+    "message": "+ Long press left mouse button"
+  },
+  "popup_toggle_mode_hover_shift": {
+    "message": "+ Shift to translate/restore paragraph"
+  },
+  "popup_toggle_mode_never_auto_translate_site": {
+    "message": "Do not auto-translate this site"
+  },
+  "popup_toggle_mode_selection_alt": {
+    "message": "Trigger with Alt"
+  },
+  "popup_toggle_mode_selection_ctrl": {
+    "message": "Trigger with Ctrl"
+  },
+  "popup_toggle_mode_selection_direct": {
+    "message": "Direct trigger"
+  },
+  "popup_toggle_mode_selection_dot": {
+    "message": "Show small dot"
+  },
+  "popup_toggle_mode_selection_icon": {
+    "message": "Show icon"
+  },
+  "popup_toggle_mode_selection_shift": {
+    "message": "Trigger with Shift"
+  },
+  "popup_toggle_selection_trigger": {
+    "message": "Selection translation: Show small dot"
+  },
+  "popup_translate_button": {
+    "message": "Translate (⌥A)"
   },
   "popup_upgrade": {
     "message": "Upgrade"
