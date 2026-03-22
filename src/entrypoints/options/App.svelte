@@ -6,9 +6,18 @@
 
   import { i18n } from '../../lib/i18n';
   import '../../assets/app.css';
+  import AiExpertSettings from './components/AiExpertSettings.svelte';
+  import AiTermsSettings from './components/AiTermsSettings.svelte';
+  import AiWriteSettings from './components/AiWriteSettings.svelte';
   import GeneralSettings from './components/GeneralSettings.svelte';
+  import InputTranslationSettings from './components/InputTranslationSettings.svelte';
+  import MangaImageSettings from './components/MangaImageSettings.svelte';
+  import MouseHoverSettings from './components/MouseHoverSettings.svelte';
+  import SelectionTranslationSettings from './components/SelectionTranslationSettings.svelte';
   import Section from './components/Section.svelte';
   import SectionRow from './components/SectionRow.svelte';
+  import ServicesSettings from './components/ServicesSettings.svelte';
+  import SubtitleSettings from './components/SubtitleSettings.svelte';
   import type { V2OptionsConfig } from './types';
   import {
     defaultPopupConfig,
@@ -466,273 +475,23 @@
     {#if activeNavId === 'general'}
       <GeneralSettings bind:config bind:newSite {saveOptions} {resetOptions} {getProviderModels} />
     {:else if activeNavId === 'services'}
-      <Section
-        id="services"
-        title={i18n('options_services_title', { defaultValue: 'Translation services' })}
-        description={i18n('options_services_description', {
-          defaultValue: 'Choose your model provider and default model.'
-        })}>
-        <SectionRow
-          title={i18n('options_services_provider_title', { defaultValue: 'Provider' })}
-          description={i18n('options_services_provider_description', {
-            defaultValue: 'Choose your preferred AI model provider'
-          })}>
-          <select
-            value={config.provider}
-            onchange={(event) =>
-              updateField('provider', (event.currentTarget as HTMLSelectElement).value)}
-            class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-            {#each providerOptions as option (option)}
-              <option value={option}>{option}</option>
-            {/each}
-          </select>
-        </SectionRow>
-        <SectionRow
-          title={i18n('options_services_default_model_title', { defaultValue: 'Default model' })}
-          description={i18n('options_services_default_model_description', {
-            defaultValue: 'Choose a model under the selected provider'
-          })}>
-          <select
-            value={config.model}
-            onchange={(event) =>
-              updateField('model', (event.currentTarget as HTMLSelectElement).value)}
-            class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-            {#each getProviderModels(config.provider) as option (option)}
-              <option value={option}>{option}</option>
-            {/each}
-          </select>
-        </SectionRow>
-      </Section>
+      <ServicesSettings {config} {getProviderModels} {updateField} />
     {:else if activeNavId === 'ai'}
-      <Section
-        id="ai"
-        title={i18n('options_ai_title', { defaultValue: 'AI experts' })}
-        description={i18n('options_ai_description', {
-          defaultValue: 'Choose default prompt preset and AI expert mode.'
-        })}>
-        <SectionRow
-          title={i18n('options_ai_prompt_preset_title', { defaultValue: 'Prompt preset' })}
-          description={i18n('options_ai_prompt_preset_description', {
-            defaultValue: 'Choose the prompt preset for your current scenario'
-          })}>
-          <select
-            value={config.promptPreset}
-            onchange={(event) =>
-              updateField('promptPreset', (event.currentTarget as HTMLSelectElement).value)}
-            class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-            {#each promptPresetOptions as option (option.value)}
-              <option value={option.value}>{option.label}</option>
-            {/each}
-          </select>
-        </SectionRow>
-      </Section>
+      <AiExpertSettings {config} {updateField} />
     {:else if activeNavId === 'terms'}
-      <Section
-        id="terms"
-        title={i18n('options_terms_title', { defaultValue: 'AI terminology' })}
-        description={i18n('options_terms_description', {
-          defaultValue: 'Manage your translation glossary for consistent terms.'
-        })}>
-        <SectionRow
-          title={i18n('options_terms_status_title', { defaultValue: 'Glossary status' })}
-          description={i18n('options_terms_status_description', {
-            defaultValue: 'Custom glossary is currently disabled'
-          })}>
-          <Button class="w-full rounded-xl border-none shadow-md"
-            >{i18n('options_terms_enable_button', { defaultValue: 'Enable glossary' })}</Button>
-        </SectionRow>
-        <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center text-slate-500">
-          {i18n('options_terms_empty_hint', {
-            defaultValue: 'After enabling, you can add and manage terms here'
-          })}
-        </div>
-      </Section>
+      <AiTermsSettings />
     {:else if activeNavId === 'writing'}
-      <Section
-        id="writing"
-        title={i18n('options_writing_title', { defaultValue: 'AI Write' })}
-        description={i18n('options_writing_description', {
-          defaultValue: 'Configure AI writing assistance and polishing features.'
-        })}>
-        <SectionRow
-          title={i18n('options_writing_status_title', { defaultValue: 'Feature status' })}
-          description={i18n('options_writing_status_description', {
-            defaultValue:
-              'This version includes an entry point; saveable style and scenario presets will be added later.'
-          })}>
-          <div
-            class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            {i18n('options_writing_status_body', {
-              defaultValue:
-                'Writing templates, tone preferences, and auto-polish rules will be available in future versions.'
-            })}
-          </div>
-        </SectionRow>
-        <SectionRow
-          title={i18n('options_writing_usage_title', { defaultValue: 'Recommended usage' })}
-          description={i18n('options_writing_usage_description', {
-            defaultValue:
-              'For now, choose model and prompt in popup panel first, then use writing capability.'
-          })}>
-          <Button color="light" class="w-full rounded-xl border-none shadow-md"
-            >{i18n('options_writing_view_soon_button', {
-              defaultValue: 'View upcoming capabilities'
-            })}</Button>
-        </SectionRow>
-      </Section>
+      <AiWriteSettings />
     {:else if activeNavId === 'subtitle'}
-      <Section
-        id="subtitle"
-        title={i18n('options_subtitle_title', { defaultValue: 'Video subtitles' })}
-        description={i18n('options_subtitle_description', {
-          defaultValue: 'Configure bilingual subtitle translation for online videos.'
-        })}>
-        <SectionRow
-          title={i18n('options_subtitle_auto_title', {
-            defaultValue: 'Auto-enable bilingual subtitles'
-          })}
-          description={i18n('options_subtitle_auto_description', {
-            defaultValue: 'Automatically show bilingual subtitles on supported sites'
-          })}>
-          <div class="flex items-center justify-end">
-            <Toggle
-              bind:checked={toggleItems[4].enabled}
-              size="small"
-              classes={{ span: 'me-0 cursor-pointer bg-gray-300' }}
-              aria-label={i18n('options_subtitle_auto_aria', {
-                defaultValue: 'Auto-enable bilingual subtitles'
-              })} />
-          </div>
-        </SectionRow>
-      </Section>
+      <SubtitleSettings {toggleItems} />
     {:else if activeNavId === 'manga'}
-      <Section
-        id="manga"
-        title={i18n('options_manga_title', { defaultValue: 'Manga/Images' })}
-        description={i18n('options_manga_description', {
-          defaultValue: 'Configure translation recognition settings for images and manga.'
-        })}>
-        <SectionRow
-          title={i18n('options_manga_ocr_title', { defaultValue: 'Image recognition' })}
-          description={i18n('options_manga_ocr_description', {
-            defaultValue:
-              'This capability follows main translation service settings; granular OCR options will arrive later.'
-          })}>
-          <div
-            class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            {i18n('options_manga_ocr_body', {
-              defaultValue:
-                'No standalone OCR engine config is needed now; global service config is reused.'
-            })}
-          </div>
-        </SectionRow>
-        <SectionRow
-          title={i18n('options_manga_scene_title', { defaultValue: 'Applicable scenarios' })}
-          description={i18n('options_manga_scene_description', {
-            defaultValue: 'Useful for manga dialogue, screenshots, and subtitle-free image content.'
-          })}>
-          <Button color="light" class="w-full rounded-xl border-none shadow-md"
-            >{i18n('options_manga_guide_button', {
-              defaultValue: 'View image translation guide'
-            })}</Button>
-        </SectionRow>
-      </Section>
+      <MangaImageSettings />
     {:else if activeNavId === 'input'}
-      <Section
-        id="input"
-        title={i18n('options_input_title', { defaultValue: 'Input translation' })}
-        description={i18n('options_input_description', {
-          defaultValue: 'Quickly translate content typed in input fields.'
-        })}>
-        <SectionRow
-          title={i18n('options_input_status_title', { defaultValue: 'Feature status' })}
-          description={i18n('options_input_status_description', {
-            defaultValue: 'Trigger conditions are being unified into one shortcut system.'
-          })}>
-          <div
-            class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-            {i18n('options_input_status_body', {
-              defaultValue:
-                'This version keeps the entry hint; the actual shortcut switch will be added once shortcut settings stabilize.'
-            })}
-          </div>
-        </SectionRow>
-      </Section>
+      <InputTranslationSettings />
     {:else if activeNavId === 'selection-transiation'}
-      <Section
-        id="selection-transiation"
-        title={i18n('options_selection_title', { defaultValue: 'Selection translation' })}
-        description={i18n('options_selection_description', {
-          defaultValue: 'Quickly view translations after selecting text.'
-        })}>
-        <SectionRow
-          title={i18n('options_selection_trigger_title', { defaultValue: 'Trigger mode' })}
-          description={i18n('options_selection_trigger_description', {
-            defaultValue: 'Choose how selection translation is triggered'
-          })}>
-          <select
-            value={config.toggleModes.selectionTrigger}
-            onchange={(event) =>
-              updateToggleMode(
-                'selectionTrigger',
-                (event.currentTarget as HTMLSelectElement).value
-              )}
-            class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-            {#each getToggleConfig('selectionTrigger')?.options ?? [] as option (option.value)}
-              <option value={option.value}>{option.label}</option>
-            {/each}
-          </select>
-        </SectionRow>
-        <SectionRow
-          title={i18n('options_selection_enabled_title', { defaultValue: 'Enabled status' })}
-          description={i18n('options_selection_enabled_description', {
-            defaultValue: 'Control whether the selection translation entry is shown'
-          })}>
-          <div class="flex items-center justify-end">
-            <Toggle
-              bind:checked={toggleItems[2].enabled}
-              size="small"
-              classes={{ span: 'me-0 cursor-pointer bg-gray-300' }}
-              aria-label={toggleItems[2].label} />
-          </div>
-        </SectionRow>
-      </Section>
+      <SelectionTranslationSettings {config} {toggleItems} {getToggleConfig} {updateToggleMode} />
     {:else if activeNavId === 'mouse-hover'}
-      <Section
-        id="mouse-hover"
-        title={i18n('options_hover_title', { defaultValue: 'Mouse hover' })}
-        description={i18n('options_hover_description', {
-          defaultValue: 'Automatically translate when hovering over paragraphs.'
-        })}>
-        <SectionRow
-          title={i18n('options_hover_shortcut_title', { defaultValue: 'Trigger shortcut' })}
-          description={i18n('options_hover_shortcut_description', {
-            defaultValue: 'Choose the shortcut combination for hover translation'
-          })}>
-          <select
-            value={config.toggleModes.hoverTrigger}
-            onchange={(event) =>
-              updateToggleMode('hoverTrigger', (event.currentTarget as HTMLSelectElement).value)}
-            class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-            {#each getToggleConfig('hoverTrigger')?.options ?? [] as option (option.value)}
-              <option value={option.value}>{option.label}</option>
-            {/each}
-          </select>
-        </SectionRow>
-        <SectionRow
-          title={i18n('options_hover_enabled_title', { defaultValue: 'Enabled status' })}
-          description={i18n('options_hover_enabled_description', {
-            defaultValue: 'Control whether hover can quickly translate current paragraph'
-          })}>
-          <div class="flex items-center justify-end">
-            <Toggle
-              bind:checked={toggleItems[1].enabled}
-              size="small"
-              classes={{ span: 'me-0 cursor-pointer bg-gray-300' }}
-              aria-label={toggleItems[1].label} />
-          </div>
-        </SectionRow>
-      </Section>
+      <MouseHoverSettings {config} {toggleItems} {getToggleConfig} {updateToggleMode} />
     {:else if activeNavId === 'floating'}
       <Section
         id="floating"
