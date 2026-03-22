@@ -388,7 +388,8 @@ export const defaultPopupConfig: PopupConfig = {
 export const quickActions = [
   {
     label: i18n('popup_quick_action_doc_translate', { defaultValue: 'Document Translate' }),
-    icon: '📄'
+    icon: '📄',
+    description: i18n('popup_quick_action_doc_translate_description', { defaultValue: 'Translate PDF, ePub, docx, srt, ass, HTML, TXT, and Markdown files.' })
   },
   {
     label: i18n('popup_quick_action_text_translate', { defaultValue: 'Text Translate' }),

@@ -1,5 +1,13 @@
 <script lang="ts">
-  import { Avatar, GradientButton, Button, Dropdown, DropdownItem, Toggle } from 'flowbite-svelte';
+  import {
+    Avatar,
+    GradientButton,
+    Button,
+    Dropdown,
+    DropdownItem,
+    Toggle,
+    Tooltip
+  } from 'flowbite-svelte';
   import {
     ChevronDownOutline,
     ArrowRightOutline,
@@ -197,7 +205,7 @@
     <section class="flex flex-col gap-3">
       {#each toggleItems as item (item.key)}
         <div class="flex items-center justify-between gap-3">
-          <button type="button" class="flex min-w-0 flex-nowrap items-center">
+          <button type="button" class="flex min-w-0 flex-nowrap items-center text-left">
             <span class="line-clamp-1 font-medium">{item.label}</span>
             {#if item.hasMenu}
               <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
@@ -231,6 +239,9 @@
           <span>{action.icon}</span>
           <span class="font-medium">{action.label}</span>
         </Button>
+        {#if action.description}
+          <Tooltip class="text-xs">{action.description}</Tooltip>
+        {/if}
       {/each}
     </section>
   </section>
