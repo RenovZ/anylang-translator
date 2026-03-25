@@ -770,6 +770,9 @@
   "popup_quick_action_doc_translate": {
     "message": "Document Translate"
   },
+  "popup_quick_action_doc_translate_description": {
+    "message": "Translate PDF, ePub, docx, srt, ass, HTML, TXT, and Markdown files."
+  },
   "popup_quick_action_text_translate": {
     "message": "Text Translate"
   },
