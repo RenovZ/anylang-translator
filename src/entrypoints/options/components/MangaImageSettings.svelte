@@ -32,7 +32,7 @@
     description={i18n('options_manga_scene_description', {
       defaultValue: 'Useful for manga dialogue, screenshots, and subtitle-free image content.'
     })}>
-    <Button slot="controls" color="light" class="w-full rounded-xl border-none shadow-md"
+    <Button slot="controls" color="light" class="w-full rounded-xl"
       >{i18n('options_manga_guide_button', {
         defaultValue: 'View image translation guide'
       })}</Button>

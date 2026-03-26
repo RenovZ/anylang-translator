@@ -32,7 +32,7 @@
     description={i18n('options_floating_site_rule_description', {
       defaultValue: 'To adjust auto-translation sites, open the site list in General settings.'
     })}>
-    <Button slot="controls" color="light" class="w-full rounded-xl border-none shadow-md"
+    <Button slot="controls" color="light" class="w-full rounded-xl"
       >{i18n('options_floating_site_rule_button', {
         defaultValue: 'View site rule guide'
       })}</Button>

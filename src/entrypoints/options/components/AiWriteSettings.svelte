@@ -33,7 +33,7 @@
       defaultValue:
         'For now, choose model and prompt in popup panel first, then use writing capability.'
     })}>
-    <Button slot="controls" color="light" class="w-full rounded-xl border-none shadow-md"
+    <Button slot="controls" color="light" class="w-full rounded-xl"
       >{i18n('options_writing_view_soon_button', {
         defaultValue: 'View upcoming capabilities'
       })}</Button>

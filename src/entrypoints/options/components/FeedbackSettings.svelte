@@ -18,9 +18,9 @@
       defaultValue: 'Open a GitHub issue or join community discussions'
     })}>
     <div slot="controls" class="space-y-3">
-      <Button color="light" class="w-full rounded-xl border-none shadow-md"
+      <Button color="light" class="w-full rounded-xl"
         >{i18n('options_feedback_github_button', { defaultValue: 'GitHub Issues' })}</Button>
-      <Button color="light" class="w-full rounded-xl border-none shadow-md"
+      <Button color="light" class="w-full rounded-xl"
         >{i18n('options_feedback_discord_button', {
           defaultValue: 'Join Discord community'
         })}</Button>

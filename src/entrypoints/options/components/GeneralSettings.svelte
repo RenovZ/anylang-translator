@@ -144,7 +144,7 @@
           backgroundType: ['gradientLinear']
         })}
         size="lg" />
-      <Button class="border-none font-medium shadow-md"
+      <Button class="font-medium"
         >{i18n('options_general_login_button', { defaultValue: 'Log in' })}</Button>
     </div>
     <button type="button" class="text-primary-600 text-sm hover:underline"
@@ -253,7 +253,7 @@
         bind:value={newSite}
         placeholder={i18n('options_general_site_placeholder', { defaultValue: 'example.com' })}
         class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none" />
-      <Button color="light" class="border-none shadow-md" onclick={addSite}
+      <Button color="light" onclick={addSite}
         >{i18n('options_general_add_button', { defaultValue: 'Add' })}</Button>
     </div>
     <div class="mt-4 rounded-xl bg-slate-50 p-4 shadow-inner">
@@ -284,7 +284,7 @@
     <Button
       slot="controls"
       color="light"
-      class="w-full border-none shadow-md"
+      class="w-full"
       onclick={() => addRuleItem('neverTranslateSites', 'example.com')}>
       {i18n('options_general_add_button', { defaultValue: 'Add' })}
     </Button>
