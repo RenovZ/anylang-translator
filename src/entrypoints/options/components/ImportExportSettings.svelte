@@ -21,7 +21,7 @@
           defaultValue: 'Save all current settings to a file'
         })}
       </p>
-      <Button color="light" class="mt-4 w-full rounded-xl border-none shadow-md"
+      <Button color="light" class="mt-4 w-full rounded-xl"
         >{i18n('options_export_button', { defaultValue: 'Export' })}</Button>
     </div>
     <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
@@ -33,7 +33,7 @@
           defaultValue: 'Restore settings from a backup file'
         })}
       </p>
-      <Button color="light" class="mt-4 w-full rounded-xl border-none shadow-md"
+      <Button color="light" class="mt-4 w-full rounded-xl"
         >{i18n('options_import_button', { defaultValue: 'Import' })}</Button>
     </div>
   </div>

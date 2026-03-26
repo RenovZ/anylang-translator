@@ -23,9 +23,9 @@
       {i18n('options_about_version', { defaultValue: 'Version 0.0.1' })}
     </p>
     <div class="mt-6 flex gap-4">
-      <Button color="light" class="rounded-xl border-none shadow-md"
+      <Button color="light" class="rounded-xl"
         >{i18n('options_about_check_update', { defaultValue: 'Check for updates' })}</Button>
-      <Button color="light" class="rounded-xl border-none shadow-md"
+      <Button color="light" class="rounded-xl"
         >{i18n('options_about_website', { defaultValue: 'Official website' })}</Button>
     </div>
   </div>

@@ -20,7 +20,7 @@
         defaultValue: 'Enjoy premium services like DeepL and OpenAI translation'
       })}
     </p>
-    <Button class="mt-6 rounded-xl border-none px-8 py-3 shadow-md"
+    <Button class="mt-6 rounded-xl px-8 py-3"
       >{i18n('options_pricing_upgrade_button', { defaultValue: 'Upgrade now' })}</Button>
   </div>
 </Section>
