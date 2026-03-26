@@ -179,9 +179,6 @@
   "options_general_edit_button": {
     "message": "Edit"
   },
-  "options_general_expand_custom_options": {
-    "message": "Expand more custom options"
-  },
   "options_general_font_scale": {
     "message": "Font scale (%)"
   },
@@ -224,20 +221,8 @@
   "options_general_preview_all_styles": {
     "message": "Preview all styles"
   },
-  "options_general_restore_default": {
-    "message": "Restore default settings"
-  },
   "options_general_restore_default_color": {
     "message": "Restore default color"
-  },
-  "options_general_rich_text_aria": {
-    "message": "Enable rich text translation"
-  },
-  "options_general_rich_text_description": {
-    "message": "Preserve original links and style effects in rich text translation"
-  },
-  "options_general_rich_text_title": {
-    "message": "Enable rich text translation"
   },
   "options_general_service_description": {
     "message": "Choose a translation service"
