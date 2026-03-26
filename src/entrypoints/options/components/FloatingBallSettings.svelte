@@ -19,6 +19,7 @@
         'Floating ball follows page translation rules; standalone behavior controls are planned for later versions.'
     })}>
     <div
+      slot="controls"
       class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
       {i18n('options_floating_strategy_body', {
         defaultValue:
@@ -31,7 +32,7 @@
     description={i18n('options_floating_site_rule_description', {
       defaultValue: 'To adjust auto-translation sites, open the site list in General settings.'
     })}>
-    <Button color="light" class="w-full rounded-xl border-none shadow-md"
+    <Button slot="controls" color="light" class="w-full rounded-xl border-none shadow-md"
       >{i18n('options_floating_site_rule_button', {
         defaultValue: 'View site rule guide'
       })}</Button>

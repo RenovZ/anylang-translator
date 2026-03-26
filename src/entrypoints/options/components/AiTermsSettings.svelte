@@ -17,7 +17,7 @@
     description={i18n('options_terms_status_description', {
       defaultValue: 'Custom glossary is currently disabled'
     })}>
-    <Button class="w-full rounded-xl border-none shadow-md"
+    <Button slot="controls" class="w-full rounded-xl border-none shadow-md"
       >{i18n('options_terms_enable_button', { defaultValue: 'Enable glossary' })}</Button>
   </SectionRow>
   <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center text-slate-500">

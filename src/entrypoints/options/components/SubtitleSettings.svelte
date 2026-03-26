@@ -22,7 +22,7 @@
     description={i18n('options_subtitle_auto_description', {
       defaultValue: 'Automatically show bilingual subtitles on supported sites'
     })}>
-    <div class="flex items-center justify-end">
+    <div slot="controls" class="flex items-center justify-end">
       <Toggle
         bind:checked={toggleItems[4].enabled}
         size="small"

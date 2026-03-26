@@ -21,6 +21,7 @@
       defaultValue: 'Choose the prompt preset for your current scenario'
     })}>
     <select
+      slot="controls"
       value={config.promptPreset}
       onchange={(event) =>
         updateField('promptPreset', (event.currentTarget as HTMLSelectElement).value)}

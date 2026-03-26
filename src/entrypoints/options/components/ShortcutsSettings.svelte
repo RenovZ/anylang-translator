@@ -17,7 +17,7 @@
     description={i18n('options_shortcuts_window_description', {
       defaultValue: 'Global shortcut to open the standalone translation window'
     })}>
-    <div class="flex items-center justify-end gap-2">
+    <div slot="controls" class="flex items-center justify-end gap-2">
       <kbd
         class="rounded-lg border border-slate-200 bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-800"
         >Alt</kbd>

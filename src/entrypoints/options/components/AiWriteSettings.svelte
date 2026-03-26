@@ -19,6 +19,7 @@
         'This version includes an entry point; saveable style and scenario presets will be added later.'
     })}>
     <div
+      slot="controls"
       class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
       {i18n('options_writing_status_body', {
         defaultValue:
@@ -32,7 +33,7 @@
       defaultValue:
         'For now, choose model and prompt in popup panel first, then use writing capability.'
     })}>
-    <Button color="light" class="w-full rounded-xl border-none shadow-md"
+    <Button slot="controls" color="light" class="w-full rounded-xl border-none shadow-md"
       >{i18n('options_writing_view_soon_button', {
         defaultValue: 'View upcoming capabilities'
       })}</Button>

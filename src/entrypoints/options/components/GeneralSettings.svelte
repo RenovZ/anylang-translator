@@ -159,6 +159,7 @@
       defaultValue: 'Set the language you want content translated into'
     })}>
     <select
+      slot="controls"
       value={config.targetLanguage}
       onchange={(event) =>
         updateField('targetLanguage', (event.currentTarget as HTMLSelectElement).value)}
@@ -174,7 +175,7 @@
     description={i18n('options_general_service_description', {
       defaultValue: 'Choose a translation service'
     })}>
-    <div class="space-y-3">
+    <div class="space-y-3" slot="controls">
       <select
         value={config.provider}
         onchange={(event) =>
@@ -190,46 +191,6 @@
     </div>
   </SectionRow>
 
-  <div class="rounded-2xl bg-slate-50 p-6 shadow-inner">
-    <div class="flex items-center justify-between">
-      <div class="font-medium text-slate-700">
-        {i18n('options_general_expand_custom_options', {
-          defaultValue: 'Expand more custom options'
-        })} 👉
-      </div>
-      <ChevronDownOutline class="h-5 w-5 text-slate-400" />
-    </div>
-    <div class="mt-5 grid grid-cols-[1fr_auto] items-start gap-6">
-      <div>
-        <div class="font-medium">
-          {i18n('options_general_rich_text_title', {
-            defaultValue: 'Enable rich text translation'
-          })}
-        </div>
-        <p class="mt-1 text-sm text-slate-400">
-          {i18n('options_general_rich_text_description', {
-            defaultValue: 'Preserve original links and style effects in rich text translation'
-          })}
-        </p>
-        <button type="button" class="mt-5 text-sm font-medium text-slate-500 underline">
-          {i18n('options_general_restore_default', { defaultValue: 'Restore default settings' })}
-        </button>
-      </div>
-      <Toggle
-        checked={config.richTextTranslate}
-        onchange={(event) =>
-          updateBooleanField(
-            'richTextTranslate',
-            (event.currentTarget as HTMLInputElement).checked
-          )}
-        size="small"
-        classes={{ span: 'me-0 cursor-pointer bg-gray-300' }}
-        aria-label={i18n('options_general_rich_text_aria', {
-          defaultValue: 'Enable rich text translation'
-        })} />
-    </div>
-  </div>
-
   <SectionRow
     title={i18n('options_general_ui_language_title', { defaultValue: 'UI language' })}
     description={i18n('options_general_ui_language_description', {
@@ -237,6 +198,7 @@
         'UI language affects panel display language and does not change translation target language'
     })}>
     <select
+      slot="controls"
       value={config.uiLanguage}
       onchange={(event) =>
         updateField('uiLanguage', (event.currentTarget as HTMLSelectElement).value)}
@@ -258,6 +220,7 @@
       defaultValue: 'Choose display mode after translation: bilingual or translation-only'
     })}>
     <select
+      slot="controls"
       value={config.translationPreference}
       onchange={(event) =>
         updateField('translationPreference', (event.currentTarget as HTMLSelectElement).value)}
@@ -284,7 +247,7 @@
         {i18n('options_general_batch_ops', { defaultValue: 'Batch operations' })}
       </div>
     </svelte:fragment>
-    <div class="flex gap-2">
+    <div class="flex gap-2" slot="controls">
       <input
         type="text"
         bind:value={newSite}
@@ -319,6 +282,7 @@
         'When current site matches these domains, auto-translation is disabled. This rule has higher priority than language rules.'
     })}>
     <Button
+      slot="controls"
       color="light"
       class="w-full border-none shadow-md"
       onclick={() => addRuleItem('neverTranslateSites', 'example.com')}>
@@ -335,6 +299,7 @@
         'When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts.'
     })}>
     <select
+      slot="controls"
       class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
       <option>{i18n('options_general_edit_button', { defaultValue: 'Edit' })}</option>
       {#each config.alwaysTranslateLanguages as language (language)}
@@ -351,6 +316,7 @@
       defaultValue: 'When a paragraph language is one of these, translation is skipped'
     })}>
     <select
+      slot="controls"
       class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
       <option>{i18n('options_general_edit_button', { defaultValue: 'Edit' })}</option>
       {#each config.neverTranslateLanguages as language (language)}
@@ -366,13 +332,7 @@
     description={i18n('options_general_translation_style_description', {
       defaultValue: 'Distinguish translated text styles; see examples below'
     })}>
-    <svelte:fragment slot="extra-desc">
-      <div class="mt-6 space-y-3 text-lg text-slate-700">
-        <p>{previewTextEn}</p>
-        <p class="text-base text-slate-600">{previewTextZh}</p>
-      </div>
-    </svelte:fragment>
-    <div class="space-y-4">
+    <svelte:fragment slot="controls">
       <select
         value={config.translationStyle}
         onchange={(event) =>
@@ -382,131 +342,134 @@
           <option value={option.value}>{option.label}</option>
         {/each}
       </select>
-      <div class="rounded-2xl bg-slate-50 p-6 shadow-inner">
-        <button type="button" class="mb-4 flex w-full items-center justify-between text-slate-600">
-          <span
-            >{i18n('options_general_custom_color_size', {
-              defaultValue: 'Custom color and size'
-            })}</span>
-          <span>⌄</span>
-        </button>
-        <div class="space-y-4">
-          <label class="grid grid-cols-[1fr_140px_80px] items-center gap-2">
-            <span class="text-slate-600"
-              >{i18n('options_general_text_color', { defaultValue: 'Text color' })}</span>
-            <input
-              value={config.textColor}
-              onchange={(event) =>
-                updateField('textColor', (event.currentTarget as HTMLInputElement).value)}
-              class="focus:border-primary-400 rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none" />
-            <input
-              type="color"
-              value={config.textColor}
-              onchange={(event) =>
-                updateField('textColor', (event.currentTarget as HTMLInputElement).value)}
-              class="h-12.5 w-full rounded-xl border border-slate-300 bg-white p-2" />
-          </label>
-          <label class="grid grid-cols-[1fr_200px] items-center gap-4">
-            <span class="text-slate-600"
-              >{i18n('options_general_font_scale', { defaultValue: 'Font scale (%)' })}:</span>
-            <input
-              value={config.fontScale}
-              onchange={(event) =>
-                updateField('fontScale', (event.currentTarget as HTMLInputElement).value)}
-              class="focus:border-primary-400 rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none" />
-          </label>
-          <label class="grid grid-cols-[1fr_200px] items-center gap-4">
-            <span class="text-slate-600"
-              >{i18n('options_general_font_weight', { defaultValue: 'Font weight' })}:</span>
-            <input
-              value={config.fontWeight}
-              onchange={(event) =>
-                updateField('fontWeight', (event.currentTarget as HTMLInputElement).value)}
-              class="focus:border-primary-400 rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none" />
-          </label>
-          <div class="flex items-center justify-between">
-            <span class="text-slate-600"
-              >{i18n('options_general_italic', { defaultValue: 'Set italic style' })}</span>
-            <Toggle
-              checked={config.italicTranslate}
-              onchange={(event) =>
-                updateBooleanField(
-                  'italicTranslate',
-                  (event.currentTarget as HTMLInputElement).checked
-                )}
-              size="small"
-              classes={{
-                span: 'me-0 cursor-pointer bg-gray-300'
-              }}
-              aria-label={i18n('options_general_italic', { defaultValue: 'Set italic style' })} />
-          </div>
-          <button type="button" class="text-right text-slate-500 underline"
-            >{i18n('options_general_restore_default_color', {
-              defaultValue: 'Restore default color'
-            })}</button>
-          <button type="button" class="flex w-full items-center justify-between text-slate-600"
-            ><span>{i18n('options_general_set_font', { defaultValue: 'Set font' })}</span><span
-              >⌄</span
-            ></button>
-          <label class="flex items-center justify-end gap-2 text-slate-600">
-            <input
-              type="checkbox"
-              checked={config.customFontEnabled}
-              onchange={(event) =>
-                updateBooleanField(
-                  'customFontEnabled',
-                  (event.currentTarget as HTMLInputElement).checked
-                )} />
-            <span
-              >{i18n('options_general_custom_font_input', {
-                defaultValue: 'Use custom font'
-              })}</span>
-          </label>
-          <select
-            value={config.customFontFamily}
+    </svelte:fragment>
+    <div class="mt-3 space-y-3 text-lg text-slate-700">
+      <p>{previewTextEn}</p>
+      <p class="text-base text-slate-600">{previewTextZh}</p>
+    </div>
+    <div class="rounded-2xl bg-slate-50 p-6 shadow-inner">
+      <button type="button" class="mb-4 flex w-full items-center justify-between text-slate-600">
+        <span
+          >{i18n('options_general_custom_color_size', {
+            defaultValue: 'Custom color and size'
+          })}</span>
+        <span>⌄</span>
+      </button>
+      <div class="space-y-4">
+        <label class="grid grid-cols-[1fr_140px_80px] items-center gap-2">
+          <span class="text-slate-600"
+            >{i18n('options_general_text_color', { defaultValue: 'Text color' })}</span>
+          <input
+            value={config.textColor}
             onchange={(event) =>
-              updateField('customFontFamily', (event.currentTarget as HTMLSelectElement).value)}
-            class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
-            <option value="none"
-              >{i18n('options_general_style_none', { defaultValue: 'None' })}</option>
-            <option value="PingFang SC">PingFang SC</option>
-            <option value="Microsoft YaHei">Microsoft YaHei</option>
-            <option value="Source Han Sans SC">Source Han Sans SC</option>
-          </select>
-          <button type="button" class="flex w-full items-center justify-between text-slate-600"
-            ><span
-              >{i18n('options_general_preview_all_styles', {
-                defaultValue: 'Preview all styles'
-              })}</span
-            ><span>⌄</span></button>
+              updateField('textColor', (event.currentTarget as HTMLInputElement).value)}
+            class="focus:border-primary-400 rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none" />
+          <input
+            type="color"
+            value={config.textColor}
+            onchange={(event) =>
+              updateField('textColor', (event.currentTarget as HTMLInputElement).value)}
+            class="h-12.5 w-full rounded-xl border border-slate-300 bg-white p-2" />
+        </label>
+        <label class="grid grid-cols-[1fr_200px] items-center gap-4">
+          <span class="text-slate-600"
+            >{i18n('options_general_font_scale', { defaultValue: 'Font scale (%)' })}:</span>
+          <input
+            value={config.fontScale}
+            onchange={(event) =>
+              updateField('fontScale', (event.currentTarget as HTMLInputElement).value)}
+            class="focus:border-primary-400 rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none" />
+        </label>
+        <label class="grid grid-cols-[1fr_200px] items-center gap-4">
+          <span class="text-slate-600"
+            >{i18n('options_general_font_weight', { defaultValue: 'Font weight' })}:</span>
+          <input
+            value={config.fontWeight}
+            onchange={(event) =>
+              updateField('fontWeight', (event.currentTarget as HTMLInputElement).value)}
+            class="focus:border-primary-400 rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none" />
+        </label>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-600"
+            >{i18n('options_general_italic', { defaultValue: 'Set italic style' })}</span>
+          <Toggle
+            checked={config.italicTranslate}
+            onchange={(event) =>
+              updateBooleanField(
+                'italicTranslate',
+                (event.currentTarget as HTMLInputElement).checked
+              )}
+            size="small"
+            classes={{
+              span: 'me-0 cursor-pointer bg-gray-300'
+            }}
+            aria-label={i18n('options_general_italic', { defaultValue: 'Set italic style' })} />
         </div>
+        <button type="button" class="text-right text-slate-500 underline"
+          >{i18n('options_general_restore_default_color', {
+            defaultValue: 'Restore default color'
+          })}</button>
+        <button type="button" class="flex w-full items-center justify-between text-slate-600"
+          ><span>{i18n('options_general_set_font', { defaultValue: 'Set font' })}</span><span
+            >⌄</span
+          ></button>
+        <label class="flex items-center justify-end gap-2 text-slate-600">
+          <input
+            type="checkbox"
+            checked={config.customFontEnabled}
+            onchange={(event) =>
+              updateBooleanField(
+                'customFontEnabled',
+                (event.currentTarget as HTMLInputElement).checked
+              )} />
+          <span
+            >{i18n('options_general_custom_font_input', {
+              defaultValue: 'Use custom font'
+            })}</span>
+        </label>
+        <select
+          value={config.customFontFamily}
+          onchange={(event) =>
+            updateField('customFontFamily', (event.currentTarget as HTMLSelectElement).value)}
+          class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
+          <option value="none"
+            >{i18n('options_general_style_none', { defaultValue: 'None' })}</option>
+          <option value="PingFang SC">PingFang SC</option>
+          <option value="Microsoft YaHei">Microsoft YaHei</option>
+          <option value="Source Han Sans SC">Source Han Sans SC</option>
+        </select>
+        <button type="button" class="flex w-full items-center justify-between text-slate-600"
+          ><span
+            >{i18n('options_general_preview_all_styles', {
+              defaultValue: 'Preview all styles'
+            })}</span
+          ><span>⌄</span></button>
       </div>
     </div>
-  </SectionRow>
-
-  <div class="space-y-7">
-    {#each translationStyleOptions as option (option.value)}
-      <label class="block">
-        <div class="flex items-start gap-3">
-          <input
-            type="radio"
-            name="translation-style-preview"
-            value={option.value}
-            checked={config.translationStyle === option.value}
-            onchange={() => updateField('translationStyle', option.value)}
-            class="accent-primary-500 mt-1 h-5 w-5" />
-          <div class="flex-1">
-            <div class="font-medium">{option.label}</div>
-            <p
-              class={`mt-2 text-slate-700 ${getPreviewClass(option.value)} ${config.italicTranslate ? 'italic' : ''}`}
-              style={`color:${config.textColor}; font-size:${config.fontScale}%; font-weight:${config.fontWeight}; font-family:${config.customFontFamily === 'none' ? 'inherit' : config.customFontFamily};`}>
-              {previewTextZh}
-            </p>
+    <div class="space-y-7">
+      {#each translationStyleOptions as option (option.value)}
+        <label class="block">
+          <div class="flex items-start gap-3">
+            <input
+              type="radio"
+              name="translation-style-preview"
+              value={option.value}
+              checked={config.translationStyle === option.value}
+              onchange={() => updateField('translationStyle', option.value)}
+              class="accent-primary-500 mt-1 h-5 w-5" />
+            <div class="flex-1">
+              <div class="font-medium">{option.label}</div>
+              <p
+                class={`mt-2 text-slate-700 ${getPreviewClass(option.value)} ${config.italicTranslate ? 'italic' : ''}`}
+                style={`color:${config.textColor}; font-size:${config.fontScale}%; font-weight:${config.fontWeight}; font-family:${config.customFontFamily === 'none' ? 'inherit' : config.customFontFamily};`}>
+                {previewTextZh}
+              </p>
+            </div>
           </div>
-        </div>
-      </label>
-    {/each}
-  </div>
+        </label>
+      {/each}
+    </div>
+  </SectionRow>
 
   <SectionRow
     title={i18n('options_general_similar_language_bg_title', {
@@ -516,7 +479,7 @@
       defaultValue:
         'When page and target languages are similar, add a background to translated text for easier side-by-side reading.'
     })}>
-    <div class="flex items-center justify-end">
+    <div class="flex items-center justify-end" slot="controls">
       <Toggle
         checked={config.richTextTranslate}
         onchange={(event) =>

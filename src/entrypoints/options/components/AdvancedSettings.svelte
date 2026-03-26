@@ -20,7 +20,7 @@
     description={i18n('options_advanced_chinese_page_description', {
       defaultValue: 'Control whether Chinese (Simplified) pages are translated by default.'
     })}>
-    <div class="flex items-center justify-end">
+    <div slot="controls" class="flex items-center justify-end">
       <Toggle
         bind:checked={toggleItems[3].enabled}
         size="small"
@@ -36,6 +36,7 @@
       defaultValue: 'More experimental toggles will be added gradually in future versions.'
     })}>
     <div
+      slot="controls"
       class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
       {i18n('options_advanced_experimental_body', {
         defaultValue:

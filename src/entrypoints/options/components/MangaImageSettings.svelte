@@ -19,6 +19,7 @@
         'This capability follows main translation service settings; granular OCR options will arrive later.'
     })}>
     <div
+      slot="controls"
       class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
       {i18n('options_manga_ocr_body', {
         defaultValue:
@@ -31,7 +32,7 @@
     description={i18n('options_manga_scene_description', {
       defaultValue: 'Useful for manga dialogue, screenshots, and subtitle-free image content.'
     })}>
-    <Button color="light" class="w-full rounded-xl border-none shadow-md"
+    <Button slot="controls" color="light" class="w-full rounded-xl border-none shadow-md"
       >{i18n('options_manga_guide_button', {
         defaultValue: 'View image translation guide'
       })}</Button>

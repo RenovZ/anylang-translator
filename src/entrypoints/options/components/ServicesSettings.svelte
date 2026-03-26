@@ -22,6 +22,7 @@
       defaultValue: 'Choose your preferred AI model provider'
     })}>
     <select
+      slot="controls"
       value={config.provider}
       onchange={(event) =>
         updateField('provider', (event.currentTarget as HTMLSelectElement).value)}
@@ -37,6 +38,7 @@
       defaultValue: 'Choose a model under the selected provider'
     })}>
     <select
+      slot="controls"
       value={config.model}
       onchange={(event) => updateField('model', (event.currentTarget as HTMLSelectElement).value)}
       class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">

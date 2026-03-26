@@ -17,7 +17,7 @@
     description={i18n('options_docs_official_description', {
       defaultValue: 'Detailed docs and FAQ for all features'
     })}>
-    <Button color="light" class="w-full rounded-xl border-none shadow-md"
+    <Button slot="controls" color="light" class="w-full rounded-xl border-none shadow-md"
       >{i18n('options_docs_open_button', { defaultValue: 'Open docs' })}</Button>
   </SectionRow>
 </Section>

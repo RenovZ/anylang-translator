@@ -24,6 +24,7 @@
       defaultValue: 'Choose how selection translation is triggered'
     })}>
     <select
+      slot="controls"
       value={config.toggleModes.selectionTrigger}
       onchange={(event) =>
         updateToggleMode('selectionTrigger', (event.currentTarget as HTMLSelectElement).value)}
@@ -38,7 +39,7 @@
     description={i18n('options_selection_enabled_description', {
       defaultValue: 'Control whether the selection translation entry is shown'
     })}>
-    <div class="flex items-center justify-end">
+    <div slot="controls" class="flex items-center justify-end">
       <Toggle
         bind:checked={toggleItems[2].enabled}
         size="small"

@@ -24,6 +24,7 @@
       defaultValue: 'Choose the shortcut combination for hover translation'
     })}>
     <select
+      slot="controls"
       value={config.toggleModes.hoverTrigger}
       onchange={(event) =>
         updateToggleMode('hoverTrigger', (event.currentTarget as HTMLSelectElement).value)}
@@ -38,7 +39,7 @@
     description={i18n('options_hover_enabled_description', {
       defaultValue: 'Control whether hover can quickly translate current paragraph'
     })}>
-    <div class="flex items-center justify-end">
+    <div slot="controls" class="flex items-center justify-end">
       <Toggle
         bind:checked={toggleItems[1].enabled}
         size="small"

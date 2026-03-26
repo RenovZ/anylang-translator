@@ -16,6 +16,7 @@
       defaultValue: 'No standalone persisted developer debug switch is currently provided.'
     })}>
     <div
+      slot="controls"
       class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
       {i18n('options_developer_debug_body', {
         defaultValue:
