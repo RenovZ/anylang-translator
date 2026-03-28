@@ -9,12 +9,14 @@
   export let toggleItems: OptionsSectionSharedProps['toggleItems'];
 </script>
 
+<!-- Video Subtitles Settings Section -->
 <Section
   id="subtitle"
   title={i18n('options_subtitle_title', { defaultValue: 'Video subtitles' })}
   description={i18n('options_subtitle_description', {
     defaultValue: 'Configure bilingual subtitle translation for online videos.'
   })}>
+  <!-- Auto-enable Subtitles Toggle -->
   <SectionRow
     title={i18n('options_subtitle_auto_title', {
       defaultValue: 'Auto-enable bilingual subtitles'

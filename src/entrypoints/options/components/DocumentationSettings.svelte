@@ -6,18 +6,23 @@
   import SectionRow from './SectionRow.svelte';
 </script>
 
+<!-- Documentation Settings Section -->
 <Section
   id="docs"
   title={i18n('options_docs_title', { defaultValue: 'Documentation' })}
   description={i18n('options_docs_description', {
     defaultValue: 'Read detailed feature guides and tutorials.'
   })}>
+  <!-- Official Docs Link -->
   <SectionRow
     title={i18n('options_docs_official_title', { defaultValue: 'Official docs' })}
     description={i18n('options_docs_official_description', {
       defaultValue: 'Detailed docs and FAQ for all features'
     })}>
-    <Button slot="controls" color="light" class="w-full rounded-xl"
+    <Button
+      slot="controls"
+      color="alternative"
+      class="w-full rounded-xl dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
       >{i18n('options_docs_open_button', { defaultValue: 'Open docs' })}</Button>
   </SectionRow>
 </Section>

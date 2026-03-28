@@ -185,11 +185,11 @@
   "options_general_font_weight": {
     "message": "Font weight"
   },
-  "options_general_header_clear_cache": {
-    "message": "Clear cache"
-  },
   "options_general_header_reset": {
     "message": "Reset settings"
+  },
+  "options_general_header_save": {
+    "message": "Save settings"
   },
   "options_general_italic": {
     "message": "Set italic style"

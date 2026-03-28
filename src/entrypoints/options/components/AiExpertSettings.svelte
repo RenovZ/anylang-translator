@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Select } from 'flowbite-svelte';
   import { i18n } from '../../../lib/i18n';
   import { promptPresetOptions } from '../../popup/data';
   import Section from './Section.svelte';
@@ -9,26 +10,27 @@
   export let updateField: OptionsProviderSectionProps['updateField'];
 </script>
 
+<!-- AI Experts Section -->
 <Section
   id="ai"
   title={i18n('options_ai_title', { defaultValue: 'AI experts' })}
   description={i18n('options_ai_description', {
     defaultValue: 'Choose default prompt preset and AI expert mode.'
   })}>
+  <!-- Prompt Preset Selection -->
   <SectionRow
     title={i18n('options_ai_prompt_preset_title', { defaultValue: 'Prompt preset' })}
     description={i18n('options_ai_prompt_preset_description', {
       defaultValue: 'Choose the prompt preset for your current scenario'
     })}>
-    <select
+    <Select
       slot="controls"
       value={config.promptPreset}
       onchange={(event) =>
-        updateField('promptPreset', (event.currentTarget as HTMLSelectElement).value)}
-      class="focus:border-primary-400 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 transition outline-none">
+        updateField('promptPreset', (event.currentTarget as HTMLSelectElement).value)}>
       {#each promptPresetOptions as option (option.value)}
         <option value={option.value}>{option.label}</option>
       {/each}
-    </select>
+    </Select>
   </SectionRow>
 </Section>

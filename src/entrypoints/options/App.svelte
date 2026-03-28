@@ -16,7 +16,7 @@
   import DocumentationSettings from './components/DocumentationSettings.svelte';
   import FeedbackSettings from './components/FeedbackSettings.svelte';
   import FloatingBallSettings from './components/FloatingBallSettings.svelte';
-  import GeneralSettings from './components/GeneralSettings.svelte';
+  import GeneralSettings from './components/general/GeneralSettings.svelte';
   import ImportExportSettings from './components/ImportExportSettings.svelte';
   import InputTranslationSettings from './components/InputTranslationSettings.svelte';
   import MangaImageSettings from './components/MangaImageSettings.svelte';
@@ -426,6 +426,7 @@
 
 <main
   class="min-h-screen bg-slate-100 text-sm text-slate-900 dark:bg-slate-950/80 dark:text-slate-50">
+  <!-- Header Section -->
   <header class="sticky top-0 z-10 bg-white/80 shadow backdrop-blur-xs dark:bg-slate-900/80">
     <div class="mx-auto flex items-center justify-between px-6 py-4">
       <div class="flex items-center gap-3">
@@ -439,12 +440,16 @@
         </div>
       </div>
 
-      <Button color="light" class="rounded-xl border-none px-4 py-2 shadow-md"
+      <Button
+        color="alternative"
+        class="rounded-xl px-4 py-2 shadow-md dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
         >⚒️ {i18n('options_button_toolbox', { defaultValue: 'Toolbox' })}</Button>
     </div>
   </header>
 
+  <!-- Main Content Area -->
   <div class="mx-auto grid max-w-7xl grid-cols-[240px_1fr] gap-8 px-6 py-8">
+    <!-- Sidebar Navigation -->
     <aside
       class="sticky top-24 z-10 flex h-[calc(100vh-8rem)] flex-col justify-between overflow-y-auto rounded-2xl bg-white/80 p-4 shadow-md dark:bg-slate-900/80">
       <div class="space-y-1">
@@ -478,6 +483,7 @@
       </div>
     </aside>
 
+    <!-- Active Section Content -->
     {#if activeNavId === 'general'}
       <GeneralSettings bind:config bind:newSite {saveOptions} {resetOptions} {getProviderModels} />
     {:else if activeNavId === 'services'}

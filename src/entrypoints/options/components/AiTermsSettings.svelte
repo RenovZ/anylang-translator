@@ -6,12 +6,14 @@
   import SectionRow from './SectionRow.svelte';
 </script>
 
+<!-- AI Terminology Settings Section -->
 <Section
   id="terms"
   title={i18n('options_terms_title', { defaultValue: 'AI terminology' })}
   description={i18n('options_terms_description', {
     defaultValue: 'Manage your translation glossary for consistent terms.'
   })}>
+  <!-- Glossary Status -->
   <SectionRow
     title={i18n('options_terms_status_title', { defaultValue: 'Glossary status' })}
     description={i18n('options_terms_status_description', {
@@ -20,7 +22,10 @@
     <Button slot="controls" class="w-full rounded-xl"
       >{i18n('options_terms_enable_button', { defaultValue: 'Enable glossary' })}</Button>
   </SectionRow>
-  <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center text-slate-500">
+
+  <!-- Empty State Hint -->
+  <div
+    class="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
     {i18n('options_terms_empty_hint', {
       defaultValue: 'After enabling, you can add and manage terms here'
     })}

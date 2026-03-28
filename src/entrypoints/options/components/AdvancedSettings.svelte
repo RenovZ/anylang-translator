@@ -9,12 +9,14 @@
   export let toggleItems: OptionsSectionSharedProps['toggleItems'];
 </script>
 
+<!-- Advanced Settings Section -->
 <Section
   id="advanced"
   title={i18n('options_advanced_title', { defaultValue: 'Advanced settings' })}
   description={i18n('options_advanced_description', {
     defaultValue: 'More low-level and experimental feature settings.'
   })}>
+  <!-- Chinese Pages Toggle -->
   <SectionRow
     title={i18n('options_advanced_chinese_page_title', { defaultValue: 'Chinese pages' })}
     description={i18n('options_advanced_chinese_page_description', {
@@ -28,6 +30,8 @@
         aria-label={toggleItems[3].label} />
     </div>
   </SectionRow>
+
+  <!-- Experimental Features Info -->
   <SectionRow
     title={i18n('options_advanced_experimental_title', {
       defaultValue: 'Experimental features'
@@ -37,7 +41,7 @@
     })}>
     <div
       slot="controls"
-      class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
+      class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400">
       {i18n('options_advanced_experimental_body', {
         defaultValue:
           'Only advanced options already wired to storage are kept to avoid showing unsavable temporary switches.'

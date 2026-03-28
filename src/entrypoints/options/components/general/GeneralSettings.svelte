@@ -70,9 +70,9 @@
 <Section id="general" title={i18n('options_general_title', { defaultValue: 'General settings' })}>
   <!-- header buttons -->
   <svelte:fragment slot="header-actions">
-    <div class="text-primary-600 flex items-center gap-4 text-sm">
+    <div class="text-primary-600 dark:text-primary-400 flex items-center gap-4 text-sm">
       <button type="button" onclick={saveOptions}
-        >{i18n('options_general_header_clear_cache', { defaultValue: 'Clear cache' })}</button>
+        >{i18n('options_general_header_save', { defaultValue: 'Save settings' })}</button>
       <button type="button" onclick={resetOptions}
         >{i18n('options_general_header_reset', { defaultValue: 'Reset settings' })}</button>
     </div>
@@ -92,7 +92,7 @@
       <Button class="font-medium"
         >{i18n('options_general_login_button', { defaultValue: 'Log in' })}</Button>
     </div>
-    <button type="button" class="text-primary-600 text-sm hover:underline"
+    <button type="button" class="text-primary-600 dark:text-primary-400 text-sm hover:underline"
       >{i18n('options_general_login_hint', {
         defaultValue: 'Unlock membership after login'
       })}</button>
@@ -130,7 +130,7 @@
           <option value={option}>{option}</option>
         {/each}
       </Select>
-      <button class="text-primary-600 w-fit text-sm">
+      <button class="text-primary-600 dark:text-primary-400 w-fit text-sm">
         {i18n('options_general_service_test', { defaultValue: 'Test this service' })}
       </button>
     </div>
@@ -197,7 +197,7 @@
         >{i18n('options_general_add_button', { defaultValue: 'Add' })}</Button>
     </div>
     <svelte:fragment slot="extra-desc">
-      <button class="text-primary-600 mt-3 cursor-pointer text-sm">
+      <button class="text-primary-600 dark:text-primary-400 mt-3 cursor-pointer text-sm">
         {i18n('options_general_batch_ops', { defaultValue: 'Batch operations' })}
       </button>
     </svelte:fragment>
@@ -205,7 +205,7 @@
       {#each config.alwaysTranslateSites as site (site)}
         <div class="flex items-center justify-between pb-3 last:pb-0">
           <span class="font-medium">{site}</span>
-          <div class="text-primary-600 flex items-center gap-4">
+          <div class="text-primary-600 dark:text-primary-400 flex items-center gap-4">
             <button type="button"
               >{i18n('options_general_edit_button', { defaultValue: 'Edit' })}</button>
             <button type="button" onclick={() => removeSite(site)}
@@ -403,7 +403,7 @@
                 <div class="flex-1">
                   <div class="font-medium">{option.label}</div>
                   <p
-                    class={`mt-2 text-slate-700 ${getPreviewClass(option.value)} ${config.italicTranslate ? 'italic' : ''}`}
+                    class={`mt-2 text-slate-700 dark:text-slate-300 ${getPreviewClass(option.value)} ${config.italicTranslate ? 'italic' : ''}`}
                     style={`color:${config.textColor}; font-size:${config.fontScale}%; font-weight:${config.fontWeight}; font-family:${config.customFontFamily === 'none' ? 'inherit' : config.customFontFamily};`}>
                     {previewTextZh}
                   </p>

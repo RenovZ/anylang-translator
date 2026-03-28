@@ -4,12 +4,14 @@
   import SectionRow from './SectionRow.svelte';
 </script>
 
+<!-- Input Translation Settings Section -->
 <Section
   id="input"
   title={i18n('options_input_title', { defaultValue: 'Input translation' })}
   description={i18n('options_input_description', {
     defaultValue: 'Quickly translate content typed in input fields.'
   })}>
+  <!-- Feature Status Info -->
   <SectionRow
     title={i18n('options_input_status_title', { defaultValue: 'Feature status' })}
     description={i18n('options_input_status_description', {
@@ -17,7 +19,7 @@
     })}>
     <div
       slot="controls"
-      class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
+      class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400">
       {i18n('options_input_status_body', {
         defaultValue:
           'This version keeps the entry hint; the actual shortcut switch will be added once shortcut settings stabilize.'
