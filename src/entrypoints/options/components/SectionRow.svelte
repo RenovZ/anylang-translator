@@ -12,9 +12,7 @@
       {/if}
       <slot name="extra-desc" />
     </div>
-    <div class="w-full space-y-3">
-      <slot name="controls" />
-    </div>
+    <slot name="controls" />
   </div>
   <slot />
 </div>
