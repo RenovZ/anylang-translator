@@ -68,6 +68,7 @@
 </script>
 
 <Section id="general" title={i18n('options_general_title', { defaultValue: 'General settings' })}>
+  <!-- header buttons -->
   <svelte:fragment slot="header-actions">
     <div class="text-primary-600 flex items-center gap-4 text-sm">
       <button type="button" onclick={saveOptions}
@@ -77,6 +78,7 @@
     </div>
   </svelte:fragment>
 
+  <!-- login state -->
   <div
     class="flex items-center justify-between rounded-2xl bg-gray-50 p-6 shadow-inner dark:bg-gray-700">
     <div class="flex items-center gap-4">
@@ -96,6 +98,7 @@
       })}</button>
   </div>
 
+  <!-- target language -->
   <SectionRow
     title={i18n('options_general_target_language_title', { defaultValue: 'Target language' })}
     description={i18n('options_general_target_language_description', {
@@ -112,6 +115,7 @@
     </Select>
   </SectionRow>
 
+  <!-- translation service -->
   <SectionRow
     title={i18n('options_general_service_title', { defaultValue: 'Translation service' })}
     description={i18n('options_general_service_description', {
@@ -132,6 +136,7 @@
     </div>
   </SectionRow>
 
+  <!-- UI language -->
   <SectionRow
     title={i18n('options_general_ui_language_title', { defaultValue: 'UI language' })}
     description={i18n('options_general_ui_language_description', {
@@ -152,6 +157,7 @@
     </Select>
   </SectionRow>
 
+  <!-- translation preference -->
   <SectionRow
     title={i18n('options_general_translation_preference_title', {
       defaultValue: 'Translation preference'
@@ -173,6 +179,7 @@
     </Select>
   </SectionRow>
 
+  <!-- always-translate sites -->
   <SectionRow
     title={i18n('options_general_always_translate_sites_title', {
       defaultValue: 'Always-translate sites'
@@ -209,6 +216,7 @@
     </div>
   </SectionRow>
 
+  <!-- never-translate sites -->
   <SectionRow
     title={i18n('options_general_never_translate_sites_title', {
       defaultValue: 'Never auto-translate sites'
@@ -226,6 +234,7 @@
     </Button>
   </SectionRow>
 
+  <!-- always-translate languages -->
   <SectionRow
     title={i18n('options_general_always_translate_languages_title', {
       defaultValue: 'Always-translate languages'
@@ -242,6 +251,7 @@
     </Select>
   </SectionRow>
 
+  <!-- never-translate languages -->
   <SectionRow
     title={i18n('options_general_never_translate_languages_title', {
       defaultValue: 'Never-translate languages'
@@ -257,6 +267,7 @@
     </Select>
   </SectionRow>
 
+  <!-- translation style -->
   <SectionRow
     title={i18n('options_general_translation_style_title', {
       defaultValue: 'Translation display style'
@@ -278,6 +289,7 @@
       <p class="text-base">{previewTextZh}</p>
     </div>
     <div class="flex flex-col space-y-3 self-end rounded-2xl text-base">
+      <!-- custom color and size -->
       <details class="flex w-fit flex-col space-y-3 self-end">
         <summary class="flex w-fit cursor-pointer list-none self-end">
           <span
@@ -336,6 +348,7 @@
         </div>
       </details>
 
+      <!-- set font -->
       <details class="flex w-fit flex-col space-y-3 self-end">
         <summary class="flex w-fit cursor-pointer list-none self-end">
           <span>{i18n('options_general_set_font', { defaultValue: 'Set font' })}</span>
@@ -368,6 +381,7 @@
         </div>
       </details>
 
+      <!-- preview all styles -->
       <details class="flex w-fit flex-col space-y-3 self-end">
         <summary class="flex w-fit cursor-pointer list-none self-end">
           <span>
@@ -402,6 +416,7 @@
     </div>
   </SectionRow>
 
+  <!-- similar language bg -->
   <SectionRow
     title={i18n('options_general_similar_language_bg_title', {
       defaultValue: 'Add background color when page and target languages are similar'
