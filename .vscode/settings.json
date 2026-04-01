@@ -1,4 +1,5 @@
 {
+  "editor.tabSize": 2,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
@@ -53,7 +54,6 @@
   "typescript.inlayHints.parameterNames.enabled": "all",
   "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
   "typescript.inlayHints.enumMemberValues.enabled": true,
-  "explorerExclude.backup": {},
   "copyrightInserter.holder": "AnyLang, Inc.",
   "copyrightInserter.useLineComment": true,
   "copyrightInserter.year": "2026"
