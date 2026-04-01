@@ -1,4 +1,7 @@
 {
+  "msg_unknown_language": {
+    "message": "Unknown language"
+  },
   "options_about_check_update": {
     "message": "Check for updates"
   },
