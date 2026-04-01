@@ -1,6 +1,16 @@
 {
   "extends": "./.wxt/tsconfig.json",
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "noEmitOnError": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["chrome", "firefox-webext-browser"],
     "useDefineForClassFields": true
-  }
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }
