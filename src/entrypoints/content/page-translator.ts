@@ -1,6 +1,6 @@
 import { browser } from "wxt/browser";
 
-import { checkedLastError } from "@/lib/CheckedLastError";
+import { checkedLastError } from "@/lib/error";
 
 type PageLanguageState = "original" | "translated";
 

@@ -1,5 +1,6 @@
-import { checkedLastError } from "@/lib/CheckedLastError";
 import { browser } from "wxt/browser";
+
+import { checkedLastError } from "@/lib/error";
 
 interface ConfigLike {
   onReady(callback?: () => void): Promise<void>;
