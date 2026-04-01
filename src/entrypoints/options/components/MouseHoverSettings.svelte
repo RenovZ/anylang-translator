@@ -27,6 +27,7 @@
     })}>
     <Select
       slot="controls"
+      classes={{ select: 'text-ellipsis' }}
       value={config.toggleModes.hoverTrigger}
       onchange={(event) =>
         updateToggleMode('hoverTrigger', (event.currentTarget as HTMLSelectElement).value)}>
