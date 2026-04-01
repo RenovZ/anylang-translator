@@ -1,59 +1,58 @@
-import { browser } from "wxt/browser";
+import { browser } from 'wxt/browser';
 
-import type { Languages } from "./languages";
+import type { Languages } from './languages';
 
 export type DefaultConfigName =
-  | "uiLanguage"
-  | "pageTranslatorService"
-  | "textTranslatorService"
-  | "textToSpeechService"
-  | "enabledServices"
-  | "ttsSpeed"
-  | "ttsVolume"
-  | "targetLanguage"
-  | "targetLanguageTextTranslation"
-  | "targetLanguages"
-  | "alwaysTranslateSites"
-  | "neverTranslateSites"
-  | "sitesToTranslateWhenHovering"
-  | "langsToTranslateWhenHovering"
-  | "alwaysTranslateLangs"
-  | "neverTranslateLangs"
-  | "customDictionary"
-  | "showTranslatePageContextMenu"
-  | "showTranslateSelectedContextMenu"
-  | "showButtonInTheAddressBar"
-  | "showOriginalTextWhenHovering"
-  | "showTranslateSelectedButton"
-  | "whenShowMobilePopup"
-  | "useOldPopup"
-  | "darkMode"
-  | "popupBlueWhenSiteIsTranslated"
-  | "popupPanelSection"
-  | "showReleaseNotes"
-  | "dontShowIfIsNotValidText"
-  | "dontShowIfPageLangIsTargetLang"
-  | "dontShowIfPageLangIsUnknown"
-  | "dontShowIfSelectedTextIsTargetLang"
-  | "dontShowIfSelectedTextIsUnknown"
-  | "hotkeys"
-  | "expandPanelTranslateSelectedText"
-  | "translateTag_pre"
-  | "enableIframePageTranslation"
-  | "dontSortResults"
-  | "translateDynamicallyCreatedContent"
-  | "autoTranslateWhenClickingALink"
-  | "translateSelectedWhenPressTwice"
-  | "translateTextOverMouseWhenPressTwice"
-  | "translateClickingOnce"
-  | "enableDiskCache"
-  | "useAlternativeService"
-  | "customServices"
-  | "showMobilePopupOnDesktop"
-  | "popupMobileKeepOnScren"
-  | "popupMobilePosition"
-  | "addPaddingToPage"
-  | "proxyServers";
+  | 'uiLanguage'
+  | 'pageTranslatorService'
+  | 'textTranslatorService'
+  | 'textToSpeechService'
+  | 'enabledServices'
+  | 'ttsSpeed'
+  | 'ttsVolume'
+  | 'targetLanguage'
+  | 'targetLanguageTextTranslation'
+  | 'targetLanguages'
+  | 'alwaysTranslateSites'
+  | 'neverTranslateSites'
+  | 'sitesToTranslateWhenHovering'
+  | 'langsToTranslateWhenHovering'
+  | 'alwaysTranslateLangs'
+  | 'neverTranslateLangs'
+  | 'customDictionary'
+  | 'showTranslatePageContextMenu'
+  | 'showTranslateSelectedContextMenu'
+  | 'showButtonInTheAddressBar'
+  | 'showOriginalTextWhenHovering'
+  | 'showTranslateSelectedButton'
+  | 'whenShowMobilePopup'
+  | 'darkMode'
+  | 'popupBlueWhenSiteIsTranslated'
+  | 'popupPanelSection'
+  | 'showReleaseNotes'
+  | 'dontShowIfIsNotValidText'
+  | 'dontShowIfPageLangIsTargetLang'
+  | 'dontShowIfPageLangIsUnknown'
+  | 'dontShowIfSelectedTextIsTargetLang'
+  | 'dontShowIfSelectedTextIsUnknown'
+  | 'hotkeys'
+  | 'expandPanelTranslateSelectedText'
+  | 'translateTag_pre'
+  | 'enableIframePageTranslation'
+  | 'dontSortResults'
+  | 'translateDynamicallyCreatedContent'
+  | 'autoTranslateWhenClickingALink'
+  | 'translateSelectedWhenPressTwice'
+  | 'translateTextOverMouseWhenPressTwice'
+  | 'translateClickingOnce'
+  | 'enableDiskCache'
+  | 'useAlternativeService'
+  | 'customServices'
+  | 'showMobilePopupOnDesktop'
+  | 'popupMobileKeepOnScren'
+  | 'popupMobilePosition'
+  | 'addPaddingToPage'
+  | 'proxyServers';
 
 export interface DefaultConfig {
   uiLanguage: string;
@@ -73,39 +72,38 @@ export interface DefaultConfig {
   alwaysTranslateLangs: string[];
   neverTranslateLangs: string[];
   customDictionary: Map<string, string>;
-  showTranslatePageContextMenu: "yes" | "no";
-  showTranslateSelectedContextMenu: "yes" | "no";
-  showButtonInTheAddressBar: "yes" | "no";
-  showOriginalTextWhenHovering: "yes" | "no";
-  showTranslateSelectedButton: "yes" | "no";
-  whenShowMobilePopup: "when-necessary" | "only-when-i-touch" | "always-show";
-  useOldPopup: "yes" | "no";
-  darkMode: "auto" | "yes" | "no";
-  popupBlueWhenSiteIsTranslated: "yes" | "no";
+  showTranslatePageContextMenu: 'yes' | 'no';
+  showTranslateSelectedContextMenu: 'yes' | 'no';
+  showButtonInTheAddressBar: 'yes' | 'no';
+  showOriginalTextWhenHovering: 'yes' | 'no';
+  showTranslateSelectedButton: 'yes' | 'no';
+  whenShowMobilePopup: 'when-necessary' | 'only-when-i-touch' | 'always-show';
+  darkMode: 'auto' | 'yes' | 'no';
+  popupBlueWhenSiteIsTranslated: 'yes' | 'no';
   popupPanelSection: number;
-  showReleaseNotes: "yes" | "no";
-  dontShowIfIsNotValidText: "yes" | "no";
-  dontShowIfPageLangIsTargetLang: "yes" | "no";
-  dontShowIfPageLangIsUnknown: "yes" | "no";
-  dontShowIfSelectedTextIsTargetLang: "yes" | "no";
-  dontShowIfSelectedTextIsUnknown: "yes" | "no";
+  showReleaseNotes: 'yes' | 'no';
+  dontShowIfIsNotValidText: 'yes' | 'no';
+  dontShowIfPageLangIsTargetLang: 'yes' | 'no';
+  dontShowIfPageLangIsUnknown: 'yes' | 'no';
+  dontShowIfSelectedTextIsTargetLang: 'yes' | 'no';
+  dontShowIfSelectedTextIsUnknown: 'yes' | 'no';
   hotkeys: Record<string, string>;
-  expandPanelTranslateSelectedText: "yes" | "no";
-  translateTag_pre: "yes" | "no";
-  enableIframePageTranslation: "yes" | "no";
-  dontSortResults: "yes" | "no";
-  translateDynamicallyCreatedContent: "yes" | "no";
-  autoTranslateWhenClickingALink: "yes" | "no";
-  translateSelectedWhenPressTwice: "yes" | "no";
-  translateTextOverMouseWhenPressTwice: "yes" | "no";
-  translateClickingOnce: "yes" | "no";
-  enableDiskCache: "yes" | "no";
-  useAlternativeService: "yes" | "no";
+  expandPanelTranslateSelectedText: 'yes' | 'no';
+  translateTag_pre: 'yes' | 'no';
+  enableIframePageTranslation: 'yes' | 'no';
+  dontSortResults: 'yes' | 'no';
+  translateDynamicallyCreatedContent: 'yes' | 'no';
+  autoTranslateWhenClickingALink: 'yes' | 'no';
+  translateSelectedWhenPressTwice: 'yes' | 'no';
+  translateTextOverMouseWhenPressTwice: 'yes' | 'no';
+  translateClickingOnce: 'yes' | 'no';
+  enableDiskCache: 'yes' | 'no';
+  useAlternativeService: 'yes' | 'no';
   customServices: Array<Record<string, unknown>>;
-  showMobilePopupOnDesktop: "yes" | "no";
-  popupMobileKeepOnScren: "yes" | "no";
-  popupMobilePosition: "top" | "bottom";
-  addPaddingToPage: "yes" | "no";
+  showMobilePopupOnDesktop: 'yes' | 'no';
+  popupMobileKeepOnScren: 'yes' | 'no';
+  popupMobilePosition: 'top' | 'bottom';
+  addPaddingToPage: 'yes' | 'no';
   proxyServers: Record<string, unknown>;
 }
 
@@ -117,13 +115,13 @@ type OnChangeObserver = (name: string, value: unknown) => void;
 
 export class Config {
   private readonly observers: OnChangeObserver[] = [];
-  private readonly defaultTargetLanguages = ["en", "es", "de"];
+  private readonly defaultTargetLanguages = ['en', 'es', 'de'];
   private readonly defaultConfig: DefaultConfig = {
-    uiLanguage: "default",
-    pageTranslatorService: "google",
-    textTranslatorService: "google",
-    textToSpeechService: "google",
-    enabledServices: ["google", "bing", "yandex", "deepl"],
+    uiLanguage: 'default',
+    pageTranslatorService: 'google',
+    textTranslatorService: 'google',
+    textToSpeechService: 'google',
+    enabledServices: ['google', 'bing', 'yandex', 'deepl'],
     ttsSpeed: 1,
     ttsVolume: 1,
     targetLanguage: null,
@@ -136,40 +134,39 @@ export class Config {
     alwaysTranslateLangs: [],
     neverTranslateLangs: [],
     customDictionary: new Map<string, string>(),
-    showTranslatePageContextMenu: "yes",
-    showTranslateSelectedContextMenu: "yes",
-    showButtonInTheAddressBar: "yes",
-    showOriginalTextWhenHovering: "no",
-    showTranslateSelectedButton: "yes",
-    whenShowMobilePopup: "when-necessary",
-    useOldPopup: "yes",
-    darkMode: "auto",
-    popupBlueWhenSiteIsTranslated: "yes",
+    showTranslatePageContextMenu: 'yes',
+    showTranslateSelectedContextMenu: 'yes',
+    showButtonInTheAddressBar: 'yes',
+    showOriginalTextWhenHovering: 'no',
+    showTranslateSelectedButton: 'yes',
+    whenShowMobilePopup: 'when-necessary',
+    darkMode: 'auto',
+    popupBlueWhenSiteIsTranslated: 'yes',
     popupPanelSection: 1,
-    showReleaseNotes: "yes",
-    dontShowIfIsNotValidText: "yes",
-    dontShowIfPageLangIsTargetLang: "no",
-    dontShowIfPageLangIsUnknown: "no",
-    dontShowIfSelectedTextIsTargetLang: "no",
-    dontShowIfSelectedTextIsUnknown: "no",
+    showReleaseNotes: 'yes',
+    dontShowIfIsNotValidText: 'yes',
+    dontShowIfPageLangIsTargetLang: 'no',
+    dontShowIfPageLangIsUnknown: 'no',
+    dontShowIfSelectedTextIsTargetLang: 'no',
+    dontShowIfSelectedTextIsUnknown: 'no',
     hotkeys: {},
-    expandPanelTranslateSelectedText: "no",
-    translateTag_pre: "yes",
-    enableIframePageTranslation: "yes",
-    dontSortResults: "no",
-    translateDynamicallyCreatedContent: "yes",
-    autoTranslateWhenClickingALink: "no",
-    translateSelectedWhenPressTwice: "no",
-    translateTextOverMouseWhenPressTwice: "no",
-    translateClickingOnce: "no",
-    enableDiskCache: "no",
-    useAlternativeService: "yes",
+    expandPanelTranslateSelectedText: 'no',
+    translateTag_pre: 'yes',
+    enableIframePageTranslation: 'yes',
+    dontSortResults: 'no',
+    translateDynamicallyCreatedContent: 'yes',
+    autoTranslateWhenClickingALink: 'no',
+    translateSelectedWhenPressTwice: 'no',
+    translateTextOverMouseWhenPressTwice: 'no',
+    translateClickingOnce: 'no',
+    enableDiskCache: 'no',
+    useAlternativeService: 'yes',
     customServices: [],
-    showMobilePopupOnDesktop: "no",
-    popupMobileKeepOnScren: "no",
-    popupMobilePosition: "top",
-    addPaddingToPage: "no",
-    proxyServers: {},
+    showMobilePopupOnDesktop: 'no',
+    popupMobileKeepOnScren: 'no',
+    popupMobilePosition: 'top',
+    addPaddingToPage: 'no',
+    proxyServers: {}
   };
 
   private config: DefaultConfig = structuredClone(this.defaultConfig);
@@ -201,7 +198,7 @@ export class Config {
     // listen to storage changes
     browser.storage.onChanged.addListener((changes, areaName) => {
       this.onReady(() => {
-        if (areaName !== "local") return;
+        if (areaName !== 'local') return;
         for (const name in changes) {
           const key = name as keyof DefaultConfig;
           const newValue = this.fixObjectType(key, changes[name].newValue);
@@ -219,7 +216,7 @@ export class Config {
         // load config; convert object/array to map/set if necessary
         for (const [key, value] of Object.entries(loaded)) {
           if (!this.isConfigKey(key)) {
-            console.error("no such config key: ", key);
+            console.error('no such config key: ', key);
             continue;
           }
           this.config[key] = this.fixObjectType(key, value);
@@ -229,7 +226,7 @@ export class Config {
         if (this.config.targetLanguages.some((tl) => !tl)) {
           this.config.targetLanguages = [...this.defaultTargetLanguages];
           browser.storage.local.set({
-            targetLanguages: this.config.targetLanguages,
+            targetLanguages: this.config.targetLanguages
           });
         }
 
@@ -247,9 +244,7 @@ export class Config {
         // then try to use de array defaultTargetLanguages ["en", "es", "de"]
         for (const lang in this.defaultTargetLanguages) {
           if (this.config.targetLanguages.length >= 3) break;
-          if (
-            this.config.targetLanguages.indexOf(this.defaultTargetLanguages[lang]) === -1
-          ) {
+          if (this.config.targetLanguages.indexOf(this.defaultTargetLanguages[lang]) === -1) {
             this.config.targetLanguages.push(this.defaultTargetLanguages[lang]);
           }
         }
@@ -281,34 +276,32 @@ export class Config {
         // if targetLanguageTextTranslation does not exits in targetLanguages, then set it to targetLanguages[0]
         if (
           !this.config.targetLanguageTextTranslation ||
-          this.config.targetLanguages.indexOf(this.config.targetLanguageTextTranslation) ===
-            -1
+          this.config.targetLanguages.indexOf(this.config.targetLanguageTextTranslation) === -1
         ) {
           this.config.targetLanguageTextTranslation = this.config.targetLanguages[0];
         }
 
         if (this.lang) {
           // fix targetLanguages
-          this.config.targetLanguages = this.config.targetLanguages.map((lang) =>
-            this.lang!.fixTLanguageCode(lang)
-          ).filter((lang): lang is string => lang !== undefined);
+          this.config.targetLanguages = this.config.targetLanguages
+            .map((lang) => this.lang!.fixTLanguageCode(lang))
+            .filter((lang): lang is string => lang !== undefined);
 
           // fix neverTranslateLangs
-          this.config.neverTranslateLangs = this.config.neverTranslateLangs.map((lang) =>
-            this.lang!.fixTLanguageCode(lang)
-          ).filter((lang): lang is string => lang !== undefined);
+          this.config.neverTranslateLangs = this.config.neverTranslateLangs
+            .map((lang) => this.lang!.fixTLanguageCode(lang))
+            .filter((lang): lang is string => lang !== undefined);
 
           // fix alwaysTranslateLangs
-          this.config.alwaysTranslateLangs = this.config.alwaysTranslateLangs.map((lang) =>
-            this.lang!.fixTLanguageCode(lang)
-          ).filter((lang): lang is string => lang !== undefined);
+          this.config.alwaysTranslateLangs = this.config.alwaysTranslateLangs
+            .map((lang) => this.lang!.fixTLanguageCode(lang))
+            .filter((lang): lang is string => lang !== undefined);
 
           // fix targetLanguage
-          this.config.targetLanguage = this.lang.fixTLanguageCode(this.config.targetLanguage) ?? "";
+          this.config.targetLanguage = this.lang.fixTLanguageCode(this.config.targetLanguage) ?? '';
           // fix targetLanguageTextTranslation
-          this.config.targetLanguageTextTranslation = this.lang.fixTLanguageCode(
-            this.config.targetLanguageTextTranslation
-          ) ?? "";
+          this.config.targetLanguageTextTranslation =
+            this.lang.fixTLanguageCode(this.config.targetLanguageTextTranslation) ?? '';
         }
 
         // if targetLanguage does not exits in targetLanguages, then set it to targetLanguages[0]
@@ -316,10 +309,7 @@ export class Config {
           this.config.targetLanguage = this.config.targetLanguages[0];
         }
         // if targetLanguageTextTranslation does not exits in targetLanguages, then set it to targetLanguages[0]
-        if (
-          this.config.targetLanguages.indexOf(this.config.targetLanguageTextTranslation) ===
-          -1
-        ) {
+        if (this.config.targetLanguages.indexOf(this.config.targetLanguageTextTranslation) === -1) {
           this.config.targetLanguageTextTranslation = this.config.targetLanguages[0];
         }
 
@@ -329,12 +319,12 @@ export class Config {
             try {
               results.forEach((result) => {
                 if (result.name) {
-                  this.config.hotkeys[result.name] = result.shortcut ?? "";
+                  this.config.hotkeys[result.name] = result.shortcut ?? '';
                 }
               });
-              this.set("hotkeys", this.config.hotkeys);
+              this.set('hotkeys', this.config.hotkeys);
             } catch (e) {
-              console.error("set hotkeys failed:", e);
+              console.error('set hotkeys failed:', e);
             } finally {
               this.readyConfig();
             }
@@ -376,7 +366,7 @@ export class Config {
   export(): string {
     const dump: Record<string, unknown> = {
       timeStamp: Date.now(),
-      version: browser.runtime.getManifest().version,
+      version: browser.runtime.getManifest().version
     };
 
     for (const key in this.defaultConfig) {
@@ -393,7 +383,7 @@ export class Config {
     const incoming = JSON.parse(configJSON) as Record<string, unknown>;
 
     for (const key in this.defaultConfig) {
-      if (typeof incoming[key] !== "undefined" && this.isConfigKey(key)) {
+      if (typeof incoming[key] !== 'undefined' && this.isConfigKey(key)) {
         const fixed = this.fixObjectType(key, incoming[key]);
         this.set(key, fixed);
       }
@@ -434,71 +424,71 @@ export class Config {
   }
 
   addSiteToTranslateWhenHovering(hostname: string): void {
-    this.addInArray("sitesToTranslateWhenHovering", hostname);
+    this.addInArray('sitesToTranslateWhenHovering', hostname);
   }
 
   removeSiteFromTranslateWhenHovering(hostname: string): void {
-    this.removeFromArray("sitesToTranslateWhenHovering", hostname);
+    this.removeFromArray('sitesToTranslateWhenHovering', hostname);
   }
 
   addLangToTranslateWhenHovering(lang: string): void {
-    this.addInArray("langsToTranslateWhenHovering", lang);
+    this.addInArray('langsToTranslateWhenHovering', lang);
   }
 
   removeLangFromTranslateWhenHovering(lang: string): void {
-    this.removeFromArray("langsToTranslateWhenHovering", lang);
+    this.removeFromArray('langsToTranslateWhenHovering', lang);
   }
 
   addSiteToAlwaysTranslate(hostname: string): void {
-    this.addInArray("alwaysTranslateSites", hostname);
-    this.removeFromArray("neverTranslateSites", hostname);
+    this.addInArray('alwaysTranslateSites', hostname);
+    this.removeFromArray('neverTranslateSites', hostname);
   }
 
   removeSiteFromAlwaysTranslate(hostname: string): void {
-    this.removeFromArray("alwaysTranslateSites", hostname);
+    this.removeFromArray('alwaysTranslateSites', hostname);
   }
 
   addSiteToNeverTranslate(hostname: string): void {
-    this.addInArray("neverTranslateSites", hostname);
-    this.removeFromArray("alwaysTranslateSites", hostname);
-    this.removeFromArray("sitesToTranslateWhenHovering", hostname);
+    this.addInArray('neverTranslateSites', hostname);
+    this.removeFromArray('alwaysTranslateSites', hostname);
+    this.removeFromArray('sitesToTranslateWhenHovering', hostname);
   }
 
   removeSiteFromNeverTranslate(hostname: string): void {
-    this.removeFromArray("neverTranslateSites", hostname);
+    this.removeFromArray('neverTranslateSites', hostname);
   }
 
   addKeyWordTocustomDictionary(key: string, value: string): void {
-    this.addInMap("customDictionary", key, value);
+    this.addInMap('customDictionary', key, value);
   }
 
   removeKeyWordFromcustomDictionary(keyWord: string): void {
-    this.removeFromMap("customDictionary", keyWord);
+    this.removeFromMap('customDictionary', keyWord);
   }
 
   addLangToAlwaysTranslate(lang: string, hostname?: string): void {
-    this.addInArray("alwaysTranslateLangs", lang);
-    this.removeFromArray("neverTranslateLangs", lang);
-    if (hostname) this.removeFromArray("neverTranslateSites", hostname);
+    this.addInArray('alwaysTranslateLangs', lang);
+    this.removeFromArray('neverTranslateLangs', lang);
+    if (hostname) this.removeFromArray('neverTranslateSites', hostname);
   }
 
   removeLangFromAlwaysTranslate(lang: string): void {
-    this.removeFromArray("alwaysTranslateLangs", lang);
+    this.removeFromArray('alwaysTranslateLangs', lang);
   }
 
   addLangToNeverTranslate(lang: string, hostname?: string): void {
-    this.addInArray("neverTranslateLangs", lang);
-    this.removeFromArray("alwaysTranslateLangs", lang);
-    this.removeFromArray("langsToTranslateWhenHovering", lang);
-    if (hostname) this.removeFromArray("alwaysTranslateSites", hostname);
+    this.addInArray('neverTranslateLangs', lang);
+    this.removeFromArray('alwaysTranslateLangs', lang);
+    this.removeFromArray('langsToTranslateWhenHovering', lang);
+    if (hostname) this.removeFromArray('alwaysTranslateSites', hostname);
   }
 
   removeLangFromNeverTranslate(lang: string): void {
-    this.removeFromArray("neverTranslateLangs", lang);
+    this.removeFromArray('neverTranslateLangs', lang);
   }
 
   setTargetLanguage(lang: string, forTextToo = false): void {
-    const targetLanguages = this.get("targetLanguages");
+    const targetLanguages = this.get('targetLanguages');
     const fixed = this.lang?.fixTLanguageCode(lang);
     if (!fixed) return;
 
@@ -506,37 +496,37 @@ export class Config {
       this.addTargetLanguage(fixed);
     }
 
-    this.set("targetLanguage", fixed);
+    this.set('targetLanguage', fixed);
     if (forTextToo) this.setTargetLanguageTextTranslation(fixed);
   }
 
   setTargetLanguageTextTranslation(lang: string): void {
     const fixed = this.lang?.fixTLanguageCode(lang);
     if (!fixed) return;
-    this.set("targetLanguageTextTranslation", fixed);
+    this.set('targetLanguageTextTranslation', fixed);
   }
 
   /**
    * Switch between page translation services that are enabled
    */
   swapPageTranslationService(): string {
-    const pageServices = ["google", "bing", "yandex"];
-    const enabled = this.get("enabledServices").filter((name) => pageServices.includes(name));
-    const current = this.get("pageTranslatorService");
+    const pageServices = ['google', 'bing', 'yandex'];
+    const enabled = this.get('enabledServices').filter((name) => pageServices.includes(name));
+    const current = this.get('pageTranslatorService');
     const index = enabled.indexOf(current);
 
     if (index !== -1) {
-      if (enabled[index + 1]) this.set("pageTranslatorService", enabled[index + 1]);
-      else this.set("pageTranslatorService", enabled[0]);
+      if (enabled[index + 1]) this.set('pageTranslatorService', enabled[index + 1]);
+      else this.set('pageTranslatorService', enabled[0]);
     } else {
-      this.set("pageTranslatorService", enabled[0]);
+      this.set('pageTranslatorService', enabled[0]);
     }
 
-    return this.get("pageTranslatorService");
+    return this.get('pageTranslatorService');
   }
 
   private addTargetLanguage(lang: string): void {
-    const targetLanguages = this.get("targetLanguages");
+    const targetLanguages = this.get('targetLanguages');
     const index = targetLanguages.indexOf(lang);
     if (index === -1) {
       targetLanguages.unshift(lang);
@@ -545,7 +535,7 @@ export class Config {
       targetLanguages.splice(index, 1);
       targetLanguages.unshift(lang);
     }
-    this.set("targetLanguages", targetLanguages);
+    this.set('targetLanguages', targetLanguages);
   }
 
   private addInArray<K extends KeysOfType<DefaultConfig, string[]>>(
@@ -576,7 +566,7 @@ export class Config {
     value: string
   ): void {
     const map = this.get(configName);
-    if (typeof map.get(key) === "undefined") {
+    if (typeof map.get(key) === 'undefined') {
       map.set(key, value);
       this.set(configName, map);
     }
@@ -587,7 +577,7 @@ export class Config {
     key: string
   ): void {
     const map = this.get(configName);
-    if (typeof map.get(key) !== "undefined") {
+    if (typeof map.get(key) !== 'undefined') {
       map.delete(key);
       this.set(configName, map);
     }
