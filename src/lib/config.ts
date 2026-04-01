@@ -346,7 +346,7 @@ export class Config {
     });
   }
 
-  public onReady(callback: (() => void) | null = null): Promise<void> {
+  onReady(callback: (() => void) | null = null): Promise<void> {
     if (callback) {
       if (this.configIsReady) callback();
       else this.onReadyObservers.push(callback);
@@ -357,14 +357,14 @@ export class Config {
   /**
    * get the value of a config
    */
-  public get<K extends keyof DefaultConfig>(name: K): DefaultConfig[K] {
+  get<K extends keyof DefaultConfig>(name: K): DefaultConfig[K] {
     return this.config[name];
   }
 
   /**
    * set the value of a config
    */
-  public set<K extends keyof DefaultConfig>(name: K, value: DefaultConfig[K]): void {
+  set<K extends keyof DefaultConfig>(name: K, value: DefaultConfig[K]): void {
     this.config[name] = value;
     browser.storage.local.set({ [name]: this.toObjectOrArrayIfTypeIsMapOrSet(value) });
     this.observers.forEach((callback) => callback(name, value));
@@ -373,7 +373,7 @@ export class Config {
   /**
    * export config as JSON string
    */
-  public export(): string {
+  export(): string {
     const dump: Record<string, unknown> = {
       timeStamp: Date.now(),
       version: browser.runtime.getManifest().version,
@@ -389,7 +389,7 @@ export class Config {
   /**
    * import config and reload the extension
    */
-  public import(configJSON: string): void {
+  import(configJSON: string): void {
     const incoming = JSON.parse(configJSON) as Record<string, unknown>;
 
     for (const key in this.defaultConfig) {
@@ -412,7 +412,7 @@ export class Config {
   /**
    * restore the config to default and reaload the extension
    */
-  public restoreToDefault(): void {
+  restoreToDefault(): void {
     // TODO: update method did not exists within browser.commands
     // if (typeof browser !== "undefined" && typeof browser.commands !== "undefined") {
     //   const commands = browser.runtime.getManifest().commands ?? {};
@@ -429,75 +429,75 @@ export class Config {
   /**
    * create a listener to run when a config changes
    */
-  public onChanged(callback: OnChangeObserver): void {
+  onChanged(callback: OnChangeObserver): void {
     this.observers.push(callback);
   }
 
-  public addSiteToTranslateWhenHovering(hostname: string): void {
+  addSiteToTranslateWhenHovering(hostname: string): void {
     this.addInArray("sitesToTranslateWhenHovering", hostname);
   }
 
-  public removeSiteFromTranslateWhenHovering(hostname: string): void {
+  removeSiteFromTranslateWhenHovering(hostname: string): void {
     this.removeFromArray("sitesToTranslateWhenHovering", hostname);
   }
 
-  public addLangToTranslateWhenHovering(lang: string): void {
+  addLangToTranslateWhenHovering(lang: string): void {
     this.addInArray("langsToTranslateWhenHovering", lang);
   }
 
-  public removeLangFromTranslateWhenHovering(lang: string): void {
+  removeLangFromTranslateWhenHovering(lang: string): void {
     this.removeFromArray("langsToTranslateWhenHovering", lang);
   }
 
-  public addSiteToAlwaysTranslate(hostname: string): void {
+  addSiteToAlwaysTranslate(hostname: string): void {
     this.addInArray("alwaysTranslateSites", hostname);
     this.removeFromArray("neverTranslateSites", hostname);
   }
 
-  public removeSiteFromAlwaysTranslate(hostname: string): void {
+  removeSiteFromAlwaysTranslate(hostname: string): void {
     this.removeFromArray("alwaysTranslateSites", hostname);
   }
 
-  public addSiteToNeverTranslate(hostname: string): void {
+  addSiteToNeverTranslate(hostname: string): void {
     this.addInArray("neverTranslateSites", hostname);
     this.removeFromArray("alwaysTranslateSites", hostname);
     this.removeFromArray("sitesToTranslateWhenHovering", hostname);
   }
 
-  public removeSiteFromNeverTranslate(hostname: string): void {
+  removeSiteFromNeverTranslate(hostname: string): void {
     this.removeFromArray("neverTranslateSites", hostname);
   }
 
-  public addKeyWordTocustomDictionary(key: string, value: string): void {
+  addKeyWordTocustomDictionary(key: string, value: string): void {
     this.addInMap("customDictionary", key, value);
   }
 
-  public removeKeyWordFromcustomDictionary(keyWord: string): void {
+  removeKeyWordFromcustomDictionary(keyWord: string): void {
     this.removeFromMap("customDictionary", keyWord);
   }
 
-  public addLangToAlwaysTranslate(lang: string, hostname?: string): void {
+  addLangToAlwaysTranslate(lang: string, hostname?: string): void {
     this.addInArray("alwaysTranslateLangs", lang);
     this.removeFromArray("neverTranslateLangs", lang);
     if (hostname) this.removeFromArray("neverTranslateSites", hostname);
   }
 
-  public removeLangFromAlwaysTranslate(lang: string): void {
+  removeLangFromAlwaysTranslate(lang: string): void {
     this.removeFromArray("alwaysTranslateLangs", lang);
   }
 
-  public addLangToNeverTranslate(lang: string, hostname?: string): void {
+  addLangToNeverTranslate(lang: string, hostname?: string): void {
     this.addInArray("neverTranslateLangs", lang);
     this.removeFromArray("alwaysTranslateLangs", lang);
     this.removeFromArray("langsToTranslateWhenHovering", lang);
     if (hostname) this.removeFromArray("alwaysTranslateSites", hostname);
   }
 
-  public removeLangFromNeverTranslate(lang: string): void {
+  removeLangFromNeverTranslate(lang: string): void {
     this.removeFromArray("neverTranslateLangs", lang);
   }
 
-  public setTargetLanguage(lang: string, forTextToo = false): void {
+  setTargetLanguage(lang: string, forTextToo = false): void {
     const targetLanguages = this.get("targetLanguages");
     const fixed = this.lang?.fixTLanguageCode(lang);
     if (!fixed) return;
@@ -510,7 +510,7 @@ export class Config {
     if (forTextToo) this.setTargetLanguageTextTranslation(fixed);
   }
 
-  public setTargetLanguageTextTranslation(lang: string): void {
+  setTargetLanguageTextTranslation(lang: string): void {
     const fixed = this.lang?.fixTLanguageCode(lang);
     if (!fixed) return;
     this.set("targetLanguageTextTranslation", fixed);
@@ -519,7 +519,7 @@ export class Config {
   /**
    * Switch between page translation services that are enabled
    */
-  public swapPageTranslationService(): string {
+  swapPageTranslationService(): string {
     const pageServices = ["google", "bing", "yandex"];
     const enabled = this.get("enabledServices").filter((name) => pageServices.includes(name));
     const current = this.get("pageTranslatorService");
