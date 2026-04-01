@@ -1,7 +1,7 @@
 import { browser } from "wxt/browser";
 
-import { checkedLastError } from "@/lib/CheckedLastError";
-import { tabsCreate } from "@/lib/TabsCreate";
+import { checkedLastError } from "@/lib/error";
+import { tabsCreate } from "@/lib/tabs";
 import type { Languages } from "@/lib/languages";
 import type { TranslationCache } from "./cache";
 

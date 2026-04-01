@@ -1,6 +1,7 @@
-import { checkedLastError } from "@/lib/CheckedLastError";
-import { tabsCreate } from "@/lib/TabsCreate";
 import { browser } from "wxt/browser";
+
+import { checkedLastError } from "@/lib/error";
+import { tabsCreate } from "@/lib/tabs";
 
 type ConfigLike = {
   get<T>(name: string): T;
