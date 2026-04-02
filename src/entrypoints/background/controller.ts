@@ -49,6 +49,9 @@ export class Controller {
     this.initialize();
   }
 
+  /**
+   * 初始化后台控制器，集中绑定消息、菜单和导航相关监听器。
+   */
   initialize(): void {
     this.bindMimeTypeObserver();
     this.bindRuntimeMessages();
@@ -118,7 +121,7 @@ export class Controller {
       }
       if (action === 'detectTabLanguage') {
         if (!sender.tab?.id) {
-          // https://github.com/FilipePS/Traduzir-paginas-web/issues/478
+          // 某些场景下消息可能拿不到 tabId，此时退回到未知语言。参考 issue #478。
           sendResponse('und');
           return;
         }
