@@ -1,22 +1,31 @@
+/**
+ * 在页面已翻译时，为被替换过的节点提供“悬停查看原文”的弹层能力。
+ */
 export class ShowOriginal {
   public isEnabled = false;
   private enabledObservers: Array<() => void> = [];
   private nodesToShowOriginal: Array<{ node: Node; original: string | null }> = [];
-  private showOriginalTextWhenHovering: string = "no";
+  private showOriginalTextWhenHovering: string = 'no';
 
   private divElement: HTMLDivElement | null = null;
   private shadowRoot: ShadowRoot | null = null;
   private timeoutHandler: number | null = null;
   private originalTextIsShowing = false;
   private currentNodeOverMouse: EventTarget | null = null;
-  private styleTextContent = "";
+  private styleTextContent = '';
   private mousePos = { x: 0, y: 0 };
 
-  public initialize(config: {
-    onReady(callback?: () => void): Promise<void>;
-    get<T>(name: string): T;
-    onChanged(callback: (name: string, value: unknown) => void): void;
-  }, platformInfo: { isMobile: { any: unknown } }): void {
+  /**
+   * 初始化原文提示功能，并根据平台和配置决定是否启用。
+   */
+  public initialize(
+    config: {
+      onReady(callback?: () => void): Promise<void>;
+      get<T>(name: string): T;
+      onChanged(callback: (name: string, value: unknown) => void): void;
+    },
+    platformInfo: { isMobile: { any: unknown } }
+  ): void {
     void config.onReady(() => {
       if (platformInfo.isMobile.any) {
         this.enable = () => undefined;
@@ -28,20 +37,20 @@ export class ShowOriginal {
         return;
       }
 
-      fetch(browser.runtime.getURL("/contentScript/css/showOriginal.css"))
+      fetch(browser.runtime.getURL('/contentScript/css/showOriginal.css'))
         .then((response) => response.text())
         .then((text) => {
           this.styleTextContent = text;
         })
         .catch(() => undefined);
 
-      this.showOriginalTextWhenHovering = config.get<string>("showOriginalTextWhenHovering");
-      this.isEnabled = this.showOriginalTextWhenHovering === "yes";
+      this.showOriginalTextWhenHovering = config.get<string>('showOriginalTextWhenHovering');
+      this.isEnabled = this.showOriginalTextWhenHovering === 'yes';
 
       config.onChanged((name, value) => {
-        if (name === "showOriginalTextWhenHovering") {
+        if (name === 'showOriginalTextWhenHovering') {
           this.showOriginalTextWhenHovering = String(value);
-          this.isEnabled = this.showOriginalTextWhenHovering === "yes";
+          this.isEnabled = this.showOriginalTextWhenHovering === 'yes';
           this.enable(true);
           this.enabledObservers.forEach((callback) => callback());
         }
@@ -58,41 +67,47 @@ export class ShowOriginal {
     if (this.nodesToShowOriginal.some((item) => item.node === node)) return;
 
     this.nodesToShowOriginal.push({ node, original: node.textContent });
-    node.addEventListener("mouseenter", this.onMouseEnter as EventListener);
-    node.addEventListener("mouseout", this.onMouseOut as EventListener);
+    node.addEventListener('mouseenter', this.onMouseEnter as EventListener);
+    node.addEventListener('mouseout', this.onMouseOut as EventListener);
   }
 
   public removeAll(): void {
     this.nodesToShowOriginal.forEach((item) => {
-      item.node.removeEventListener("mouseenter", this.onMouseEnter as EventListener);
-      item.node.removeEventListener("mouseout", this.onMouseOut as EventListener);
+      item.node.removeEventListener('mouseenter', this.onMouseEnter as EventListener);
+      item.node.removeEventListener('mouseout', this.onMouseOut as EventListener);
     });
     this.nodesToShowOriginal = [];
   }
 
+  /**
+   * 启用原文提示层，并开始监听鼠标与页面状态变化。
+   */
   public enable = (dontDeleteNodesToShowOriginal = false): void => {
     this.disable(dontDeleteNodesToShowOriginal);
-    if (this.showOriginalTextWhenHovering !== "yes") return;
+    if (this.showOriginalTextWhenHovering !== 'yes') return;
     if (this.divElement) return;
 
-    this.divElement = document.createElement("div");
-    this.divElement.style.cssText = "all: initial";
-    this.divElement.classList.add("notranslate");
+    this.divElement = document.createElement('div');
+    this.divElement.style.cssText = 'all: initial';
+    this.divElement.classList.add('notranslate');
 
-    this.shadowRoot = this.divElement.attachShadow({ mode: "closed" });
+    this.shadowRoot = this.divElement.attachShadow({ mode: 'closed' });
     this.shadowRoot.innerHTML = `<div id="originalText" dir="auto"></div>`;
-    const style = document.createElement("style");
+    const style = document.createElement('style');
     style.textContent = this.styleTextContent;
     this.shadowRoot.prepend(style);
 
-    this.divElement.addEventListener("mouseout", this.onMouseOut);
-    document.addEventListener("mousemove", this.onMouseMove);
-    document.addEventListener("mousedown", this.onMouseDown);
-    document.addEventListener("blur", this.hideOriginalText);
-    document.addEventListener("visibilitychange", this.hideOriginalText);
-    document.addEventListener("keyup", this.hideOnEsc, true);
+    this.divElement.addEventListener('mouseout', this.onMouseOut);
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mousedown', this.onMouseDown);
+    document.addEventListener('blur', this.hideOriginalText);
+    document.addEventListener('visibilitychange', this.hideOriginalText);
+    document.addEventListener('keyup', this.hideOnEsc, true);
   };
 
+  /**
+   * 禁用原文提示层；默认同时清空已登记的节点列表。
+   */
   public disable = (dontDeleteNodesToShowOriginal = false): void => {
     if (this.divElement) {
       this.hideOriginalText();
@@ -105,11 +120,11 @@ export class ShowOriginal {
       this.removeAll();
     }
 
-    document.removeEventListener("mousemove", this.onMouseMove);
-    document.removeEventListener("mousedown", this.onMouseDown);
-    document.removeEventListener("blur", this.hideOriginalText);
-    document.removeEventListener("visibilitychange", this.hideOriginalText);
-    document.removeEventListener("keyup", this.hideOnEsc, true);
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('mousedown', this.onMouseDown);
+    document.removeEventListener('blur', this.hideOriginalText);
+    document.removeEventListener('visibilitychange', this.hideOriginalText);
+    document.removeEventListener('keyup', this.hideOnEsc, true);
   };
 
   private onMouseMove = (event: MouseEvent): void => {
@@ -140,11 +155,16 @@ export class ShowOriginal {
     if (!this.divElement) return;
     if (!this.originalTextIsShowing) return;
 
-    if (event.target === this.currentNodeOverMouse && event.relatedTarget === this.divElement) return;
-    if (event.target === this.divElement && event.relatedTarget === this.currentNodeOverMouse) return;
+    if (event.target === this.currentNodeOverMouse && event.relatedTarget === this.divElement)
+      return;
+    if (event.target === this.divElement && event.relatedTarget === this.currentNodeOverMouse)
+      return;
     this.hideOriginalText();
   };
 
+  /**
+   * 在鼠标附近显示当前节点对应的原文内容。
+   */
   private showOriginalText(node: EventTarget | null): void {
     this.hideOriginalText();
     if (!this.divElement || !this.shadowRoot || !node) return;
@@ -153,9 +173,9 @@ export class ShowOriginal {
     const info = this.nodesToShowOriginal.find((item) => item.node === node);
     if (!info) return;
 
-    const textNode = this.shadowRoot.getElementById("originalText");
+    const textNode = this.shadowRoot.getElementById('originalText');
     if (!textNode) return;
-    textNode.textContent = info.original ?? "";
+    textNode.textContent = info.original ?? '';
     document.body.appendChild(this.divElement);
     this.originalTextIsShowing = true;
 
@@ -172,6 +192,9 @@ export class ShowOriginal {
     textNode.style.left = `${left}px`;
   }
 
+  /**
+   * 隐藏原文弹层，并清理延时器状态。
+   */
   private hideOriginalText = (): void => {
     this.divElement?.remove();
     this.originalTextIsShowing = false;
@@ -182,6 +205,6 @@ export class ShowOriginal {
   };
 
   private hideOnEsc = (event: KeyboardEvent): void => {
-    if (event.key === "Escape") this.hideOriginalText();
+    if (event.key === 'Escape') this.hideOriginalText();
   };
 }

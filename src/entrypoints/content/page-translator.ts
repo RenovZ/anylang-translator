@@ -93,6 +93,9 @@ function removeExtraDelimiter(textContext: string): string {
   return textContext.replaceAll('\n', ' ').replace(/  +/g, ' ');
 }
 
+/**
+ * 页面翻译主控制器：负责抽取可翻译节点、协调后台翻译，并在需要时恢复原文。
+ */
 export class PageTranslator {
   private pageLanguageState: PageLanguageState = 'original';
   private originalTabLanguage = 'und';
@@ -163,6 +166,9 @@ export class PageTranslator {
     private readonly lang: { fixTLanguageCode(code: string): string | null }
   ) {}
 
+  /**
+   * 初始化页面翻译器，应用静态规则并绑定配置与运行时监听器。
+   */
   initialize(): void {
     this.applyStaticTagRules();
     this.bindConfigChanges();
@@ -202,6 +208,9 @@ export class PageTranslator {
     }
   }
 
+  /**
+   * 启动整页翻译流程，并在翻译前先恢复到可重复处理的原始状态。
+   */
   translatePage(targetLanguage?: string): void {
     this.fooCount += 1;
     this.restorePage();
@@ -240,6 +249,9 @@ export class PageTranslator {
     this.translationRoutine();
   }
 
+  /**
+   * 撤销当前页面上的翻译结果，恢复文本节点、属性和页面标题。
+   */
   restorePage(): void {
     this.fooCount += 1;
     this.piecesToTranslate = [];
@@ -337,6 +349,9 @@ export class PageTranslator {
     }
   }
 
+  /**
+   * 处理来自后台、弹窗或其他内容脚本的运行时消息。
+   */
   private bindRuntimeMessageListener(): void {
     browser.runtime.onMessage.addListener((request: RuntimeRequest, _sender, sendResponse) => {
       const action = request.action;
@@ -620,6 +635,9 @@ export class PageTranslator {
     return true;
   }
 
+  /**
+   * 遍历 DOM，按“适合一次翻译的文本块”切分页面内容。
+   */
   private getPiecesToTranslate(root: Node = document.documentElement): PieceInfo[] {
     const result: PieceInfo[] = [
       {
