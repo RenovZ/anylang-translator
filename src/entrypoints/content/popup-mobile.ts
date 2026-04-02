@@ -20,6 +20,9 @@ interface RuntimeRequest {
   action?: string;
 }
 
+/**
+ * 移动端翻译浮层，负责在触屏设备上展示翻译控制面板。
+ */
 export class PopupMobile {
   private lastInteraction = Date.now();
   private serviceSelectorIsOpen = false;
@@ -54,6 +57,9 @@ export class PopupMobile {
   private tabLanguage = 'und';
   private pageLanguageState = 'original';
 
+  /**
+   * 初始化移动端面板，并在配置允许时挂载到页面中。
+   */
   public async initialize(
     config: ConfigLike,
     i18n: {
@@ -120,6 +126,9 @@ export class PopupMobile {
     });
   }
 
+  /**
+   * 创建移动端面板的根节点和 Shadow DOM。
+   */
   private createPopupRoot(): void {
     this.rootElement = document.createElement('div');
     this.rootElement.style.cssText = 'all: initial';
@@ -184,6 +193,9 @@ export class PopupMobile {
     this.i18n?.translateDocument(this.shadowRoot);
   }
 
+  /**
+   * 根据界面语言决定面板采用 LTR 还是 RTL 布局。
+   */
   private applyDirection(): void {
     if (!this.shadowRoot || !this.config || !this.lang) return;
     const dirIsRtl = this.lang.isRtlLanguage(
@@ -195,6 +207,9 @@ export class PopupMobile {
     }
   }
 
+  /**
+   * 绑定触摸拖动、菜单开关和各类按钮事件。
+   */
   private bindUiEvents(): void {
     if (!this.shadowRoot || !this.config || !this.pageTranslator) return;
 
