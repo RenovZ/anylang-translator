@@ -1,4 +1,4 @@
-import { browser } from "wxt/browser";
+import { browser } from 'wxt/browser';
 
 interface BingLanguageData {
   language: string;
@@ -54,21 +54,21 @@ class BingTTSAuthHelper {
 
       BingTTSAuthHelper.lastRequestTime = Date.now();
       const xhr = new XMLHttpRequest();
-      xhr.open("GET", "https://www.bing.com/translator");
+      xhr.open('GET', 'https://www.bing.com/translator');
       xhr.send();
       xhr.onload = () => {
         try {
           const responseText = xhr.responseText;
-          if (!responseText || responseText.length < 2) throw new Error("missing response");
+          if (!responseText || responseText.length < 2) throw new Error('missing response');
           const ig = responseText.match(/IG:"([^"]+)"/)?.[1];
           const iid = responseText.match(/data\-iid\=\"([^\"]+)\"/)?.[1];
-          if (!ig || !iid) throw new Error("missing IG or IID");
+          if (!ig || !iid) throw new Error('missing IG or IID');
 
-          const marker = "params_AbusePreventionHelper = [";
+          const marker = 'params_AbusePreventionHelper = [';
           const start = responseText.indexOf(marker);
-          if (start === -1) throw new Error("missing abuse helper");
-          const end = responseText.indexOf("]", start);
-          if (end === -1) throw new Error("missing abuse helper end");
+          if (start === -1) throw new Error('missing abuse helper');
+          const end = responseText.indexOf(']', start);
+          if (end === -1) throw new Error('missing abuse helper end');
           const content = responseText.slice(start + marker.length - 1, end + 1);
           const parsed = JSON.parse(content) as [number, string];
 
@@ -94,16 +94,16 @@ class BingTTSAuthHelper {
    */
   static getLanguageData(language: string): BingLanguageData | undefined {
     const replacements: Array<{ search: string; replace: string }> = [
-      { search: "zh-CN", replace: "zh-Hans" },
-      { search: "zh-TW", replace: "zh-Hant" },
-      { search: "tl", replace: "fil" },
-      { search: "hmn", replace: "mww" },
-      { search: "ku", replace: "kmr" },
-      { search: "ckb", replace: "ku" },
-      { search: "mn", replace: "mn-Cyrl" },
-      { search: "no", replace: "nb" },
-      { search: "lg", replace: "lug" },
-      { search: "sr", replace: "sr-Cyrl" },
+      { search: 'zh-CN', replace: 'zh-Hans' },
+      { search: 'zh-TW', replace: 'zh-Hant' },
+      { search: 'tl', replace: 'fil' },
+      { search: 'hmn', replace: 'mww' },
+      { search: 'ku', replace: 'kmr' },
+      { search: 'ckb', replace: 'ku' },
+      { search: 'mn', replace: 'mn-Cyrl' },
+      { search: 'no', replace: 'nb' },
+      { search: 'lg', replace: 'lug' },
+      { search: 'sr', replace: 'sr-Cyrl' }
     ];
     replacements.forEach((item) => {
       if (language === item.search) {
@@ -112,41 +112,41 @@ class BingTTSAuthHelper {
     });
 
     const list: BingLanguageData[] = [
-      { language: "af", locale: "af-ZA", gender: "Female", voice: "af-ZA-AdriNeural" },
-      { language: "am", locale: "am-ET", gender: "Female", voice: "am-ET-MekdesNeural" },
-      { language: "ar", locale: "ar-SA", gender: "Male", voice: "ar-SA-HamedNeural" },
-      { language: "bg", locale: "bg-BG", gender: "Male", voice: "bg-BG-BorislavNeural" },
-      { language: "bn", locale: "bn-IN", gender: "Female", voice: "bn-IN-TanishaaNeural" },
-      { language: "ca", locale: "ca-ES", gender: "Female", voice: "ca-ES-JoanaNeural" },
-      { language: "cs", locale: "cs-CZ", gender: "Male", voice: "cs-CZ-AntoninNeural" },
-      { language: "da", locale: "da-DK", gender: "Female", voice: "da-DK-ChristelNeural" },
-      { language: "de", locale: "de-DE", gender: "Female", voice: "de-DE-KatjaNeural" },
-      { language: "el", locale: "el-GR", gender: "Male", voice: "el-GR-NestorasNeural" },
-      { language: "en", locale: "en-US", gender: "Female", voice: "en-US-AriaNeural" },
-      { language: "es", locale: "es-ES", gender: "Female", voice: "es-ES-ElviraNeural" },
-      { language: "fa", locale: "fa-IR", gender: "Female", voice: "fa-IR-DilaraNeural" },
-      { language: "fi", locale: "fi-FI", gender: "Female", voice: "fi-FI-NooraNeural" },
-      { language: "fr", locale: "fr-FR", gender: "Female", voice: "fr-FR-DeniseNeural" },
-      { language: "fr-CA", locale: "fr-CA", gender: "Female", voice: "fr-CA-SylvieNeural" },
-      { language: "he", locale: "he-IL", gender: "Male", voice: "he-IL-AvriNeural" },
-      { language: "hi", locale: "hi-IN", gender: "Female", voice: "hi-IN-SwaraNeural" },
-      { language: "id", locale: "id-ID", gender: "Male", voice: "id-ID-ArdiNeural" },
-      { language: "it", locale: "it-IT", gender: "Male", voice: "it-IT-DiegoNeural" },
-      { language: "ja", locale: "ja-JP", gender: "Female", voice: "ja-JP-NanamiNeural" },
-      { language: "ko", locale: "ko-KR", gender: "Female", voice: "ko-KR-SunHiNeural" },
-      { language: "nb", locale: "nb-NO", gender: "Female", voice: "nb-NO-PernilleNeural" },
-      { language: "nl", locale: "nl-NL", gender: "Female", voice: "nl-NL-ColetteNeural" },
-      { language: "pl", locale: "pl-PL", gender: "Female", voice: "pl-PL-ZofiaNeural" },
-      { language: "pt", locale: "pt-BR", gender: "Female", voice: "pt-BR-FranciscaNeural" },
-      { language: "pt-PT", locale: "pt-PT", gender: "Female", voice: "pt-PT-FernandaNeural" },
-      { language: "ru", locale: "ru-RU", gender: "Female", voice: "ru-RU-DariyaNeural" },
-      { language: "sv", locale: "sv-SE", gender: "Female", voice: "sv-SE-SofieNeural" },
-      { language: "tr", locale: "tr-TR", gender: "Female", voice: "tr-TR-EmelNeural" },
-      { language: "uk", locale: "uk-UA", gender: "Female", voice: "uk-UA-PolinaNeural" },
-      { language: "vi", locale: "vi-VN", gender: "Male", voice: "vi-VN-NamMinhNeural" },
-      { language: "yue", locale: "zh-HK", gender: "Female", voice: "zh-HK-HiuGaaiNeural" },
-      { language: "zh-Hans", locale: "zh-CN", gender: "Female", voice: "zh-CN-XiaoxiaoNeural" },
-      { language: "zh-Hant", locale: "zh-CN", gender: "Female", voice: "zh-CN-XiaoxiaoNeural" },
+      { language: 'af', locale: 'af-ZA', gender: 'Female', voice: 'af-ZA-AdriNeural' },
+      { language: 'am', locale: 'am-ET', gender: 'Female', voice: 'am-ET-MekdesNeural' },
+      { language: 'ar', locale: 'ar-SA', gender: 'Male', voice: 'ar-SA-HamedNeural' },
+      { language: 'bg', locale: 'bg-BG', gender: 'Male', voice: 'bg-BG-BorislavNeural' },
+      { language: 'bn', locale: 'bn-IN', gender: 'Female', voice: 'bn-IN-TanishaaNeural' },
+      { language: 'ca', locale: 'ca-ES', gender: 'Female', voice: 'ca-ES-JoanaNeural' },
+      { language: 'cs', locale: 'cs-CZ', gender: 'Male', voice: 'cs-CZ-AntoninNeural' },
+      { language: 'da', locale: 'da-DK', gender: 'Female', voice: 'da-DK-ChristelNeural' },
+      { language: 'de', locale: 'de-DE', gender: 'Female', voice: 'de-DE-KatjaNeural' },
+      { language: 'el', locale: 'el-GR', gender: 'Male', voice: 'el-GR-NestorasNeural' },
+      { language: 'en', locale: 'en-US', gender: 'Female', voice: 'en-US-AriaNeural' },
+      { language: 'es', locale: 'es-ES', gender: 'Female', voice: 'es-ES-ElviraNeural' },
+      { language: 'fa', locale: 'fa-IR', gender: 'Female', voice: 'fa-IR-DilaraNeural' },
+      { language: 'fi', locale: 'fi-FI', gender: 'Female', voice: 'fi-FI-NooraNeural' },
+      { language: 'fr', locale: 'fr-FR', gender: 'Female', voice: 'fr-FR-DeniseNeural' },
+      { language: 'fr-CA', locale: 'fr-CA', gender: 'Female', voice: 'fr-CA-SylvieNeural' },
+      { language: 'he', locale: 'he-IL', gender: 'Male', voice: 'he-IL-AvriNeural' },
+      { language: 'hi', locale: 'hi-IN', gender: 'Female', voice: 'hi-IN-SwaraNeural' },
+      { language: 'id', locale: 'id-ID', gender: 'Male', voice: 'id-ID-ArdiNeural' },
+      { language: 'it', locale: 'it-IT', gender: 'Male', voice: 'it-IT-DiegoNeural' },
+      { language: 'ja', locale: 'ja-JP', gender: 'Female', voice: 'ja-JP-NanamiNeural' },
+      { language: 'ko', locale: 'ko-KR', gender: 'Female', voice: 'ko-KR-SunHiNeural' },
+      { language: 'nb', locale: 'nb-NO', gender: 'Female', voice: 'nb-NO-PernilleNeural' },
+      { language: 'nl', locale: 'nl-NL', gender: 'Female', voice: 'nl-NL-ColetteNeural' },
+      { language: 'pl', locale: 'pl-PL', gender: 'Female', voice: 'pl-PL-ZofiaNeural' },
+      { language: 'pt', locale: 'pt-BR', gender: 'Female', voice: 'pt-BR-FranciscaNeural' },
+      { language: 'pt-PT', locale: 'pt-PT', gender: 'Female', voice: 'pt-PT-FernandaNeural' },
+      { language: 'ru', locale: 'ru-RU', gender: 'Female', voice: 'ru-RU-DariyaNeural' },
+      { language: 'sv', locale: 'sv-SE', gender: 'Female', voice: 'sv-SE-SofieNeural' },
+      { language: 'tr', locale: 'tr-TR', gender: 'Female', voice: 'tr-TR-EmelNeural' },
+      { language: 'uk', locale: 'uk-UA', gender: 'Female', voice: 'uk-UA-PolinaNeural' },
+      { language: 'vi', locale: 'vi-VN', gender: 'Male', voice: 'vi-VN-NamMinhNeural' },
+      { language: 'yue', locale: 'zh-HK', gender: 'Female', voice: 'zh-HK-HiuGaaiNeural' },
+      { language: 'zh-Hans', locale: 'zh-CN', gender: 'Female', voice: 'zh-CN-XiaoxiaoNeural' },
+      { language: 'zh-Hant', locale: 'zh-CN', gender: 'Female', voice: 'zh-CN-XiaoxiaoNeural' }
     ];
     return list.find((item) => item.language === language);
   }
@@ -158,7 +158,7 @@ class AudioAmplifier {
   private readonly sources: MediaElementAudioSourceNode[] = [];
 
   constructor() {
-    if ("AudioContext" in window) {
+    if ('AudioContext' in window) {
       this.audioCtx = new AudioContext();
       void this.audioCtx.suspend();
       this.gainNode = this.audioCtx.createGain();
@@ -196,17 +196,19 @@ class Service {
 
   constructor(
     private readonly serviceName: string,
-    baseURL: string,
-    private readonly method: "GET" | "POST",
+    public baseURL: string,
+    private readonly method: 'GET' | 'POST',
     private readonly getExtraParameters: (text: string, targetLanguage: string) => string,
-    private readonly getRequestBody: ((text: string, targetLanguage: string) => string) | null = null
+    private readonly getRequestBody:
+      | ((text: string, targetLanguage: string) => string)
+      | null = null
   ) {}
 
   private getRequests(fullText: string): string[] {
     const fullTextSplitted: string[] = [];
     fullText
       .trim()
-      .split(" ")
+      .split(' ')
       .forEach((word) => {
         let currentWord = word;
         if (currentWord.length > 160) {
@@ -221,7 +223,7 @@ class Service {
       });
 
     const requests: string[] = [];
-    let requestString = "";
+    let requestString = '';
     fullTextSplitted.forEach((text) => {
       const chunk = `${text} `;
       if (requestString.length + chunk.length < 170) requestString += chunk;
@@ -238,17 +240,17 @@ class Service {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open(this.method, this.baseURL + this.getExtraParameters(text, targetLanguage));
-      xhr.responseType = "blob";
+      xhr.responseType = 'blob';
       xhr.onload = () => {
         const reader = new FileReader();
-        reader.onloadend = () => resolve(String(reader.result ?? ""));
-        reader.onerror = () => reject(new Error("reader failed"));
+        reader.onloadend = () => resolve(String(reader.result ?? ''));
+        reader.onerror = () => reject(new Error('reader failed'));
         reader.readAsDataURL(xhr.response);
       };
-      xhr.onerror = () => reject(new Error("request failed"));
+      xhr.onerror = () => reject(new Error('request failed'));
 
       if (this.getRequestBody) {
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.send(this.getRequestBody(text, targetLanguage));
       } else {
         xhr.send();
@@ -257,23 +259,23 @@ class Service {
   }
 
   async textToSpeech(fullText: string, targetLanguage: string): Promise<void> {
-    if (this.serviceName === "bing") {
+    if (this.serviceName === 'bing') {
       await BingTTSAuthHelper.findAuth();
     }
 
     const requests = this.getRequests(fullText);
     await Promise.all(
       requests.map(async (requestText) => {
-        const key = [targetLanguage, requestText].join(", ");
+        const key = [targetLanguage, requestText].join(', ');
         if (this.audios.get(key)) return;
-        const response = await this.makeRequest(requestText, targetLanguage).catch(() => "");
+        const response = await this.makeRequest(requestText, targetLanguage).catch(() => '');
         if (!response) return;
         this.audios.set(key, new Audio(response));
       })
     );
 
     const audios = requests
-      .map((text) => this.audios.get([targetLanguage, text].join(", ")))
+      .map((text) => this.audios.get([targetLanguage, text].join(', ')))
       .filter((audio): audio is HTMLAudioElement => Boolean(audio));
 
     await this.play(audios);
@@ -285,7 +287,7 @@ class Service {
       audio.playbackRate = this.audioSpeed;
       await this.amplifier.amplify(audio);
       await new Promise<void>((resolve) => {
-        audio.addEventListener("ended", () => resolve(), { once: true });
+        audio.addEventListener('ended', () => resolve(), { once: true });
         void audio.play().catch(() => resolve());
       });
     }
@@ -319,41 +321,46 @@ class Service {
 
 export class TextToSpeech {
   private readonly googleService = new Service(
-    "google",
-    "https://translate.google.com/translate_tts?ie=UTF-8",
-    "GET",
+    'google',
+    'https://translate.google.com/translate_tts?ie=UTF-8',
+    'GET',
     (text, targetLanguage) =>
       `&tl=${targetLanguage}&client=dict-chrome-ex&ttsspeed=0.5&q=${encodeURIComponent(text)}`
   );
 
   private readonly bingService = new Service(
-    "bing",
-    "https://www.bing.com/tfettts?isVertical=1",
-    "POST",
-    () => `&&IG=${encodeURIComponent(BingTTSAuthHelper.IG ?? "")}&IID=${encodeURIComponent(BingTTSAuthHelper.IID ?? "")}.1`,
+    'bing',
+    'https://www.bing.com/tfettts?isVertical=1',
+    'POST',
+    () =>
+      `&&IG=${encodeURIComponent(BingTTSAuthHelper.IG ?? '')}&IID=${encodeURIComponent(BingTTSAuthHelper.IID ?? '')}.1`,
     (text, targetLanguage) => {
       const languageData = BingTTSAuthHelper.getLanguageData(targetLanguage);
-      if (!languageData || !BingTTSAuthHelper.tokenValue || typeof BingTTSAuthHelper.keyValue !== "number") {
-        return "";
+      if (
+        !languageData ||
+        !BingTTSAuthHelper.tokenValue ||
+        typeof BingTTSAuthHelper.keyValue !== 'number'
+      ) {
+        return '';
       }
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(
         "<speak version='1.0' xml:lang=''><voice xml:lang='' xml:gender='' name=''><prosody rate='-20.00%'></prosody></voice></speak>",
-        "text/xml"
+        'text/xml'
       );
 
-      doc.querySelector("speak")?.setAttribute("xml:lang", languageData.locale);
-      doc.querySelector("voice")?.setAttribute("xml:lang", languageData.locale);
-      doc.querySelector("voice")?.setAttribute("xml:gender", languageData.gender);
-      doc.querySelector("voice")?.setAttribute("xml:name", languageData.voice);
-      const prosody = doc.querySelector("prosody");
+      doc.querySelector('speak')?.setAttribute('xml:lang', languageData.locale);
+      doc.querySelector('voice')?.setAttribute('xml:lang', languageData.locale);
+      doc.querySelector('voice')?.setAttribute('xml:gender', languageData.gender);
+      doc.querySelector('voice')?.setAttribute('xml:name', languageData.voice);
+      const prosody = doc.querySelector('prosody');
       if (prosody) prosody.textContent = text;
 
       const params = new URLSearchParams();
-      params.append("ssml", new XMLSerializer().serializeToString(doc));
-      params.append("token", BingTTSAuthHelper.tokenValue);
-      params.append("key", String(BingTTSAuthHelper.keyValue));
+      params.append('ssml', new XMLSerializer().serializeToString(doc));
+      params.append('token', BingTTSAuthHelper.tokenValue);
+      params.append('key', String(BingTTSAuthHelper.keyValue));
       return params.toString();
     }
   );
@@ -365,9 +372,9 @@ export class TextToSpeech {
   }): void {
     browser.runtime.onMessage.addListener((request, _sender, sendResponse) => {
       const action = (request as { action?: string }).action;
-      if (action === "textToSpeech") {
-        const serviceName = config.get<string>("textToSpeechService");
-        const service = serviceName === "bing" ? this.bingService : this.googleService;
+      if (action === 'textToSpeech') {
+        const serviceName = config.get<string>('textToSpeechService');
+        const service = serviceName === 'bing' ? this.bingService : this.googleService;
         void service
           .textToSpeech(
             String((request as { text: string }).text),
@@ -377,7 +384,7 @@ export class TextToSpeech {
         return true;
       }
 
-      if (action === "stopAudio") {
+      if (action === 'stopAudio') {
         this.googleService.stopAll();
         this.bingService.stopAll();
       }
@@ -386,12 +393,12 @@ export class TextToSpeech {
     });
 
     void config.onReady(() => {
-      this.googleService.setAudioSpeed(config.get<number>("ttsSpeed"));
-      this.bingService.setAudioSpeed(config.get<number>("ttsSpeed"));
-      this.googleService.setAudioVolume(config.get<number>("ttsVolume"));
-      this.bingService.setAudioVolume(config.get<number>("ttsVolume"));
+      this.googleService.setAudioSpeed(config.get<number>('ttsSpeed'));
+      this.bingService.setAudioSpeed(config.get<number>('ttsSpeed'));
+      this.googleService.setAudioVolume(config.get<number>('ttsVolume'));
+      this.bingService.setAudioVolume(config.get<number>('ttsVolume'));
 
-      const proxyServers = config.get<Record<string, { ttsServer?: string }>>("proxyServers");
+      const proxyServers = config.get<Record<string, { ttsServer?: string }>>('proxyServers');
       if (proxyServers?.google?.ttsServer) {
         const url = new URL(this.googleService.baseURL);
         url.host = proxyServers.google.ttsServer;
@@ -399,21 +406,21 @@ export class TextToSpeech {
       }
 
       config.onChanged((name, value) => {
-        if (name === "ttsSpeed") {
+        if (name === 'ttsSpeed') {
           const speed = Number(value);
           this.googleService.setAudioSpeed(speed);
           this.bingService.setAudioSpeed(speed);
-        } else if (name === "ttsVolume") {
+        } else if (name === 'ttsVolume') {
           const volume = Number(value);
           this.googleService.setAudioVolume(volume);
           this.bingService.setAudioVolume(volume);
-        } else if (name === "proxyServers") {
+        } else if (name === 'proxyServers') {
           const servers = value as Record<string, { ttsServer?: string }>;
           const url = new URL(this.googleService.baseURL);
           if (servers?.google?.ttsServer) {
             url.host = servers.google.ttsServer;
           } else {
-            url.host = "translate.google.com";
+            url.host = 'translate.google.com';
           }
           this.googleService.baseURL = url.toString();
         }
