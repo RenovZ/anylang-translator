@@ -61,7 +61,7 @@ class BingTTSAuthHelper {
           const responseText = xhr.responseText;
           if (!responseText || responseText.length < 2) throw new Error('missing response');
           const ig = responseText.match(/IG:"([^"]+)"/)?.[1];
-          const iid = responseText.match(/data\-iid\=\"([^\"]+)\"/)?.[1];
+          const iid = responseText.match(/data-iid="([^"]+)"/)?.[1];
           if (!ig || !iid) throw new Error('missing IG or IID');
 
           const marker = 'params_AbusePreventionHelper = [';

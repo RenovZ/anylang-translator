@@ -67,11 +67,11 @@ class Utils {
       .replaceAll(bingMarkSecondPart, '^$537+*');
 
     value = value
-      .replace(/\&/g, '&amp;')
-      .replace(/\</g, '&lt;')
-      .replace(/\>/g, '&gt;')
-      .replace(/\"/g, '&quot;')
-      .replace(/\'/g, '&#39;');
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
 
     return value
       .replaceAll('@-/629^*', bingMarkFrontPart)
@@ -83,11 +83,11 @@ class Utils {
    */
   static unescapeHTML(text: string): string {
     return text
-      .replace(/\&amp;/g, '&')
-      .replace(/\&lt;/g, '<')
-      .replace(/\&gt;/g, '>')
-      .replace(/\&quot;/g, '"')
-      .replace(/\&\#39;/g, "'");
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
   }
 }
 
@@ -140,7 +140,7 @@ class GoogleAuthHelper {
       );
       xhr.send();
       xhr.onload = () => {
-        const result = xhr.responseText.match(/['"]x\-goog\-api\-key['"]\s*\:\s*['"](\w{39})['"]/i);
+        const result = xhr.responseText.match(/['"]x-goog-api-key['"]\s*:\s*['"](\w{39})['"]/i);
         if (result && result[1]) {
           GoogleAuthHelper.translateAuth = result[1];
           GoogleAuthHelper.authNotFound = false;
@@ -203,7 +203,7 @@ class YandexSIDHelper {
       );
       xhr.send();
       xhr.onload = () => {
-        const result = xhr.responseText.match(/sid\:\s\'[0-9a-f\.]+/);
+        const result = xhr.responseText.match(/sid:\s'[0-9a-f.]+/);
         if (result && result[0] && result[0].length > 7) {
           YandexSIDHelper.translateSid = result[0].substring(6);
           YandexSIDHelper.sidNotFound = false;
@@ -524,13 +524,13 @@ export class TranslationService {
           value = value.slice(value.indexOf('>') + 1);
         }
 
-        const sentenceMatches = [...value.matchAll(/(\<a\si\=[0-9]+\>)([^\<\>]*(?=\<\/a\>))*/g)];
+        const sentenceMatches = [...value.matchAll(/(<a\si=[0-9]+>)([^<>]*(?=<\/a>))*/g)];
         if (sentenceMatches.length === 0) {
-          return [Utils.unescapeHTML(value.replace(/\<\/b\>/g, ''))];
+          return [Utils.unescapeHTML(value.replace(/<\/b>/g, ''))];
         }
 
         const indexes = sentenceMatches.map((entry) => {
-          const idx = entry[0].match(/[0-9]+(?=\>)/g);
+          const idx = entry[0].match(/[0-9]+(?=>)/g);
           return idx ? Number(idx[0]) : 0;
         });
         const words = sentenceMatches.map((entry) => {
