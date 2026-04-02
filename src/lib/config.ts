@@ -3,6 +3,9 @@ import { browser } from 'wxt/browser';
 import type { Languages } from './languages';
 
 export type DefaultConfigName =
+  | 'installDateTime'
+  | 'lastTimeShowingReleaseNotes'
+  | 'originalUserAgent'
   | 'uiLanguage'
   | 'pageTranslatorService'
   | 'textTranslatorService'
@@ -55,6 +58,9 @@ export type DefaultConfigName =
   | 'proxyServers';
 
 export interface DefaultConfig {
+  installDateTime: number | null;
+  lastTimeShowingReleaseNotes: number | null;
+  originalUserAgent: string | null;
   uiLanguage: string;
   pageTranslatorService: string;
   textTranslatorService: string;
@@ -117,6 +123,9 @@ export class Config {
   private readonly observers: OnChangeObserver[] = [];
   private readonly defaultTargetLanguages = ['en', 'es', 'de'];
   private readonly defaultConfig: DefaultConfig = {
+    installDateTime: null,
+    lastTimeShowingReleaseNotes: null,
+    originalUserAgent: null,
     uiLanguage: 'default',
     pageTranslatorService: 'google',
     textTranslatorService: 'google',
@@ -168,6 +177,7 @@ export class Config {
     addPaddingToPage: 'no',
     proxyServers: {}
   };
+  private readonly configKeys = Object.keys(this.defaultConfig) as Array<keyof DefaultConfig>;
 
   private config: DefaultConfig = structuredClone(this.defaultConfig);
   private onReadyObservers: OnReadyObserver[] = [];
@@ -192,6 +202,10 @@ export class Config {
     return Object.prototype.hasOwnProperty.call(this.defaultConfig, key);
   }
 
+  private setConfigValue<K extends keyof DefaultConfig>(key: K, value: DefaultConfig[K]): void {
+    this.config[key] = value;
+  }
+
   constructor(lang: Languages) {
     this.lang = lang;
 
@@ -199,11 +213,11 @@ export class Config {
     browser.storage.onChanged.addListener((changes, areaName) => {
       this.onReady(() => {
         if (areaName !== 'local') return;
-        for (const name in changes) {
-          const key = name as keyof DefaultConfig;
-          const newValue = this.fixObjectType(key, changes[name].newValue);
-          if (this.config[key] !== newValue) {
-            this.config[key] = newValue;
+        for (const [name, change] of Object.entries(changes)) {
+          if (!this.isConfigKey(name)) continue;
+          const newValue = this.fixObjectType(name, change.newValue);
+          if (this.config[name] !== newValue) {
+            this.setConfigValue(name, newValue);
             this.observers.forEach((callback) => callback(name, newValue));
           }
         }
@@ -214,12 +228,12 @@ export class Config {
     browser.i18n.getAcceptLanguages((acceptedLanguages) => {
       browser.storage.local.get(null, (loaded) => {
         // load config; convert object/array to map/set if necessary
-        for (const [key, value] of Object.entries(loaded)) {
-          if (!this.isConfigKey(key)) {
-            console.error('no such config key: ', key);
+        for (const [name, value] of Object.entries(loaded)) {
+          if (!this.isConfigKey(name)) {
+            console.error('no such config key: ', name);
             continue;
           }
-          this.config[key] = this.fixObjectType(key, value);
+          this.setConfigValue(name, this.fixObjectType(name, value));
         }
 
         // if there are any targetLanguage undefined, replace them
@@ -242,10 +256,10 @@ export class Config {
         }
 
         // then try to use de array defaultTargetLanguages ["en", "es", "de"]
-        for (const lang in this.defaultTargetLanguages) {
+        for (const lang of this.defaultTargetLanguages) {
           if (this.config.targetLanguages.length >= 3) break;
-          if (this.config.targetLanguages.indexOf(this.defaultTargetLanguages[lang]) === -1) {
-            this.config.targetLanguages.push(this.defaultTargetLanguages[lang]);
+          if (this.config.targetLanguages.indexOf(lang) === -1) {
+            this.config.targetLanguages.push(lang);
           }
         }
 
@@ -369,7 +383,7 @@ export class Config {
       version: browser.runtime.getManifest().version
     };
 
-    for (const key in this.defaultConfig) {
+    for (const key of this.configKeys) {
       dump[key] = this.toObjectOrArrayIfTypeIsMapOrSet(this.get(key));
     }
 
@@ -382,7 +396,7 @@ export class Config {
   import(configJSON: string): void {
     const incoming = JSON.parse(configJSON) as Record<string, unknown>;
 
-    for (const key in this.defaultConfig) {
+    for (const key of this.configKeys) {
       if (typeof incoming[key] !== 'undefined' && this.isConfigKey(key)) {
         const fixed = this.fixObjectType(key, incoming[key]);
         this.set(key, fixed);
@@ -595,14 +609,16 @@ export class Config {
    * @returns {Map | Set | *}
    */
   private fixObjectType<K extends keyof DefaultConfig>(key: K, value: unknown): DefaultConfig[K] {
-    const defaultValue = this.defaultConfig[key];
-    if (defaultValue instanceof Map) {
-      return new Map(Object.entries((value as Record<string, string>) ?? {}));
+    if (key === 'customDictionary') {
+      if (value instanceof Map) {
+        return value as DefaultConfig[K];
+      }
+      const entries =
+        value && typeof value === 'object' ? Object.entries(value as Record<string, string>) : [];
+      return new Map<string, string>(entries) as DefaultConfig[K];
     }
-    if (defaultValue instanceof Set) {
-      return new Set((value as unknown[]) ?? []);
-    }
-    return value;
+
+    return value as DefaultConfig[K];
   }
 
   /**
