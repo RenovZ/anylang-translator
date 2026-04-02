@@ -942,7 +942,7 @@ export class PageTranslator {
       const oldClientWidth = (node.parentNode as HTMLElement | null)?.clientWidth ?? 0;
       node.textContent = text;
       const newClientWidth = (node.parentNode as HTMLElement | null)?.clientWidth ?? oldClientWidth;
-      const transformMatch = (parentNode as HTMLElement).style.transform.match(/[0-9]+[\.]?[0-9]*/);
+      const transformMatch = (parentNode as HTMLElement).style.transform.match(/[0-9]+[.]?[0-9]*/);
       const currentScaleX = transformMatch ? parseFloat(transformMatch[0]) : 1;
       toRestore.originalScale = currentScaleX;
       const ratio = newClientWidth > 0 ? oldClientWidth / newClientWidth : 1;
@@ -1093,7 +1093,9 @@ export class PageTranslator {
           });
         }
       }
-    } catch {}
+    } catch (e) {
+      console.error(e);
+    }
 
     if (this.translationRoutineHandler !== null) {
       clearTimeout(this.translationRoutineHandler);

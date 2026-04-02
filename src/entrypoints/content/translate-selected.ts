@@ -343,7 +343,7 @@ export class TranslateSelected {
 
   private isValidText(text: string): boolean {
     if (text.length < 2) return false;
-    if (/^[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?\s]*$/.test(text)) return false;
+    if (/^[0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?\s]*$/.test(text)) return false;
     return true;
   }
 
