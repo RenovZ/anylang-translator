@@ -1,4 +1,4 @@
-import { browser } from "wxt/browser";
+import { browser } from 'wxt/browser';
 
 export interface MobileFlags {
   Android: RegExpMatchArray | null;
@@ -11,9 +11,12 @@ export interface MobileFlags {
 
 export interface DesktopFlags {
   any: boolean;
-  // Firefox: boolean;
+  // 旧版实现曾单独记录 Firefox 桌面标记，这里暂未保留该字段。
 }
 
+/**
+ * 负责识别当前环境是移动端还是桌面端，并补充浏览器类型信息。
+ */
 export class PlatformInfo {
   public isMobile: MobileFlags = {
     Android: null,
@@ -21,24 +24,25 @@ export class PlatformInfo {
     iOS: null,
     Opera: null,
     Windows: null,
-    any: null,
+    any: null
   };
 
   public isDesktop: DesktopFlags = {
-    any: true,
-    // Firefox: typeof browser !== "undefined",
+    any: true
+    // 旧版实现曾在此记录 Firefox 状态。
   };
 
-  public isFirefox = typeof browser !== "undefined";
+  public isFirefox = typeof browser !== 'undefined';
   public isOpera: RegExpMatchArray | null = null;
 
   constructor(config: { get<T>(name: string): T; set<T>(name: string, value: T): void }) {
     if (browser.tabs) {
-      config.set("originalUserAgent", navigator.userAgent);
+      config.set('originalUserAgent', navigator.userAgent);
     }
 
     const userAgent =
-      (config.get<string | null>("originalUserAgent") ?? navigator.userAgent) || navigator.userAgent;
+      (config.get<string | null>('originalUserAgent') ?? navigator.userAgent) ||
+      navigator.userAgent;
 
     this.isMobile = {
       Android: userAgent.match(/Android/i),
@@ -46,7 +50,7 @@ export class PlatformInfo {
       iOS: userAgent.match(/iPhone|iPad|iPod/i),
       Opera: userAgent.match(/Opera Mini/i),
       Windows: userAgent.match(/IEMobile/i) || userAgent.match(/WPDesktop/i),
-      any: null,
+      any: null
     };
 
     this.isMobile.any =
@@ -57,11 +61,11 @@ export class PlatformInfo {
       this.isMobile.Windows;
 
     this.isDesktop = {
-      any: !this.isMobile.any,
-      // Firefox: typeof browser !== "undefined",
+      any: !this.isMobile.any
+      // 旧版实现曾在此记录 Firefox 状态。
     };
 
-    this.isFirefox = typeof browser !== "undefined";
+    this.isFirefox = typeof browser !== 'undefined';
     this.isOpera = userAgent.match(/OPR/i);
   }
 }

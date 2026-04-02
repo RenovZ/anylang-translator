@@ -189,7 +189,7 @@ export class Config {
   private lang: Languages | null = null;
 
   /**
-   * this function is executed when de config is ready
+   * 配置完成初始化后，统一触发 onReady 队列。
    */
   private readyConfig() {
     this.configIsReady = true;
@@ -209,7 +209,7 @@ export class Config {
   constructor(lang: Languages) {
     this.lang = lang;
 
-    // listen to storage changes
+    // 监听本地存储变化，并同步更新内存中的配置值。
     browser.storage.onChanged.addListener((changes, areaName) => {
       this.onReady(() => {
         if (areaName !== 'local') return;
@@ -224,10 +224,10 @@ export class Config {
       });
     });
 
-    // load config
+    // 从本地存储加载配置。
     browser.i18n.getAcceptLanguages((acceptedLanguages) => {
       browser.storage.local.get(null, (loaded) => {
-        // load config; convert object/array to map/set if necessary
+        // 加载配置时，顺便把持久化后的对象结构还原成运行时需要的类型。
         for (const [name, value] of Object.entries(loaded)) {
           if (!this.isConfigKey(name)) {
             console.error('no such config key: ', name);
@@ -236,7 +236,7 @@ export class Config {
           this.setConfigValue(name, this.fixObjectType(name, value));
         }
 
-        // if there are any targetLanguage undefined, replace them
+        // 如果目标语言列表里存在空值，则回退到默认语言集。
         if (this.config.targetLanguages.some((tl) => !tl)) {
           this.config.targetLanguages = [...this.defaultTargetLanguages];
           browser.storage.local.set({
@@ -244,9 +244,9 @@ export class Config {
           });
         }
 
-        // Probably at this point it doesn't have 3 target languages.
+        // 走到这里时，目标语言列表很可能还不足 3 个。
 
-        // try to get the 3 target languages through the user defined languages in the browser configuration.
+        // 优先根据浏览器语言偏好补齐目标语言列表。
         for (const lang of acceptedLanguages) {
           if (this.config.targetLanguages.length >= 3 || !this.lang) break;
           const fixed = this.lang.fixTLanguageCode(lang);
@@ -255,7 +255,7 @@ export class Config {
           }
         }
 
-        // then try to use de array defaultTargetLanguages ["en", "es", "de"]
+        // 如果仍不足 3 个，再用默认目标语言兜底。
         for (const lang of this.defaultTargetLanguages) {
           if (this.config.targetLanguages.length >= 3) break;
           if (this.config.targetLanguages.indexOf(lang) === -1) {
@@ -263,14 +263,14 @@ export class Config {
           }
         }
 
-        // if targetLanguages is bigger than 3 remove the surplus
+        // 目标语言只保留最近使用的 3 个。
         while (this.config.targetLanguages.length > 3) this.config.targetLanguages.pop();
 
         /*
-        // remove the duplicates languages
+        // 去重逻辑的旧实现，保留作参考。
         config.targetLanguages = [... new Set(config.targetLanguages)]
         //*
-        // then try to use de array defaultTargetLanguages ["en", "es", "de"]
+        // 再次用默认语言数组补齐缺失项。
         for (const lang of defaultTargetLanguages) {
           if (config.targetLanguages.length >= 3) break;
           if (config.targetLanguages.indexOf(lang) === -1) {
@@ -279,7 +279,7 @@ export class Config {
         }
         //*/
 
-        // if targetLanguage does not exits in targetLanguages, then set it to targetLanguages[0]
+        // 如果当前页面目标语言不在列表中，则回退到列表第一项。
         if (
           !this.config.targetLanguage ||
           this.config.targetLanguages.indexOf(this.config.targetLanguage) === -1
@@ -287,7 +287,7 @@ export class Config {
           this.config.targetLanguage = this.config.targetLanguages[0];
         }
 
-        // if targetLanguageTextTranslation does not exits in targetLanguages, then set it to targetLanguages[0]
+        // 如果文本翻译目标语言不在列表中，也回退到列表第一项。
         if (
           !this.config.targetLanguageTextTranslation ||
           this.config.targetLanguages.indexOf(this.config.targetLanguageTextTranslation) === -1
@@ -296,38 +296,38 @@ export class Config {
         }
 
         if (this.lang) {
-          // fix targetLanguages
+          // 规范化目标语言列表中的语言代码。
           this.config.targetLanguages = this.config.targetLanguages
             .map((lang) => this.lang!.fixTLanguageCode(lang))
             .filter((lang): lang is string => lang !== undefined);
 
-          // fix neverTranslateLangs
+          // 规范化“永不翻译语言”列表。
           this.config.neverTranslateLangs = this.config.neverTranslateLangs
             .map((lang) => this.lang!.fixTLanguageCode(lang))
             .filter((lang): lang is string => lang !== undefined);
 
-          // fix alwaysTranslateLangs
+          // 规范化“始终翻译语言”列表。
           this.config.alwaysTranslateLangs = this.config.alwaysTranslateLangs
             .map((lang) => this.lang!.fixTLanguageCode(lang))
             .filter((lang): lang is string => lang !== undefined);
 
-          // fix targetLanguage
+          // 规范化页面翻译目标语言。
           this.config.targetLanguage = this.lang.fixTLanguageCode(this.config.targetLanguage) ?? '';
-          // fix targetLanguageTextTranslation
+          // 规范化文本翻译目标语言。
           this.config.targetLanguageTextTranslation =
             this.lang.fixTLanguageCode(this.config.targetLanguageTextTranslation) ?? '';
         }
 
-        // if targetLanguage does not exits in targetLanguages, then set it to targetLanguages[0]
+        // 规范化后再次确保页面翻译目标语言仍在列表中。
         if (this.config.targetLanguages.indexOf(this.config.targetLanguage) === -1) {
           this.config.targetLanguage = this.config.targetLanguages[0];
         }
-        // if targetLanguageTextTranslation does not exits in targetLanguages, then set it to targetLanguages[0]
+        // 规范化后再次确保文本翻译目标语言仍在列表中。
         if (this.config.targetLanguages.indexOf(this.config.targetLanguageTextTranslation) === -1) {
           this.config.targetLanguageTextTranslation = this.config.targetLanguages[0];
         }
 
-        // try to save de keyboard shortcuts in the config
+        // 读取当前快捷键配置并同步到扩展设置中。
         if (browser.commands.getAll && this.lang) {
           browser.commands.getAll((results) => {
             try {
@@ -359,14 +359,14 @@ export class Config {
   }
 
   /**
-   * get the value of a config
+   * 读取指定配置项的当前值。
    */
   get<K extends keyof DefaultConfig>(name: K): DefaultConfig[K] {
     return this.config[name];
   }
 
   /**
-   * set the value of a config
+   * 更新指定配置项，并立即写回本地存储。
    */
   set<K extends keyof DefaultConfig>(name: K, value: DefaultConfig[K]): void {
     this.config[name] = value;
@@ -375,7 +375,7 @@ export class Config {
   }
 
   /**
-   * export config as JSON string
+   * 将当前配置导出为 JSON 字符串。
    */
   export(): string {
     const dump: Record<string, unknown> = {
@@ -391,7 +391,7 @@ export class Config {
   }
 
   /**
-   * import config and reload the extension
+   * 导入外部配置，并在完成后重新加载扩展。
    */
   import(configJSON: string): void {
     const incoming = JSON.parse(configJSON) as Record<string, unknown>;
@@ -403,35 +403,22 @@ export class Config {
       }
     }
 
-    // TODO: update method did not exists within browser.commands
-    // if (typeof browser !== "undefined" && typeof browser.commands !== "undefined") {
-    //   Object.entries(this.config.hotkeys).forEach(([name, shortcut]) => {
-    //     void browser.commands.update({ name, shortcut });
-    //   });
-    // }
+    // TODO: 某些浏览器环境仍不支持 browser.commands.update。
 
     browser.runtime.reload();
   }
 
   /**
-   * restore the config to default and reaload the extension
+   * 恢复默认配置，并重新加载扩展。
    */
   restoreToDefault(): void {
-    // TODO: update method did not exists within browser.commands
-    // if (typeof browser !== "undefined" && typeof browser.commands !== "undefined") {
-    //   const commands = browser.runtime.getManifest().commands ?? {};
-    //   Object.keys(commands).forEach((name) => {
-    //     const command = commands[name];
-    //     const shortcut = command.suggested_key?.default ?? "";
-    //     void browser.commands.update({ name, shortcut });
-    //   });
-    // }
+    // TODO: 某些浏览器环境仍不支持 browser.commands.update。
 
     this.import(JSON.stringify(this.defaultConfig));
   }
 
   /**
-   * create a listener to run when a config changes
+   * 注册配置变更监听器。
    */
   onChanged(callback: OnChangeObserver): void {
     this.observers.push(callback);
@@ -521,7 +508,7 @@ export class Config {
   }
 
   /**
-   * Switch between page translation services that are enabled
+   * 在当前已启用的整页翻译服务之间轮换。
    */
   swapPageTranslationService(): string {
     const pageServices = ['google', 'bing', 'yandex'];
@@ -598,15 +585,8 @@ export class Config {
   }
 
   /**
-   * convert object to map or set if necessary, otherwise return the value itself
-   * @example
-   * fixObjectType("customDictionary", {})
-   * // returns Map
-   * fixObjectType("targetLanguages", ["en", "es", "de"])
-   * // return ["en", "es", "de"] -- Array
-   * @param {string} key
-   * @param {*} value
-   * @returns {Map | Set | *}
+   * 必要时把持久化后的对象还原成运行时所需的 `Map` / `Set` 类型；
+   * 其他值则保持原样返回。
    */
   private fixObjectType<K extends keyof DefaultConfig>(key: K, value: unknown): DefaultConfig[K] {
     if (key === 'customDictionary') {
@@ -622,7 +602,7 @@ export class Config {
   }
 
   /**
-   * convert map and set to object and array respectively, otherwise return the value itself
+   * 持久化前把 `Map` / `Set` 转成可序列化的对象或数组。
    */
   private toObjectOrArrayIfTypeIsMapOrSet(value: unknown): unknown {
     if (value instanceof Map) return Object.fromEntries(value);
