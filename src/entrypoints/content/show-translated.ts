@@ -1,34 +1,44 @@
-import { browser } from "wxt/browser";
+import { browser } from 'wxt/browser';
 
-import { checkedLastError } from "@/lib/error";
+import { checkedLastError } from '@/lib/error';
 
 const htmlTagsInlineText = [
-  "#text",
-  "a",
-  "abbr",
-  "acronym",
-  "b",
-  "bdo",
-  "big",
-  "cite",
-  "dfn",
-  "em",
-  "i",
-  "label",
-  "q",
-  "s",
-  "small",
-  "span",
-  "strong",
-  "sub",
-  "sup",
-  "u",
-  "tt",
-  "var",
+  '#text',
+  'a',
+  'abbr',
+  'acronym',
+  'b',
+  'bdo',
+  'big',
+  'cite',
+  'dfn',
+  'em',
+  'i',
+  'label',
+  'q',
+  's',
+  'small',
+  'span',
+  'strong',
+  'sub',
+  'sup',
+  'u',
+  'tt',
+  'var'
 ];
 
-const htmlTagsInlineIgnoreBase = ["br", "code", "kbd", "wbr"];
-const htmlTagsNoTranslate = ["title", "script", "style", "textarea", "svg", "template", "math", "mjx-container", "tex-math"];
+const htmlTagsInlineIgnoreBase = ['br', 'code', 'kbd', 'wbr'];
+const htmlTagsNoTranslate = [
+  'title',
+  'script',
+  'style',
+  'textarea',
+  'svg',
+  'template',
+  'math',
+  'mjx-container',
+  'tex-math'
+];
 
 interface ConfigLike {
   onReady(callback?: () => void): Promise<void>;
@@ -38,16 +48,19 @@ interface ConfigLike {
   setTargetLanguageTextTranslation(lang: string): void;
 }
 
+/**
+ * 负责“悬停即译”功能：监听鼠标目标、请求单句翻译并展示浮层结果。
+ */
 export class ShowTranslated {
-  private pageLanguageState = "original";
-  private currentTargetLanguages: string[] = ["en", "es", "de"];
-  private currentTargetLanguage = "en";
-  private currentTextTranslatorService = "google";
+  private pageLanguageState = 'original';
+  private currentTargetLanguages: string[] = ['en', 'es', 'de'];
+  private currentTargetLanguage = 'en';
+  private currentTextTranslatorService = 'google';
   private showBySite = false;
   private showByLang = false;
   private showByDoubleCtrl = false;
-  private originalTabLanguage = "und";
-  private tabHostName = "";
+  private originalTabLanguage = 'und';
+  private tabHostName = '';
 
   private readonly htmlTagsInlineIgnore = [...htmlTagsInlineIgnoreBase];
   private isPlayingAudio = false;
@@ -62,19 +75,36 @@ export class ShowTranslated {
   private previousNode: Node | null = null;
 
   private config: ConfigLike | null = null;
-  private lang: { isRtlLanguage(code: string): boolean; fixTLanguageCode(code: string): string | null; codeToLanguage(code: string): string } | null = null;
+  private lang: {
+    isRtlLanguage(code: string): boolean;
+    fixTLanguageCode(code: string): string | null;
+    codeToLanguage(code: string): string;
+  } | null = null;
   private platformInfo: { isMobile: { any: unknown } } | null = null;
-  private i18n: { translateDocument(root: Document | HTMLElement | ShadowRoot): void; getMessage(name: string, substitutions?: string | string[]): string } | null = null;
+  private i18n: {
+    translateDocument(root: Document | HTMLElement | ShadowRoot): void;
+    getMessage(name: string, substitutions?: string | string[]): string;
+  } | null = null;
 
+  /**
+   * 初始化悬停翻译功能，并根据配置决定何时启用。
+   */
   public initialize(
     config: ConfigLike,
-    lang: { isRtlLanguage(code: string): boolean; fixTLanguageCode(code: string): string | null; codeToLanguage(code: string): string },
+    lang: {
+      isRtlLanguage(code: string): boolean;
+      fixTLanguageCode(code: string): string | null;
+      codeToLanguage(code: string): string;
+    },
     platformInfo: { isMobile: { any: unknown } },
     pageTranslator: {
       onGetOriginalTabLanguage(cb: (language: string) => void): void;
       onPageLanguageStateChange(cb: (state: string) => void): void;
     },
-    i18n: { translateDocument(root: Document | HTMLElement | ShadowRoot): void; getMessage(name: string, substitutions?: string | string[]): string }
+    i18n: {
+      translateDocument(root: Document | HTMLElement | ShadowRoot): void;
+      getMessage(name: string, substitutions?: string | string[]): string;
+    }
   ): void {
     this.config = config;
     this.lang = lang;
@@ -85,19 +115,21 @@ export class ShowTranslated {
       if (platformInfo.isMobile.any) return;
 
       this.tabHostName = await this.getTabHostName();
-      this.currentTargetLanguages = config.get<string[]>("targetLanguages");
-      this.currentTargetLanguage = config.get<string>("targetLanguageTextTranslation");
-      const service = config.get<string>("textTranslatorService");
-      this.currentTextTranslatorService = service === "deepl" ? "google" : service;
+      this.currentTargetLanguages = config.get<string[]>('targetLanguages');
+      this.currentTargetLanguage = config.get<string>('targetLanguageTextTranslation');
+      const service = config.get<string>('textTranslatorService');
+      this.currentTextTranslatorService = service === 'deepl' ? 'google' : service;
 
-      this.showBySite = config.get<string[]>("sitesToTranslateWhenHovering").indexOf(this.tabHostName) !== -1;
-      this.showByDoubleCtrl = config.get<string>("translateTextOverMouseWhenPressTwice") === "yes";
+      this.showBySite =
+        config.get<string[]>('sitesToTranslateWhenHovering').indexOf(this.tabHostName) !== -1;
+      this.showByDoubleCtrl = config.get<string>('translateTextOverMouseWhenPressTwice') === 'yes';
 
-      this.updatePreTagRule(config.get<string>("translateTag_pre"));
+      this.updatePreTagRule(config.get<string>('translateTag_pre'));
 
       pageTranslator.onGetOriginalTabLanguage((tabLanguage) => {
         this.originalTabLanguage = tabLanguage;
-        this.showByLang = config.get<string[]>("langsToTranslateWhenHovering").indexOf(tabLanguage) !== -1;
+        this.showByLang =
+          config.get<string[]>('langsToTranslateWhenHovering').indexOf(tabLanguage) !== -1;
         this.updateEventListener();
       });
 
@@ -107,68 +139,80 @@ export class ShowTranslated {
       });
 
       config.onChanged((name, value) => {
-        if (name === "textTranslatorService") {
+        if (name === 'textTranslatorService') {
           const next = String(value);
-          this.currentTextTranslatorService = next === "deepl" ? "google" : next;
-        } else if (name === "targetLanguages") {
-          this.currentTargetLanguages = Array.isArray(value) ? value.map((item) => String(item)) : this.currentTargetLanguages;
+          this.currentTextTranslatorService = next === 'deepl' ? 'google' : next;
+        } else if (name === 'targetLanguages') {
+          this.currentTargetLanguages = Array.isArray(value)
+            ? value.map((item) => String(item))
+            : this.currentTargetLanguages;
           this.refreshPanelState();
-        } else if (name === "targetLanguageTextTranslation") {
+        } else if (name === 'targetLanguageTextTranslation') {
           this.currentTargetLanguage = String(value);
           this.refreshPanelState();
-        } else if (name === "sitesToTranslateWhenHovering") {
-          this.showBySite = Array.isArray(value) && value.map((item) => String(item)).indexOf(this.tabHostName) !== -1;
+        } else if (name === 'sitesToTranslateWhenHovering') {
+          this.showBySite =
+            Array.isArray(value) &&
+            value.map((item) => String(item)).indexOf(this.tabHostName) !== -1;
           this.updateEventListener();
-        } else if (name === "langsToTranslateWhenHovering") {
-          this.showByLang = Array.isArray(value) && value.map((item) => String(item)).indexOf(this.originalTabLanguage) !== -1;
+        } else if (name === 'langsToTranslateWhenHovering') {
+          this.showByLang =
+            Array.isArray(value) &&
+            value.map((item) => String(item)).indexOf(this.originalTabLanguage) !== -1;
           this.updateEventListener();
-        } else if (name === "translateTextOverMouseWhenPressTwice") {
-          this.showByDoubleCtrl = String(value) === "yes";
+        } else if (name === 'translateTextOverMouseWhenPressTwice') {
+          this.showByDoubleCtrl = String(value) === 'yes';
           this.updateEventListener();
-        } else if (name === "translateTag_pre") {
+        } else if (name === 'translateTag_pre') {
           this.updatePreTagRule(String(value));
         }
       });
 
-      window.addEventListener("beforeunload", this.onBeforeUnload);
+      window.addEventListener('beforeunload', this.onBeforeUnload);
       this.updateEventListener();
     });
   }
 
+  /**
+   * 根据配置决定 `<pre>` 是否应被视为可翻译内容。
+   */
   private updatePreTagRule(value: string): void {
-    const preIndex = this.htmlTagsInlineIgnore.indexOf("pre");
+    const preIndex = this.htmlTagsInlineIgnore.indexOf('pre');
     if (preIndex !== -1) {
       this.htmlTagsInlineIgnore.splice(preIndex, 1);
     }
-    if (value !== "yes") {
-      this.htmlTagsInlineIgnore.push("pre");
+    if (value !== 'yes') {
+      this.htmlTagsInlineIgnore.push('pre');
     }
   }
 
+  /**
+   * 按页面状态和用户设置启用或关闭悬停翻译监听器。
+   */
   private updateEventListener(): void {
     if (!this.platformInfo) return;
     const shouldEnable =
       !this.platformInfo.isMobile.any &&
-      this.pageLanguageState !== "translated" &&
+      this.pageLanguageState !== 'translated' &&
       (this.showBySite || this.showByLang || this.showByDoubleCtrl);
 
     if (!shouldEnable) {
-      window.removeEventListener("scroll", this.onScroll);
-      window.removeEventListener("mousemove", this.onMouseMove);
-      window.removeEventListener("mousedown", this.onMouseDown);
-      document.removeEventListener("keyup", this.onKeyUp);
-      document.removeEventListener("blur", this.onDocumentBlurOrHide);
-      document.removeEventListener("visibilitychange", this.onDocumentBlurOrHide);
+      window.removeEventListener('scroll', this.onScroll);
+      window.removeEventListener('mousemove', this.onMouseMove);
+      window.removeEventListener('mousedown', this.onMouseDown);
+      document.removeEventListener('keyup', this.onKeyUp);
+      document.removeEventListener('blur', this.onDocumentBlurOrHide);
+      document.removeEventListener('visibilitychange', this.onDocumentBlurOrHide);
       this.destroy();
       return;
     }
 
-    window.addEventListener("scroll", this.onScroll);
-    window.addEventListener("mousemove", this.onMouseMove);
-    window.addEventListener("mousedown", this.onMouseDown);
-    document.addEventListener("keyup", this.onKeyUp);
-    document.addEventListener("blur", this.onDocumentBlurOrHide);
-    document.addEventListener("visibilitychange", this.onDocumentBlurOrHide);
+    window.addEventListener('scroll', this.onScroll);
+    window.addEventListener('mousemove', this.onMouseMove);
+    window.addEventListener('mousedown', this.onMouseDown);
+    document.addEventListener('keyup', this.onKeyUp);
+    document.addEventListener('blur', this.onDocumentBlurOrHide);
+    document.addEventListener('visibilitychange', this.onDocumentBlurOrHide);
   }
 
   private onBeforeUnload = (): void => {
@@ -186,6 +230,9 @@ export class ShowTranslated {
     this.destroy();
   };
 
+  /**
+   * 记录鼠标位置，并在命中可翻译节点时延迟触发翻译。
+   */
   private onMouseMove = (event: MouseEvent): void => {
     this.mousePos.x = event.clientX;
     this.mousePos.y = event.clientY;
@@ -215,19 +262,22 @@ export class ShowTranslated {
     this.destroy();
   };
 
+  /**
+   * 支持双击 Ctrl 直接翻译当前悬停节点。
+   */
   private onKeyUp = (event: KeyboardEvent): void => {
-    if (event.key === "Escape") {
+    if (event.key === 'Escape') {
       this.destroy();
       return;
     }
 
-    if (!this.showByDoubleCtrl || event.key !== "Control") {
+    if (!this.showByDoubleCtrl || event.key !== 'Control') {
       return;
     }
 
     const now = performance.now();
     if (this.lastCtrlPress && now - this.lastCtrlPress < 280 && !this.isSelectingText()) {
-      const hovered = document.querySelectorAll(":hover");
+      const hovered = document.querySelectorAll(':hover');
       if (hovered.length > 0) {
         this.destroy();
         void this.translateNode(hovered[hovered.length - 1]);
@@ -240,18 +290,24 @@ export class ShowTranslated {
     const activeEl = document.activeElement as HTMLInputElement | HTMLTextAreaElement | null;
     if (
       activeEl &&
-      (activeEl.tagName.toLowerCase() === "textarea" ||
-        (activeEl.tagName.toLowerCase() === "input" && /^(?:text|search)$/i.test(activeEl.type))) &&
-      typeof activeEl.selectionStart === "number"
+      (activeEl.tagName.toLowerCase() === 'textarea' ||
+        (activeEl.tagName.toLowerCase() === 'input' && /^(?:text|search)$/i.test(activeEl.type))) &&
+      typeof activeEl.selectionStart === 'number'
     ) {
-      const selected = activeEl.value.slice(activeEl.selectionStart ?? 0, activeEl.selectionEnd ?? 0);
+      const selected = activeEl.value.slice(
+        activeEl.selectionStart ?? 0,
+        activeEl.selectionEnd ?? 0
+      );
       return selected.length > 0;
     }
 
     const selection = window.getSelection();
-    return !!selection && selection.type === "Range" && selection.toString().length > 0;
+    return !!selection && selection.type === 'Range' && selection.toString().length > 0;
   }
 
+  /**
+   * 排除脚本、样式、公式容器等不应参与翻译的节点。
+   */
   private isNoTranslateNode(node: Node): boolean {
     if (!(node instanceof HTMLElement)) {
       return false;
@@ -261,8 +317,8 @@ export class ShowTranslated {
       return false;
     }
     if (
-      nodeName === "script" &&
-      node.getAttribute("data-spotim-module") === "spotim-launcher" &&
+      nodeName === 'script' &&
+      node.getAttribute('data-spotim-module') === 'spotim-launcher' &&
       Array.from(node.childNodes).some((child) => child.nodeType === Node.ELEMENT_NODE)
     ) {
       return false;
@@ -270,10 +326,16 @@ export class ShowTranslated {
     return true;
   }
 
+  /**
+   * 检查目标节点内部是否包含块级结构，避免整块复杂内容被当成一句话翻译。
+   */
   private hasChildBlockNode(node: Node): boolean {
     const walk = (current: Node): boolean => {
       const nodeName = current.nodeName.toLowerCase();
-      if (htmlTagsInlineText.indexOf(nodeName) === -1 && this.htmlTagsInlineIgnore.indexOf(nodeName) === -1) {
+      if (
+        htmlTagsInlineText.indexOf(nodeName) === -1 &&
+        this.htmlTagsInlineIgnore.indexOf(nodeName) === -1
+      ) {
         return true;
       }
       for (const child of Array.from(current.childNodes)) {
@@ -298,6 +360,9 @@ export class ShowTranslated {
     return true;
   }
 
+  /**
+   * 翻译当前节点文本，并把结果显示到悬浮面板中。
+   */
   private async translateNode(node: Node, usePreviousNode = false): Promise<void> {
     this.fooCount += 1;
     const currentFooCount = this.fooCount;
@@ -311,7 +376,7 @@ export class ShowTranslated {
 
     if (!targetNode) return;
 
-    let text = "";
+    let text = '';
     if (targetNode instanceof HTMLInputElement || targetNode instanceof HTMLTextAreaElement) {
       if (
         targetNode instanceof HTMLInputElement &&
@@ -319,10 +384,13 @@ export class ShowTranslated {
       ) {
         return;
       }
-      if (targetNode instanceof HTMLInputElement && (targetNode.type === "button" || targetNode.type === "submit")) {
-        text = targetNode.value || (targetNode.type === "submit" ? "Submit Query" : "");
+      if (
+        targetNode instanceof HTMLInputElement &&
+        (targetNode.type === 'button' || targetNode.type === 'submit')
+      ) {
+        text = targetNode.value || (targetNode.type === 'submit' ? 'Submit Query' : '');
       } else {
-        text = targetNode.value || targetNode.placeholder || "";
+        text = targetNode.value || targetNode.placeholder || '';
       }
     } else {
       let current: Node | null = targetNode;
@@ -330,7 +398,10 @@ export class ShowTranslated {
         if (current instanceof HTMLElement) {
           if (this.isNoTranslateNode(current)) return;
           const name = current.nodeName.toLowerCase();
-          if (htmlTagsInlineText.indexOf(name) === -1 && this.htmlTagsInlineIgnore.indexOf(name) === -1) {
+          if (
+            htmlTagsInlineText.indexOf(name) === -1 &&
+            this.htmlTagsInlineIgnore.indexOf(name) === -1
+          ) {
             break;
           }
         }
@@ -339,7 +410,10 @@ export class ShowTranslated {
 
       if (!current || !(current instanceof HTMLElement)) return;
       const nodeName = current.nodeName.toLowerCase();
-      if (htmlTagsInlineText.indexOf(nodeName) === -1 && this.htmlTagsInlineIgnore.indexOf(nodeName) === -1) {
+      if (
+        htmlTagsInlineText.indexOf(nodeName) === -1 &&
+        this.htmlTagsInlineIgnore.indexOf(nodeName) === -1
+      ) {
         if (this.hasChildBlockNode(current)) {
           return;
         }
@@ -354,10 +428,10 @@ export class ShowTranslated {
 
     const translated = await this.backgroundTranslateSingleText(
       this.currentTextTranslatorService,
-      "auto",
+      'auto',
       this.currentTargetLanguage,
       text
-    ).catch(() => "");
+    ).catch(() => '');
 
     if (!translated || currentFooCount !== this.fooCount) {
       return;
@@ -367,33 +441,39 @@ export class ShowTranslated {
       this.init();
     }
 
-    const translatedNode = this.shadowRoot?.getElementById("eTextTranslated");
-    const panel = this.shadowRoot?.getElementById("eDivResult") as HTMLDivElement | null;
+    const translatedNode = this.shadowRoot?.getElementById('eTextTranslated');
+    const panel = this.shadowRoot?.getElementById('eDivResult') as HTMLDivElement | null;
     if (!translatedNode || !panel) return;
 
     if (this.lang?.isRtlLanguage(this.currentTargetLanguage)) {
-      translatedNode.setAttribute("dir", "rtl");
+      translatedNode.setAttribute('dir', 'rtl');
     } else {
-      translatedNode.setAttribute("dir", "ltr");
+      translatedNode.setAttribute('dir', 'ltr');
     }
     translatedNode.textContent = translated;
 
     if (!usePreviousNode) {
-      const top = Math.min(window.innerHeight - panel.offsetHeight, Math.max(0, this.mousePos.y + 10));
+      const top = Math.min(
+        window.innerHeight - panel.offsetHeight,
+        Math.max(0, this.mousePos.y + 10)
+      );
       const left = Math.min(window.innerWidth - panel.offsetWidth, Math.max(0, this.mousePos.x));
       panel.style.top = `${top}px`;
       panel.style.left = `${left}px`;
     }
   }
 
+  /**
+   * 创建悬停翻译结果面板。
+   */
   private init(): void {
     this.destroy();
     if (window.isTranslatingSelected) return;
 
-    this.divElement = document.createElement("div");
-    this.divElement.style.cssText = "all: initial";
-    this.divElement.classList.add("notranslate");
-    this.shadowRoot = this.divElement.attachShadow({ mode: "closed" });
+    this.divElement = document.createElement('div');
+    this.divElement.style.cssText = 'all: initial';
+    this.divElement.classList.add('notranslate');
+    this.shadowRoot = this.divElement.attachShadow({ mode: 'closed' });
     this.shadowRoot.innerHTML = `
       <style>
         #eDivResult{position:fixed;z-index:2147483647;max-width:380px;min-width:220px;background:#1b1b1b;color:#fff;border-radius:8px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.35);font:13px/1.35 sans-serif}
@@ -423,52 +503,54 @@ export class ShowTranslated {
     this.refreshPanelState();
   }
 
+  /**
+   * 绑定面板上的语言切换、服务切换和朗读操作。
+   */
   private bindPanelActions(): void {
     if (!this.shadowRoot || !this.config) return;
 
     const serviceButtons: Array<{ id: string; service: string }> = [
-      { id: "sGoogle", service: "google" },
-      { id: "sBing", service: "bing" },
-      { id: "sYandex", service: "yandex" },
-      { id: "sDeepL", service: "deepl" },
+      { id: 'sGoogle', service: 'google' },
+      { id: 'sBing', service: 'bing' },
+      { id: 'sYandex', service: 'yandex' },
     ];
 
     for (const buttonInfo of serviceButtons) {
       const element = this.shadowRoot.getElementById(buttonInfo.id);
       if (!element) continue;
-      element.addEventListener("click", () => {
+      element.addEventListener('click', () => {
         this.currentTextTranslatorService = buttonInfo.service;
-        this.config?.set("textTranslatorService", buttonInfo.service);
+        this.config?.set('textTranslatorService', buttonInfo.service);
         this.refreshPanelState();
         void this.translateNode(this.previousNode ?? document.body, true);
       });
     }
 
-    const listen = this.shadowRoot.getElementById("listen");
-    listen?.addEventListener("click", () => {
-      const translated = this.shadowRoot?.getElementById("eTextTranslated")?.textContent ?? "";
+    const listen = this.shadowRoot.getElementById('listen');
+    listen?.addEventListener('click', () => {
+      const translated = this.shadowRoot?.getElementById('eTextTranslated')?.textContent ?? '';
       if (!translated.trim()) return;
 
-      const msgListen = this.i18n?.getMessage("btnListen") ?? "Listen";
-      const msgStop = this.i18n?.getMessage("btnStopListening") ?? "Stop";
+      const msgListen = this.i18n?.getMessage('btnListen') ?? 'Listen';
+      const msgStop = this.i18n?.getMessage('btnStopListening') ?? 'Stop';
       if (this.isPlayingAudio) {
         this.stopAudio();
-        listen.classList.remove("selected");
-        listen.setAttribute("title", msgListen);
+        listen.classList.remove('selected');
+        listen.setAttribute('title', msgListen);
       } else {
-        listen.classList.add("selected");
-        listen.setAttribute("title", msgStop);
+        listen.classList.add('selected');
+        listen.setAttribute('title', msgStop);
         this.playAudio(translated, this.currentTargetLanguage, () => {
-          listen.classList.remove("selected");
-          listen.setAttribute("title", msgListen);
+          listen.classList.remove('selected');
+          listen.setAttribute('title', msgListen);
         });
       }
     });
 
-    const targetList = this.shadowRoot.getElementById("setTargetLanguage");
-    targetList?.addEventListener("click", (event) => {
+    const targetList = this.shadowRoot.getElementById('setTargetLanguage');
+    targetList?.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
-      const value = target.getAttribute("data-value");
+      const value = target.getAttribute('data-value');
       if (!value) return;
       const fixed = this.lang?.fixTLanguageCode(value);
       if (!fixed) return;
@@ -480,41 +562,46 @@ export class ShowTranslated {
     });
   }
 
+  /**
+   * 根据当前目标语言和翻译服务刷新面板选中态。
+   */
   private refreshPanelState(): void {
     if (!this.shadowRoot || !this.lang) return;
 
-    const targetList = this.shadowRoot.getElementById("setTargetLanguage");
+    const targetList = this.shadowRoot.getElementById('setTargetLanguage');
     if (targetList) {
-      targetList.innerHTML = "";
+      targetList.innerHTML = '';
       const targets = this.currentTargetLanguages.slice(0, 3);
       for (const langCode of targets) {
-        const li = document.createElement("li");
-        li.setAttribute("data-value", langCode);
-        li.setAttribute("title", this.lang.codeToLanguage(langCode));
+        const li = document.createElement('li');
+        li.setAttribute('data-value', langCode);
+        li.setAttribute('title', this.lang.codeToLanguage(langCode));
         li.textContent = langCode;
         if (langCode === this.currentTargetLanguage) {
-          li.classList.add("selected");
+          li.classList.add('selected');
         }
         targetList.appendChild(li);
       }
     }
 
     const map: Record<string, string> = {
-      google: "sGoogle",
-      bing: "sBing",
-      yandex: "sYandex",
-      deepl: "sDeepL",
+      google: 'sGoogle',
+      bing: 'sBing',
+      yandex: 'sYandex',
+      deepl: 'sDeepL'
     };
-    Object.values(map).forEach((id) => this.shadowRoot?.getElementById(id)?.classList.remove("selected"));
+    Object.values(map).forEach((id) =>
+      this.shadowRoot?.getElementById(id)?.classList.remove('selected')
+    );
     const selectedId = map[this.currentTextTranslatorService];
     if (selectedId) {
-      this.shadowRoot.getElementById(selectedId)?.classList.add("selected");
+      this.shadowRoot.getElementById(selectedId)?.classList.add('selected');
     }
   }
 
   private playAudio(text: string, targetLanguage: string, onEnded: () => void): void {
     this.isPlayingAudio = true;
-    browser.runtime.sendMessage({ action: "textToSpeech", text, targetLanguage }, () => {
+    browser.runtime.sendMessage({ action: 'textToSpeech', text, targetLanguage }, () => {
       checkedLastError();
       this.isPlayingAudio = false;
       onEnded();
@@ -524,9 +611,12 @@ export class ShowTranslated {
   private stopAudio(): void {
     if (!this.isPlayingAudio) return;
     this.isPlayingAudio = false;
-    browser.runtime.sendMessage({ action: "stopAudio" }, checkedLastError);
+    browser.runtime.sendMessage({ action: 'stopAudio' }, checkedLastError);
   }
 
+  /**
+   * 销毁悬浮面板，并停止可能仍在播放的语音。
+   */
   private destroy(): void {
     this.fooCount += 1;
     this.stopAudio();
@@ -542,9 +632,9 @@ export class ShowTranslated {
 
   private async getTabHostName(): Promise<string> {
     return new Promise((resolve) => {
-      browser.runtime.sendMessage({ action: "getTabHostName" }, (result) => {
+      browser.runtime.sendMessage({ action: 'getTabHostName' }, (result) => {
         checkedLastError();
-        resolve(String(result ?? ""));
+        resolve(String(result ?? ''));
       });
     });
   }
@@ -557,10 +647,16 @@ export class ShowTranslated {
   ): Promise<string> {
     return new Promise((resolve) => {
       browser.runtime.sendMessage(
-        { action: "translateSingleText", translationService, sourceLanguage, targetLanguage, source },
+        {
+          action: 'translateSingleText',
+          translationService,
+          sourceLanguage,
+          targetLanguage,
+          source
+        },
         (response) => {
           checkedLastError();
-          resolve(String(response ?? ""));
+          resolve(String(response ?? ''));
         }
       );
     });
