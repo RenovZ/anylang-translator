@@ -1,5 +1,8 @@
 import { type Browser, browser } from 'wxt/browser';
 
+/**
+ * 创建新标签页；桌面端会尽量把当前标签页设置为 opener，便于保持跳转关系。
+ */
 export function tabsCreate(url: string, callback?: (tab: Browser.tabs.Tab) => void): void {
   const userAgent = navigator.userAgent;
   const isMobile =

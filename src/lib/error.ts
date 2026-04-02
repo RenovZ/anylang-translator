@@ -1,6 +1,6 @@
 import { browser } from 'wxt/browser';
 
-// Avoid outputting the error message "Receiving end does not exist" in the Console.
+// 读取 runtime.lastError，避免控制台反复输出“Receiving end does not exist”。
 export function checkedLastError(): void {
   void browser.runtime.lastError;
 }
