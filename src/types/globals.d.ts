@@ -1,4 +1,4 @@
-import type { Config, DefaultConfig, DefaultConfigName } from "../lib/Config";
+import type { Config, DefaultConfig, DefaultConfigName } from '../lib/Config';
 // import type { I18n } from "../lib/I18n";
 // import type { Languages } from "../lib/Languages";
 // import type { PlatformInfo } from "../lib/PlatformInfo";
@@ -16,9 +16,9 @@ declare global {
   // function checkedLastError(): void;
   // function tabsCreate(url: string, callback?: (tab?: chrome.tabs.Tab) => void): void;
 
-  // interface Window {
-  //   isTranslatingSelected?: boolean;
-  // }
+  interface Window {
+    isTranslatingSelected?: boolean;
+  }
 
   // interface TWPBrowserLike {
   //   commands?: {
