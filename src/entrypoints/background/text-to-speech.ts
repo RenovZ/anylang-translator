@@ -30,7 +30,7 @@ class BingTTSAuthHelper {
   }
 
   /**
-   * Find the SID (IID and IG) of Bing Translator. The SID value is used in translation requests.
+   * 获取必应 TTS 所需的 IG 与 IID 参数。
    */
   static async findAuth(): Promise<void> {
     if (BingTTSAuthHelper.promise) return BingTTSAuthHelper.promise;
@@ -90,7 +90,7 @@ class BingTTSAuthHelper {
   }
 
   /**
-   * Get the language data for the language.
+   * 获取目标语言对应的语音角色信息。
    */
   static getLanguageData(language: string): BingLanguageData | undefined {
     const replacements: Array<{ search: string; replace: string }> = [

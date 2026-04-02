@@ -1,4 +1,4 @@
-import { browser } from "wxt/browser";
+import { browser } from 'wxt/browser';
 
 export interface CacheEntry {
   originalText: string;
@@ -9,22 +9,22 @@ export interface CacheEntry {
 
 class Utils {
   /**
-   * Returns the size of a ObjectStorage
+   * 计算给定文本的 SHA-1 哈希值，用作缓存键。
    */
   static async stringToSHA1String(message: string): Promise<string> {
     const msgUint8 = new TextEncoder().encode(message);
-    const hashBuffer = await crypto.subtle.digest("SHA-1", msgUint8);
+    const hashBuffer = await crypto.subtle.digest('SHA-1', msgUint8);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
   }
 
   /**
-   * Converts a size in bytes to a human-readable string.
+   * 将字节大小转换为便于展示的体积字符串。
    */
   static humanReadableSize(bytes: number): string {
     const thresh = 1024;
     if (Math.abs(bytes) < thresh) return `${bytes} B`;
-    const units = ["KB", "MB", "GB", "TB"];
+    const units = ['KB', 'MB', 'GB', 'TB'];
     let u = -1;
     do {
       bytes /= thresh;
@@ -34,13 +34,13 @@ class Utils {
   }
 
   /**
-   * Returns the size of a database
+   * 统计指定数据库的大致占用空间。
    */
   static async getDatabaseSize(dbName: string): Promise<number> {
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
       const request = indexedDB.open(dbName);
       request.onsuccess = () => resolve(request.result);
-      request.onerror = request.onblocked = () => reject(new Error("open failed"));
+      request.onerror = request.onblocked = () => reject(new Error('open failed'));
     });
 
     const tableNames = Array.from(db.objectStoreNames);
@@ -49,7 +49,7 @@ class Utils {
         (name) =>
           new Promise<number>((resolve) => {
             let size = 0;
-            const cursorReq = db.transaction([name], "readonly").objectStore(name).openCursor();
+            const cursorReq = db.transaction([name], 'readonly').objectStore(name).openCursor();
             cursorReq.onsuccess = () => {
               const cursor = cursorReq.result;
               if (!cursor) {
@@ -74,7 +74,7 @@ class Cache {
   promiseStartingCache: Promise<boolean> | null = null;
 
   /**
-   * Base class to create a translation cache for different services.
+   * 单个翻译方向的缓存实例，负责内存与 IndexedDB 的读写。
    */
   constructor(
     private readonly translationService: string,
@@ -83,7 +83,7 @@ class Cache {
   ) {}
 
   /**
-   * Start the translation cache
+   * 初始化当前翻译缓存的数据库连接。
    */
   async start(): Promise<boolean> {
     if (this.promiseStartingCache) return this.promiseStartingCache;
@@ -98,7 +98,11 @@ class Cache {
         return true;
       })
       .catch(async () => {
-        await Cache.deleteDatabase(this.translationService, this.sourceLanguage, this.targetLanguage);
+        await Cache.deleteDatabase(
+          this.translationService,
+          this.sourceLanguage,
+          this.targetLanguage
+        );
         return false;
       });
 
@@ -106,7 +110,7 @@ class Cache {
   }
 
   /**
-   * Closes the database.
+   * 关闭数据库连接。
    */
   close(): void {
     this.db?.close();
@@ -114,7 +118,7 @@ class Cache {
   }
 
   /**
-   * Query translation cache data
+   * 查询翻译缓存。
    */
   async query(originalText: string): Promise<CacheEntry | undefined> {
     const hash = await Utils.stringToSHA1String(originalText);
@@ -126,12 +130,12 @@ class Cache {
   }
 
   /**
-   * Add to translation cache
+   * 向翻译缓存写入一条记录。
    */
   async add(
     originalText: string,
     translatedText: string,
-    detectedLanguage = "und"
+    detectedLanguage = 'und'
   ): Promise<boolean> {
     const hash = await Utils.stringToSHA1String(originalText);
     const data: CacheEntry = { originalText, translatedText, detectedLanguage, key: hash };
@@ -139,14 +143,14 @@ class Cache {
   }
 
   /**
-   * Queries an entry in the translation cache, through the hash of the source text.
+   * 通过原文哈希值查询缓存条目。
    */
   private async queryInDB(origTextHash: string): Promise<CacheEntry | undefined> {
     if (!this.db) return undefined;
     const db = this.db;
     return new Promise<CacheEntry | undefined>((resolve) => {
       const store = db
-        .transaction([Cache.getCacheStorageName()], "readonly")
+        .transaction([Cache.getCacheStorageName()], 'readonly')
         .objectStore(Cache.getCacheStorageName());
       const request = store.get(origTextHash);
       request.onsuccess = () => resolve(request.result as CacheEntry | undefined);
@@ -155,14 +159,14 @@ class Cache {
   }
 
   /**
-   * Store the data in the database
+   * 将缓存数据写入 IndexedDB。
    */
   private async addInDb(data: CacheEntry): Promise<boolean> {
     if (!this.db) return false;
     const db = this.db;
     return new Promise<boolean>((resolve) => {
       const store = db
-        .transaction([Cache.getCacheStorageName()], "readwrite")
+        .transaction([Cache.getCacheStorageName()], 'readwrite')
         .objectStore(Cache.getCacheStorageName());
       const request = store.put(data);
       request.onsuccess = () => resolve(true);
@@ -171,21 +175,25 @@ class Cache {
   }
 
   /**
-   * Returns the name of the database using the given data.
+   * 根据服务名和语言方向生成数据库名称。
    */
-  static getDataBaseName(translationService: string, sourceLanguage: string, targetLanguage: string): string {
+  static getDataBaseName(
+    translationService: string,
+    sourceLanguage: string,
+    targetLanguage: string
+  ): string {
     return `${translationService}@${sourceLanguage}.${targetLanguage}`;
   }
 
   /**
-   * Returns the storageName
+   * 返回缓存对象仓库名称。
    */
   static getCacheStorageName(): string {
-    return "cache";
+    return 'cache';
   }
 
   /**
-   * Start/create a database with the given data.
+   * 打开数据库；如果不存在则按给定结构创建。
    */
   static async openIndexeddb(
     name: string,
@@ -195,12 +203,12 @@ class Cache {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(name, version);
       request.onsuccess = () => resolve(request.result);
-      request.onerror = request.onblocked = () => reject(new Error("open failed"));
+      request.onerror = request.onblocked = () => reject(new Error('open failed'));
       request.onupgradeneeded = () => {
         const db = request.result;
         objectStorageNames.forEach((storageName) => {
           if (!db.objectStoreNames.contains(storageName)) {
-            db.createObjectStore(storageName, { keyPath: "key" });
+            db.createObjectStore(storageName, { keyPath: 'key' });
           }
         });
       };
@@ -208,7 +216,7 @@ class Cache {
   }
 
   /**
-   * Start/create a database for the translation cache with the given data.
+   * 为指定翻译方向打开或创建缓存数据库。
    */
   static async openDataBaseCache(
     translationService: string,
@@ -223,7 +231,7 @@ class Cache {
   }
 
   /**
-   * Delete a database.
+   * 删除指定翻译方向对应的数据库。
    */
   static async deleteDatabase(
     translationService: string,
@@ -245,15 +253,14 @@ class CacheList {
   private dbCacheList: IDBDatabase | null = null;
 
   /**
-   * Defines a translation cache manager.
+   * 翻译缓存管理器，负责维护所有方向的缓存实例。
    */
   constructor() {
     this.openCacheList();
   }
 
   /**
-   * Get a translation cache from the given data.
-   * If the translation cache does not exist, create a new one.
+   * 获取指定方向的缓存实例；若不存在则即时创建。
    */
   async getCache(
     translationService: string,
@@ -275,8 +282,7 @@ class CacheList {
   }
 
   /**
-   * Delete all translation caches.
-   * And clear the cache list.
+   * 删除所有翻译缓存，并清空缓存列表。
    */
   async deleteAll(): Promise<boolean> {
     try {
@@ -292,7 +298,7 @@ class CacheList {
   }
 
   /**
-   * Gets the sum of the size of all translation caches.
+   * 统计全部翻译缓存的总占用。
    */
   async calculateSize(): Promise<string> {
     try {
@@ -305,7 +311,7 @@ class CacheList {
   }
 
   /**
-   * Delete a database by its name.
+   * 按数据库名删除缓存库。
    */
   static async deleteDatabase(dbName: string): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
@@ -316,10 +322,10 @@ class CacheList {
   }
 
   /**
-   * Starts the connection to the database cacheList.
+   * 连接保存缓存库名称的 `cacheList` 数据库。
    */
   private openCacheList(): void {
-    const request = indexedDB.open("cacheList", 1);
+    const request = indexedDB.open('cacheList', 1);
     request.onsuccess = () => {
       this.dbCacheList = request.result;
       this.list.forEach((_, key) => this.addCacheList(key));
@@ -328,29 +334,31 @@ class CacheList {
       this.dbCacheList = null;
     };
     request.onupgradeneeded = () => {
-      if (!request.result.objectStoreNames.contains("cache_list")) {
-        request.result.createObjectStore("cache_list", { keyPath: "dbName" });
+      if (!request.result.objectStoreNames.contains('cache_list')) {
+        request.result.createObjectStore('cache_list', { keyPath: 'dbName' });
       }
     };
   }
 
   /**
-   * Stores a new translation cache name to cacheList.
+   * 将新创建的缓存库名称写入 `cacheList`。
    */
   private addCacheList(dbName: string): void {
     if (!this.dbCacheList) return;
-    const store = this.dbCacheList.transaction(["cache_list"], "readwrite").objectStore("cache_list");
+    const store = this.dbCacheList
+      .transaction(['cache_list'], 'readwrite')
+      .objectStore('cache_list');
     store.put({ dbName });
   }
 
   /**
-   * Get the name of all translation caches.
+   * 读取所有已登记的翻译缓存库名称。
    */
   private async getAllDBNames(): Promise<string[]> {
     if (!this.dbCacheList) return [];
     const dbCacheList = this.dbCacheList;
     return new Promise<string[]>((resolve) => {
-      const store = dbCacheList.transaction(["cache_list"], "readonly").objectStore("cache_list");
+      const store = dbCacheList.transaction(['cache_list'], 'readonly').objectStore('cache_list');
       const request = store.getAllKeys();
       request.onsuccess = () => resolve((request.result as string[]) ?? []);
       request.onerror = () => resolve([]);
@@ -364,10 +372,10 @@ export class TranslationCache {
 
   bindRuntimeMessageListener(): void {
     browser.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-      if (!request || typeof request !== "object") return;
+      if (!request || typeof request !== 'object') return;
       const action = (request as { action?: string }).action;
 
-      if (action === "getCacheSize") {
+      if (action === 'getCacheSize') {
         if (!this.promiseCalculatingStorage) {
           this.promiseCalculatingStorage = this.cacheList.calculateSize();
         }
@@ -379,12 +387,12 @@ export class TranslationCache {
           })
           .catch(() => {
             this.promiseCalculatingStorage = null;
-            sendResponse("0B");
+            sendResponse('0B');
           });
         return true;
       }
 
-      if (action === "deleteTranslationCache") {
+      if (action === 'deleteTranslationCache') {
         void this.deleteTranslationCache(Boolean((request as { reload?: boolean }).reload));
       }
 
@@ -393,7 +401,7 @@ export class TranslationCache {
   }
 
   /**
-   * Get a new translation cache entry.
+   * 获取一条翻译缓存记录。
    */
   async get(
     translationService: string,
@@ -406,7 +414,7 @@ export class TranslationCache {
   }
 
   /**
-   * Defines a new entry in the translation cache.
+   * 写入一条新的翻译缓存记录。
    */
   async set(
     translationService: string,
@@ -421,14 +429,14 @@ export class TranslationCache {
   }
 
   /**
-   * Delete all translation caches.
-   * If `reload` is `true` reloads the extension after deleting caches.
+   * 删除所有翻译缓存。
+   * 当 `reload` 为 `true` 时，会在清理完成后重新加载扩展。
    */
   async deleteTranslationCache(reload = false): Promise<void> {
     if (indexedDB?.deleteDatabase) {
-      indexedDB.deleteDatabase("googleCache");
-      indexedDB.deleteDatabase("yandexCache");
-      indexedDB.deleteDatabase("bingCache");
+      indexedDB.deleteDatabase('googleCache');
+      indexedDB.deleteDatabase('yandexCache');
+      indexedDB.deleteDatabase('bingCache');
     }
     await this.cacheList.deleteAll();
     if (reload) browser.runtime.reload();

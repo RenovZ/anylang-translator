@@ -53,11 +53,11 @@ type ExtraHeaders = () => Array<{ name: string; value: string }>;
 
 class Utils {
   /**
-   * Replace the characters `& < > " '` with `&amp; &lt; &gt; &quot; &#39;`.
+   * 将 `& < > " '` 转义为 `&amp; &lt; &gt; &quot; &#39;`。
    *
-   * Note: For bing translation, we want to use its custom dictionary feature,
-   * we have to keep certain html tags, so we need to avoid them from being escaped.
-   * These symbols are nothing, just to ensure that there are no such symbols in the original text.
+   * 注意：必应翻译会利用特定 HTML 标记实现自定义词典，
+   * 因此这里需要暂时保留这些标记，避免被统一转义。
+   * 这些占位符本身没有语义，只用于保证不会和原文冲突。
    */
   static escapeHTML(text: string): string {
     const bingMarkFrontPart = '<mstrans:dictionary translation="';
@@ -79,7 +79,7 @@ class Utils {
   }
 
   /**
-   * Replace the characters `&amp; &lt; &gt; &quot; &#39;` with `& < > " '`.
+   * 将 `&amp; &lt; &gt; &quot; &#39;` 还原为 `& < > " '`。
    */
   static unescapeHTML(text: string): string {
     return text
@@ -102,7 +102,7 @@ class GoogleAuthHelper {
   }
 
   /**
-   * Find the Auth of Google Translator. The Auth value is used in translation requests.
+   * 获取 Google 翻译请求所需的 Auth 参数。
    */
   static async findAuth() {
     if (GoogleAuthHelper.authPromise) return GoogleAuthHelper.authPromise;
@@ -175,7 +175,7 @@ class YandexSIDHelper {
   }
 
   /**
-   * Find the SID of Yandex Translator. The SID value is used in translation requests.
+   * 获取 Yandex 翻译请求所需的 SID 参数。
    */
   static async findSID() {
     if (YandexSIDHelper.promise) return YandexSIDHelper.promise;
@@ -231,8 +231,7 @@ class BingAuthHelper {
   }
 
   /**
-   * Find the Auth of Bing Translator. The Auth value is used in translation requests.
-   * @returns {Promise<void>}
+   * 获取必应翻译请求所需的 Auth 参数。
    */
   static async findAuth() {
     if (BingAuthHelper.promise) return BingAuthHelper.promise;
@@ -275,17 +274,16 @@ class BingAuthHelper {
 }
 
 /**
- * Base class to create new translation services.
+ * 翻译服务基类，统一处理请求构造、缓存命中和结果回填。
  */
 class Service {
   /**
-   * It works as an in-memory translation cache.
-   * Ensures that two identical requests share the same `XMLHttpRequest`.
+   * 用作进行中的内存翻译缓存，确保相同请求复用同一次 `XMLHttpRequest`。
    * */
   private readonly translationsInProgress = new Map<string, TranslationInfo>();
 
   /**
-   * Initializes the **Service** class with information about the new translation service.
+   * 使用具体服务的信息初始化当前 `Service` 实例。
    */
   constructor(
     public readonly serviceName: string,
@@ -301,10 +299,9 @@ class Service {
   ) {}
 
   /**
-   * Removes all translations with `status` **error** and are in `translationsInProgress`.
+   * 清理 `translationsInProgress` 中状态为 **error** 的任务。
    *
-   * Sometimes there is a device translation error due to internet connection problems.
-   * Clearing translationsInProgress ensures that the translation will be retried.
+   * 网络异常时，同一请求可能卡在失败状态；移除后才能在下次请求时重新翻译。
    */
   removeTranslationsWithError() {
     this.translationsInProgress.forEach((value, key) => {
@@ -313,14 +310,10 @@ class Service {
   }
 
   /**
-   * Receives the `sourceArray2d` parameter and prepares the requests.
-   * Calls `cbTransformRequest` for each `sourceArray` of `sourceArray2d`.
-   * The `currentTranslationsInProgress` array will be the **final result** with requests already completed or in progress. And the `requests` array will only contain the new requests that need to be made.
+   * 根据 `sourceArray2d` 预先整理请求批次。
+   * 已在进行中或已命中缓存的内容会直接复用，只有真正缺失的部分才会生成新的 HTTP 请求。
    *
-   * Checks if there is already an identical request in progress or if it is already in the translation cache.
-   * If it doesn't exist, add it to `requests` to make a new *http request*.
-   *
-   * Requests longer than **800 characters** will be split into new requests.
+   * 单批文本超过 **800 个字符** 时会继续拆分，以避免触发服务端长度限制。
    */
   private async getRequests(
     sourceLanguage: string,
@@ -385,7 +378,7 @@ class Service {
   }
 
   /**
-   * Makes a request using the *XMLHttpRequest* API. Returns a promise that will be resolved with the result of the request. If the request fails, the promise will be rejected.
+   * 使用 `XMLHttpRequest` 发起底层翻译请求；成功时返回响应，失败时抛出错误。
    */
   protected async makeRequest(
     sourceLanguage: string,
@@ -420,11 +413,10 @@ class Service {
   }
 
   /**
-   * Translates the `sourceArray2d`.
+   * 翻译 `sourceArray2d` 中的文本块。
    *
-   * If `dontSaveInPersistentCache` is **true** then the translation result will not be saved in the on-disk translation cache, only in the in-memory cache.
-   *
-   * The `dontSortResults` parameter is only valid when using the ***google*** translation service, if its value is **true** then the translation result will not be sorted.
+   * 当 `dontSaveInPersistentCache` 为 **true** 时，结果只保存在内存中，不写入磁盘缓存。
+   * `dontSortResults` 仅对 ***google*** 服务有效，用于保留服务端返回的原始顺序。
    */
   async translate(
     sourceLanguage: string,
@@ -479,7 +471,7 @@ class Service {
   }
 
   /**
-   * https://github.com/FilipePS/Traduzir-paginas-web/issues/484
+   * 修复零宽空格导致的异常分段。参考 issue #484。
    */
   private fixString(value: string): string {
     return value.replace(/\u200b/g, ' ');
@@ -770,7 +762,7 @@ export class TranslationService {
       return;
     });
 
-    void config.onReady(() => {
+    config.onReady(() => {
       const customServices =
         config.get<Array<{ name?: string; url?: string; apiKey?: string }>>('customServices');
       const libre = customServices.find((item) => item.name === 'libre');
