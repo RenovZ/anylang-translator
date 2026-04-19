@@ -438,7 +438,6 @@ export class TranslationCache {
   async deleteTranslationCache(reload = false): Promise<void> {
     if (indexedDB?.deleteDatabase) {
       indexedDB.deleteDatabase('googleCache');
-      indexedDB.deleteDatabase('yandexCache');
       indexedDB.deleteDatabase('bingCache');
     }
     await this.cacheList.deleteAll();

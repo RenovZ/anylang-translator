@@ -43,7 +43,6 @@ export class TranslateSelected {
 
   private originalTabLanguage = 'und';
   private tabHostName = '';
-  private currentTargetLanguages: string[] = ['en', 'es', 'de'];
   private currentTargetLanguage = 'en';
   private currentTextTranslatorService = 'google';
 
@@ -104,8 +103,7 @@ export class TranslateSelected {
     void config.onReady(async () => {
       this.tabHostName = await this.getTabHostName();
 
-      this.currentTargetLanguages = config.get<string[]>('targetLanguages');
-      this.currentTargetLanguage = config.get<string>('targetLanguageTextTranslation');
+      this.currentTargetLanguage = config.get<string>('targetLanguage');
       this.currentTextTranslatorService = config.get<string>('textTranslatorService');
       this.alwaysTranslateThisSite =
         config.get<string[]>('alwaysTranslateSites').indexOf(this.tabHostName) !== -1;
@@ -132,12 +130,7 @@ export class TranslateSelected {
         if (name === 'textTranslatorService') {
           this.currentTextTranslatorService = String(value);
           this.refreshPanelSelections();
-        } else if (name === 'targetLanguages') {
-          this.currentTargetLanguages = Array.isArray(value)
-            ? value.map((item) => String(item))
-            : this.currentTargetLanguages;
-          this.refreshPanelSelections();
-        } else if (name === 'targetLanguageTextTranslation') {
+        } else if (name === 'targetLanguage') {
           this.currentTargetLanguage = String(value);
           this.refreshPanelSelections();
         } else if (name === 'alwaysTranslateSites') {
@@ -537,9 +530,6 @@ export class TranslateSelected {
           <ul id="serviceRow">
             <li id="sGoogle">g</li>
             <li id="sBing">b</li>
-            <li id="sYandex">y</li>
-            <li id="sDeepL">d</li>
-            <li id="sLibre">l</li>
           </ul>
         </div>
       </div>
@@ -627,27 +617,11 @@ export class TranslateSelected {
 
     const serviceButtons: Array<{ id: string; service: string }> = [
       { id: 'sGoogle', service: 'google' },
-      { id: 'sBing', service: 'bing' },
-      { id: 'sYandex', service: 'yandex' },
-      { id: 'sDeepL', service: 'deepl' },
-      { id: 'sLibre', service: 'libre' }
+      { id: 'sBing', service: 'bing' }
     ];
 
     for (const serviceInfo of serviceButtons) {
       this.shadowRoot.getElementById(serviceInfo.id)?.addEventListener('click', () => {
-        if (serviceInfo.service === 'deepl') {
-          const confirmed = this.config?.get<string>('deepl_confirmed') === 'yes';
-          if (!confirmed) {
-            const approved = window.confirm(
-              this.i18n?.getMessage('msgSetDeepLAlert') ?? 'Use DeepL?'
-            );
-            if (!approved) {
-              return;
-            }
-            this.config?.set('deepl_confirmed', 'yes');
-          }
-        }
-
         this.currentTextTranslatorService = serviceInfo.service;
         this.config?.set('textTranslatorService', serviceInfo.service);
         this.refreshPanelSelections();
@@ -750,24 +724,17 @@ export class TranslateSelected {
     const targetList = this.shadowRoot.getElementById('setTargetLanguage');
     if (targetList) {
       targetList.innerHTML = '';
-      for (const code of this.currentTargetLanguages.slice(0, 3)) {
-        const li = document.createElement('li');
-        li.setAttribute('data-value', code);
-        li.setAttribute('title', this.lang.codeToLanguage(code));
-        li.textContent = code;
-        if (code === this.currentTargetLanguage) {
-          li.classList.add('selected');
-        }
-        targetList.appendChild(li);
-      }
+      const li = document.createElement('li');
+      li.setAttribute('data-value', this.currentTargetLanguage);
+      li.setAttribute('title', this.lang.codeToLanguage(this.currentTargetLanguage));
+      li.textContent = this.currentTargetLanguage;
+      li.classList.add('selected');
+      targetList.appendChild(li);
     }
 
     const mapping: Record<string, string> = {
       google: 'sGoogle',
-      bing: 'sBing',
-      yandex: 'sYandex',
-      deepl: 'sDeepL',
-      libre: 'sLibre'
+      bing: 'sBing'
     };
 
     Object.values(mapping).forEach((id) =>
@@ -777,13 +744,8 @@ export class TranslateSelected {
     this.shadowRoot.getElementById(selectedId)?.classList.add('selected');
 
     const enabled = this.config?.get<string[]>('enabledServices') ?? [];
-    const customServices = this.config?.get<Array<Record<string, unknown>>>('customServices') ?? [];
     this.toggleHidden('sGoogle', enabled.indexOf('google') === -1);
     this.toggleHidden('sBing', enabled.indexOf('bing') === -1);
-    this.toggleHidden('sYandex', enabled.indexOf('yandex') === -1);
-    this.toggleHidden('sDeepL', enabled.indexOf('deepl') === -1);
-    const hasLibre = customServices.some((item) => String(item.name ?? '') === 'libre');
-    this.toggleHidden('sLibre', !hasLibre);
   }
 
   private toggleHidden(id: string, hidden: boolean): void {

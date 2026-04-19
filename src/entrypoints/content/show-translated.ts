@@ -53,7 +53,6 @@ interface ConfigLike {
  */
 export class ShowTranslated {
   private pageLanguageState = 'original';
-  private currentTargetLanguages: string[] = ['en', 'es', 'de'];
   private currentTargetLanguage = 'en';
   private currentTextTranslatorService = 'google';
   private showBySite = false;
@@ -111,14 +110,13 @@ export class ShowTranslated {
     this.platformInfo = platformInfo;
     this.i18n = i18n;
 
-    void config.onReady(async () => {
+    config.onReady(async () => {
       if (platformInfo.isMobile.any) return;
 
       this.tabHostName = await this.getTabHostName();
-      this.currentTargetLanguages = config.get<string[]>('targetLanguages');
-      this.currentTargetLanguage = config.get<string>('targetLanguageTextTranslation');
+      this.currentTargetLanguage = config.get<string>('targetLanguage');
       const service = config.get<string>('textTranslatorService');
-      this.currentTextTranslatorService = service === 'deepl' ? 'google' : service;
+      this.currentTextTranslatorService = service;
 
       this.showBySite =
         config.get<string[]>('sitesToTranslateWhenHovering').indexOf(this.tabHostName) !== -1;
@@ -141,13 +139,8 @@ export class ShowTranslated {
       config.onChanged((name, value) => {
         if (name === 'textTranslatorService') {
           const next = String(value);
-          this.currentTextTranslatorService = next === 'deepl' ? 'google' : next;
-        } else if (name === 'targetLanguages') {
-          this.currentTargetLanguages = Array.isArray(value)
-            ? value.map((item) => String(item))
-            : this.currentTargetLanguages;
-          this.refreshPanelState();
-        } else if (name === 'targetLanguageTextTranslation') {
+          this.currentTextTranslatorService = next;
+        } else if (name === 'targetLanguage') {
           this.currentTargetLanguage = String(value);
           this.refreshPanelState();
         } else if (name === 'sitesToTranslateWhenHovering') {
@@ -490,8 +483,6 @@ export class ShowTranslated {
         <ul id="serviceRow">
           <li id="sGoogle" title="Google">g</li>
           <li id="sBing" title="Bing">b</li>
-          <li id="sYandex" title="Yandex">y</li>
-          <li id="sDeepL" title="DeepL">d</li>
           <li id="listen" data-i18n-title="btnListen">🔊</li>
         </ul>
       </div>
@@ -511,8 +502,7 @@ export class ShowTranslated {
 
     const serviceButtons: Array<{ id: string; service: string }> = [
       { id: 'sGoogle', service: 'google' },
-      { id: 'sBing', service: 'bing' },
-      { id: 'sYandex', service: 'yandex' },
+      { id: 'sBing', service: 'bing' }
     ];
 
     for (const buttonInfo of serviceButtons) {
@@ -571,7 +561,7 @@ export class ShowTranslated {
     const targetList = this.shadowRoot.getElementById('setTargetLanguage');
     if (targetList) {
       targetList.innerHTML = '';
-      const targets = this.currentTargetLanguages.slice(0, 3);
+      const targets = this.currentTargetLanguage.slice(0, 3);
       for (const langCode of targets) {
         const li = document.createElement('li');
         li.setAttribute('data-value', langCode);
@@ -586,9 +576,7 @@ export class ShowTranslated {
 
     const map: Record<string, string> = {
       google: 'sGoogle',
-      bing: 'sBing',
-      yandex: 'sYandex',
-      deepl: 'sDeepL'
+      bing: 'sBing'
     };
     Object.values(map).forEach((id) =>
       this.shadowRoot?.getElementById(id)?.classList.remove('selected')

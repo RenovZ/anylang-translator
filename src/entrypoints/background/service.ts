@@ -768,9 +768,6 @@ export class TranslationService {
   ): Promise<string[]> {
     let selectedServiceName =
       this.languages.getAlternativeService(targetLanguage, serviceName, false) ?? serviceName;
-    if (selectedServiceName === 'deepl') {
-      selectedServiceName = 'deepl';
-    }
     const results = await this.translateHTML(
       selectedServiceName,
       sourceLanguage,

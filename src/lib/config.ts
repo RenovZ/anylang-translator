@@ -15,15 +15,12 @@ export type DefaultConfigName =
   | 'ttsVolume'
   | 'sourceLanguage'
   | 'targetLanguage'
-  | 'targetLanguageTextTranslation'
-  | 'targetLanguages'
   | 'alwaysTranslateSites'
   | 'neverTranslateSites'
   | 'sitesToTranslateWhenHovering'
   | 'langsToTranslateWhenHovering'
   | 'alwaysTranslateLangs'
   | 'neverTranslateLangs'
-  | 'customDictionary'
   | 'showTranslatePageContextMenu'
   | 'showTranslateSelectedContextMenu'
   | 'showButtonInTheAddressBar'
@@ -71,15 +68,12 @@ export interface DefaultConfig {
   ttsVolume: number;
   sourceLanguage: string | null;
   targetLanguage: string | null;
-  targetLanguageTextTranslation: string | null;
-  targetLanguages: string[];
   alwaysTranslateSites: string[];
   neverTranslateSites: string[];
   sitesToTranslateWhenHovering: string[];
   langsToTranslateWhenHovering: string[];
   alwaysTranslateLangs: string[];
   neverTranslateLangs: string[];
-  customDictionary: Map<string, string>;
   showTranslatePageContextMenu: 'yes' | 'no';
   showTranslateSelectedContextMenu: 'yes' | 'no';
   showButtonInTheAddressBar: 'yes' | 'no';
@@ -123,7 +117,6 @@ type OnChangeObserver = (name: string, value: unknown) => void;
 
 export class Config {
   private readonly observers: OnChangeObserver[] = [];
-  private readonly defaultTargetLanguages = ['en', 'es', 'de'];
   private readonly defaultConfig: DefaultConfig = {
     installDateTime: null,
     lastTimeShowingReleaseNotes: null,
@@ -137,15 +130,12 @@ export class Config {
     ttsVolume: 1, // 语音播放音量 (0-1)
     sourceLanguage: null, // 当前页面翻译的源语言
     targetLanguage: null, // 当前页面翻译的目标语言
-    targetLanguageTextTranslation: null, // 当前文本翻译的目标语言
-    targetLanguages: [], // 目标语言列表
     alwaysTranslateSites: [], // 总是翻译的网站列表
     neverTranslateSites: [], // 从不翻译的网站列表
     sitesToTranslateWhenHovering: [], // 鼠标悬停时翻译的网站列表
     langsToTranslateWhenHovering: [], // 鼠标悬停时翻译的语言列表
     alwaysTranslateLangs: [], // 总是翻译的语言列表
     neverTranslateLangs: [], // 从不翻译的语言列表
-    customDictionary: new Map<string, string>(), // 自定义词典，存储自定义翻译映射
     showTranslatePageContextMenu: 'yes', // 是否在右键菜单显示"翻译页面"选项
     showTranslateSelectedContextMenu: 'yes', // 是否在右键菜单显示"翻译选中文本"选项
     showButtonInTheAddressBar: 'yes', // 是否在地址栏显示翻译按钮
@@ -239,71 +229,7 @@ export class Config {
           this.setConfigValue(name, this.fixObjectType(name, value));
         }
 
-        // 如果目标语言列表里存在空值，则回退到默认语言集。
-        if (this.config.targetLanguages.some((tl) => !tl)) {
-          this.config.targetLanguages = [...this.defaultTargetLanguages];
-          browser.storage.local.set({
-            targetLanguages: this.config.targetLanguages
-          });
-        }
-
-        // 走到这里时，目标语言列表很可能还不足 3 个。
-
-        // 优先根据浏览器语言偏好补齐目标语言列表。
-        for (const lang of acceptedLanguages) {
-          if (this.config.targetLanguages.length >= 3 || !this.lang) break;
-          const fixed = this.lang.fixTLanguageCode(lang);
-          if (fixed && this.config.targetLanguages.indexOf(fixed) === -1) {
-            this.config.targetLanguages.push(fixed);
-          }
-        }
-
-        // 如果仍不足 3 个，再用默认目标语言兜底。
-        for (const lang of this.defaultTargetLanguages) {
-          if (this.config.targetLanguages.length >= 3) break;
-          if (this.config.targetLanguages.indexOf(lang) === -1) {
-            this.config.targetLanguages.push(lang);
-          }
-        }
-
-        // 目标语言只保留最近使用的 3 个。
-        while (this.config.targetLanguages.length > 3) this.config.targetLanguages.pop();
-
-        /*
-        // 去重逻辑的旧实现，保留作参考。
-        config.targetLanguages = [... new Set(config.targetLanguages)]
-        //*
-        // 再次用默认语言数组补齐缺失项。
-        for (const lang of defaultTargetLanguages) {
-          if (config.targetLanguages.length >= 3) break;
-          if (config.targetLanguages.indexOf(lang) === -1) {
-            config.targetLanguages.push(lang);
-          }
-        }
-        //*/
-
-        // 如果当前页面目标语言不在列表中，则回退到列表第一项。
-        if (
-          !this.config.targetLanguage ||
-          this.config.targetLanguages.indexOf(this.config.targetLanguage) === -1
-        ) {
-          this.config.targetLanguage = this.config.targetLanguages[0];
-        }
-
-        // 如果文本翻译目标语言不在列表中，也回退到列表第一项。
-        if (
-          !this.config.targetLanguageTextTranslation ||
-          this.config.targetLanguages.indexOf(this.config.targetLanguageTextTranslation) === -1
-        ) {
-          this.config.targetLanguageTextTranslation = this.config.targetLanguages[0];
-        }
-
         if (this.lang) {
-          // 规范化目标语言列表中的语言代码。
-          this.config.targetLanguages = this.config.targetLanguages
-            .map((lang) => this.lang!.fixTLanguageCode(lang))
-            .filter((lang): lang is string => lang !== undefined);
-
           // 规范化“永不翻译语言”列表。
           this.config.neverTranslateLangs = this.config.neverTranslateLangs
             .map((lang) => this.lang!.fixTLanguageCode(lang))
@@ -315,19 +241,8 @@ export class Config {
             .filter((lang): lang is string => lang !== undefined);
 
           // 规范化页面翻译目标语言。
-          this.config.targetLanguage = this.lang.fixTLanguageCode(this.config.targetLanguage) ?? '';
-          // 规范化文本翻译目标语言。
-          this.config.targetLanguageTextTranslation =
-            this.lang.fixTLanguageCode(this.config.targetLanguageTextTranslation) ?? '';
-        }
-
-        // 规范化后再次确保页面翻译目标语言仍在列表中。
-        if (this.config.targetLanguages.indexOf(this.config.targetLanguage) === -1) {
-          this.config.targetLanguage = this.config.targetLanguages[0];
-        }
-        // 规范化后再次确保文本翻译目标语言仍在列表中。
-        if (this.config.targetLanguages.indexOf(this.config.targetLanguageTextTranslation) === -1) {
-          this.config.targetLanguageTextTranslation = this.config.targetLanguages[0];
+          this.config.targetLanguage =
+            this.lang.fixTLanguageCode(this.config.targetLanguage ?? '') ?? '';
         }
 
         // 读取当前快捷键配置并同步到扩展设置中。
@@ -462,14 +377,6 @@ export class Config {
     this.removeFromArray('neverTranslateSites', hostname);
   }
 
-  addKeyWordTocustomDictionary(key: string, value: string): void {
-    this.addInMap('customDictionary', key, value);
-  }
-
-  removeKeyWordFromcustomDictionary(keyWord: string): void {
-    this.removeFromMap('customDictionary', keyWord);
-  }
-
   addLangToAlwaysTranslate(lang: string, hostname?: string): void {
     this.addInArray('alwaysTranslateLangs', lang);
     this.removeFromArray('neverTranslateLangs', lang);
@@ -491,30 +398,18 @@ export class Config {
     this.removeFromArray('neverTranslateLangs', lang);
   }
 
-  setTargetLanguage(lang: string, forTextToo = false): void {
-    const targetLanguages = this.get('targetLanguages');
+  setTargetLanguage(lang: string): void {
     const fixed = this.lang?.fixTLanguageCode(lang);
     if (!fixed) return;
-
-    if (targetLanguages.indexOf(fixed) === -1 || forTextToo) {
-      this.addTargetLanguage(fixed);
-    }
 
     this.set('targetLanguage', fixed);
-    if (forTextToo) this.setTargetLanguageTextTranslation(fixed);
-  }
-
-  setTargetLanguageTextTranslation(lang: string): void {
-    const fixed = this.lang?.fixTLanguageCode(lang);
-    if (!fixed) return;
-    this.set('targetLanguageTextTranslation', fixed);
   }
 
   /**
    * 在当前已启用的整页翻译服务之间轮换。
    */
   swapPageTranslationService(): string {
-    const pageServices = ['google', 'bing', 'yandex'];
+    const pageServices = ['google', 'bing'];
     const enabled = this.get('enabledServices').filter((name) => pageServices.includes(name));
     const current = this.get('pageTranslatorService');
     const index = enabled.indexOf(current);
@@ -527,19 +422,6 @@ export class Config {
     }
 
     return this.get('pageTranslatorService');
-  }
-
-  private addTargetLanguage(lang: string): void {
-    const targetLanguages = this.get('targetLanguages');
-    const index = targetLanguages.indexOf(lang);
-    if (index === -1) {
-      targetLanguages.unshift(lang);
-      targetLanguages.pop();
-    } else {
-      targetLanguages.splice(index, 1);
-      targetLanguages.unshift(lang);
-    }
-    this.set('targetLanguages', targetLanguages);
   }
 
   private addInArray<K extends KeysOfType<DefaultConfig, string[]>>(
@@ -564,43 +446,11 @@ export class Config {
     }
   }
 
-  private addInMap<K extends KeysOfType<DefaultConfig, Map<string, string>>>(
-    configName: K,
-    key: string,
-    value: string
-  ): void {
-    const map = this.get(configName);
-    if (typeof map.get(key) === 'undefined') {
-      map.set(key, value);
-      this.set(configName, map);
-    }
-  }
-
-  private removeFromMap<K extends KeysOfType<DefaultConfig, Map<string, string>>>(
-    configName: K,
-    key: string
-  ): void {
-    const map = this.get(configName);
-    if (typeof map.get(key) !== 'undefined') {
-      map.delete(key);
-      this.set(configName, map);
-    }
-  }
-
   /**
    * 必要时把持久化后的对象还原成运行时所需的 `Map` / `Set` 类型；
    * 其他值则保持原样返回。
    */
   private fixObjectType<K extends keyof DefaultConfig>(key: K, value: unknown): DefaultConfig[K] {
-    if (key === 'customDictionary') {
-      if (value instanceof Map) {
-        return value as DefaultConfig[K];
-      }
-      const entries =
-        value && typeof value === 'object' ? Object.entries(value as Record<string, string>) : [];
-      return new Map<string, string>(entries) as DefaultConfig[K];
-    }
-
     return value as DefaultConfig[K];
   }
 

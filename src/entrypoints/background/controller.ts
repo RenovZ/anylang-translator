@@ -585,7 +585,7 @@ export class Controller {
           command === 'hotkey-translate-page-1' ? 0 : command === 'hotkey-translate-page-2' ? 1 : 2;
         browser.tabs.query({ currentWindow: true, active: true }, (tabs) => {
           if (!tabs[0]?.id) return;
-          const target = this.config.get<string[]>('targetLanguages')[index];
+          const target = this.config.get<string>('targetLanguage');
           if (!target) return;
           this.config.setTargetLanguage?.(target);
           this.sendTranslatePageMessage(tabs[0].id, target);
@@ -646,11 +646,7 @@ export class Controller {
       this.config.onReady(() => {
         if (this.platformInfo.isMobile.any) {
           const enabledServices = this.config.get<string[]>('enabledServices');
-          const index = enabledServices.indexOf('deepl');
-          if (index !== -1) {
-            enabledServices.splice(index, 1);
-            this.config.set('enabledServices', enabledServices);
-          }
+          this.config.set('enabledServices', enabledServices);
         }
       });
     });

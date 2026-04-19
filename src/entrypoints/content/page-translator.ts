@@ -183,10 +183,9 @@ export class PageTranslator {
       this.config.get<string>('useOldPopup') === 'yes' ||
       this.config.get<number>('popupPanelSection') <= 1
     ) {
-      const firstTarget = this.config.get<string[]>('targetLanguages')[0];
-      if (firstTarget) {
-        this.config.setTargetLanguage?.(firstTarget);
-      }
+      const target = this.config.get<string>('targetLanguage');
+      if (!target) return;
+      this.config.setTargetLanguage?.(target);
     }
 
     void this.getTabHostName().then((host) => {
@@ -581,8 +580,8 @@ export class PageTranslator {
     const blockedHost =
       location.hostname === 'translate.googleusercontent.com' ||
       location.hostname === 'translate.google.com' ||
-      location.hostname === 'translate.yandex.com' ||
-      location.hostname === 'www.deepl.com' ||
+      // location.hostname === 'translate.yandex.com' ||
+      // location.hostname === 'www.deepl.com' ||
       location.hostname === 'translated.turbopages.org' ||
       location.hostname.endsWith('translate.goog') ||
       location.hostname === 'sberbank.com' ||

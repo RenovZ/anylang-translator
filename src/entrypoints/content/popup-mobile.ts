@@ -165,7 +165,6 @@ export class PopupMobile {
             <select id="serviceSelector">
               <option value="google">Google</option>
               <option value="bing">Bing</option>
-              <option value="yandex">Yandex</option>
             </select>
             <button id="btnTranslate"></button>
             <span id="gear">⚙</span>
@@ -354,7 +353,6 @@ export class PopupMobile {
         this.updateServiceIcon();
       } else if (
         name === 'targetLanguage' ||
-        name === 'targetLanguages' ||
         name === 'neverTranslateSites' ||
         name === 'neverTranslateLangs' ||
         name === 'alwaysTranslateLangs' ||
@@ -508,8 +506,6 @@ export class PopupMobile {
     if (!icon) return;
     if (service === 'google') {
       icon.textContent = 'G';
-    } else if (service === 'yandex') {
-      icon.textContent = 'Y';
     } else if (service === 'bing') {
       icon.textContent = 'B';
     } else {
@@ -553,14 +549,12 @@ export class PopupMobile {
     targetsGroup.innerHTML = '';
 
     const langs = this.lang.getLanguageList();
-    const targets = this.config.get<string[]>('targetLanguages');
-    targets.forEach((code) => {
-      const option = document.createElement('option');
-      option.value = code;
-      option.textContent = langs[code] ?? code;
-      targetsGroup.appendChild(option);
-    });
-    selector.value = targets[0] ?? selector.value;
+    const target = this.config.get<string>('targetLanguage');
+    const option = document.createElement('option');
+    option.value = target;
+    option.textContent = langs[target];
+    targetsGroup.appendChild(option);
+    selector.value = target ?? selector.value;
   }
 
   private onMenuOptionClick(action: string): void {
