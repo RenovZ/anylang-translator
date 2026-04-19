@@ -1,7 +1,5 @@
 import { browser } from 'wxt/browser';
 
-import type { Languages } from './languages';
-
 export type DefaultConfigName =
   | 'installDateTime'
   | 'lastTimeShowingReleaseNotes'
@@ -115,7 +113,7 @@ type KeysOfType<T, V> = {
 type OnReadyObserver = () => void;
 type OnChangeObserver = (name: string, value: unknown) => void;
 
-export class Config {
+class Config {
   private readonly observers: OnChangeObserver[] = [];
   private readonly defaultConfig: DefaultConfig = {
     installDateTime: null,
@@ -179,7 +177,6 @@ export class Config {
   private readonly onReadyPromise = new Promise<void>((resolve) => {
     this.onReadyResolve = resolve;
   });
-  private lang: Languages | null = null;
 
   /**
    * 配置完成初始化后，统一触发 onReady 队列。
@@ -199,9 +196,9 @@ export class Config {
     this.config[key] = value;
   }
 
-  constructor(lang: Languages) {
-    this.lang = lang;
+  private static instance: Config;
 
+  private constructor() {
     // 监听本地存储变化，并同步更新内存中的配置值。
     browser.storage.onChanged.addListener((changes, areaName) => {
       this.onReady(() => {
@@ -229,32 +226,33 @@ export class Config {
           this.setConfigValue(name, this.fixObjectType(name, value));
         }
 
-        if (this.lang) {
-          // 规范化“永不翻译语言”列表。
-          this.config.neverTranslateLangs = this.config.neverTranslateLangs
-            .map((lang) => this.lang!.fixTLanguageCode(lang))
-            .filter((lang): lang is string => lang !== undefined);
+        // // 规范化“永不翻译语言”列表。
+        // this.config.neverTranslateLangs = this.config.neverTranslateLangs
+        //   .map((lang) => this.lang!.fixTLanguageCode(lang))
+        //   .filter((lang): lang is string => lang !== undefined);
 
-          // 规范化“始终翻译语言”列表。
-          this.config.alwaysTranslateLangs = this.config.alwaysTranslateLangs
-            .map((lang) => this.lang!.fixTLanguageCode(lang))
-            .filter((lang): lang is string => lang !== undefined);
+        // // 规范化“始终翻译语言”列表。
+        // this.config.alwaysTranslateLangs = this.config.alwaysTranslateLangs
+        //   .map((lang) => this.lang!.fixTLanguageCode(lang))
+        //   .filter((lang): lang is string => lang !== undefined);
 
-          // 规范化页面翻译目标语言。
-          this.config.targetLanguage =
-            this.lang.fixTLanguageCode(this.config.targetLanguage ?? '') ?? '';
-        }
+        // // 规范化页面翻译目标语言。
+        // this.config.targetLanguage =
+        //   this.lang.fixTLanguageCode(this.config.targetLanguage ?? '') ?? '';
 
         // 读取当前快捷键配置并同步到扩展设置中。
-        if (browser.commands.getAll && this.lang) {
+        if (browser.commands.getAll) {
           browser.commands.getAll((results) => {
             try {
-              results.forEach((result) => {
-                if (result.name) {
-                  this.config.hotkeys[result.name] = result.shortcut ?? '';
-                }
-              });
-              this.set('hotkeys', this.config.hotkeys);
+              this.set(
+                'hotkeys',
+                results.reduce<Record<string, string>>((acc, r) => {
+                  if (r.name) {
+                    acc[r.name] = r.shortcut ?? '';
+                  }
+                  return acc;
+                }, {})
+              );
             } catch (e) {
               console.error('set hotkeys failed:', e);
             } finally {
@@ -266,6 +264,13 @@ export class Config {
         }
       });
     });
+  }
+
+  static getInstance(): Config {
+    if (!Config.instance) {
+      Config.instance = new Config();
+    }
+    return Config.instance;
   }
 
   onReady(callback: (() => void) | null = null): Promise<void> {
@@ -398,13 +403,6 @@ export class Config {
     this.removeFromArray('neverTranslateLangs', lang);
   }
 
-  setTargetLanguage(lang: string): void {
-    const fixed = this.lang?.fixTLanguageCode(lang);
-    if (!fixed) return;
-
-    this.set('targetLanguage', fixed);
-  }
-
   /**
    * 在当前已启用的整页翻译服务之间轮换。
    */
@@ -463,3 +461,5 @@ export class Config {
     return value;
   }
 }
+
+export const config = Config.getInstance();

@@ -1,5 +1,7 @@
 import { browser } from 'wxt/browser';
 
+import { config } from './config';
+
 export interface MobileFlags {
   Android: RegExpMatchArray | null;
   BlackBerry: RegExpMatchArray | null;
@@ -17,7 +19,7 @@ export interface DesktopFlags {
 /**
  * 负责识别当前环境是移动端还是桌面端，并补充浏览器类型信息。
  */
-export class PlatformInfo {
+class PlatformInfo {
   public isMobile: MobileFlags = {
     Android: null,
     BlackBerry: null,
@@ -35,14 +37,21 @@ export class PlatformInfo {
   public isFirefox = typeof browser !== 'undefined';
   public isOpera: RegExpMatchArray | null = null;
 
-  constructor(config: { get<T>(name: string): T; set<T>(name: string, value: T): void }) {
+  static getInstance() {
+    if (!PlatformInfo.instance) {
+      PlatformInfo.instance = new PlatformInfo();
+    }
+    return PlatformInfo.instance;
+  }
+
+  private static instance: PlatformInfo;
+  private constructor() {
     if (browser.tabs) {
       config.set('originalUserAgent', navigator.userAgent);
     }
 
     const userAgent =
-      (config.get<string | null>('originalUserAgent') ?? navigator.userAgent) ||
-      navigator.userAgent;
+      (config.get('originalUserAgent') ?? navigator.userAgent) || navigator.userAgent;
 
     this.isMobile = {
       Android: userAgent.match(/Android/i),
@@ -69,3 +78,5 @@ export class PlatformInfo {
     this.isOpera = userAgent.match(/OPR/i);
   }
 }
+
+export const platformInfo = PlatformInfo.getInstance();

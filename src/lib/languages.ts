@@ -1,5 +1,5 @@
 import { browser } from 'wxt/browser';
-import { Config } from './config';
+import { config } from './config';
 import i18n from './i18n';
 
 export const allLanguagesNames: Record<string, Record<string, string>> = {
@@ -11658,7 +11658,7 @@ export const allLanguagesNames: Record<string, Record<string, string>> = {
   }
 };
 
-export class Languages {
+class Languages {
   SupportedLanguages: Record<string, string[]> = {
     google: [
       'ab',
@@ -12055,10 +12055,15 @@ export class Languages {
 
   private alternatives = new Map<string, string>();
   private pageTranslationServices = ['google', 'bing'];
-  private config: Config;
 
-  constructor(config: Config) {
-    this.config = config;
+  private static instance: Languages;
+  private constructor() {}
+
+  static getInstance(): Languages {
+    if (!Languages.instance) {
+      Languages.instance = new Languages();
+    }
+    return Languages.instance;
   }
 
   /**
@@ -12066,8 +12071,8 @@ export class Languages {
    */
   getLanguageList(): Record<string, string> {
     let uiLanguage =
-      this.config.get('uiLanguage') !== 'default'
-        ? this.config.get('uiLanguage')
+      config.get('uiLanguage') !== 'default'
+        ? config.get('uiLanguage')
         : browser.i18n.getUILanguage();
     uiLanguage = this.fixUILanguageCode(uiLanguage) || 'en';
     return allLanguagesNames[uiLanguage];
@@ -12086,7 +12091,7 @@ export class Languages {
     if (forPageTranslation && this.pageTranslationServices.indexOf(serviceName) === -1) return null;
     if (baseServiceLanguages.indexOf(fixedLang) !== -1) return serviceName;
 
-    if (this.config.get('useAlternativeService') !== 'yes') return null;
+    if (config.get('useAlternativeService') !== 'yes') return null;
 
     for (const sn in this.SupportedLanguages) {
       if (sn === serviceName) continue;
@@ -12201,3 +12206,5 @@ export class Languages {
     return rtl_langs.indexOf(langCode) !== -1;
   }
 }
+
+export const languages = Languages.getInstance();
