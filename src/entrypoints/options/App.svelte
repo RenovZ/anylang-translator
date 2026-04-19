@@ -4,8 +4,8 @@
   import { browser } from 'wxt/browser';
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
 
-  import { i18n } from '../../lib/i18n';
-  import '../../assets/app.css';
+  import { i18n } from '@/lib/i18n';
+  import '@/assets/app.css';
   import AboutSettings from './components/AboutSettings.svelte';
   import AdvancedSettings from './components/AdvancedSettings.svelte';
   import AiExpertSettings from './components/AiExpertSettings.svelte';
@@ -32,36 +32,14 @@
     modelOptionsByProvider,
     toggles,
     type ToggleItem
-  } from '../popup/data';
-  import {
-    navItems,
-    legacyPromptPresetMap,
-    legacyLanguageMap,
-    legacyToggleModeMap,
-    alwaysTranslateSites
-  } from './data';
+  } from '@/entrypoints/popup/data';
+  import { navItems, alwaysTranslateSites } from './data';
 
   const STORAGE_KEY = 'options-config';
 
   const defaultToggleModes = Object.fromEntries(
     toggles.filter((item) => item.options?.length).map((item) => [item.key, item.options![0].value])
   );
-
-  function normalizeLanguage(value: string, fallback: string) {
-    if (!value) return fallback;
-    return legacyLanguageMap[value] ?? value;
-  }
-
-  function normalizePromptPreset(value: string) {
-    return legacyPromptPresetMap[value] ?? value;
-  }
-
-  function normalizeToggleModes(toggleModes: Record<string, string> | undefined) {
-    const next = { ...defaultToggleModes, ...toggleModes };
-    return Object.fromEntries(
-      Object.entries(next).map(([key, value]) => [key, legacyToggleModeMap[key]?.[value] ?? value])
-    );
-  }
 
   const createDefaultConfig = (): V2OptionsConfig => ({
     ...structuredClone(defaultPopupConfig),
@@ -113,91 +91,16 @@
 
     window.addEventListener('hashchange', handleHashChange);
 
-    void (async () => {
-      const result = await browser.storage.local.get(STORAGE_KEY);
-      const stored = result[STORAGE_KEY] as Partial<V2OptionsConfig> | undefined;
-
-      if (stored) {
-        config = {
-          ...createDefaultConfig(),
-          ...stored,
-          sourceLanguage: normalizeLanguage(
-            stored.sourceLanguage ?? '',
-            defaultPopupConfig.sourceLanguage
-          ),
-          targetLanguage: normalizeLanguage(
-            stored.targetLanguage ?? '',
-            defaultPopupConfig.targetLanguage
-          ),
-          promptPreset: normalizePromptPreset(
-            stored.promptPreset ?? defaultPopupConfig.promptPreset
-          ),
-          alwaysTranslateLanguages: (stored.alwaysTranslateLanguages ?? []).map((item) =>
-            normalizeLanguage(item, item)
-          ),
-          neverTranslateLanguages: (stored.neverTranslateLanguages ?? []).map((item) =>
-            normalizeLanguage(item, item)
-          ),
-          uiLanguage: normalizeLanguage(stored.uiLanguage ?? '', 'zh-Hans'),
-          translationPreference:
-            stored.translationPreference === '双语对照'
-              ? 'bilingual'
-              : stored.translationPreference === '仅显示译文'
-                ? 'translation_only'
-                : (stored.translationPreference ?? 'bilingual'),
-          translationStyle:
-            stored.translationStyle === '无'
-              ? 'none'
-              : stored.translationStyle === '虚线下划线'
-                ? 'dashed_underline'
-                : stored.translationStyle === '直线下划线'
-                  ? 'solid_underline'
-                  : stored.translationStyle === '虚线边框'
-                    ? 'dashed_border'
-                    : stored.translationStyle === '实线边框'
-                      ? 'solid_border'
-                      : stored.translationStyle === '模糊效果（学习模式）'
-                        ? 'blur_learning'
-                        : stored.translationStyle === '透明效果'
-                          ? 'transparent'
-                          : stored.translationStyle === '点状下划线'
-                            ? 'dotted_underline'
-                            : stored.translationStyle === '分割线'
-                              ? 'divider'
-                              : stored.translationStyle === '高亮'
-                                ? 'highlight'
-                                : (stored.translationStyle ?? 'none'),
-          customFontFamily:
-            stored.customFontFamily === '无' ? 'none' : (stored.customFontFamily ?? 'none'),
-          toggles: {
-            ...defaultPopupConfig.toggles,
-            ...stored.toggles
-          },
-          toggleModes: normalizeToggleModes(stored.toggleModes),
-          alwaysTranslateSites: stored.alwaysTranslateSites?.length
-            ? stored.alwaysTranslateSites
-            : createDefaultConfig().alwaysTranslateSites
-        };
-        toggleItems = toggles.map((item) => ({
-          ...item,
-          enabled: config.toggles[item.key] ?? item.enabled
-        }));
-      }
-
-      savedSnapshot = JSON.stringify(config);
-      loading = false;
-    })();
-
     return () => {
       window.removeEventListener('hashchange', handleHashChange);
     };
   });
 
-  function getProviderModels(provider: string) {
+  const getProviderModels = (provider: string) => {
     return modelOptionsByProvider[provider] ?? modelOptionsByProvider[defaultPopupConfig.provider];
-  }
+  };
 
-  function updateField(key: 'provider' | 'model' | 'promptPreset', value: string) {
+  const updateField = (key: 'provider' | 'model' | 'promptPreset', value: string) => {
     if (key === 'provider') {
       const nextModels = getProviderModels(value);
       config = {
@@ -212,13 +115,13 @@
       ...config,
       [key]: value
     };
-  }
+  };
 
-  function getToggleConfig(key: string) {
+  const getToggleConfig = (key: string) => {
     return toggleItems.find((item) => item.key === key);
-  }
+  };
 
-  function updateToggleMode(key: string, value: string) {
+  const updateToggleMode = (key: string, value: string) => {
     config = {
       ...config,
       toggleModes: {
@@ -226,24 +129,24 @@
         [key]: value
       }
     };
-  }
+  };
 
-  async function saveOptions() {
+  const saveOptions = async () => {
     saving = true;
     await browser.storage.local.set({ [STORAGE_KEY]: config });
     savedSnapshot = JSON.stringify(config);
     saveMessage = i18n('options_status_saved', { defaultValue: 'Settings saved' });
     saving = false;
-  }
+  };
 
-  async function resetOptions() {
+  const resetOptions = async () => {
     config = createDefaultConfig();
     toggleItems = toggles.map((item) => ({ ...item }));
     await saveOptions();
     saveMessage = i18n('options_status_reset', { defaultValue: 'Defaults restored' });
-  }
+  };
 
-  function syncActiveNavWithHash() {
+  const syncActiveNavWithHash = () => {
     const hash = window.location.hash.replace(/^#/, '');
     if (hash && navItems.some((item) => item.id === hash)) {
       activeNavId = hash;
@@ -251,16 +154,16 @@
     }
 
     activeNavId = navItems[0].id;
-  }
+  };
 
-  function goToSection(id: string) {
+  const goToSection = (id: string) => {
     if (window.location.hash === `#${id}`) {
       activeNavId = id;
       return;
     }
 
     window.location.hash = id;
-  }
+  };
 </script>
 
 <main
@@ -274,7 +177,7 @@
         </div>
         <div class="flex items-center gap-3">
           <span class="text-lg font-semibold"
-            >{i18n('options_title_extension_name', { defaultValue: 'Immersive Translate' })}</span>
+            >{i18n('options_title_extension_name', { defaultValue: 'Anylang Translate' })}</span>
           <span class="text-slate-400">v0.0.1</span>
         </div>
       </div>

@@ -1,7 +1,8 @@
 <script lang="ts">
   import { Select } from 'flowbite-svelte';
-  import { i18n } from '../../../lib/i18n';
-  import { promptPresetOptions } from '../../popup/data';
+
+  import { i18n } from '@/lib/i18n';
+  import { promptPresetOptions } from '@/entrypoints/popup/data';
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
   import type { OptionsProviderSectionProps } from './section-props';

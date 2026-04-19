@@ -6,10 +6,10 @@
     "message": "Check for updates"
   },
   "options_about_description": {
-    "message": "Learn about the Immersive Translate extension."
+    "message": "Learn about the Anylang Translate extension."
   },
   "options_about_product_name": {
-    "message": "Immersive Translate"
+    "message": "Anylang Translate"
   },
   "options_about_title": {
     "message": "About"
@@ -555,7 +555,7 @@
     "message": "AI terminology"
   },
   "options_title_extension_name": {
-    "message": "Immersive Translate"
+    "message": "Anylang Translate"
   },
   "options_writing_description": {
     "message": "Configure AI writing assistance and polishing features."

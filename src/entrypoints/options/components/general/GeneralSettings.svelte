@@ -20,23 +20,23 @@
   export let resetOptions: () => void | Promise<void>;
   export let getProviderModels: (provider: string) => string[];
 
-  function updateField(key: keyof V2OptionsConfig, value: string) {
+  const updateField = (key: keyof V2OptionsConfig, value: string) => {
     if (key === 'provider') {
       const nextModels = getProviderModels(value);
       config = { ...config, provider: value, model: nextModels[0] ?? '' };
       return;
     }
     config = { ...config, [key]: value };
-  }
+  };
 
-  function updateBooleanField(
+  const updateBooleanField = (
     key: 'richTextTranslate' | 'italicTranslate' | 'customFontEnabled',
     value: boolean
-  ) {
+  ) => {
     config = { ...config, [key]: value };
-  }
+  };
 
-  function addSite() {
+  const addSite = () => {
     const site = newSite.trim();
     if (!site || config.alwaysTranslateSites.includes(site)) return;
     config = {
@@ -44,27 +44,27 @@
       alwaysTranslateSites: [...config.alwaysTranslateSites, site]
     };
     newSite = '';
-  }
+  };
 
-  function removeSite(site: string) {
+  const removeSite = (site: string) => {
     config = {
       ...config,
       alwaysTranslateSites: config.alwaysTranslateSites.filter((item) => item !== site)
     };
-  }
+  };
 
-  function addRuleItem(
+  const addRuleItem = (
     key: 'neverTranslateSites' | 'alwaysTranslateLanguages' | 'neverTranslateLanguages',
     value: string
-  ) {
+  ) => {
     const next = value.trim();
     if (!next || config[key].includes(next)) return;
     config = { ...config, [key]: [...config[key], next] };
-  }
+  };
 
-  function getPreviewClass(value: string) {
+  const getPreviewClass = (value: string) => {
     return translationStyleOptions.find((option) => option.value === value)?.className ?? '';
-  }
+  };
 </script>
 
 <Section id="general" title={i18n('options_general_title', { defaultValue: 'General settings' })}>

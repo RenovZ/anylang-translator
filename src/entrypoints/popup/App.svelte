@@ -12,8 +12,7 @@
     ChevronDownOutline,
     ArrowRightOutline,
     LanguageOutline,
-    CogOutline,
-    ToolsOutline
+    CogOutline
   } from 'flowbite-svelte-icons';
   import { browser } from 'wxt/browser';
 
@@ -36,13 +35,11 @@
     type ConfigRowKey
   } from './data';
 
-  let popupConfig = { ...defaultPopupConfig };
-  let toggleItems = toggles.map((item) => ({ ...item }));
-
-  $: popupConfig = {
-    ...popupConfig,
+  const toggleItems = toggles.map((item) => ({ ...item }));
+  const popupConfig = $state({
+    ...defaultPopupConfig,
     toggles: Object.fromEntries(toggleItems.map((item) => [item.key, item.enabled]))
-  };
+  });
 
   const getConfigValue = (key: ConfigRowKey) => {
     if (key === 'provider') return popupConfig.provider;
@@ -72,25 +69,20 @@
   const updateConfig = (key: ConfigRowKey, value: string) => {
     if (key === 'provider') {
       const nextModelOptions = modelOptionsByProvider[value] ?? [];
-      popupConfig = {
-        ...popupConfig,
-        provider: value,
-        model: nextModelOptions[0] ?? ''
-      };
+      popupConfig.provider = value;
+      popupConfig.model = nextModelOptions[0] ?? '';
       return;
     }
 
-    popupConfig = {
-      ...popupConfig,
-      [key]: value
-    };
+    popupConfig[key] = value;
   };
 
   const updateLanguage = (kind: 'source' | 'target', value: string) => {
-    popupConfig = {
-      ...popupConfig,
-      ...(kind === 'source' ? { sourceLanguage: value } : { targetLanguage: value })
-    };
+    if (kind === 'source') {
+      popupConfig.sourceLanguage = value;
+    } else {
+      popupConfig.targetLanguage = value;
+    }
   };
 
   const openOptionsPage = () => {

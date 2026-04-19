@@ -1,4 +1,4 @@
-import type { ToggleItem } from '../../popup/data';
+import type { ToggleItem } from '@/entrypoints/popup/data';
 import type { V2OptionsConfig } from '../types';
 
 export type OptionsSectionSharedProps = {

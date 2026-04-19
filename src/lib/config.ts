@@ -13,6 +13,7 @@ export type DefaultConfigName =
   | 'enabledServices'
   | 'ttsSpeed'
   | 'ttsVolume'
+  | 'sourceLanguage'
   | 'targetLanguage'
   | 'targetLanguageTextTranslation'
   | 'targetLanguages'
@@ -68,6 +69,7 @@ export interface DefaultConfig {
   enabledServices: string[];
   ttsSpeed: number;
   ttsVolume: number;
+  sourceLanguage: string | null;
   targetLanguage: string | null;
   targetLanguageTextTranslation: string | null;
   targetLanguages: string[];
@@ -126,56 +128,57 @@ export class Config {
     installDateTime: null,
     lastTimeShowingReleaseNotes: null,
     originalUserAgent: null,
-    uiLanguage: 'default',
-    pageTranslatorService: 'google',
-    textTranslatorService: 'google',
-    textToSpeechService: 'google',
-    enabledServices: ['google', 'bing', 'yandex', 'deepl'],
-    ttsSpeed: 1,
-    ttsVolume: 1,
-    targetLanguage: null,
-    targetLanguageTextTranslation: null,
-    targetLanguages: [],
-    alwaysTranslateSites: [],
-    neverTranslateSites: [],
-    sitesToTranslateWhenHovering: [],
-    langsToTranslateWhenHovering: [],
-    alwaysTranslateLangs: [],
-    neverTranslateLangs: [],
-    customDictionary: new Map<string, string>(),
-    showTranslatePageContextMenu: 'yes',
-    showTranslateSelectedContextMenu: 'yes',
-    showButtonInTheAddressBar: 'yes',
-    showOriginalTextWhenHovering: 'no',
-    showTranslateSelectedButton: 'yes',
-    whenShowMobilePopup: 'when-necessary',
-    darkMode: 'auto',
-    popupBlueWhenSiteIsTranslated: 'yes',
-    popupPanelSection: 1,
-    showReleaseNotes: 'yes',
-    dontShowIfIsNotValidText: 'yes',
-    dontShowIfPageLangIsTargetLang: 'no',
-    dontShowIfPageLangIsUnknown: 'no',
-    dontShowIfSelectedTextIsTargetLang: 'no',
-    dontShowIfSelectedTextIsUnknown: 'no',
-    hotkeys: {},
-    expandPanelTranslateSelectedText: 'no',
-    translateTag_pre: 'yes',
-    enableIframePageTranslation: 'yes',
-    dontSortResults: 'no',
-    translateDynamicallyCreatedContent: 'yes',
-    autoTranslateWhenClickingALink: 'no',
-    translateSelectedWhenPressTwice: 'no',
-    translateTextOverMouseWhenPressTwice: 'no',
-    translateClickingOnce: 'no',
-    enableDiskCache: 'no',
-    useAlternativeService: 'yes',
-    customServices: [],
-    showMobilePopupOnDesktop: 'no',
-    popupMobileKeepOnScren: 'no',
-    popupMobilePosition: 'top',
-    addPaddingToPage: 'no',
-    proxyServers: {}
+    uiLanguage: 'default', // 界面语言，"default" 表示使用浏览器默认语言
+    pageTranslatorService: 'google', // 页面翻译服务: google, bing
+    textTranslatorService: 'google', // 文本翻译服务: google, bing
+    textToSpeechService: 'google', // 文字转语音服务: google, bing
+    enabledServices: ['google', 'bing'], // 启用的翻译服务列表
+    ttsSpeed: 1, // 语音播放速度 (0.5-2.0)
+    ttsVolume: 1, // 语音播放音量 (0-1)
+    sourceLanguage: null, // 当前页面翻译的源语言
+    targetLanguage: null, // 当前页面翻译的目标语言
+    targetLanguageTextTranslation: null, // 当前文本翻译的目标语言
+    targetLanguages: [], // 目标语言列表
+    alwaysTranslateSites: [], // 总是翻译的网站列表
+    neverTranslateSites: [], // 从不翻译的网站列表
+    sitesToTranslateWhenHovering: [], // 鼠标悬停时翻译的网站列表
+    langsToTranslateWhenHovering: [], // 鼠标悬停时翻译的语言列表
+    alwaysTranslateLangs: [], // 总是翻译的语言列表
+    neverTranslateLangs: [], // 从不翻译的语言列表
+    customDictionary: new Map<string, string>(), // 自定义词典，存储自定义翻译映射
+    showTranslatePageContextMenu: 'yes', // 是否在右键菜单显示"翻译页面"选项
+    showTranslateSelectedContextMenu: 'yes', // 是否在右键菜单显示"翻译选中文本"选项
+    showButtonInTheAddressBar: 'yes', // 是否在地址栏显示翻译按钮
+    showOriginalTextWhenHovering: 'no', // 鼠标悬停时是否显示原文
+    showTranslateSelectedButton: 'yes', // 是否显示选中文本翻译按钮
+    whenShowMobilePopup: 'when-necessary', // 移动端弹出框显示时机: when-necessary/only-when-i-touch/always-show
+    darkMode: 'auto', // 暗色模式: auto/yes/no
+    popupBlueWhenSiteIsTranslated: 'yes', // 网站已翻译时弹出框是否变蓝
+    popupPanelSection: 1, // 弹出框面板区域编号
+    showReleaseNotes: 'yes', // 是否显示更新日志
+    dontShowIfIsNotValidText: 'yes', // 无有效文本时不显示翻译
+    dontShowIfPageLangIsTargetLang: 'no', // 页面语言等于目标语言时不显示翻译
+    dontShowIfPageLangIsUnknown: 'no', // 页面语言未知时不显示翻译
+    dontShowIfSelectedTextIsTargetLang: 'no', // 选中文本语言等于目标语言时不显示翻译
+    dontShowIfSelectedTextIsUnknown: 'no', // 选中文本语言未知时不显示翻译
+    hotkeys: {}, // 快捷键配置，从manifest文件获取
+    expandPanelTranslateSelectedText: 'no', // 翻译选中文本时是否展开面板
+    translateTag_pre: 'yes', // 是否翻译<pre>标签内容
+    enableIframePageTranslation: 'yes', // 是否启用iframe页面翻译
+    dontSortResults: 'no', // 是否不对翻译结果排序
+    translateDynamicallyCreatedContent: 'yes', // 是否翻译动态创建的内容
+    autoTranslateWhenClickingALink: 'no', // 点击链接时是否自动翻译
+    translateSelectedWhenPressTwice: 'no', // 连续按两次时翻译选中文本
+    translateTextOverMouseWhenPressTwice: 'no', // 连续按两次时翻译鼠标悬停文本
+    translateClickingOnce: 'no', // 单击一次时翻译
+    enableDiskCache: 'no', // 是否启用磁盘缓存
+    useAlternativeService: 'yes', // 是否使用备用服务
+    customServices: [], // 自定义服务列表
+    showMobilePopupOnDesktop: 'no', // 桌面端是否显示移动端弹出框
+    popupMobileKeepOnScren: 'no', // 移动端弹出框是否保持在屏幕上
+    popupMobilePosition: 'top', // 移动端弹出框位置: top/bottom
+    addPaddingToPage: 'no', // 是否为页面添加边距
+    proxyServers: {} // 代理服务器配置
   };
   private readonly configKeys = Object.keys(this.defaultConfig) as Array<keyof DefaultConfig>;
 
