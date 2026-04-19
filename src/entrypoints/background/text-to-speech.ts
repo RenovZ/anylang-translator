@@ -370,6 +370,8 @@ export class TextToSpeech {
     onReady(callback?: () => void): Promise<void>;
     onChanged(callback: (name: string, value: unknown) => void): void;
   }): void {
+    // 文字转语音服务 - 处理语音合成请求
+    // 响应content script或popup的语音合成请求
     browser.runtime.onMessage.addListener((request, _sender, sendResponse) => {
       const action = (request as { action?: string }).action;
       if (action === 'textToSpeech') {
@@ -384,6 +386,7 @@ export class TextToSpeech {
         return true;
       }
 
+      // 停止所有语音播放
       if (action === 'stopAudio') {
         this.googleService.stopAll();
         this.bingService.stopAll();

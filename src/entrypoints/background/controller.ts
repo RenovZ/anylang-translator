@@ -91,10 +91,13 @@ export class Controller {
   }
 
   private bindRuntimeMessages(): void {
+    // 页面语言状态管理 - 处理页面翻译状态相关消息
+    // 主要处理popup、options与content script之间的页面状态同步
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const action = (request as { action?: string }).action;
       if (!action) return;
 
+      // 获取主框架页面的翻译状态(original/translated)
       if (action === 'getMainFramePageLanguageState') {
         this.sendMessageToMainFrame(
           sender.tab?.id,
@@ -103,6 +106,7 @@ export class Controller {
         );
         return true;
       }
+      // 获取主框架页面的原始语言
       if (action === 'getMainFrameTabLanguage') {
         this.sendMessageToMainFrame(
           sender.tab?.id,
@@ -111,14 +115,17 @@ export class Controller {
         );
         return true;
       }
+      // 更新上下文菜单的翻译状态
       if (action === 'setPageLanguageState') {
         this.updateContextMenu(
           String((request as { pageLanguageState: string }).pageLanguageState)
         );
       }
+      // 打开扩展选项页面
       if (action === 'openOptionsPage') {
         tabsCreate(browser.runtime.getURL('/options.html'));
       }
+      // 检测当前标签页的语言
       if (action === 'detectTabLanguage') {
         if (!sender.tab?.id) {
           // 某些场景下消息可能拿不到 tabId，此时退回到未知语言。参考 issue #478。
@@ -148,22 +155,26 @@ export class Controller {
         }
         return true;
       }
+      // 获取当前标签页的主机名
       if (action === 'getTabHostName') {
         const url = sender.tab?.url;
         if (!url) return;
         sendResponse(new URL(url).hostname);
       }
+      // 通知所有frame当前frame获得焦点(用于选中文本翻译)
       if (action === 'thisFrameIsInFocus') {
         const tabId = sender.tab?.id;
         if (!tabId) return;
         browser.tabs.sendMessage(tabId, { action: 'anotherFrameIsInFocus' }, checkedLastError);
       }
+      // 获取标签页的MIME类型
       if (action === 'getTabMimeType') {
         browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           sendResponse(this.tabToMimeType[tabs[0]?.id ?? -1]);
         });
         return true;
       }
+      // 恢复使用指定服务名称的所有标签页
       if (action === 'restorePagesWithServiceNames') {
         browser.tabs.query({}, (tabs) => {
           tabs.forEach((tab) => {
@@ -172,6 +183,7 @@ export class Controller {
           });
         });
       }
+      // 授权打开选项页面
       if (action === 'authorizationToOpenOptions') {
         browser.storage.local.set({
           authorizationToOpenOptions: (request as { authorizationToOpenOptions: string })
@@ -677,9 +689,12 @@ export class Controller {
       delete this.tabsInfo[tabId];
     };
 
+    // 点击链接自动翻译跟踪 - 记录每个标签页的翻译状态和主机名
+    // 用于点击链接时判断是否自动翻译目标页面
     const runtimeOnMessage = (request: unknown, sender: Browser.runtime.MessageSender): void => {
       if ((request as { action?: string }).action !== 'setPageLanguageState') return;
       if (!sender.tab?.id) return;
+      // 保存标签页的翻译状态和主机信息
       this.tabsInfo[sender.tab.id] = {
         pageLanguageState: String(
           (request as { pageLanguageState?: string }).pageLanguageState ?? 'original'

@@ -371,10 +371,12 @@ export class TranslationCache {
   private promiseCalculatingStorage: Promise<string> | null = null;
 
   bindRuntimeMessageListener(): void {
+    // 翻译缓存管理 - 处理缓存大小查询和删除请求
     browser.runtime.onMessage.addListener((request, _sender, sendResponse) => {
       if (!request || typeof request !== 'object') return;
       const action = (request as { action?: string }).action;
 
+      // 获取翻译缓存大小
       if (action === 'getCacheSize') {
         if (!this.promiseCalculatingStorage) {
           this.promiseCalculatingStorage = this.cacheList.calculateSize();
@@ -392,6 +394,7 @@ export class TranslationCache {
         return true;
       }
 
+      // 删除翻译缓存
       if (action === 'deleteTranslationCache') {
         void this.deleteTranslationCache(Boolean((request as { reload?: boolean }).reload));
       }

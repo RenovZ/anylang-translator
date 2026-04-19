@@ -17,9 +17,9 @@
   } from 'flowbite-svelte-icons';
   import { browser } from 'wxt/browser';
 
-  import { i18n } from '../../lib/i18n';
-  import '../../assets/app.css';
-  import avatar from '../../lib/avatar';
+  import { i18n } from '@/lib/i18n';
+  import '@/assets/app.css';
+  import avatar from '@/lib/avatar';
   import {
     configRows,
     defaultPopupConfig,

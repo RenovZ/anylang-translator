@@ -183,18 +183,23 @@ export class TranslateSelected {
       window.addEventListener('blur', this.onWindowBlur);
       window.addEventListener('beforeunload', this.onBeforeUnload);
 
+      // 选中文本翻译 - 处理选中文本翻译功能的消息
+      // 响应热键翻译选中文本、焦点管理等操作
       browser.runtime.onMessage.addListener((request) => {
         const action = (request as { action?: string }).action;
+        // 翻译选中文本
         if (action === 'TranslateSelectedText') {
           this.readSelection();
           this.init();
           this.translateSelectionText();
         } else if (action === 'anotherFrameIsInFocus') {
+          // 另一个frame获得焦点时销毁当前frame的选中翻译
           if (!this.windowIsInFocus) {
             this.destroy();
           }
         } else if (action === 'hotTranslateSelectedText') {
-          void this.replaceSelectionWithHotTranslation();
+          // 热键翻译选中文本到剪贴板并插入
+          this.replaceSelectionWithHotTranslation();
         }
       });
 

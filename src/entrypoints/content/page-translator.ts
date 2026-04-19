@@ -349,14 +349,14 @@ export class PageTranslator {
     }
   }
 
-  /**
-   * 处理来自后台、弹窗或其他内容脚本的运行时消息。
-   */
+  // 页面翻译核心监听器 - 处理页面翻译相关的所有消息
+  // 处理翻译、恢复、设置查询等操作
   private bindRuntimeMessageListener(): void {
     browser.runtime.onMessage.addListener((request: RuntimeRequest, _sender, sendResponse) => {
       const action = request.action;
       if (!action) return;
 
+      // 翻译页面（targetLanguage为"original"时恢复原文）
       if (action === 'translatePage') {
         if (request.targetLanguage === 'original') {
           this.restorePage();
@@ -364,29 +364,38 @@ export class PageTranslator {
           this.translatePage(request.targetLanguage);
         }
       } else if (action === 'restorePage') {
+        // 恢复页面显示原文
         this.restorePage();
       } else if (action === 'getOriginalTabLanguage') {
+        // 恢复页面显示原文
         this.onGetOriginalTabLanguage((language) => sendResponse(language));
         return true;
       } else if (action === 'getCurrentPageLanguage') {
+        // 获取当前翻译后的语言
         sendResponse(this.currentPageLanguage);
       } else if (action === 'getCurrentPageLanguageState') {
+        // 获取当前页面翻译状态(original/translated)
         sendResponse(this.pageLanguageState);
       } else if (action === 'getCurrentPageTranslatorService') {
+        // 获取当前翻译服务名称
         sendResponse(this.currentPageTranslatorService);
       } else if (action === 'swapTranslationService') {
+        // 切换翻译服务
         if (request.newServiceName) {
           this.swapTranslationService(request.newServiceName);
         }
       } else if (action === 'toggle-translation') {
+        // 切换翻译状态（翻译/恢复切换）
         if (this.pageLanguageState === 'translated') {
           this.restorePage();
         } else {
           this.translatePage();
         }
       } else if (action === 'autoTranslateBecauseClickedALink') {
+        // 点击链接时自动翻译（根据配置）
         this.handleAutoTranslateBecauseClickedALink();
       } else if (action === 'restorePagesWithServiceNames') {
+        // 恢复使用特定服务的所有页面
         const serviceNames = request.serviceNames ?? [];
         if (serviceNames.indexOf(this.currentPageTranslatorService) !== -1) {
           this.restorePage();
@@ -395,6 +404,7 @@ export class PageTranslator {
           }
         }
       } else if (action === 'improveTranslation') {
+        // 改进翻译（使用新设置重新翻译）
         if (
           request.pageTranslatorService &&
           request.dontSortResults &&
@@ -409,14 +419,19 @@ export class PageTranslator {
           });
         }
       } else if (action === 'getCurrentSourceLanguage') {
+        // 获取当前源语言
         sendResponse(this.currentSourceLanguage);
       } else if (action === 'getDontSortResults') {
+        // 获取是否禁用结果排序
         sendResponse(this.dontSortResults);
       } else if (action === 'cleanUp') {
+        // 清理翻译（恢复原文）
         this.restorePage();
       } else if (action === 'currentTargetLanguage') {
+        // 获取目标语言
         sendResponse(this.currentTargetLanguage);
       } else if (action === 'detectLanguageUsingTextContent') {
+        // 使用页面内容检测语言
         this.detectLanguageUsingTextContent().then((language) => sendResponse(language));
         return true;
       }

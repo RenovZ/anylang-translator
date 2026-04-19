@@ -164,62 +164,6 @@ class GoogleAuthHelper {
   }
 }
 
-class YandexSIDHelper {
-  private static lastRequestSidTime: number | null = null;
-  private static translateSid: string | null = null;
-  private static sidNotFound = false;
-  private static promise: Promise<void> | null = null;
-
-  static get sid(): string | null {
-    return YandexSIDHelper.translateSid;
-  }
-
-  /**
-   * 获取 Yandex 翻译请求所需的 SID 参数。
-   */
-  static async findSID() {
-    if (YandexSIDHelper.promise) return YandexSIDHelper.promise;
-    YandexSIDHelper.promise = new Promise((resolve) => {
-      let update = false;
-      if (YandexSIDHelper.lastRequestSidTime) {
-        const date = new Date();
-        if (YandexSIDHelper.translateSid) date.setMinutes(date.getMinutes() - 20);
-        else if (YandexSIDHelper.sidNotFound) date.setMinutes(date.getMinutes() - 5);
-        else date.setMinutes(date.getMinutes() - 1);
-        update = date.getTime() > YandexSIDHelper.lastRequestSidTime;
-      } else {
-        update = true;
-      }
-      if (!update) {
-        resolve();
-        return;
-      }
-      YandexSIDHelper.lastRequestSidTime = Date.now();
-
-      const xhr = new XMLHttpRequest();
-      xhr.open(
-        'GET',
-        'https://translate.yandex.net/website-widget/v1/widget.js?widgetId=ytWidget&pageLang=es&widgetTheme=light&autoMode=false'
-      );
-      xhr.send();
-      xhr.onload = () => {
-        const result = xhr.responseText.match(/sid:\s'[0-9a-f.]+/);
-        if (result && result[0] && result[0].length > 7) {
-          YandexSIDHelper.translateSid = result[0].substring(6);
-          YandexSIDHelper.sidNotFound = false;
-        } else {
-          YandexSIDHelper.sidNotFound = true;
-        }
-        resolve();
-      };
-      xhr.onerror = xhr.onabort = xhr.ontimeout = () => resolve();
-    });
-
-    await YandexSIDHelper.promise;
-    YandexSIDHelper.promise = null;
-  }
-}
-
 class BingAuthHelper {
   private static lastRequestAuthTime: number | null = null;
   private static translateAuth: string | null = null;
@@ -554,27 +498,6 @@ export class TranslationService {
       'POST'
     );
 
-    const yandexService = new Service(
-      'yandex',
-      'https://translate.yandex.net/api/v1/tr.json/translate?srv=tr-url-widget',
-      this.cache,
-      (sourceArray) => sourceArray.map((value) => Utils.escapeHTML(value)).join('<wbr>'),
-      (response) => {
-        const data = response as { lang?: string; text?: string[] } | null;
-        if (!data || !Array.isArray(data.text)) return [{ text: '', detectedLanguage: null }];
-        const detectedLanguage = data.lang ? data.lang.split('-')[0] : null;
-        return data.text.map((text) => ({ text, detectedLanguage }));
-      },
-      (result) => result.split('<wbr>').map((value) => Utils.unescapeHTML(value)),
-      (sourceLanguage, targetLanguage, requests) =>
-        `&id=${YandexSIDHelper.sid ?? ''}-0-0&format=html&lang=${
-          sourceLanguage === 'auto' ? '' : `${sourceLanguage}-`
-        }${targetLanguage}${requests.map((info) => `&text=${encodeURIComponent(info.originalText)}`).join('')}`,
-      () => undefined,
-      () => [{ name: 'Content-Type', value: 'application/x-www-form-urlencoded' }],
-      'GET'
-    );
-
     const bingService = new Service(
       'bing',
       'https://api-edge.cognitive.microsofttranslator.com/translate?api-version=3.0&includeSentenceLength=true',
@@ -632,7 +555,6 @@ export class TranslationService {
     );
 
     this.serviceList.set('google', googleService);
-    this.serviceList.set('yandex', yandexService);
     this.serviceList.set('bing', bingService);
   }
 
@@ -690,15 +612,19 @@ export class TranslationService {
   }): void {
     this.config = config;
 
+    // 翻译服务核心 - 处理翻译请求和自定义服务管理
+    // 接收content script发来的翻译请求，调用翻译服务进行翻译
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const action = (request as { action?: string }).action;
       if (!action) return;
 
+      // 如果翻译请求来自隐身窗口，不应缓存到磁盘
       let dontSaveInPersistentCache = true;
       if (config.get<string>('enableDiskCache') === 'yes') {
         dontSaveInPersistentCache = sender.tab ? sender.tab.incognito : false;
       }
 
+      // 翻译HTML内容（包含标签结构）
       if (action === 'translateHTML') {
         void this.translateHTML(
           String((request as { translationService: string }).translationService),
@@ -713,6 +639,7 @@ export class TranslationService {
         return true;
       }
 
+      // 翻译纯文本数组
       if (action === 'translateText') {
         void this.translateText(
           String((request as { translationService: string }).translationService),
@@ -726,6 +653,7 @@ export class TranslationService {
         return true;
       }
 
+      // 翻译单个文本
       if (action === 'translateSingleText') {
         void this.translateSingleText(
           String((request as { translationService: string }).translationService),
@@ -739,6 +667,7 @@ export class TranslationService {
         return true;
       }
 
+      // 清除所有包含错误的翻译缓存
       if (action === 'removeTranslationsWithError') {
         this.serviceList.forEach((service) => {
           if ('removeTranslationsWithError' in service) {
@@ -748,12 +677,14 @@ export class TranslationService {
         return;
       }
 
+      // 创建自定义LibreTranslate服务
       if (action === 'createLibreService') {
         const libre = request as { libre: { url: string; apiKey: string } };
         this.serviceList.set('libre', this.createLibreService(libre.libre.url, libre.libre.apiKey));
         return;
       }
 
+      // 移除自定义LibreTranslate服务
       if (action === 'removeLibreService') {
         this.serviceList.delete('libre');
         return;
@@ -814,9 +745,6 @@ export class TranslationService {
       if (!GoogleAuthHelper.auth) {
         selectedServiceName = 'google';
       }
-    } else if (selectedServiceName === 'yandex') {
-      await YandexSIDHelper.findSID();
-      if (!YandexSIDHelper.sid) return sourceArray2d;
     } else if (selectedServiceName === 'bing') {
       await BingAuthHelper.findAuth();
       if (!BingAuthHelper.auth) return sourceArray2d;

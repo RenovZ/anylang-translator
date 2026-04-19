@@ -371,6 +371,8 @@ export class PopupMobile {
       this.updateTheme();
     });
 
+    // 移动端弹出层控制 - 响应显示移动端弹出层的消息
+    // 当用户点击扩展图标时显示移动端弹出层
     browser.runtime.onMessage.addListener((request: RuntimeRequest) => {
       if (request.action === 'showPopupMobile') {
         this.showPopup();
