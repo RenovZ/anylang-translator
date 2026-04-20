@@ -17,7 +17,7 @@
   import { browser } from 'wxt/browser';
 
   import { config } from '@/lib/config';
-  import { languages } from '@/lib/languages';
+  import { lang } from '@/lib/lang';
   import { i18n } from '@/lib/i18n';
   import '@/assets/app.css';
   import avatar from '@/lib/avatar';
@@ -114,7 +114,7 @@
       <Dropdown
         simple
         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-        {#each Object.entries(languages.getLanguageList()) as [langCode, langName] (langCode)}
+        {#each Object.entries(lang.all()) as [langCode, langName] (langCode)}
           <DropdownItem on:click={() => config.set('sourceLanguage', langCode)}>
             {langName}
           </DropdownItem>
@@ -138,7 +138,7 @@
       <Dropdown
         simple
         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-        {#each Object.entries(languages.getLanguageList()) as [langCode, langName] (langCode)}
+        {#each Object.entries(lang.all()) as [langCode, langName] (langCode)}
           <DropdownItem on:click={() => config.set('targetLanguage', langCode)}>
             {langName}
           </DropdownItem>

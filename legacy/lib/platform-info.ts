@@ -1,6 +1,6 @@
 import { browser } from 'wxt/browser';
 
-import { config } from './config';
+import { config } from '../../src/lib/config';
 
 export interface MobileFlags {
   Android: RegExpMatchArray | null;

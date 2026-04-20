@@ -3,7 +3,7 @@
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
   import { config } from '@/lib/config';
-  import { languages } from '@/lib/languages';
+  import { lang } from '@/lib/lang';
   import avatar from '@/lib/avatar';
   import { i18n } from '@/lib/i18n';
   import { getLanguageLabel, providerOptions } from '@/entrypoints/popup/data';
