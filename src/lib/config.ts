@@ -57,7 +57,8 @@ export const providers: Provider[] = [
 ];
 
 const STORAGE_KEY = 'local:config_v1';
-class Config {
+
+export class ConfigStore {
   installDateTime: number | null = null; // 安装时间（时间戳）
   lastTimeShowingReleaseNotes: number | null = null; // 上次展示更新日志的时间
   originalUserAgent: string | null = null; // 原始 User-Agent（用于设备/浏览器识别或兼容判断）
@@ -135,46 +136,67 @@ class Config {
 
   proxyServers: Record<string, unknown> = {}; // 代理服务器配置（用于 API 转发 / 网络绕过）
 
-  private static instance: Config;
+  private static _instance: ConfigStore | null = null;
+  private _saveTimer: ReturnType<typeof setTimeout> | null = null;
+
   private constructor() {}
 
-  static getInstance(): Config {
-    if (!this.instance) {
-      this.instance = new Config();
-      this.instance.load();
-    }
-    return this.instance;
-  }
+  static async getInstance(): Promise<ConfigStore> {
+    if (!ConfigStore._instance) {
+      const config = new ConfigStore();
+      await config.load();
 
-  async save() {
-    const data: Record<string, unknown> = {};
-    for (const key of Object.keys(this)) {
-      data[key] = this[key as keyof Config];
-    }
-    storage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
-
-  async load() {
-    const raw = await storage.getItem(STORAGE_KEY);
-    if (!raw) return;
-
-    try {
-      const data = JSON.parse(raw);
-      for (const key of Object.keys(data)) {
-        if (key in this) {
-          (this as Record<string, unknown>)[key] = data[key];
+      const proxy = new Proxy(config, {
+        set(target, prop, value) {
+          if (value !== target[prop as keyof ConfigStore]) {
+            target.debounceSave();
+            Reflect.set(target, prop, value);
+          }
+          return true;
         }
-      }
-    } catch {
-      // Ignore corrupted data
+      });
+
+      ConfigStore._instance = proxy;
     }
+    return ConfigStore._instance;
   }
 
   async reset() {
+    if (this._saveTimer) {
+      clearTimeout(this._saveTimer);
+      this._saveTimer = null;
+    }
     await storage.removeItem(STORAGE_KEY);
-    const fresh = new Config();
-    Object.assign(this, fresh);
+    const defaults = new ConfigStore();
+    for (const key of Object.keys(defaults)) {
+      Reflect.set(this, key, defaults[key as keyof ConfigStore]);
+    }
+    await this.save();
+  }
+
+  private async save() {
+    const data: Record<string, unknown> = {};
+    const defaults = new ConfigStore();
+    for (const key of Object.keys(defaults)) {
+      data[key] = (this as Record<string, unknown>)[key];
+    }
+    await storage.setItem(STORAGE_KEY, data);
+  }
+
+  private debounceSave() {
+    if (this._saveTimer) clearTimeout(this._saveTimer);
+    this._saveTimer = setTimeout(() => this.save(), 300);
+  }
+
+  private async load() {
+    const data = await storage.getItem<Record<string, unknown>>(STORAGE_KEY);
+    if (!data) return;
+
+    const keys = Object.keys(data);
+    for (const key of keys) {
+      Reflect.set(this, key, data[key]);
+    }
   }
 }
 
-export const config = Config.getInstance();
+export const config = await ConfigStore.getInstance();
