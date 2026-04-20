@@ -58,6 +58,8 @@ export const providers: Provider[] = [
 
 const STORAGE_KEY = 'local:config_v1';
 
+const saveTimers = new WeakMap<ConfigStore, ReturnType<typeof setTimeout>>();
+
 export class ConfigStore {
   installDateTime: number | null = null; // 安装时间（时间戳）
   lastTimeShowingReleaseNotes: number | null = null; // 上次展示更新日志的时间
@@ -92,7 +94,7 @@ export class ConfigStore {
   showTranslateSelectedContextMenu = true; // 是否在右键菜单显示「翻译选中文本」
   showButtonInTheAddressBar = true; // 是否在地址栏显示翻译按钮
   showOriginalTextWhenHovering = false; // 鼠标悬停时是否显示原文
-  showTranslateSelectedButton = true; // 是否显示“翻译选中文本”按钮
+  showTranslateSelectedButton = true; // 是否显示"翻译选中文本"按钮
 
   // 移动端弹窗显示策略
   // when-necessary = 必要时
@@ -137,20 +139,34 @@ export class ConfigStore {
   proxyServers: Record<string, unknown> = {}; // 代理服务器配置（用于 API 转发 / 网络绕过）
 
   private static _instance: ConfigStore | null = null;
-  private _saveTimer: ReturnType<typeof setTimeout> | null = null;
+  private static _defaults: ConfigStore | null = null;
 
   private constructor() {}
+
+  private static getDefaults(): ConfigStore {
+    if (!ConfigStore._defaults) {
+      ConfigStore._defaults = new ConfigStore();
+    }
+    return ConfigStore._defaults;
+  }
 
   static async getInstance(): Promise<ConfigStore> {
     if (!ConfigStore._instance) {
       const config = new ConfigStore();
-      await config.load();
+
+      config.load().catch((err) => console.error('[ConfigStore load error]', err));
 
       const proxy = new Proxy(config, {
         set(target, prop, value) {
-          if (value !== target[prop as keyof ConfigStore]) {
-            target.debounceSave();
-            Reflect.set(target, prop, value);
+          const prev = Reflect.get(target, prop);
+          Reflect.set(target, prop, value);
+          if (!Object.is(value, prev) && typeof prop === 'string' && !prop.startsWith('_')) {
+            const existing = saveTimers.get(target);
+            if (existing) clearTimeout(existing);
+            saveTimers.set(
+              target,
+              setTimeout(() => config.save(), 300)
+            );
           }
           return true;
         }
@@ -162,12 +178,13 @@ export class ConfigStore {
   }
 
   async reset() {
-    if (this._saveTimer) {
-      clearTimeout(this._saveTimer);
-      this._saveTimer = null;
+    const timer = saveTimers.get(this);
+    if (timer) {
+      clearTimeout(timer);
+      saveTimers.delete(this);
     }
     await storage.removeItem(STORAGE_KEY);
-    const defaults = new ConfigStore();
+    const defaults = ConfigStore.getDefaults();
     for (const key of Object.keys(defaults)) {
       Reflect.set(this, key, defaults[key as keyof ConfigStore]);
     }
@@ -176,25 +193,26 @@ export class ConfigStore {
 
   private async save() {
     const data: Record<string, unknown> = {};
-    const defaults = new ConfigStore();
+    const defaults = ConfigStore.getDefaults();
     for (const key of Object.keys(defaults)) {
-      data[key] = (this as Record<string, unknown>)[key];
+      data[key] = Reflect.get(this, key);
     }
     await storage.setItem(STORAGE_KEY, data);
-  }
-
-  private debounceSave() {
-    if (this._saveTimer) clearTimeout(this._saveTimer);
-    this._saveTimer = setTimeout(() => this.save(), 300);
   }
 
   private async load() {
     const data = await storage.getItem<Record<string, unknown>>(STORAGE_KEY);
     if (!data) return;
 
-    const keys = Object.keys(data);
-    for (const key of keys) {
-      Reflect.set(this, key, data[key]);
+    const defaults = ConfigStore.getDefaults();
+    for (const key of Object.keys(defaults)) {
+      if (!(key in data)) continue;
+      const defaultVal = Reflect.get(defaults, key);
+      const storedVal = data[key];
+      if (storedVal !== null && defaultVal !== null && typeof storedVal !== typeof defaultVal) {
+        continue;
+      }
+      Reflect.set(this, key, storedVal);
     }
   }
 }
