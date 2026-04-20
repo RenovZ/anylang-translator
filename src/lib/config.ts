@@ -145,7 +145,7 @@ type Listener<K extends keyof ConfigSchema> = (
 const STORAGE_KEY = 'local:config_v1';
 class ConfigStore {
   private data: ConfigSchema = structuredClone(defaultConfig);
-  private ready = false;
+  private _ready: Promise<void>;
   // 写入队列（保证顺序一致）
   private writeQueue: Promise<void> = Promise.resolve();
   // debounce timer（减少 storage 写入）
@@ -155,7 +155,15 @@ class ConfigStore {
 
   private static instance: ConfigStore;
   private constructor() {
-    this.init();
+    this._ready = this.init();
+  }
+
+  private async init() {
+    const stored = await storage.getItem<Partial<ConfigSchema>>(STORAGE_KEY);
+
+    if (stored) {
+      this.patch(stored);
+    }
   }
 
   static getInstance(): ConfigStore {
@@ -165,36 +173,34 @@ class ConfigStore {
     return this.instance;
   }
 
-  private async init() {
-    const stored = await storage.getItem<Partial<ConfigSchema>>(STORAGE_KEY);
+  ready() {
+    return this._ready;
+  }
 
-    if (stored) {
-      this.patch(stored);
+  isSameProvider(a: Provider, b: Provider) {
+    if (a.type === 'api' && b.type === 'api') {
+      return a.name === b.name;
     }
 
-    this.ready = true;
-  }
+    if (a.type === 'ai' && b.type === 'ai') {
+      return a.name === b.name && a.model === b.model && a.prompt === b.prompt;
+    }
 
-  isReady() {
-    return this.ready;
-  }
-
-  isSameProvider(a: Provider, b: Provider): boolean {
-    return a.type === b.type && a.name === b.name;
+    return false;
   }
 
   get<K extends keyof ConfigSchema>(key: K): ConfigSchema[K] {
     const value = this.data[key];
 
-    if (Array.isArray(value)) {
-      return [...value] as ConfigSchema[K];
+    if (value === null || typeof value !== 'object') {
+      return value;
     }
 
-    return value;
+    return structuredClone(value);
   }
 
   getAll(): ConfigSchema {
-    return this.data;
+    return structuredClone(this.data);
   }
 
   set<K extends keyof ConfigSchema>(key: K, value: ConfigSchema[K]) {
@@ -249,17 +255,6 @@ class ConfigStore {
     this.schedulePersist();
   }
 
-  onReady(fn: () => void) {
-    if (this.ready) return fn();
-
-    const interval = setInterval(() => {
-      if (this.ready) {
-        clearInterval(interval);
-        fn();
-      }
-    }, 0);
-  }
-
   onChange<K extends keyof ConfigSchema>(key: K, fn: Listener<K>) {
     if (!this.listeners.has(key)) {
       this.listeners.set(key, new Set());
@@ -312,9 +307,9 @@ export const config = new Proxy(store, {
       return value;
     }
 
-    if (!target.isReady()) {
-      console.warn('[ConfigStore] accessed before init');
-    }
+    // if (!target.isReady()) {
+    //   console.warn('[ConfigStore] accessed before init');
+    // }
 
     return target.get(key as keyof ConfigSchema);
   },
@@ -322,7 +317,6 @@ export const config = new Proxy(store, {
   set(target, key: string, value) {
     if (!(key in defaultConfig)) {
       console.warn(`[ConfigStore] invalid key: ${key}`);
-
       return false;
     }
 
