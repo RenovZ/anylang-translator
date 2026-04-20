@@ -60,7 +60,8 @@ export default defineConfig({
     }
   },
   manifest: {
-    default_locale: 'en'
+    default_locale: 'en',
+    permissions: ['storage']
   },
   vite: () => ({
     plugins: [i18nExtractionPlugin()],

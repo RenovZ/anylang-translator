@@ -12069,9 +12069,7 @@ class Lang {
    */
   all(): Record<string, string> {
     let uiLanguage =
-      config.uiLanguage !== 'default'
-        ? config.uiLanguage
-        : browser.i18n.getUILanguage();
+      config.uiLanguage !== 'default' ? config.uiLanguage : browser.i18n.getUILanguage();
     uiLanguage = this.fixUILangCode(uiLanguage) || 'en';
     return allLangNames[uiLanguage];
   }
