@@ -1,8 +1,9 @@
 import { browser } from 'wxt/browser';
 
 import { checkedLastError } from '@/lib/error';
+import { platformInfo } from '@/lib/platform-info';
+import { config } from '@/lib/config';
 import { ShowOriginal } from './show-original';
-import { PlatformInfo } from '@/lib/platform-info';
 
 type PageLanguageState = 'original' | 'translated';
 
@@ -31,7 +32,7 @@ interface NodeRestoreInfo {
 }
 
 interface ImproveTranslationInfo {
-  pageTranslatorService: string;
+  translateProvider: string;
   dontSortResults: string;
   sourceLanguage: string;
   targetLanguage: string;
@@ -42,7 +43,7 @@ interface RuntimeRequest {
   targetLanguage?: string;
   newServiceName?: string;
   serviceNames?: string[];
-  pageTranslatorService?: string;
+  translateProvider?: string;
   dontSortResults?: string;
   sourceLanguage?: string;
 }
@@ -155,14 +156,6 @@ export class PageTranslator {
 
   constructor(
     private showOriginal: ShowOriginal,
-    private platformInfo: PlatformInfo,
-    private readonly config: {
-      get<T>(name: string): T;
-      onReady(callback?: () => void): Promise<void>;
-      onChanged(callback: (name: string, value: unknown) => void): void;
-      set<T>(name: string, value: T): void;
-      setTargetLanguage?(lang: string): void;
-    },
     private readonly lang: { fixTLanguageCode(code: string): string | null }
   ) {}
 
@@ -175,20 +168,17 @@ export class PageTranslator {
     this.bindRuntimeMessageListener();
     this.bindVisibilityListener();
 
-    this.currentTargetLanguage = this.config.get<string>('targetLanguage');
-    this.currentPageTranslatorService = this.config.get<string>('pageTranslatorService');
-    this.dontSortResults = this.config.get<string>('dontSortResults') === 'yes';
+    this.currentTargetLanguage = config.get('targetLanguage');
+    this.currentPageTranslatorService = config.get('translateProvider');
+    this.dontSortResults = config.get('dontSortResults') === 'yes';
 
-    if (
-      this.config.get<string>('useOldPopup') === 'yes' ||
-      this.config.get<number>('popupPanelSection') <= 1
-    ) {
-      const target = this.config.get<string>('targetLanguage');
-      if (!target) return;
-      this.config.setTargetLanguage?.(target);
-    }
+    // if (config.get('popupPanelSection') <= 1) {
+    //   const target = config.get('targetLanguage');
+    //   if (!target) return;
+    //   config.set('targetLanguage', target);
+    // }
 
-    void this.getTabHostName().then((host) => {
+    this.getTabHostName().then((host) => {
       this.tabHostName = host;
     });
 
@@ -219,9 +209,9 @@ export class PageTranslator {
 
     if (targetLanguage) {
       this.currentTargetLanguage = targetLanguage;
-      this.config.set('targetLanguage', targetLanguage);
+      config.set('targetLanguage', targetLanguage);
     } else {
-      this.currentTargetLanguage = this.config.get<string>('targetLanguage');
+      this.currentTargetLanguage = config.get('targetLanguage');
     }
 
     if (location.hostname === 'sberbank.com' || location.hostname === 'www.sberbank.com') {
@@ -292,14 +282,14 @@ export class PageTranslator {
 
   swapTranslationService(newServiceName: string): void {
     this.currentPageTranslatorService = newServiceName;
-    this.config.set('pageTranslatorService', newServiceName);
+    config.set('translateProvider', { name: newServiceName });
     if (this.pageLanguageState === 'translated') {
       this.translatePage();
     }
   }
 
   improveTranslation(info: ImproveTranslationInfo): void {
-    this.currentPageTranslatorService = info.pageTranslatorService;
+    this.currentPageTranslatorService = info.translateProvider;
     this.dontSortResults = info.dontSortResults === 'yes';
     this.currentSourceLanguage = info.sourceLanguage;
     if (this.pageLanguageState === 'translated') {
@@ -315,18 +305,18 @@ export class PageTranslator {
       }
     }
 
-    this.updatePreTagRule(this.config.get<string>('translateTag_pre'));
+    this.updatePreTagRule(config.get('translateTag_pre'));
   }
 
   private bindConfigChanges(): void {
-    this.config.onChanged((name, value) => {
+    config.onChanged((name, value) => {
       if (name === 'translateTag_pre') {
         this.updatePreTagRule(String(value));
       } else if (name === 'dontSortResults') {
         this.dontSortResults = String(value) === 'yes';
       } else if (name === 'targetLanguage') {
         this.currentTargetLanguage = String(value);
-      } else if (name === 'pageTranslatorService') {
+      } else if (name === 'translateProvider') {
         this.currentPageTranslatorService = String(value);
       }
     });
@@ -405,13 +395,13 @@ export class PageTranslator {
       } else if (action === 'improveTranslation') {
         // 改进翻译（使用新设置重新翻译）
         if (
-          request.pageTranslatorService &&
+          request.translateProvider &&
           request.dontSortResults &&
           request.sourceLanguage &&
           request.targetLanguage
         ) {
           this.improveTranslation({
-            pageTranslatorService: request.pageTranslatorService,
+            translateProvider: request.translateProvider,
             dontSortResults: request.dontSortResults,
             sourceLanguage: request.sourceLanguage,
             targetLanguage: request.targetLanguage
@@ -475,7 +465,7 @@ export class PageTranslator {
   }
 
   private handleAutoTranslateBecauseClickedALink(): void {
-    if (this.config.get<string>('autoTranslateWhenClickingALink') !== 'yes') {
+    if (config.get('autoTranslateWhenClickingALink') !== 'yes') {
       return;
     }
 
@@ -483,8 +473,8 @@ export class PageTranslator {
       if (
         this.pageLanguageState === 'original' &&
         this.originalTabLanguage !== this.currentTargetLanguage &&
-        this.config.get<string[]>('neverTranslateLangs').indexOf(this.originalTabLanguage) === -1 &&
-        this.config.get<string[]>('neverTranslateSites').indexOf(this.tabHostName) === -1
+        config.get('neverTranslateLangs').indexOf(this.originalTabLanguage) === -1 &&
+        config.get('neverTranslateSites').indexOf(this.tabHostName) === -1
       ) {
         this.translatePage();
       }
@@ -538,7 +528,7 @@ export class PageTranslator {
       if (
         String(result) === 'translated' &&
         this.pageLanguageState === 'original' &&
-        this.config.get<string>('enableIframePageTranslation') === 'yes'
+        config.get('enableIframePageTranslation') === 'yes'
       ) {
         this.translatePage();
       }
@@ -549,10 +539,10 @@ export class PageTranslator {
     if (detectedLanguage === 'und') {
       this.originalTabLanguage = 'und';
       if (
-        (this.config.get<string[]>('alwaysTranslateSites').indexOf(this.tabHostName) !== -1 ||
+        (config.get('alwaysTranslateSites').indexOf(this.tabHostName) !== -1 ||
           (location.hostname === 'pdf.translatewebpages.org' &&
-            this.config.get<string[]>('neverTranslateSites').indexOf(this.tabHostName) === -1)) &&
-        !this.platformInfo.isMobile.any
+            config.get('neverTranslateSites').indexOf(this.tabHostName) === -1)) &&
+        !platformInfo.isMobile.any
       ) {
         this.translatePage();
       }
@@ -569,9 +559,9 @@ export class PageTranslator {
     if (
       (location.hostname === 'pdftohtml.translatewebpages.org' &&
         location.href.indexOf('?autotranslate') !== -1 &&
-        this.config.get<string[]>('neverTranslateSites').indexOf(this.tabHostName) === -1) ||
+        config.get('neverTranslateSites').indexOf(this.tabHostName) === -1) ||
       (location.hostname === 'pdf.translatewebpages.org' &&
-        this.config.get<string[]>('neverTranslateSites').indexOf(this.tabHostName) === -1)
+        config.get('neverTranslateSites').indexOf(this.tabHostName) === -1)
     ) {
       this.translatePage();
       return;
@@ -595,22 +585,22 @@ export class PageTranslator {
       return;
     }
 
-    if (this.config.get<string[]>('neverTranslateSites').indexOf(this.tabHostName) !== -1) {
+    if (config.get('neverTranslateSites').indexOf(this.tabHostName) !== -1) {
       return;
     }
 
     if (
       langCode &&
       langCode !== this.currentTargetLanguage &&
-      this.config.get<string[]>('alwaysTranslateLangs').indexOf(langCode) !== -1
+      config.get('alwaysTranslateLangs').indexOf(langCode) !== -1
     ) {
       this.translatePage();
       return;
     }
 
     if (
-      this.config.get<string[]>('alwaysTranslateSites').indexOf(this.tabHostName) !== -1 &&
-      !this.platformInfo.isMobile.any
+      config.get('alwaysTranslateSites').indexOf(this.tabHostName) !== -1 &&
+      !platformInfo.isMobile.any
     ) {
       this.translatePage();
     }
@@ -906,7 +896,7 @@ export class PageTranslator {
 
   private enableMutationObserver(): void {
     this.disableMutationObserver();
-    if (this.config.get<string>('translateDynamicallyCreatedContent') !== 'yes') {
+    if (config.get('translateDynamicallyCreatedContent') !== 'yes') {
       return;
     }
 

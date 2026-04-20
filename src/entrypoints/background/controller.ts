@@ -2,16 +2,7 @@ import { type Browser, browser } from 'wxt/browser';
 
 import { checkedLastError } from '@/lib/error';
 import { tabsCreate } from '@/lib/tabs';
-
-type ConfigLike = {
-  get<T>(name: string): T;
-  set<T>(name: string, value: T): void;
-  onReady(callback?: () => void): Promise<void>;
-  onChanged(callback: (name: string, value: unknown) => void): void;
-  swapPageTranslationService(): string;
-  addSiteToNeverTranslate(hostname: string): void;
-  setTargetLanguage?(lang: string, forTextToo?: boolean): void;
-};
+import { config } from '@/lib/config';
 
 export class Controller {
   private readonly tabToMimeType: Record<number, string | undefined> = {};
@@ -33,7 +24,6 @@ export class Controller {
   private readonly tabsInfo: Record<number, { pageLanguageState: string; host: string }> = {};
 
   constructor(
-    private readonly config: ConfigLike,
     private readonly i18n: {
       getMessage(name: string, substitutions?: string | string[] | null): string;
     },
@@ -61,13 +51,13 @@ export class Controller {
     this.bindBrowserAndPageActions();
     this.bindAutoTranslateOnLinkFlow();
 
-    void this.config.onReady(() => {
+    config.onReady(() => {
       this.updateContextMenu();
       this.updateTranslateSelectedContextMenu();
-      if (!this.config.get('installDateTime')) {
-        this.config.set('installDateTime', Date.now());
+      if (!config.get('installDateTime')) {
+        config.set('installDateTime', Date.now());
       }
-      this.config.onChanged((name) => {
+      config.onChanged((name) => {
         if (name === 'showTranslateSelectedContextMenu') {
           this.updateTranslateSelectedContextMenu();
         }
@@ -198,7 +188,7 @@ export class Controller {
   private updateTranslateSelectedContextMenu(): void {
     if (!browser.contextMenus) return;
     browser.contextMenus.remove('translate-selected-text', checkedLastError);
-    if (this.config.get('showTranslateSelectedContextMenu') === 'yes') {
+    if (config.get('showTranslateSelectedContextMenu') === 'yes') {
       browser.contextMenus.create({
         id: 'translate-selected-text',
         title: this.i18n.getMessage('msgTranslateSelectedText'),
@@ -215,14 +205,14 @@ export class Controller {
         ? this.i18n.getMessage('btnRestore')
         : this.i18n.getMessage(
             'msgTranslateFor',
-            this.lang.codeToLanguage(this.config.get('targetLanguage'))
+            this.lang.codeToLanguage(config.get('targetLanguage'))
           );
 
     browser.contextMenus.remove('translate-web-page', checkedLastError);
     browser.contextMenus.remove('translate-restore-this-frame', checkedLastError);
 
-    if (this.config.get('enableIframePageTranslation') === 'yes') {
-      if (this.config.get('showTranslatePageContextMenu') === 'yes') {
+    if (config.get('enableIframePageTranslation') === 'yes') {
+      if (config.get('showTranslatePageContextMenu') === 'yes') {
         browser.contextMenus.create({
           id: 'translate-web-page',
           title,
@@ -231,7 +221,7 @@ export class Controller {
         });
       }
     } else {
-      if (this.config.get('showTranslatePageContextMenu') === 'yes') {
+      if (config.get('showTranslatePageContextMenu') === 'yes') {
         browser.contextMenus.create({
           id: 'translate-web-page',
           title,
@@ -262,7 +252,7 @@ export class Controller {
 
   private resetPageAction(tabId: number, forceShow = false): void {
     if (!browser.pageAction) return;
-    if (this.config.get('translateClickingOnce') === 'yes' && !forceShow) {
+    if (config.get('translateClickingOnce') === 'yes' && !forceShow) {
       browser.pageAction.setPopup({ popup: '', tabId });
       return;
     }
@@ -273,7 +263,7 @@ export class Controller {
   }
 
   private resetBrowserAction(forceShow = false): void {
-    if (this.config.get('translateClickingOnce') === 'yes' && !forceShow) {
+    if (config.get('translateClickingOnce') === 'yes' && !forceShow) {
       browser.browserAction.setPopup({ popup: '' });
       return;
     }
@@ -283,7 +273,7 @@ export class Controller {
   }
 
   private sendToggleTranslationMessage(tabId: number): void {
-    if (this.config.get('enableIframePageTranslation') === 'yes') {
+    if (config.get('enableIframePageTranslation') === 'yes') {
       browser.tabs.sendMessage(tabId, { action: 'toggle-translation' }, checkedLastError);
     } else {
       browser.tabs.sendMessage(
@@ -296,7 +286,7 @@ export class Controller {
   }
 
   private sendTranslatePageMessage(tabId: number, targetLanguage: string): void {
-    if (this.config.get('enableIframePageTranslation') === 'yes') {
+    if (config.get('enableIframePageTranslation') === 'yes') {
       browser.tabs.sendMessage(
         tabId,
         { action: 'translatePage', targetLanguage },
@@ -362,7 +352,7 @@ export class Controller {
     browser.tabs.onActivated.addListener((activeInfo) => {
       this.currentTabId = activeInfo.tabId;
       this.updateActionContextMenu();
-      this.config.onReady(() => {
+      config.onReady(() => {
         this.updateContextMenu();
         this.updateTranslateSelectedContextMenu();
       });
@@ -374,14 +364,14 @@ export class Controller {
         (state) => {
           checkedLastError();
           if (!state) return;
-          this.config.onReady(() => this.updateContextMenu(String(state)));
+          config.onReady(() => this.updateContextMenu(String(state)));
         }
       );
     });
 
     browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       if (tab.active && changeInfo.status === 'loading') {
-        this.config.onReady(() => this.updateContextMenu());
+        config.onReady(() => this.updateContextMenu());
       } else if (changeInfo.status === 'complete') {
         browser.tabs.sendMessage(
           tabId,
@@ -463,7 +453,7 @@ export class Controller {
         this.resetPageAction(tab.id);
       } else if (info.menuItemId === 'never-translate') {
         if (!tab.url) return;
-        this.config.addSiteToNeverTranslate(new URL(tab.url).hostname);
+        config.addSiteToNeverTranslate(new URL(tab.url).hostname);
       } else if (info.menuItemId === 'more-options') {
         tabsCreate(browser.runtime.getURL('/options.html'));
       } else if (info.menuItemId === 'browserAction-translate-pdf') {
@@ -485,7 +475,7 @@ export class Controller {
   }
 
   private bindBrowserAndPageActions(): void {
-    void this.config.onReady(() => {
+    config.onReady(() => {
       if (this.platformInfo.isMobile.any) {
         browser.tabs.query({}, (tabs) => {
           tabs.forEach((tab) => {
@@ -512,21 +502,21 @@ export class Controller {
         if (browser.pageAction) {
           browser.pageAction.onClicked.addListener((tab) => {
             if (!tab.id) return;
-            if (this.config.get('translateClickingOnce') === 'yes') {
+            if (config.get('translateClickingOnce') === 'yes') {
               this.sendToggleTranslationMessage(tab.id);
             }
           });
         }
         browser.browserAction.onClicked.addListener((tab) => {
           if (!tab.id) return;
-          if (this.config.get('translateClickingOnce') === 'yes') {
+          if (config.get('translateClickingOnce') === 'yes') {
             this.sendToggleTranslationMessage(tab.id);
           }
         });
 
         this.resetBrowserAction();
 
-        this.config.onChanged((name) => {
+        config.onChanged((name) => {
           if (name === 'translateClickingOnce') {
             this.resetBrowserAction();
             browser.tabs.query({ currentWindow: true, active: true }, (tabs) => {
@@ -562,7 +552,7 @@ export class Controller {
             tabs[0].id,
             {
               action: 'swapTranslationService',
-              newServiceName: this.config.swapPageTranslationService()
+              newServiceName: config.swapTranslateProvider()
             },
             checkedLastError
           );
@@ -585,9 +575,9 @@ export class Controller {
           command === 'hotkey-translate-page-1' ? 0 : command === 'hotkey-translate-page-2' ? 1 : 2;
         browser.tabs.query({ currentWindow: true, active: true }, (tabs) => {
           if (!tabs[0]?.id) return;
-          const target = this.config.get<string>('targetLanguage');
+          const target = config.get('targetLanguage');
           if (!target) return;
-          this.config.setTargetLanguage?.(target);
+          config.set('targetLanguage', target);
           this.sendTranslatePageMessage(tabs[0].id, target);
         });
       } else if (command === 'hotkey-hot-translate-selected-text') {
@@ -607,10 +597,9 @@ export class Controller {
     browser.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'install') {
         tabsCreate(browser.runtime.getURL('/options.html'));
-        void this.config.onReady(() => {
+        config.onReady(() => {
           if (browser.i18n.getUILanguage() === 'zh-CN') {
-            this.config.set('pageTranslatorService', 'bing');
-            this.config.set('textTranslatorService', 'bing');
+            config.set('translateProvider', { name: 'bing' });
           }
         });
       } else if (
@@ -618,37 +607,36 @@ export class Controller {
         browser.runtime.getManifest().version !== (details.previousVersion ?? '')
       ) {
         const previousVersion = details.previousVersion ?? '';
-        void this.config.onReady(() => {
+        config.onReady(() => {
           if (this.platformInfo.isMobile.any && previousVersion.split('.')[0] === '9') {
-            this.config.set('neverTranslateLangs', []);
-            this.config.set('neverTranslateSites', []);
-            this.config.set('alwaysTranslateLangs', []);
-            this.config.set('alwaysTranslateSites', []);
+            config.set('neverTranslateLangs', []);
+            config.set('neverTranslateSites', []);
+            config.set('alwaysTranslateLangs', []);
+            config.set('alwaysTranslateSites', []);
           }
 
-          if (this.config.get('showReleaseNotes') === 'yes' && !this.platformInfo.isMobile.any) {
-            const last: number | null = this.config.get('lastTimeShowingReleaseNotes');
+          if (config.get('showReleaseNotes') === 'yes' && !this.platformInfo.isMobile.any) {
+            const last: number | null = config.get('lastTimeShowingReleaseNotes');
             const date = new Date();
             date.setDate(date.getDate() - 26);
             const canShow = !last || date.getTime() > last;
             if (canShow) {
-              this.config.set('lastTimeShowingReleaseNotes', Date.now());
+              config.set('lastTimeShowingReleaseNotes', Date.now());
               tabsCreate(browser.runtime.getURL('/options.html#release_notes'));
             }
           }
 
-          void this.translationCache.deleteTranslationCache();
-          this.config.set('textTranslatorService', this.config.get<string[]>('enabledServices')[0]);
-          this.config.set('proxyServers', {});
+          this.translationCache.deleteTranslationCache();
+          config.set('proxyServers', {});
         });
       }
 
-      this.config.onReady(() => {
-        if (this.platformInfo.isMobile.any) {
-          const enabledServices = this.config.get<string[]>('enabledServices');
-          this.config.set('enabledServices', enabledServices);
-        }
-      });
+      // this.config.onReady(() => {
+      //   if (this.platformInfo.isMobile.any) {
+      //     const enabledProviders = config.get('enabledProviders');
+      //     config.set('enabledProviders', enabledProviders);
+      //   }
+      // });
     });
 
     browser.runtime.onUpdateAvailable.addListener(() => {
@@ -788,7 +776,7 @@ export class Controller {
       browser.webNavigation.onDOMContentLoaded.addListener(webNavigationOnDOMContentLoaded);
     };
 
-    this.config.onChanged((name, newValue) => {
+    config.onChanged((name, newValue) => {
       if (name !== 'autoTranslateWhenClickingALink') return;
       if (newValue === 'yes') enable();
       else disable();
@@ -797,16 +785,16 @@ export class Controller {
     if (browser.permissions.onRemoved) {
       browser.permissions.onRemoved.addListener((permissions) => {
         if (permissions.permissions?.indexOf('webNavigation') !== -1) {
-          this.config.set('autoTranslateWhenClickingALink', 'no');
+          config.set('autoTranslateWhenClickingALink', 'no');
         }
       });
     }
 
     browser.permissions.contains({ permissions: ['webNavigation'] }, (hasPermissions) => {
-      if (hasPermissions && this.config.get<string>('autoTranslateWhenClickingALink') === 'yes') {
+      if (hasPermissions && config.get('autoTranslateWhenClickingALink') === 'yes') {
         enable();
       } else {
-        this.config.set('autoTranslateWhenClickingALink', 'no');
+        config.set('autoTranslateWhenClickingALink', 'no');
       }
     });
   }

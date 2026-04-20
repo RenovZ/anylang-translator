@@ -27,12 +27,7 @@
   import ShortcutsSettings from './components/ShortcutsSettings.svelte';
   import SubtitleSettings from './components/SubtitleSettings.svelte';
   import type { V2OptionsConfig } from './types';
-  import {
-    defaultPopupConfig,
-    modelOptionsByProvider,
-    toggles,
-    type ToggleItem
-  } from '@/entrypoints/popup/data';
+  import { modelOptionsByProvider, toggles, type ToggleItem } from '@/entrypoints/popup/data';
   import { navItems, alwaysTranslateSites } from './data';
 
   const STORAGE_KEY = 'options-config';
@@ -42,7 +37,6 @@
   );
 
   const createDefaultConfig = (): V2OptionsConfig => ({
-    ...structuredClone(defaultPopupConfig),
     toggleModes: { ...defaultToggleModes },
     alwaysTranslateSites,
     neverTranslateSites: [],
@@ -184,7 +178,7 @@
 
       <Button
         color="alternative"
-        class="rounded-xl px-4 py-2 shadow-md dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
+        class="rounded-xl px-4 py-2 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
         >⚒️ {i18n('options_button_toolbox', { defaultValue: 'Toolbox' })}</Button>
     </div>
   </header>

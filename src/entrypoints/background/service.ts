@@ -1,6 +1,7 @@
 import { browser } from 'wxt/browser';
 
-import type { Languages } from '@/lib/languages';
+import { config } from '@/lib/config';
+import { languages } from '@/lib/languages';
 import type { TranslationCache } from './cache';
 
 type TranslationStatus = 'complete' | 'translating' | 'error';
@@ -423,18 +424,9 @@ class Service {
 }
 
 export class TranslationService {
-  private config: {
-    get<T>(name: string): T;
-    onReady(callback?: () => void): Promise<void>;
-    onChanged(callback: (name: string, value: unknown) => void): void;
-  } | null = null;
-
   private readonly serviceList = new Map<string, Service>();
 
-  constructor(
-    private readonly cache: TranslationCache,
-    private readonly languages: Languages
-  ) {
+  constructor(private readonly cache: TranslationCache) {
     const googleService = new Service(
       'google',
       'https://translate-pa.googleapis.com/v1/translateHtml',
@@ -593,12 +585,12 @@ export class TranslationService {
   }
 
   private getSafeServiceByName(serviceName: string): Service | null {
-    if (!this.config) return this.serviceList.get(serviceName) ?? null;
-    const enabledServices = this.config.get<string[]>('enabledServices');
-    const customServices = this.config.get<Array<{ name?: string }>>('customServices');
+    if (!config) return this.serviceList.get(serviceName) ?? null;
+    const enabledProviders = config.get('enabledProviders');
+    const customProviders = config.get('customProviders');
     if (
-      enabledServices.includes(serviceName) ||
-      customServices.find((item) => item.name === serviceName)
+      enabledProviders.find((item) => item.name === serviceName) ||
+      customProviders.find((item) => item.name === serviceName)
     ) {
       return this.serviceList.get(serviceName) ?? null;
     }
@@ -610,8 +602,6 @@ export class TranslationService {
     onReady(callback?: () => void): Promise<void>;
     onChanged(callback: (name: string, value: unknown) => void): void;
   }): void {
-    this.config = config;
-
     // 翻译服务核心 - 处理翻译请求和自定义服务管理
     // 接收content script发来的翻译请求，调用翻译服务进行翻译
     browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -620,7 +610,7 @@ export class TranslationService {
 
       // 如果翻译请求来自隐身窗口，不应缓存到磁盘
       let dontSaveInPersistentCache = true;
-      if (config.get<string>('enableDiskCache') === 'yes') {
+      if (config.get('enableDiskCache') === 'yes') {
         dontSaveInPersistentCache = sender.tab ? sender.tab.incognito : false;
       }
 
@@ -694,14 +684,7 @@ export class TranslationService {
     });
 
     config.onReady(() => {
-      const customServices =
-        config.get<Array<{ name?: string; url?: string; apiKey?: string }>>('customServices');
-      const libre = customServices.find((item) => item.name === 'libre');
-      if (libre?.url && libre?.apiKey) {
-        this.serviceList.set('libre', this.createLibreService(libre.url, libre.apiKey));
-      }
-
-      const proxyServers = config.get<Record<string, { translateServer?: string }>>('proxyServers');
+      const proxyServers = config.get('proxyServers');
       const google = this.serviceList.get('google');
       if (google && 'baseURL' in google) {
         if (proxyServers?.google?.translateServer) {
@@ -736,7 +719,7 @@ export class TranslationService {
     dontSortResults = false
   ): Promise<string[][]> {
     let selectedServiceName =
-      this.languages.getAlternativeService(targetLanguage, serviceName, true) ?? serviceName;
+      languages.getAlternativeService(targetLanguage, serviceName, true) ?? serviceName;
     const service = this.getSafeServiceByName(selectedServiceName);
     if (!service) return sourceArray2d;
 
@@ -767,7 +750,7 @@ export class TranslationService {
     dontSaveInPersistentCache = false
   ): Promise<string[]> {
     let selectedServiceName =
-      this.languages.getAlternativeService(targetLanguage, serviceName, false) ?? serviceName;
+      languages.getAlternativeService(targetLanguage, serviceName, false) ?? serviceName;
     const results = await this.translateHTML(
       selectedServiceName,
       sourceLanguage,

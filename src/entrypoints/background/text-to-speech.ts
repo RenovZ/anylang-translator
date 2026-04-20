@@ -375,7 +375,7 @@ export class TextToSpeech {
     browser.runtime.onMessage.addListener((request, _sender, sendResponse) => {
       const action = (request as { action?: string }).action;
       if (action === 'textToSpeech') {
-        const serviceName = config.get<string>('textToSpeechService');
+        const serviceName = config.get('textToSpeechProvider');
         const service = serviceName === 'bing' ? this.bingService : this.googleService;
         void service
           .textToSpeech(
@@ -395,13 +395,13 @@ export class TextToSpeech {
       return;
     });
 
-    void config.onReady(() => {
-      this.googleService.setAudioSpeed(config.get<number>('ttsSpeed'));
-      this.bingService.setAudioSpeed(config.get<number>('ttsSpeed'));
-      this.googleService.setAudioVolume(config.get<number>('ttsVolume'));
-      this.bingService.setAudioVolume(config.get<number>('ttsVolume'));
+    config.onReady(() => {
+      this.googleService.setAudioSpeed(config.get('ttsSpeed'));
+      this.bingService.setAudioSpeed(config.get('ttsSpeed'));
+      this.googleService.setAudioVolume(config.get('ttsVolume'));
+      this.bingService.setAudioVolume(config.get('ttsVolume'));
 
-      const proxyServers = config.get<Record<string, { ttsServer?: string }>>('proxyServers');
+      const proxyServers = config.get('proxyServers');
       if (proxyServers?.google?.ttsServer) {
         const url = new URL(this.googleService.baseURL);
         url.host = proxyServers.google.ttsServer;

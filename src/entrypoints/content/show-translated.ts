@@ -1,6 +1,9 @@
 import { browser } from 'wxt/browser';
 
 import { checkedLastError } from '@/lib/error';
+import { config } from '@/lib/config';
+import { platformInfo } from '@/lib/platform-info';
+import { languages } from '@/lib/languages';
 
 const htmlTagsInlineText = [
   '#text',
@@ -40,21 +43,13 @@ const htmlTagsNoTranslate = [
   'tex-math'
 ];
 
-interface ConfigLike {
-  onReady(callback?: () => void): Promise<void>;
-  get<T>(name: string): T;
-  onChanged(callback: (name: string, value: unknown) => void): void;
-  set<T>(name: string, value: T): void;
-  setTargetLanguageTextTranslation(lang: string): void;
-}
-
 /**
  * 负责“悬停即译”功能：监听鼠标目标、请求单句翻译并展示浮层结果。
  */
 export class ShowTranslated {
   private pageLanguageState = 'original';
   private currentTargetLanguage = 'en';
-  private currentTextTranslatorService = 'google';
+  private currentTranslateProvider = 'google';
   private showBySite = false;
   private showByLang = false;
   private showByDoubleCtrl = false;
@@ -73,13 +68,6 @@ export class ShowTranslated {
   private mousePos = { x: 0, y: 0 };
   private previousNode: Node | null = null;
 
-  private config: ConfigLike | null = null;
-  private lang: {
-    isRtlLanguage(code: string): boolean;
-    fixTLanguageCode(code: string): string | null;
-    codeToLanguage(code: string): string;
-  } | null = null;
-  private platformInfo: { isMobile: { any: unknown } } | null = null;
   private i18n: {
     translateDocument(root: Document | HTMLElement | ShadowRoot): void;
     getMessage(name: string, substitutions?: string | string[]): string;
@@ -89,13 +77,6 @@ export class ShowTranslated {
    * 初始化悬停翻译功能，并根据配置决定何时启用。
    */
   public initialize(
-    config: ConfigLike,
-    lang: {
-      isRtlLanguage(code: string): boolean;
-      fixTLanguageCode(code: string): string | null;
-      codeToLanguage(code: string): string;
-    },
-    platformInfo: { isMobile: { any: unknown } },
     pageTranslator: {
       onGetOriginalTabLanguage(cb: (language: string) => void): void;
       onPageLanguageStateChange(cb: (state: string) => void): void;
@@ -105,29 +86,24 @@ export class ShowTranslated {
       getMessage(name: string, substitutions?: string | string[]): string;
     }
   ): void {
-    this.config = config;
-    this.lang = lang;
-    this.platformInfo = platformInfo;
     this.i18n = i18n;
 
     config.onReady(async () => {
       if (platformInfo.isMobile.any) return;
 
       this.tabHostName = await this.getTabHostName();
-      this.currentTargetLanguage = config.get<string>('targetLanguage');
-      const service = config.get<string>('textTranslatorService');
-      this.currentTextTranslatorService = service;
+      this.currentTargetLanguage = config.get('targetLanguage');
+      const service = config.get('translateProvider');
+      this.currentTranslateProvider = service;
 
-      this.showBySite =
-        config.get<string[]>('sitesToTranslateWhenHovering').indexOf(this.tabHostName) !== -1;
-      this.showByDoubleCtrl = config.get<string>('translateTextOverMouseWhenPressTwice') === 'yes';
+      this.showBySite = config.get('sitesToTranslateWhenHovering').indexOf(this.tabHostName) !== -1;
+      this.showByDoubleCtrl = config.get('translateTextOverMouseWhenPressTwice') === 'yes';
 
-      this.updatePreTagRule(config.get<string>('translateTag_pre'));
+      this.updatePreTagRule(config.get('translateTag_pre'));
 
       pageTranslator.onGetOriginalTabLanguage((tabLanguage) => {
         this.originalTabLanguage = tabLanguage;
-        this.showByLang =
-          config.get<string[]>('langsToTranslateWhenHovering').indexOf(tabLanguage) !== -1;
+        this.showByLang = config.get('langsToTranslateWhenHovering').indexOf(tabLanguage) !== -1;
         this.updateEventListener();
       });
 
@@ -137,9 +113,9 @@ export class ShowTranslated {
       });
 
       config.onChanged((name, value) => {
-        if (name === 'textTranslatorService') {
+        if (name === 'translateProvider') {
           const next = String(value);
-          this.currentTextTranslatorService = next;
+          this.currentTranslateProvider = next;
         } else if (name === 'targetLanguage') {
           this.currentTargetLanguage = String(value);
           this.refreshPanelState();
@@ -183,9 +159,8 @@ export class ShowTranslated {
    * 按页面状态和用户设置启用或关闭悬停翻译监听器。
    */
   private updateEventListener(): void {
-    if (!this.platformInfo) return;
     const shouldEnable =
-      !this.platformInfo.isMobile.any &&
+      !platformInfo.isMobile.any &&
       this.pageLanguageState !== 'translated' &&
       (this.showBySite || this.showByLang || this.showByDoubleCtrl);
 
@@ -420,7 +395,7 @@ export class ShowTranslated {
     }
 
     const translated = await this.backgroundTranslateSingleText(
-      this.currentTextTranslatorService,
+      this.currentTranslateProvider,
       'auto',
       this.currentTargetLanguage,
       text
@@ -438,7 +413,7 @@ export class ShowTranslated {
     const panel = this.shadowRoot?.getElementById('eDivResult') as HTMLDivElement | null;
     if (!translatedNode || !panel) return;
 
-    if (this.lang?.isRtlLanguage(this.currentTargetLanguage)) {
+    if (languages.isRtlLanguage(this.currentTargetLanguage)) {
       translatedNode.setAttribute('dir', 'rtl');
     } else {
       translatedNode.setAttribute('dir', 'ltr');
@@ -509,8 +484,8 @@ export class ShowTranslated {
       const element = this.shadowRoot.getElementById(buttonInfo.id);
       if (!element) continue;
       element.addEventListener('click', () => {
-        this.currentTextTranslatorService = buttonInfo.service;
-        this.config?.set('textTranslatorService', buttonInfo.service);
+        this.currentTranslateProvider = buttonInfo.service;
+        this.config?.set('translateProvider', buttonInfo.service);
         this.refreshPanelState();
         void this.translateNode(this.previousNode ?? document.body, true);
       });
@@ -542,11 +517,11 @@ export class ShowTranslated {
       const target = event.target as HTMLElement;
       const value = target.getAttribute('data-value');
       if (!value) return;
-      const fixed = this.lang?.fixTLanguageCode(value);
+      const fixed = languages.fixTLanguageCode(value);
       if (!fixed) return;
 
       this.currentTargetLanguage = fixed;
-      this.config?.setTargetLanguageTextTranslation(fixed);
+      config.set('targetLanguage', fixed);
       this.refreshPanelState();
       void this.translateNode(this.previousNode ?? document.body, true);
     });
@@ -556,7 +531,7 @@ export class ShowTranslated {
    * 根据当前目标语言和翻译服务刷新面板选中态。
    */
   private refreshPanelState(): void {
-    if (!this.shadowRoot || !this.lang) return;
+    if (!this.shadowRoot) return;
 
     const targetList = this.shadowRoot.getElementById('setTargetLanguage');
     if (targetList) {
@@ -565,7 +540,7 @@ export class ShowTranslated {
       for (const langCode of targets) {
         const li = document.createElement('li');
         li.setAttribute('data-value', langCode);
-        li.setAttribute('title', this.lang.codeToLanguage(langCode));
+        li.setAttribute('title', languages.codeToLanguage(langCode));
         li.textContent = langCode;
         if (langCode === this.currentTargetLanguage) {
           li.classList.add('selected');
@@ -581,7 +556,7 @@ export class ShowTranslated {
     Object.values(map).forEach((id) =>
       this.shadowRoot?.getElementById(id)?.classList.remove('selected')
     );
-    const selectedId = map[this.currentTextTranslatorService];
+    const selectedId = map[this.currentTranslateProvider];
     if (selectedId) {
       this.shadowRoot.getElementById(selectedId)?.classList.add('selected');
     }

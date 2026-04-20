@@ -16,20 +16,17 @@
   } from 'flowbite-svelte-icons';
   import { browser } from 'wxt/browser';
 
+  import { config } from '@/lib/config';
+  import { languages } from '@/lib/languages';
   import { i18n } from '@/lib/i18n';
   import '@/assets/app.css';
   import avatar from '@/lib/avatar';
   import {
-    configRows,
-    defaultPopupConfig,
     getLanguageLabel,
     getPromptPresetLabel,
     languageOptions,
-    modelOptionsByProvider,
     moreItems,
     quickActions,
-    sourceLanguageOptions,
-    targetLanguageOptions,
     toggles,
     type ConfigRow,
     type ConfigRowKey
@@ -37,20 +34,19 @@
 
   const toggleItems = toggles.map((item) => ({ ...item }));
   const popupConfig = $state({
-    ...defaultPopupConfig,
     toggles: Object.fromEntries(toggleItems.map((item) => [item.key, item.enabled]))
   });
 
   const getConfigValue = (key: ConfigRowKey) => {
-    if (key === 'provider') return popupConfig.provider;
-    if (key === 'model') return popupConfig.model;
-    return popupConfig.promptPreset;
+    // if (key === 'provider') return popupConfig.provider;
+    // if (key === 'model') return popupConfig.model;
+    // return popupConfig.promptPreset;
   };
 
   const getConfigOptions = (row: ConfigRow) => {
-    if (row.key === 'model') {
-      return modelOptionsByProvider[popupConfig.provider] ?? row.options;
-    }
+    // if (row.key === 'model') {
+    //   return modelOptionsByProvider[popupConfig.provider] ?? row.options;
+    // }
     return row.options;
   };
 
@@ -67,22 +63,13 @@
   };
 
   const updateConfig = (key: ConfigRowKey, value: string) => {
-    if (key === 'provider') {
-      const nextModelOptions = modelOptionsByProvider[value] ?? [];
-      popupConfig.provider = value;
-      popupConfig.model = nextModelOptions[0] ?? '';
-      return;
-    }
-
-    popupConfig[key] = value;
-  };
-
-  const updateLanguage = (kind: 'source' | 'target', value: string) => {
-    if (kind === 'source') {
-      popupConfig.sourceLanguage = value;
-    } else {
-      popupConfig.targetLanguage = value;
-    }
+    // if (key === 'provider') {
+    //   const nextModelOptions = modelOptionsByProvider[value] ?? [];
+    //   popupConfig.provider = value;
+    //   popupConfig.model = nextModelOptions[0] ?? '';
+    //   return;
+    // }
+    // popupConfig[key] = value;
   };
 
   const openOptionsPage = () => {
@@ -91,6 +78,7 @@
 </script>
 
 <main class="min-w-80 bg-slate-100 text-sm dark:bg-slate-950/80">
+  <!-- header -->
   <section class="space-y-4 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
     <header class="flex items-center justify-between">
       <div class="flex items-center justify-between gap-2">
@@ -109,12 +97,13 @@
       </div>
     </header>
 
+    <!-- languages -->
     <section class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
       <Button
         class="rounded-xl bg-slate-100 px-3 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <div class="flex flex-col text-left">
           <span class="line-clamp-1 font-medium">
-            {getLanguageLabel(popupConfig.sourceLanguage)}
+            {config.get('sourceLanguage')}
           </span>
           <span class="text-xs text-slate-400">
             {languageOptions[0].hint}
@@ -125,9 +114,9 @@
       <Dropdown
         simple
         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-        {#each sourceLanguageOptions as option (option.value)}
-          <DropdownItem on:click={() => updateLanguage('source', option.value)}>
-            {option.label}
+        {#each Object.entries(languages.getLanguageList()) as [langCode, langName] (langCode)}
+          <DropdownItem on:click={() => config.set('sourceLanguage', langCode)}>
+            {langName}
           </DropdownItem>
         {/each}
       </Dropdown>
@@ -138,7 +127,7 @@
         class="rounded-xl bg-slate-100 px-3 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <div class="flex flex-col text-left">
           <span class="line-clamp-1 font-medium">
-            {getLanguageLabel(popupConfig.targetLanguage)}
+            {config.get('targetLanguage')}
           </span>
           <span class="text-xs text-slate-400">
             {languageOptions[1].hint}
@@ -149,18 +138,18 @@
       <Dropdown
         simple
         class="max-h-96 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
-        {#each targetLanguageOptions as option (option.value)}
-          <DropdownItem on:click={() => updateLanguage('target', option.value)}>
-            {option.label}
+        {#each Object.entries(languages.getLanguageList()) as [langCode, langName] (langCode)}
+          <DropdownItem on:click={() => config.set('targetLanguage', langCode)}>
+            {langName}
           </DropdownItem>
         {/each}
       </Dropdown>
     </section>
 
     <section class="rounded-xl bg-slate-100 dark:bg-slate-700">
-      {#each configRows as row, index (row.key)}
+      <!-- {#each providers as row, index (row.key)}
         <div
-          class:rounded-b-xl={index === configRows.length - 1}
+          class:rounded-b-xl={index === providers.length - 1}
           class:rounded-t-xl={index === 0}
           class="grid grid-cols-[88px_1fr] items-center px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600">
           <div class="font-medium">{row.label}</div>
@@ -181,7 +170,28 @@
             {/each}
           </Dropdown>
         </div>
-      {/each}
+      {/each} -->
+
+      <div
+        class="grid grid-cols-[88px_1fr] items-center rounded-t-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600">
+        <div class="font-medium">{i18n('translate_provider', { defaultValue: 'Provider' })}</div>
+        <button type="button" class="flex flex-1 items-center justify-between">
+          <div class="flex flex-col text-left font-medium">
+            {getConfigDisplayValue(row.key)}
+          </div>
+          <ChevronDownOutline class="h-6 w-6 text-slate-400" />
+        </button>
+        <Dropdown
+          simple
+          placement="bottom-end"
+          class="max-h-72 overflow-y-auto bg-white/80 backdrop-blur-xs dark:bg-gray-700/80">
+          {#each getConfigOptions(row) as option (option)}
+            <DropdownItem on:click={() => updateConfig(row.key, option)}>
+              {getConfigOptionLabel(row.key, option)}
+            </DropdownItem>
+          {/each}
+        </Dropdown>
+      </div>
     </section>
 
     <section class="flex items-center gap-3">

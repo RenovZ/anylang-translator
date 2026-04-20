@@ -585,7 +585,7 @@
     "message": "Model"
   },
   "popup_config_prompt_preset": {
-    "message": "Prompt preset"
+    "message": "Prompt"
   },
   "popup_config_provider": {
     "message": "Provider"
@@ -829,5 +829,8 @@
   },
   "popup_upgrade": {
     "message": "Upgrade"
+  },
+  "translate_provider": {
+    "message": "Provider"
   }
 }

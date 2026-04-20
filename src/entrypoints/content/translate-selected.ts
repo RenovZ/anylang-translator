@@ -44,7 +44,7 @@ export class TranslateSelected {
   private originalTabLanguage = 'und';
   private tabHostName = '';
   private currentTargetLanguage = 'en';
-  private currentTextTranslatorService = 'google';
+  private currentTranslateProvider = 'google';
 
   private alwaysTranslateThisSite = false;
   private translateThisSite = true;
@@ -104,7 +104,7 @@ export class TranslateSelected {
       this.tabHostName = await this.getTabHostName();
 
       this.currentTargetLanguage = config.get<string>('targetLanguage');
-      this.currentTextTranslatorService = config.get<string>('textTranslatorService');
+      this.currentTranslateProvider = config.get<string>('translateProvider');
       this.alwaysTranslateThisSite =
         config.get<string[]>('alwaysTranslateSites').indexOf(this.tabHostName) !== -1;
       this.translateThisSite =
@@ -127,8 +127,8 @@ export class TranslateSelected {
       });
 
       config.onChanged((name, value) => {
-        if (name === 'textTranslatorService') {
-          this.currentTextTranslatorService = String(value);
+        if (name === 'translateProvider') {
+          this.currentTranslateProvider = String(value);
           this.refreshPanelSelections();
         } else if (name === 'targetLanguage') {
           this.currentTargetLanguage = String(value);
@@ -622,10 +622,10 @@ export class TranslateSelected {
 
     for (const serviceInfo of serviceButtons) {
       this.shadowRoot.getElementById(serviceInfo.id)?.addEventListener('click', () => {
-        this.currentTextTranslatorService = serviceInfo.service;
-        this.config?.set('textTranslatorService', serviceInfo.service);
+        this.currentTranslateProvider = serviceInfo.service;
+        this.config?.set('translateProvider', serviceInfo.service);
         this.refreshPanelSelections();
-        void this.translateNewInput();
+        this.translateNewInput();
       });
     }
 
@@ -740,10 +740,10 @@ export class TranslateSelected {
     Object.values(mapping).forEach((id) =>
       this.shadowRoot?.getElementById(id)?.classList.remove('selected')
     );
-    const selectedId = mapping[this.currentTextTranslatorService] ?? 'sGoogle';
+    const selectedId = mapping[this.currentTranslateProvider] ?? 'sGoogle';
     this.shadowRoot.getElementById(selectedId)?.classList.add('selected');
 
-    const enabled = this.config?.get<string[]>('enabledServices') ?? [];
+    const enabled = this.config?.get<string[]>('enabledProviders') ?? [];
     this.toggleHidden('sGoogle', enabled.indexOf('google') === -1);
     this.toggleHidden('sBing', enabled.indexOf('bing') === -1);
   }
@@ -830,7 +830,7 @@ export class TranslateSelected {
     const text = this.originalElement.textContent ?? '';
 
     const result = await this.backgroundTranslateSingleText(
-      this.currentTextTranslatorService,
+      this.currentTranslateProvider,
       'auto',
       this.currentTargetLanguage,
       text
@@ -886,7 +886,7 @@ export class TranslateSelected {
     if (selection.isInputElement && selection.readOnly) return;
 
     const translated = await this.backgroundTranslateSingleText(
-      this.currentTextTranslatorService,
+      this.currentTranslateProvider,
       'auto',
       this.currentTargetLanguage,
       selection.text

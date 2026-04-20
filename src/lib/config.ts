@@ -5,10 +5,10 @@ export type DefaultConfigName =
   | 'lastTimeShowingReleaseNotes'
   | 'originalUserAgent'
   | 'uiLanguage'
-  | 'pageTranslatorService'
-  | 'textTranslatorService'
-  | 'textToSpeechService'
-  | 'enabledServices'
+  | 'translateProvider'
+  | 'textToSpeechProvider'
+  | 'enabledProviders'
+  | 'customProviders'
   | 'ttsSpeed'
   | 'ttsVolume'
   | 'sourceLanguage'
@@ -25,7 +25,6 @@ export type DefaultConfigName =
   | 'showOriginalTextWhenHovering'
   | 'showTranslateSelectedButton'
   | 'whenShowMobilePopup'
-  | 'darkMode'
   | 'popupBlueWhenSiteIsTranslated'
   | 'popupPanelSection'
   | 'showReleaseNotes'
@@ -46,7 +45,6 @@ export type DefaultConfigName =
   | 'translateClickingOnce'
   | 'enableDiskCache'
   | 'useAlternativeService'
-  | 'customServices'
   | 'showMobilePopupOnDesktop'
   | 'popupMobileKeepOnScren'
   | 'popupMobilePosition'
@@ -58,10 +56,10 @@ export interface DefaultConfig {
   lastTimeShowingReleaseNotes: number | null;
   originalUserAgent: string | null;
   uiLanguage: string;
-  pageTranslatorService: string;
-  textTranslatorService: string;
-  textToSpeechService: string;
-  enabledServices: string[];
+  translateProvider: Provider;
+  textToSpeechProvider: Provider;
+  enabledProviders: Provider[];
+  customProviders: Provider[];
   ttsSpeed: number;
   ttsVolume: number;
   sourceLanguage: string | null;
@@ -78,7 +76,6 @@ export interface DefaultConfig {
   showOriginalTextWhenHovering: 'yes' | 'no';
   showTranslateSelectedButton: 'yes' | 'no';
   whenShowMobilePopup: 'when-necessary' | 'only-when-i-touch' | 'always-show';
-  darkMode: 'auto' | 'yes' | 'no';
   popupBlueWhenSiteIsTranslated: 'yes' | 'no';
   popupPanelSection: number;
   showReleaseNotes: 'yes' | 'no';
@@ -99,13 +96,59 @@ export interface DefaultConfig {
   translateClickingOnce: 'yes' | 'no';
   enableDiskCache: 'yes' | 'no';
   useAlternativeService: 'yes' | 'no';
-  customServices: Array<Record<string, unknown>>;
   showMobilePopupOnDesktop: 'yes' | 'no';
   popupMobileKeepOnScren: 'yes' | 'no';
   popupMobilePosition: 'top' | 'bottom';
   addPaddingToPage: 'yes' | 'no';
   proxyServers: Record<string, unknown>;
 }
+
+const googleProvider = { name: 'google' };
+const bingProvider = { name: 'bing' };
+export const providers: Provider[] = [
+  googleProvider,
+  bingProvider,
+  { name: 'OpenAI', models: ['gpt-4.1-mini', 'gpt-4.1', 'gpt-4o-mini'] },
+  { name: 'Anthropic', models: ['claude-3-5-haiku', 'claude-3-7-sonnet'] },
+  { name: 'Google AI', models: ['gemini-2.5-flash', 'gemini-2.5-pro'] },
+  { name: 'AWS', models: ['amazon.nova-lite', 'amazon.nova-pro'] },
+  { name: 'Ollama', models: ['qwen3.5-2b', 'llama3.2', 'deepseek-r1:7b'] },
+  { name: 'Groq', models: ['llama-3.3-70b', 'deepseek-r1-distill-llama-70b'] },
+  {
+    name: 'Hugging Face',
+    models: ['Qwen/Qwen2.5-7B-Instruct', 'mistralai/Mistral-7B-Instruct-v0.3']
+  },
+  { name: 'Mistral AI', models: ['mistral-small-latest', 'ministral-8b-latest'] },
+  { name: 'Cohere', models: ['command-r', 'command-r-plus'] },
+  {
+    name: 'Fireworks',
+    models: ['accounts/fireworks/models/deepseek-v3', 'accounts/fireworks/models/qwen2p5-coder-32b']
+  },
+  { name: 'xAI (Grok)', models: ['grok-2-latest', 'grok-2-mini'] },
+  { name: 'DeepSeek', models: ['deepseek-chat', 'deepseek-reasoner'] },
+  { name: 'Perplexity', models: ['sonar', 'sonar-pro'] },
+  { name: 'Azure AI', models: ['gpt-4.1-mini', 'gpt-4o-mini'] },
+  {
+    name: 'NVIDIA AI',
+    models: ['meta/llama-3.1-70b-instruct', 'nvidia/llama-3.1-nemotron-70b-instruct']
+  },
+  { name: 'IBM', models: ['granite-3.2-8b-instruct', 'granite-3.1-2b-instruct'] },
+  {
+    name: 'Together',
+    models: ['meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo', 'Qwen/Qwen2.5-72B-Instruct-Turbo']
+  },
+  {
+    name: 'OpenRouter',
+    models: ['openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0-flash-001']
+  }
+];
+
+type Provider = {
+  name?: string;
+  models?: string[];
+  model?: string;
+  prompt?: string;
+};
 
 type KeysOfType<T, V> = {
   [K in keyof T]: T[K] extends V ? K : never;
@@ -120,10 +163,10 @@ class Config {
     lastTimeShowingReleaseNotes: null,
     originalUserAgent: null,
     uiLanguage: 'default', // 界面语言，"default" 表示使用浏览器默认语言
-    pageTranslatorService: 'google', // 页面翻译服务: google, bing
-    textTranslatorService: 'google', // 文本翻译服务: google, bing
-    textToSpeechService: 'google', // 文字转语音服务: google, bing
-    enabledServices: ['google', 'bing'], // 启用的翻译服务列表
+    translateProvider: googleProvider, // 页面翻译服务: google, bing
+    textToSpeechProvider: googleProvider, // 文字转语音服务: google, bing
+    enabledProviders: [googleProvider, bingProvider], // 启用的翻译服务列表
+    customProviders: [], // 自定义服务列表
     ttsSpeed: 1, // 语音播放速度 (0.5-2.0)
     ttsVolume: 1, // 语音播放音量 (0-1)
     sourceLanguage: null, // 当前页面翻译的源语言
@@ -140,7 +183,6 @@ class Config {
     showOriginalTextWhenHovering: 'no', // 鼠标悬停时是否显示原文
     showTranslateSelectedButton: 'yes', // 是否显示选中文本翻译按钮
     whenShowMobilePopup: 'when-necessary', // 移动端弹出框显示时机: when-necessary/only-when-i-touch/always-show
-    darkMode: 'auto', // 暗色模式: auto/yes/no
     popupBlueWhenSiteIsTranslated: 'yes', // 网站已翻译时弹出框是否变蓝
     popupPanelSection: 1, // 弹出框面板区域编号
     showReleaseNotes: 'yes', // 是否显示更新日志
@@ -161,7 +203,6 @@ class Config {
     translateClickingOnce: 'no', // 单击一次时翻译
     enableDiskCache: 'no', // 是否启用磁盘缓存
     useAlternativeService: 'yes', // 是否使用备用服务
-    customServices: [], // 自定义服务列表
     showMobilePopupOnDesktop: 'no', // 桌面端是否显示移动端弹出框
     popupMobileKeepOnScren: 'no', // 移动端弹出框是否保持在屏幕上
     popupMobilePosition: 'top', // 移动端弹出框位置: top/bottom
@@ -199,71 +240,67 @@ class Config {
   private static instance: Config;
 
   private constructor() {
-    // 监听本地存储变化，并同步更新内存中的配置值。
-    browser.storage.onChanged.addListener((changes, areaName) => {
-      this.onReady(() => {
-        if (areaName !== 'local') return;
-        for (const [name, change] of Object.entries(changes)) {
-          if (!this.isConfigKey(name)) continue;
-          const newValue = this.fixObjectType(name, change.newValue);
-          if (this.config[name] !== newValue) {
-            this.setConfigValue(name, newValue);
-            this.observers.forEach((callback) => callback(name, newValue));
-          }
-        }
-      });
-    });
-
-    // 从本地存储加载配置。
-    browser.i18n.getAcceptLanguages((acceptedLanguages) => {
-      browser.storage.local.get(null, (loaded) => {
-        // 加载配置时，顺便把持久化后的对象结构还原成运行时需要的类型。
-        for (const [name, value] of Object.entries(loaded)) {
-          if (!this.isConfigKey(name)) {
-            console.error('no such config key: ', name);
-            continue;
-          }
-          this.setConfigValue(name, this.fixObjectType(name, value));
-        }
-
-        // // 规范化“永不翻译语言”列表。
-        // this.config.neverTranslateLangs = this.config.neverTranslateLangs
-        //   .map((lang) => this.lang!.fixTLanguageCode(lang))
-        //   .filter((lang): lang is string => lang !== undefined);
-
-        // // 规范化“始终翻译语言”列表。
-        // this.config.alwaysTranslateLangs = this.config.alwaysTranslateLangs
-        //   .map((lang) => this.lang!.fixTLanguageCode(lang))
-        //   .filter((lang): lang is string => lang !== undefined);
-
-        // // 规范化页面翻译目标语言。
-        // this.config.targetLanguage =
-        //   this.lang.fixTLanguageCode(this.config.targetLanguage ?? '') ?? '';
-
-        // 读取当前快捷键配置并同步到扩展设置中。
-        if (browser.commands.getAll) {
-          browser.commands.getAll((results) => {
-            try {
-              this.set(
-                'hotkeys',
-                results.reduce<Record<string, string>>((acc, r) => {
-                  if (r.name) {
-                    acc[r.name] = r.shortcut ?? '';
-                  }
-                  return acc;
-                }, {})
-              );
-            } catch (e) {
-              console.error('set hotkeys failed:', e);
-            } finally {
-              this.readyConfig();
-            }
-          });
-        } else {
-          this.readyConfig();
-        }
-      });
-    });
+    // // 监听本地存储变化，并同步更新内存中的配置值。
+    // browser.storage.onChanged.addListener((changes, areaName) => {
+    //   this.onReady(() => {
+    //     if (areaName !== 'local') return;
+    //     for (const [name, change] of Object.entries(changes)) {
+    //       if (!this.isConfigKey(name)) continue;
+    //       const newValue = this.fixObjectType(name, change.newValue);
+    //       if (this.config[name] !== newValue) {
+    //         this.setConfigValue(name, newValue);
+    //         this.observers.forEach((callback) => callback(name, newValue));
+    //       }
+    //     }
+    //   });
+    // });
+    //
+    // // 从本地存储加载配置。
+    // browser.i18n.getAcceptLanguages((acceptedLanguages) => {
+    //   browser.storage.local.get(null, (loaded) => {
+    //     // 加载配置时，顺便把持久化后的对象结构还原成运行时需要的类型。
+    //     for (const [name, value] of Object.entries(loaded)) {
+    //       if (!this.isConfigKey(name)) {
+    //         console.error('no such config key: ', name);
+    //         continue;
+    //       }
+    //       this.setConfigValue(name, this.fixObjectType(name, value));
+    //     }
+    //     // // 规范化“永不翻译语言”列表。
+    //     // this.config.neverTranslateLangs = this.config.neverTranslateLangs
+    //     //   .map((lang) => this.lang!.fixTLanguageCode(lang))
+    //     //   .filter((lang): lang is string => lang !== undefined);
+    //     // // 规范化“始终翻译语言”列表。
+    //     // this.config.alwaysTranslateLangs = this.config.alwaysTranslateLangs
+    //     //   .map((lang) => this.lang!.fixTLanguageCode(lang))
+    //     //   .filter((lang): lang is string => lang !== undefined);
+    //     // // 规范化页面翻译目标语言。
+    //     // this.config.targetLanguage =
+    //     //   this.lang.fixTLanguageCode(this.config.targetLanguage ?? '') ?? '';
+    //     // 读取当前快捷键配置并同步到扩展设置中。
+    //     if (browser.commands.getAll) {
+    //       browser.commands.getAll((results) => {
+    //         try {
+    //           this.set(
+    //             'hotkeys',
+    //             results.reduce<Record<string, string>>((acc, r) => {
+    //               if (r.name) {
+    //                 acc[r.name] = r.shortcut ?? '';
+    //               }
+    //               return acc;
+    //             }, {})
+    //           );
+    //         } catch (e) {
+    //           console.error('set hotkeys failed:', e);
+    //         } finally {
+    //           this.readyConfig();
+    //         }
+    //       });
+    //     } else {
+    //       this.readyConfig();
+    //     }
+    //   });
+    // });
   }
 
   static getInstance(): Config {
@@ -406,20 +443,19 @@ class Config {
   /**
    * 在当前已启用的整页翻译服务之间轮换。
    */
-  swapPageTranslationService(): string {
-    const pageServices = ['google', 'bing'];
-    const enabled = this.get('enabledServices').filter((name) => pageServices.includes(name));
-    const current = this.get('pageTranslatorService');
+  swapTranslateProvider(): Provider {
+    const enabled = this.get('enabledProviders');
+    const current = this.get('translateProvider');
     const index = enabled.indexOf(current);
 
     if (index !== -1) {
-      if (enabled[index + 1]) this.set('pageTranslatorService', enabled[index + 1]);
-      else this.set('pageTranslatorService', enabled[0]);
+      if (enabled[index + 1]) this.set('translateProvider', enabled[index + 1]);
+      else this.set('translateProvider', enabled[0]);
     } else {
-      this.set('pageTranslatorService', enabled[0]);
+      this.set('translateProvider', enabled[0]);
     }
 
-    return this.get('pageTranslatorService');
+    return this.get('translateProvider');
   }
 
   private addInArray<K extends KeysOfType<DefaultConfig, string[]>>(

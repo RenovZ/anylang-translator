@@ -1,70 +1,70 @@
 <script lang="ts">
   import { Avatar, Toggle, Button, Select, Input, Checkbox, Radio, Label } from 'flowbite-svelte';
-  import { ChevronRightOutline, ChevronDownOutline } from 'flowbite-svelte-icons';
+  import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
+  import { config } from '@/lib/config';
+  import { languages } from '@/lib/languages';
   import avatar from '@/lib/avatar';
   import { i18n } from '@/lib/i18n';
-  import {
-    getLanguageLabel,
-    providerOptions,
-    targetLanguageOptions
-  } from '@/entrypoints/popup/data';
-  import type { V2OptionsConfig } from '@/entrypoints/options/types';
+  import { getLanguageLabel, providerOptions } from '@/entrypoints/popup/data';
   import Section from '../Section.svelte';
   import SectionRow from '../SectionRow.svelte';
   import { translationStyleOptions, previewTextEn, previewTextZh } from './data';
 
-  export let config: V2OptionsConfig;
   export let newSite = '';
   export let saveOptions: () => void | Promise<void>;
   export let resetOptions: () => void | Promise<void>;
   export let getProviderModels: (provider: string) => string[];
 
-  const updateField = (key: keyof V2OptionsConfig, value: string) => {
-    if (key === 'provider') {
-      const nextModels = getProviderModels(value);
-      config = { ...config, provider: value, model: nextModels[0] ?? '' };
-      return;
-    }
-    config = { ...config, [key]: value };
+  const updateField = (key: string, value: string) => {
+    // if (key === 'provider') {
+    //   const nextModels = getProviderModels(value);
+    //   config = { ...config, provider: value, model: nextModels[0] ?? '' };
+    //   return;
+    // }
+    // config = { ...config, [key]: value };
   };
 
   const updateBooleanField = (
     key: 'richTextTranslate' | 'italicTranslate' | 'customFontEnabled',
     value: boolean
   ) => {
-    config = { ...config, [key]: value };
+    // config = { ...config, [key]: value };
   };
 
   const addSite = () => {
-    const site = newSite.trim();
-    if (!site || config.alwaysTranslateSites.includes(site)) return;
-    config = {
-      ...config,
-      alwaysTranslateSites: [...config.alwaysTranslateSites, site]
-    };
-    newSite = '';
+    // const site = newSite.trim();
+    // if (!site || config.alwaysTranslateSites.includes(site)) return;
+    // config = {
+    //   ...config,
+    //   alwaysTranslateSites: [...config.alwaysTranslateSites, site]
+    // };
+    // newSite = '';
   };
 
   const removeSite = (site: string) => {
-    config = {
-      ...config,
-      alwaysTranslateSites: config.alwaysTranslateSites.filter((item) => item !== site)
-    };
+    // config = {
+    //   ...config,
+    //   alwaysTranslateSites: config.alwaysTranslateSites.filter((item) => item !== site)
+    // };
   };
 
   const addRuleItem = (
     key: 'neverTranslateSites' | 'alwaysTranslateLanguages' | 'neverTranslateLanguages',
     value: string
   ) => {
-    const next = value.trim();
-    if (!next || config[key].includes(next)) return;
-    config = { ...config, [key]: [...config[key], next] };
+    // const next = value.trim();
+    // if (!next || config[key].includes(next)) return;
+    // config = { ...config, [key]: [...config[key], next] };
   };
 
   const getPreviewClass = (value: string) => {
     return translationStyleOptions.find((option) => option.value === value)?.className ?? '';
   };
+
+  onMount(() => {
+    console.log(config.get('targetLanguage'));
+  });
 </script>
 
 <Section id="general" title={i18n('options_general_title', { defaultValue: 'General settings' })}>

@@ -22,15 +22,6 @@ export type ToggleItem = {
   options?: LocalizedOption[];
 };
 
-export type PopupConfig = {
-  sourceLanguage: string;
-  targetLanguage: string;
-  provider: string;
-  model: string;
-  promptPreset: string;
-  toggles: Record<string, boolean>;
-};
-
 const languageLabelByValue: Record<string, string> = {
   auto: i18n('popup_language_auto', { defaultValue: 'Auto detect' }),
   'zh-Hans': i18n('popup_language_zh_hans', { defaultValue: 'Chinese (Simplified)' }),
@@ -40,24 +31,6 @@ const languageLabelByValue: Record<string, string> = {
   fr: i18n('popup_language_fr', { defaultValue: 'French' }),
   de: i18n('popup_language_de', { defaultValue: 'German' })
 };
-
-export const sourceLanguageOptions: LocalizedOption[] = [
-  { value: 'auto', label: languageLabelByValue.auto },
-  { value: 'en', label: languageLabelByValue.en },
-  { value: 'ja', label: languageLabelByValue.ja },
-  { value: 'ko', label: languageLabelByValue.ko },
-  { value: 'fr', label: languageLabelByValue.fr },
-  { value: 'de', label: languageLabelByValue.de }
-];
-
-export const targetLanguageOptions: LocalizedOption[] = [
-  { value: 'zh-Hans', label: languageLabelByValue['zh-Hans'] },
-  { value: 'en', label: languageLabelByValue.en },
-  { value: 'ja', label: languageLabelByValue.ja },
-  { value: 'ko', label: languageLabelByValue.ko },
-  { value: 'fr', label: languageLabelByValue.fr },
-  { value: 'de', label: languageLabelByValue.de }
-];
 
 export const languageOptions = [
   {
@@ -73,53 +46,6 @@ export const languageOptions = [
 export function getLanguageLabel(value: string): string {
   return languageLabelByValue[value] ?? value;
 }
-
-export const providerOptions = [
-  'OpenAI',
-  'Google (Vertex AI)',
-  'Anthropic (Claude)',
-  'AWS',
-  'Google (GenAI)',
-  'Ollama',
-  'Groq',
-  'Hugging Face',
-  'Mistral AI',
-  'Cohere',
-  'Fireworks',
-  'xAI (Grok)',
-  'DeepSeek',
-  'Perplexity',
-  'Azure AI',
-  'NVIDIA AI Endpoints',
-  'IBM',
-  'Together',
-  'OpenRouter'
-];
-
-export const modelOptionsByProvider: Record<string, string[]> = {
-  OpenAI: ['gpt-4.1-mini', 'gpt-4.1', 'gpt-4o-mini'],
-  'Google (Vertex AI)': ['gemini-2.5-flash', 'gemini-2.5-pro'],
-  'Anthropic (Claude)': ['claude-3-5-haiku', 'claude-3-7-sonnet'],
-  AWS: ['amazon.nova-lite', 'amazon.nova-pro'],
-  'Google (GenAI)': ['gemini-2.5-flash', 'gemini-2.5-pro'],
-  Ollama: ['qwen3.5-2b', 'llama3.2', 'deepseek-r1:7b'],
-  Groq: ['llama-3.3-70b', 'deepseek-r1-distill-llama-70b'],
-  'Hugging Face': ['Qwen/Qwen2.5-7B-Instruct', 'mistralai/Mistral-7B-Instruct-v0.3'],
-  'Mistral AI': ['mistral-small-latest', 'ministral-8b-latest'],
-  Cohere: ['command-r', 'command-r-plus'],
-  Fireworks: [
-    'accounts/fireworks/models/deepseek-v3',
-    'accounts/fireworks/models/qwen2p5-coder-32b'
-  ],
-  'xAI (Grok)': ['grok-2-latest', 'grok-2-mini'],
-  DeepSeek: ['deepseek-chat', 'deepseek-reasoner'],
-  Perplexity: ['sonar', 'sonar-pro'],
-  'Azure AI': ['gpt-4.1-mini', 'gpt-4o-mini'],
-  'NVIDIA AI Endpoints': ['meta/llama-3.1-70b-instruct', 'nvidia/llama-3.1-nemotron-70b-instruct'],
-  IBM: ['granite-3.2-8b-instruct', 'granite-3.1-2b-instruct'],
-  Together: ['meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo', 'Qwen/Qwen2.5-72B-Instruct-Turbo'],
-  OpenRouter: ['openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0-flash-001']
-};
 
 export const promptPresetOptions: LocalizedOption[] = [
   { value: 'general', label: i18n('popup_prompt_preset_general', { defaultValue: 'General' }) },
@@ -234,7 +160,7 @@ export function getPromptPresetLabel(value: string): string {
   return promptPresetLabelByValue[value] ?? value;
 }
 
-export const configRows: ConfigRow[] = [
+export const providers: ConfigRow[] = [
   {
     key: 'provider',
     label: i18n('popup_config_provider', { defaultValue: 'Provider' }),
@@ -249,7 +175,7 @@ export const configRows: ConfigRow[] = [
   },
   {
     key: 'promptPreset',
-    label: i18n('popup_config_prompt_preset', { defaultValue: 'Prompt preset' }),
+    label: i18n('popup_config_prompt_preset', { defaultValue: 'Prompt' }),
     value: promptPresetOptions[0]?.value ?? '',
     options: promptPresetOptions.map((option) => option.value)
   }
@@ -376,20 +302,13 @@ export const toggles: ToggleItem[] = [
   }
 ];
 
-export const defaultPopupConfig: PopupConfig = {
-  sourceLanguage: languageOptions[0].value,
-  targetLanguage: languageOptions[1].value,
-  provider: configRows[0].value,
-  model: configRows[1].value,
-  promptPreset: configRows[2].value,
-  toggles: Object.fromEntries(toggles.map((item) => [item.key, item.enabled]))
-};
-
 export const quickActions = [
   {
     label: i18n('popup_quick_action_doc_translate', { defaultValue: 'Document Translate' }),
     icon: '📄',
-    description: i18n('popup_quick_action_doc_translate_description', { defaultValue: 'Translate PDF, ePub, docx, srt, ass, HTML, TXT, and Markdown files.' })
+    description: i18n('popup_quick_action_doc_translate_description', {
+      defaultValue: 'Translate PDF, ePub, docx, srt, ass, HTML, TXT, and Markdown files.'
+    })
   },
   {
     label: i18n('popup_quick_action_text_translate', { defaultValue: 'Text Translate' }),
