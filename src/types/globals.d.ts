@@ -1,4 +1,4 @@
-import type { Config, ConfigSchema } from '../lib/Config';
+import type { ConfigSchema } from '../lib/Config';
 // import type { I18n } from "../lib/I18n";
 // import type { Languages } from "../lib/Languages";
 // import type { PlatformInfo } from "../lib/PlatformInfo";

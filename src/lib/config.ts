@@ -13,11 +13,9 @@ export type AiProvider = {
 
 export type Provider = ApiProvider | AiProvider;
 
-const googleProvider: ApiProvider = { type: 'api', name: 'google' };
-const bingProvider: ApiProvider = { type: 'api', name: 'bing' };
 export const providers: Provider[] = [
-  googleProvider,
-  bingProvider,
+  { type: 'api', name: 'google' },
+  { type: 'api', name: 'bing' },
   { type: 'ai', name: 'OpenAI', models: ['gpt-4.1-mini', 'gpt-4.1', 'gpt-4o-mini'] },
   { type: 'ai', name: 'Anthropic', models: ['claude-3-5-haiku', 'claude-3-7-sonnet'] },
   { type: 'ai', name: 'Google AI', models: ['gemini-2.5-flash', 'gemini-2.5-pro'] },
@@ -65,9 +63,12 @@ export const defaultConfig = {
 
   uiLanguage: 'default' as string, // UI 语言（default = 跟随系统语言）
 
-  translateProvider: googleProvider as Provider, // 页面翻译服务提供商（当前选中）
-  textToSpeechProvider: googleProvider as Provider, // 文本转语音服务提供商
-  enabledProviders: [googleProvider, bingProvider] as Provider[], // 已启用的服务提供商列表
+  translateProvider: { type: 'api', name: 'google' } as Provider, // 页面翻译服务提供商（当前选中）
+  textToSpeechProvider: { type: 'api', name: 'google' } as Provider, // 文本转语音服务提供商
+  enabledProviders: [
+    { type: 'api', name: 'google' },
+    { type: 'api', name: 'bing' }
+  ] as Provider[], // 已启用的服务提供商列表
   customProviders: [] as Provider[], // 用户自定义添加的服务提供商
 
   ttsSpeed: 1, // 语音播放速度（0.5 - 2.0）
@@ -132,7 +133,7 @@ export const defaultConfig = {
   addPaddingToPage: false, // 是否给页面注入额外 padding（避免 UI 遮挡）
 
   proxyServers: {} as Record<string, unknown> // 代理服务器配置（用于 API 转发 / 网络绕过）
-} as const;
+};
 
 export type ConfigSchema = typeof defaultConfig;
 
@@ -144,17 +145,17 @@ type Listener<K extends keyof ConfigSchema> = (
 const STORAGE_KEY = 'local:config_v1';
 class ConfigStore {
   private data: ConfigSchema = structuredClone(defaultConfig);
-  private ready: Promise<void>;
+  private ready = false;
   // 写入队列（保证顺序一致）
-  private writeQueue: Promise<any> = Promise.resolve();
+  private writeQueue: Promise<void> = Promise.resolve();
   // debounce timer（减少 storage 写入）
-  private persistTimer: any = null;
+  private persistTimer: ReturnType<typeof setTimeout> | null = null;
   // listeners（轻量 reactive）
-  private listeners = new Map<string, Set<Function>>();
+  private listeners = new Map<keyof ConfigSchema, Set<Function>>();
 
   private static instance: ConfigStore;
   private constructor() {
-    this.ready = this.init();
+    this.init();
   }
 
   static getInstance(): ConfigStore {
@@ -168,19 +169,28 @@ class ConfigStore {
     const stored = await storage.getItem<Partial<ConfigSchema>>(STORAGE_KEY);
 
     if (stored) {
-      this.data = {
-        ...this.data,
-        ...stored
-      };
+      this.patch(stored);
     }
+
+    this.ready = true;
   }
 
-  async ensureReady() {
-    await this.ready;
+  isReady() {
+    return this.ready;
+  }
+
+  isSameProvider(a: Provider, b: Provider): boolean {
+    return a.type === b.type && a.name === b.name;
   }
 
   get<K extends keyof ConfigSchema>(key: K): ConfigSchema[K] {
-    return this.data[key];
+    const value = this.data[key];
+
+    if (Array.isArray(value)) {
+      return [...value] as ConfigSchema[K];
+    }
+
+    return value;
   }
 
   getAll(): ConfigSchema {
@@ -190,7 +200,9 @@ class ConfigStore {
   set<K extends keyof ConfigSchema>(key: K, value: ConfigSchema[K]) {
     const prev = this.data[key];
 
-    if (prev === value) return;
+    // ⚠️ 只对 primitive 做短路
+    // isEqual(prev, value) 是深层比较, 有性能问题
+    if (Object.is(prev, value)) return;
 
     this.data[key] = value;
 
@@ -208,11 +220,13 @@ class ConfigStore {
       const prev = this.data[k];
       const next = partial[k];
 
-      if (prev !== next) {
-        this.data[k] = next as any;
-        this.emitChange(k, next as any, prev);
-        changed = true;
-      }
+      if (Object.is(prev, next)) continue;
+      if (next === undefined) continue;
+
+      (this.data as Record<string, unknown>)[k] = next;
+      // this.data[k] = next;
+      this.emitChange(k, next, prev);
+      changed = true;
     }
 
     if (changed) {
@@ -222,29 +236,39 @@ class ConfigStore {
 
   async reset() {
     const prev = this.data;
+    const next = structuredClone(defaultConfig);
 
-    this.data = structuredClone(defaultConfig);
+    const keys = Object.keys(defaultConfig) as (keyof ConfigSchema)[];
 
-    for (const key in this.data) {
-      this.emitChange(
-        key as keyof ConfigSchema,
-        this.data[key as keyof ConfigSchema],
-        prev[key as keyof ConfigSchema]
-      );
+    this.data = next;
+
+    for (const key of keys) {
+      this.emitChange(key, next[key], prev[key]);
     }
 
     this.schedulePersist();
   }
 
+  onReady(fn: () => void) {
+    if (this.ready) return fn();
+
+    const interval = setInterval(() => {
+      if (this.ready) {
+        clearInterval(interval);
+        fn();
+      }
+    }, 0);
+  }
+
   onChange<K extends keyof ConfigSchema>(key: K, fn: Listener<K>) {
-    if (!this.listeners.has(key as string)) {
-      this.listeners.set(key as string, new Set());
+    if (!this.listeners.has(key)) {
+      this.listeners.set(key, new Set());
     }
 
-    this.listeners.get(key as string)!.add(fn);
+    this.listeners.get(key)!.add(fn);
 
     return () => {
-      this.listeners.get(key as string)?.delete(fn);
+      this.listeners.get(key)?.delete(fn);
     };
   }
 
@@ -253,7 +277,7 @@ class ConfigStore {
     value: ConfigSchema[K],
     prev: ConfigSchema[K]
   ) {
-    const set = this.listeners.get(key as string);
+    const set = this.listeners.get(key);
     if (!set) return;
 
     set.forEach((fn) => fn(value, prev));
@@ -265,7 +289,11 @@ class ConfigStore {
     }
 
     this.persistTimer = setTimeout(() => {
-      this.writeQueue = this.writeQueue.then(() => storage.setItem(STORAGE_KEY, this.data));
+      this.writeQueue = this.writeQueue
+        .then(() => storage.setItem(STORAGE_KEY, this.data))
+        .catch((err) => {
+          console.error('[ConfigStore persist error]', err);
+        });
     }, 50);
   }
 }
@@ -273,15 +301,32 @@ class ConfigStore {
 const store = ConfigStore.getInstance();
 export const config = new Proxy(store, {
   get(target, key: string) {
-    if (key in target) {
-      return (target as any)[key];
+    if (typeof key === 'string' && key in target) {
+      const value = (target as any)[key];
+
+      // 绑定 this（防止方法丢失上下文）
+      if (typeof value === 'function') {
+        return value.bind(target);
+      }
+
+      return value;
     }
 
-    return target.get(key as any);
+    if (!target.isReady()) {
+      console.warn('[ConfigStore] accessed before init');
+    }
+
+    return target.get(key as keyof ConfigSchema);
   },
 
   set(target, key: string, value) {
-    target.set(key as any, value);
+    if (!(key in defaultConfig)) {
+      console.warn(`[ConfigStore] invalid key: ${key}`);
+
+      return false;
+    }
+
+    target.set(key as keyof ConfigSchema, value);
     return true;
   }
-});
+}) as unknown as ConfigSchema & ConfigStore;
