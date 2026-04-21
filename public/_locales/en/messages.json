@@ -1,4 +1,73 @@
 {
+  "auto_detect": {
+    "message": "Auto Detect"
+  },
+  "guest": {
+    "message": "Guest"
+  },
+  "model": {
+    "message": "Model"
+  },
+  "more": {
+    "message": "More"
+  },
+  "more_item_about_feedback": {
+    "message": "About - Feedback"
+  },
+  "more_item_ai_pdf_pro_translate": {
+    "message": "AI-powered PDF Pro translation"
+  },
+  "more_item_babeldoc_pdf_translate": {
+    "message": "BabelDOC layout-preserving PDF translation"
+  },
+  "more_item_clear_cache": {
+    "message": "Clear cache"
+  },
+  "more_item_disable_floating_ball": {
+    "message": "Disable floating ball"
+  },
+  "more_item_enable_edit_translation": {
+    "message": "Temporarily enable translation editing"
+  },
+  "more_item_enable_sidebar": {
+    "message": "Enable sidebar translation"
+  },
+  "more_item_feedback_page_translation": {
+    "message": "Report translation issue on this page"
+  },
+  "more_item_html_txt_translate": {
+    "message": "Translate HTML/txt files"
+  },
+  "more_item_local_pdf_translate": {
+    "message": "Translate local PDF file"
+  },
+  "more_item_make_bilingual_epub": {
+    "message": "Create bilingual EPUB e-book"
+  },
+  "more_item_rate_store": {
+    "message": "Rate in store"
+  },
+  "more_item_read_local_ebook": {
+    "message": "Read local e-book"
+  },
+  "more_item_subtitle_file_translate": {
+    "message": "Translate local subtitle files"
+  },
+  "more_item_temp_translation_only": {
+    "message": "Temporarily set default mode to translation-only"
+  },
+  "more_item_translate_all_regions": {
+    "message": "Switch to translating all regions"
+  },
+  "more_item_translate_to_bottom": {
+    "message": "Translate to page bottom now"
+  },
+  "more_item_try_pro": {
+    "message": "Try Pro membership for free"
+  },
+  "more_item_user_guide": {
+    "message": "User guide"
+  },
   "msg_unknown_language": {
     "message": "Unknown language"
   },
@@ -581,256 +650,127 @@
   "options_writing_view_soon_button": {
     "message": "View upcoming capabilities"
   },
-  "popup_config_model": {
-    "message": "Model"
-  },
-  "popup_config_prompt_preset": {
+  "prompt": {
     "message": "Prompt"
   },
-  "popup_config_provider": {
-    "message": "Provider"
-  },
-  "popup_footer_more": {
-    "message": "More"
-  },
-  "popup_footer_settings": {
-    "message": "Settings"
-  },
-  "popup_guest": {
-    "message": "Guest"
-  },
-  "popup_language_auto": {
-    "message": "Auto detect"
-  },
-  "popup_language_de": {
-    "message": "German"
-  },
-  "popup_language_en": {
-    "message": "English"
-  },
-  "popup_language_fr": {
-    "message": "French"
-  },
-  "popup_language_ja": {
-    "message": "Japanese"
-  },
-  "popup_language_ko": {
-    "message": "Korean"
-  },
-  "popup_language_source_hint": {
-    "message": "Auto detect"
-  },
-  "popup_language_target_hint": {
-    "message": "Target language"
-  },
-  "popup_language_zh_hans": {
-    "message": "Chinese (Simplified)"
-  },
-  "popup_more_item_about_feedback": {
-    "message": "About - Feedback"
-  },
-  "popup_more_item_ai_pdf_pro_translate": {
-    "message": "AI-powered PDF Pro translation"
-  },
-  "popup_more_item_babeldoc_pdf_translate": {
-    "message": "BabelDOC layout-preserving PDF translation"
-  },
-  "popup_more_item_clear_cache": {
-    "message": "Clear cache"
-  },
-  "popup_more_item_disable_floating_ball": {
-    "message": "Disable floating ball"
-  },
-  "popup_more_item_enable_edit_translation": {
-    "message": "Temporarily enable translation editing"
-  },
-  "popup_more_item_enable_sidebar": {
-    "message": "Enable sidebar translation"
-  },
-  "popup_more_item_feedback_page_translation": {
-    "message": "Report translation issue on this page"
-  },
-  "popup_more_item_html_txt_translate": {
-    "message": "Translate HTML/txt files"
-  },
-  "popup_more_item_local_pdf_translate": {
-    "message": "Translate local PDF file"
-  },
-  "popup_more_item_make_bilingual_epub": {
-    "message": "Create bilingual EPUB e-book"
-  },
-  "popup_more_item_rate_store": {
-    "message": "Rate in store"
-  },
-  "popup_more_item_read_local_ebook": {
-    "message": "Read local e-book"
-  },
-  "popup_more_item_subtitle_file_translate": {
-    "message": "Translate local subtitle files"
-  },
-  "popup_more_item_temp_translation_only": {
-    "message": "Temporarily set default mode to translation-only"
-  },
-  "popup_more_item_translate_all_regions": {
-    "message": "Switch to translating all regions"
-  },
-  "popup_more_item_translate_to_bottom": {
-    "message": "Translate to page bottom now"
-  },
-  "popup_more_item_try_pro": {
-    "message": "Try Pro membership for free"
-  },
-  "popup_more_item_user_guide": {
-    "message": "User guide"
-  },
-  "popup_prompt_preset_ao3": {
+  "prompt_preset_ao3": {
     "message": "AO3 translator"
   },
-  "popup_prompt_preset_designer": {
+  "prompt_preset_designer": {
     "message": "Designer"
   },
-  "popup_prompt_preset_ebook": {
+  "prompt_preset_ebook": {
     "message": "E-book translator"
   },
-  "popup_prompt_preset_ecommerce": {
+  "prompt_preset_ecommerce": {
     "message": "E-commerce translation master"
   },
-  "popup_prompt_preset_english_simplify": {
+  "prompt_preset_english_simplify": {
     "message": "English simplification master"
   },
-  "popup_prompt_preset_finance": {
+  "prompt_preset_finance": {
     "message": "Finance translation consultant"
   },
-  "popup_prompt_preset_game": {
+  "prompt_preset_game": {
     "message": "Game translator"
   },
-  "popup_prompt_preset_general": {
+  "prompt_preset_general": {
     "message": "General"
   },
-  "popup_prompt_preset_github_enhancer": {
+  "prompt_preset_github_enhancer": {
     "message": "GitHub translation enhancer"
   },
-  "popup_prompt_preset_legal": {
+  "prompt_preset_legal": {
     "message": "Legal industry translator"
   },
-  "popup_prompt_preset_medical": {
+  "prompt_preset_medical": {
     "message": "Medical translation master"
   },
-  "popup_prompt_preset_mixed_zh_en": {
+  "prompt_preset_mixed_zh_en": {
     "message": "Mixed Chinese-English"
   },
-  "popup_prompt_preset_more_experts": {
+  "prompt_preset_more_experts": {
     "message": "More translation experts"
   },
-  "popup_prompt_preset_music": {
+  "prompt_preset_music": {
     "message": "Music expert"
   },
-  "popup_prompt_preset_news_media": {
+  "prompt_preset_news_media": {
     "message": "News media translator"
   },
-  "popup_prompt_preset_novel": {
+  "prompt_preset_novel": {
     "message": "Novel translator"
   },
-  "popup_prompt_preset_paper_translation": {
+  "prompt_preset_paper_translation": {
     "message": "Academic paper translator"
   },
-  "popup_prompt_preset_paragraph_summary": {
+  "prompt_preset_paragraph_summary": {
     "message": "Paragraph summary expert"
   },
-  "popup_prompt_preset_paraphrase_master": {
+  "prompt_preset_paraphrase_master": {
     "message": "Paraphrase master"
   },
-  "popup_prompt_preset_reddit_enhancer": {
+  "prompt_preset_reddit_enhancer": {
     "message": "Reddit translation enhancer"
   },
-  "popup_prompt_preset_smart_select": {
+  "prompt_preset_smart_select": {
     "message": "Smart selection"
   },
-  "popup_prompt_preset_tech_translation": {
+  "prompt_preset_tech_translation": {
     "message": "Tech translation master"
   },
-  "popup_prompt_preset_twitter_enhancer": {
+  "prompt_preset_twitter_enhancer": {
     "message": "Twitter translation enhancer"
   },
-  "popup_prompt_preset_web3": {
+  "prompt_preset_web3": {
     "message": "Web3 translation master"
   },
-  "popup_quick_action_doc_translate": {
+  "provider": {
+    "message": "Provider"
+  },
+  "quick_action_doc_translate": {
     "message": "Document Translate"
   },
-  "popup_quick_action_doc_translate_description": {
+  "quick_action_doc_translate_description": {
     "message": "Translate PDF, ePub, docx, srt, ass, HTML, TXT, and Markdown files."
   },
-  "popup_quick_action_text_translate": {
+  "quick_action_text_translate": {
     "message": "Text Translate"
   },
-  "popup_quick_action_toolbox": {
+  "quick_action_toolbox": {
     "message": "Toolbox"
   },
-  "popup_toggle_always_translate_chinese_page": {
-    "message": "Always translate Chinese (Simplified) pages"
+  "settings": {
+    "message": "Settings"
   },
-  "popup_toggle_always_translate_site": {
+  "source_language": {
+    "message": "Source language"
+  },
+  "target_language": {
+    "message": "Target language"
+  },
+  "toggle_always_translate_site": {
     "message": "Always translate this site"
   },
-  "popup_toggle_auto_bilingual_subtitle": {
-    "message": "Auto-enable bilingual subtitles"
-  },
-  "popup_toggle_hover_trigger": {
-    "message": "Hover trigger: + Ctrl to translate/restore paragraph"
-  },
-  "popup_toggle_mode_always_translate_site": {
+  "toggle_mode_always_translate_this_site": {
     "message": "Always translate this site"
   },
-  "popup_toggle_mode_hover_alt": {
-    "message": "+ Alt to translate/restore paragraph"
-  },
-  "popup_toggle_mode_hover_ctrl": {
-    "message": "+ Ctrl to translate/restore paragraph"
-  },
-  "popup_toggle_mode_hover_custom_shortcut": {
-    "message": "Custom shortcut (open settings)"
-  },
-  "popup_toggle_mode_hover_direct": {
-    "message": "Directly translate paragraph"
-  },
-  "popup_toggle_mode_hover_long_press": {
-    "message": "+ Long press left mouse button"
-  },
-  "popup_toggle_mode_hover_shift": {
-    "message": "+ Shift to translate/restore paragraph"
-  },
-  "popup_toggle_mode_never_auto_translate_site": {
+  "toggle_mode_dont_auto_translate_this_site": {
     "message": "Do not auto-translate this site"
   },
-  "popup_toggle_mode_selection_alt": {
-    "message": "Trigger with Alt"
+  "toggle_mode_selection_direct": {
+    "message": "Directly"
   },
-  "popup_toggle_mode_selection_ctrl": {
-    "message": "Trigger with Ctrl"
+  "toggle_mode_selection_icon": {
+    "message": "Show icons"
   },
-  "popup_toggle_mode_selection_direct": {
-    "message": "Direct trigger"
+  "toggle_selection_trigger": {
+    "message": "Selection translate"
   },
-  "popup_toggle_mode_selection_dot": {
-    "message": "Show small dot"
-  },
-  "popup_toggle_mode_selection_icon": {
-    "message": "Show icon"
-  },
-  "popup_toggle_mode_selection_shift": {
-    "message": "Trigger with Shift"
-  },
-  "popup_toggle_selection_trigger": {
-    "message": "Selection translation: Show small dot"
-  },
-  "popup_translate_button": {
+  "translate": {
     "message": "Translate (⌥A)"
   },
-  "popup_upgrade": {
+  "upgrade": {
     "message": "Upgrade"
-  },
-  "translate_provider": {
-    "message": "Provider"
   }
 }

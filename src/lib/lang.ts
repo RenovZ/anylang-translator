@@ -12068,8 +12068,8 @@ class Lang {
    * 获取当前界面语言下的本地化语言名称列表。
    */
   all(): Record<string, string> {
-    let uiLanguage =
-      config.uiLanguage !== 'default' ? config.uiLanguage : browser.i18n.getUILanguage();
+    const cfg = config.get();
+    let uiLanguage = cfg.uiLanguage !== 'default' ? cfg.uiLanguage : browser.i18n.getUILanguage();
     uiLanguage = this.fixUILangCode(uiLanguage) || 'en';
     return allLangNames[uiLanguage];
   }
@@ -12077,7 +12077,9 @@ class Lang {
   /**
    * 将语言代码转换为当前界面语言下的显示名称。
    */
-  codeToLang(langCode: string) {
+  codeToLang(langCode: string | null) {
+    if (!langCode) return;
+
     if (langCode === 'und') {
       return i18n('msg_unknown_language', {
         defaultValue: 'Unknown language'
@@ -12085,7 +12087,7 @@ class Lang {
     }
 
     const fixed = this.fixLangCode(langCode);
-    if (!fixed) return '';
+    if (!fixed) return;
 
     return this.all()[fixed] ?? fixed;
   }
