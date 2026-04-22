@@ -2,6 +2,9 @@
   "add": {
     "message": "Add"
   },
+  "always_auto_translate_this_site": {
+    "message": "Always auto-translate this site"
+  },
   "always_auto_translated_lang": {
     "message": "Always auto-translate language"
   },
@@ -44,20 +47,11 @@
   "delete_selected": {
     "message": "Delete selected"
   },
-  "dont_auto_translated_lang": {
-    "message": "Don't auto-translate language"
-  },
-  "dont_auto_translated_lang_hint": {
-    "message": "When page language is one of these languages, content will not auto-translate."
-  },
-  "dont_auto_translated_sites": {
-    "message": "Don't auto-translate sites"
-  },
-  "dont_auto_translated_sites_hint": {
-    "message": "When current site matches these domains, auto-translation feature is disabled. This rule has higher priority than language rules."
-  },
   "edit": {
     "message": "Edit"
+  },
+  "enable_auto_translate": {
+    "message": "Enable auto-translate feature"
   },
   "font_family": {
     "message": "Font family"
@@ -665,6 +659,15 @@
   "save": {
     "message": "Save"
   },
+  "selection_translate": {
+    "message": "Selection translate"
+  },
+  "selection_translate_directly": {
+    "message": "Directly"
+  },
+  "selection_translate_show_icons": {
+    "message": "Show icons"
+  },
   "settings": {
     "message": "Settings"
   },
@@ -679,24 +682,6 @@
   },
   "text_color": {
     "message": "Text color"
-  },
-  "toggle_always_translate_site": {
-    "message": "Always translate this site"
-  },
-  "toggle_mode_always_translate_this_site": {
-    "message": "Always translate this site"
-  },
-  "toggle_mode_dont_auto_translate_this_site": {
-    "message": "Do not auto-translate this site"
-  },
-  "toggle_mode_selection_direct": {
-    "message": "Directly"
-  },
-  "toggle_mode_selection_icon": {
-    "message": "Show icons"
-  },
-  "toggle_selection_trigger": {
-    "message": "Selection translate"
   },
   "translate": {
     "message": "Translate (⌥A)"

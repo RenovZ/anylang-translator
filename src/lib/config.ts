@@ -61,9 +61,7 @@ const defaultConfig = {
     '*.medium.com',
     'news.ycombinator.com'
   ] as string[],
-  dontAutoTranslatedSites: ['example.com'] as string[],
   alwaysAutoTranslatedLang: null as string | null,
-  dontAutoTranslatedLang: null as string | null,
 
   selectionTriggerTranslate: 'directly' as SelectionTriggerValue,
   selectionTranslateEnabled: false,

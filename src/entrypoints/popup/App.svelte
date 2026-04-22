@@ -26,7 +26,15 @@
   import { i18n } from '@/lib/i18n';
   import avatar from '@/lib/avatar';
   import { languageOptions } from '@/lib/data';
-  import { alwaysTranslateToggle, selectionTriggerToggle, moreItems, quickActions } from './data';
+  import { selectionTranslateToggle, moreItems, quickActions } from './data';
+
+  let currentSite = $state('');
+
+  $effect(() => {
+    browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
+      currentSite = tab.url ? new URL(tab.url).origin : window.location.origin;
+    });
+  });
 </script>
 
 <main class="min-w-80 bg-slate-100 text-sm dark:bg-slate-950/80">
@@ -162,67 +170,58 @@
 
     <section class="flex flex-col gap-3">
       <div class="flex items-center justify-between gap-3">
-        <button type="button" class="flex min-w-0 flex-nowrap items-center text-left">
-          <span class="line-clamp-1 font-medium">{alwaysTranslateToggle.label}</span>
-          {#if alwaysTranslateToggle.options}
-            <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
-          {/if}
-        </button>
-        {#if alwaysTranslateToggle.options}
-          <Dropdown simple placement="bottom-end" class="shadow-md">
-            {#each alwaysTranslateToggle.options as option (option.value)}
-              <DropdownItem
-                onclick={async () => {
-                  let { alwaysAutoTranslatedSites, dontAutoTranslatedSites } = $config;
-                  const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-                  const site = tab.url ? new URL(tab.url).origin : window.location.origin;
-                  if (option.value === 'alwaysTranslateThisSite') {
-                    if (!alwaysAutoTranslatedSites.includes(site)) {
-                      $config.alwaysAutoTranslatedSites = [...alwaysAutoTranslatedSites, site];
-                    }
-                    $config.dontAutoTranslatedSites = dontAutoTranslatedSites.filter(
-                      (s) => s !== site
-                    );
-                  }
-                  if (option.value === 'dontAutoTranslateThisSite') {
-                    if (!dontAutoTranslatedSites.includes(site)) {
-                      $config.dontAutoTranslatedSites = [...dontAutoTranslatedSites, site];
-                    }
-                    $config.alwaysAutoTranslatedSites = alwaysAutoTranslatedSites.filter(
-                      (s) => s !== site
-                    );
-                  }
-                }}>
-                {option.label}
-              </DropdownItem>
-            {/each}
-          </Dropdown>
-        {/if}
+        <span class="line-clamp-1 font-medium">
+          {i18n('enable_auto_translate', {
+            defaultValue: 'Enable auto-translate feature'
+          })}
+        </span>
         <Toggle
           bind:checked={$config.autoTranslateEnabled}
           size="small"
           classes={{
             span: 'me-0 cursor-pointer bg-slate-200 dark:bg-slate-600'
+          }} />
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <span class="line-clamp-1 font-medium">
+          {i18n('always_auto_translate_this_site', {
+            defaultValue: 'Always auto-translate this site'
+          })}
+        </span>
+        <Toggle
+          checked={currentSite ? $config.alwaysAutoTranslatedSites.includes(currentSite) : false}
+          onchange={() => {
+            const { alwaysAutoTranslatedSites } = $config;
+            if (alwaysAutoTranslatedSites.includes(currentSite)) {
+              $config.alwaysAutoTranslatedSites = alwaysAutoTranslatedSites.filter(
+                (s) => s !== currentSite
+              );
+            } else {
+              $config.alwaysAutoTranslatedSites = [...alwaysAutoTranslatedSites, currentSite];
+            }
           }}
-          aria-label={alwaysTranslateToggle.label} />
+          size="small"
+          classes={{
+            span: 'me-0 cursor-pointer bg-slate-200 dark:bg-slate-600'
+          }} />
       </div>
       <div class="flex items-center justify-between gap-3">
         <button type="button" class="flex min-w-0 flex-nowrap items-center text-left">
           <span class="line-clamp-1 font-medium">
-            <span>{selectionTriggerToggle.label}:</span>
+            <span>{selectionTranslateToggle.label}:</span>
             <span>
-              {selectionTriggerToggle.options?.find(
+              {selectionTranslateToggle.options?.find(
                 (item) => item.value === $config.selectionTriggerTranslate
-              )?.label || selectionTriggerToggle.options![0].label}
+              )?.label || selectionTranslateToggle.options![0].label}
             </span>
           </span>
-          {#if selectionTriggerToggle.options}
+          {#if selectionTranslateToggle.options}
             <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
           {/if}
         </button>
-        {#if selectionTriggerToggle.options}
+        {#if selectionTranslateToggle.options}
           <Dropdown simple placement="bottom-end" class="shadow-md">
-            {#each selectionTriggerToggle.options as option (option.value)}
+            {#each selectionTranslateToggle.options as option (option.value)}
               <DropdownItem
                 onclick={() =>
                   ($config.selectionTriggerTranslate = option.value as SelectionTriggerValue)}
@@ -236,7 +235,7 @@
           classes={{
             span: 'me-0 cursor-pointer bg-slate-200 dark:bg-slate-600'
           }}
-          aria-label={selectionTriggerToggle.label} />
+          aria-label={selectionTranslateToggle.label} />
       </div>
     </section>
 

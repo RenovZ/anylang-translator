@@ -1,37 +1,17 @@
 import { i18n } from '@/lib/i18n';
 
-export const alwaysTranslateToggle = {
-  label: i18n('toggle_always_translate_site', {
-    defaultValue: 'Always translate this site'
-  }),
-  options: [
-    {
-      value: 'alwaysTranslateThisSite',
-      label: i18n('toggle_mode_always_translate_this_site', {
-        defaultValue: 'Always translate this site'
-      })
-    },
-    {
-      value: 'dontAutoTranslateThisSite',
-      label: i18n('toggle_mode_dont_auto_translate_this_site', {
-        defaultValue: 'Do not auto-translate this site'
-      })
-    }
-  ]
-};
-
-export const selectionTriggerToggle = {
-  label: i18n('toggle_selection_trigger', {
+export const selectionTranslateToggle = {
+  label: i18n('selection_translate', {
     defaultValue: 'Selection translate'
   }),
   options: [
     {
       value: 'directly',
-      label: i18n('toggle_mode_selection_direct', { defaultValue: 'Directly' })
+      label: i18n('selection_translate_directly', { defaultValue: 'Directly' })
     },
     {
       value: 'show icons',
-      label: i18n('toggle_mode_selection_icon', { defaultValue: 'Show icons' })
+      label: i18n('selection_translate_show_icons', { defaultValue: 'Show icons' })
     }
   ]
 };

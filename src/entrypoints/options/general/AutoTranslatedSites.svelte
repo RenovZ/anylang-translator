@@ -7,14 +7,13 @@
   import SectionRow from '../SectionRow.svelte';
 
   interface Props {
-    position: 'alwaysAutoTranslatedSites' | 'dontAutoTranslatedSites';
     title: string;
     description: string;
   }
 
-  const { position, title, description }: Props = $props();
+  const { title, description }: Props = $props();
 
-  let newSite = $state({ alwaysAutoTranslatedSites: '', dontAutoTranslatedSites: '' });
+  let newSite = $state('');
   let editingSite = $state<string | null>(null);
   let editingValue = $state('');
   let batchMode = $state(false);
@@ -27,36 +26,17 @@
       type="text"
       placeholder="example.com"
       class="placeholder:text-slate-400"
-      bind:value={newSite[position]} />
+      bind:value={newSite} />
     <Button
       color="secondary"
-      disabled={!newSite[position]}
+      disabled={!newSite}
       onclick={async () => {
-        let { alwaysAutoTranslatedSites, dontAutoTranslatedSites } = $config;
-        if (position === 'alwaysAutoTranslatedSites') {
-          if (!alwaysAutoTranslatedSites.includes(newSite.alwaysAutoTranslatedSites)) {
-            $config.alwaysAutoTranslatedSites = [
-              ...alwaysAutoTranslatedSites,
-              newSite.alwaysAutoTranslatedSites
-            ];
-          }
-          $config.dontAutoTranslatedSites = dontAutoTranslatedSites.filter(
-            (s) => s !== newSite.alwaysAutoTranslatedSites
-          );
-        }
-        if (position === 'dontAutoTranslatedSites') {
-          if (!dontAutoTranslatedSites.includes(newSite.dontAutoTranslatedSites)) {
-            $config.dontAutoTranslatedSites = [
-              ...dontAutoTranslatedSites,
-              newSite.dontAutoTranslatedSites
-            ];
-          }
-          $config.alwaysAutoTranslatedSites = alwaysAutoTranslatedSites.filter(
-            (s) => s !== newSite.dontAutoTranslatedSites
-          );
+        let { alwaysAutoTranslatedSites } = $config;
+        if (!alwaysAutoTranslatedSites.includes(newSite)) {
+          $config.alwaysAutoTranslatedSites = [...alwaysAutoTranslatedSites, newSite];
         }
 
-        newSite[position] = '';
+        newSite = '';
       }}>
       {i18n('add', { defaultValue: 'Add' })}
     </Button>
@@ -70,7 +50,7 @@
           selectedSites = [];
         } else {
           batchMode = true;
-          selectedSites = [...$config[position]];
+          selectedSites = [...$config.alwaysAutoTranslatedSites];
         }
       }}>
       {batchMode
@@ -82,7 +62,9 @@
         color="red"
         size="sm"
         onclick={() => {
-          $config[position] = $config[position].filter((s) => !selectedSites.includes(s));
+          $config.alwaysAutoTranslatedSites = $config.alwaysAutoTranslatedSites.filter(
+            (s) => !selectedSites.includes(s)
+          );
           selectedSites = [];
           batchMode = false;
         }}>
@@ -92,7 +74,7 @@
   </div>
   <div
     class="max-h-80 space-y-1 overflow-y-auto rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
-    {#each $config[position] as site (site)}
+    {#each $config.alwaysAutoTranslatedSites as site (site)}
       <div class="flex items-center justify-between pb-3 last:pb-0">
         {#if editingSite === site}
           <Input
@@ -101,11 +83,11 @@
             class="mr-2 flex-1"
             onkeydown={(e) => {
               if (e.key === 'Enter') {
-                const idx = $config[position].indexOf(site);
+                const idx = $config.alwaysAutoTranslatedSites.indexOf(site);
                 if (idx !== -1 && editingValue.trim()) {
-                  const newList = [...$config[position]];
+                  const newList = [...$config.alwaysAutoTranslatedSites];
                   newList[idx] = editingValue.trim();
-                  $config[position] = newList;
+                  $config.alwaysAutoTranslatedSites = newList;
                 }
                 editingSite = null;
               } else if (e.key === 'Escape') {
@@ -116,11 +98,11 @@
             <button
               type="button"
               onclick={() => {
-                const idx = $config[position].indexOf(site);
+                const idx = $config.alwaysAutoTranslatedSites.indexOf(site);
                 if (idx !== -1 && editingValue.trim()) {
-                  const newList = [...$config[position]];
+                  const newList = [...$config.alwaysAutoTranslatedSites];
                   newList[idx] = editingValue.trim();
-                  $config[position] = newList;
+                  $config.alwaysAutoTranslatedSites = newList;
                 }
                 editingSite = null;
               }}>
@@ -161,7 +143,9 @@
             <button
               type="button"
               onclick={() => {
-                $config[position] = $config[position].filter((s) => s !== site);
+                $config.alwaysAutoTranslatedSites = $config.alwaysAutoTranslatedSites.filter(
+                  (s) => s !== site
+                );
               }}>
               {i18n('delete', { defaultValue: 'Delete' })}
             </button>

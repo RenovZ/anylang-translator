@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Avatar, Button, Dropdown, DropdownItem } from 'flowbite-svelte';
+  import { Avatar, Button, Dropdown, DropdownItem, Toggle } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
   import { config } from '@/lib/config';
@@ -143,41 +143,35 @@
     </div>
   </SectionRow>
 
+  <!-- enable auto-translate -->
+  <SectionRow
+    title={i18n('enable_auto_translate', {
+      defaultValue: 'Enable auto-translate feature'
+    })}>
+    <Toggle
+      slot="controls"
+      class="ms-auto"
+      bind:checked={$config.autoTranslateEnabled}
+      size="small"
+      classes={{
+        span: 'me-0 cursor-pointer bg-slate-200 dark:bg-slate-600'
+      }} />
+  </SectionRow>
+
   <!-- always auto-translated sites -->
   <AutoTranslatedSites
-    position="alwaysAutoTranslatedSites"
     title={i18n('always_auto_translated_sites', { defaultValue: 'Always auto-translated sites' })}
     description={i18n('always_auto_translated_sites_hint', {
       defaultValue:
         'When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules.'
     })} />
 
-  <!-- don't auto-translated sites -->
-  <AutoTranslatedSites
-    position="dontAutoTranslatedSites"
-    title={i18n('dont_auto_translated_sites', {
-      defaultValue: "Don't auto-translate sites"
-    })}
-    description={i18n('dont_auto_translated_sites_hint', {
-      defaultValue:
-        'When current site matches these domains, auto-translation feature is disabled. This rule has higher priority than language rules.'
-    })} />
-
   <!-- always auto-translated language -->
   <AutoTranslatedLang
-    position="alwaysAutoTranslatedLang"
     title={i18n('always_auto_translated_lang', { defaultValue: 'Always auto-translate language' })}
     description={i18n('always_auto_translated_lang_hint', {
       defaultValue:
         'When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts.'
-    })} />
-
-  <!-- don't auto-translated language -->
-  <AutoTranslatedLang
-    position="dontAutoTranslatedLang"
-    title={i18n('dont_auto_translated_lang', { defaultValue: "Don't auto-translate language" })}
-    description={i18n('dont_auto_translated_lang_hint', {
-      defaultValue: 'When page language is one of these languages, content will not auto-translate.'
     })} />
 
   <!-- translation display style -->
