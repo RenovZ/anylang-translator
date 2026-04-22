@@ -11,7 +11,7 @@
   id="about"
   title={i18n('options_about_title', { defaultValue: 'About' })}
   description={i18n('options_about_description', {
-    defaultValue: 'Learn about the Anylang Translate extension.'
+    defaultValue: 'Learn about the Anylang Translator extension.'
   })}>
   <!-- About Content -->
   <div class="flex flex-col items-center justify-center py-8">
@@ -22,7 +22,7 @@
 
     <!-- Product Info -->
     <h3 class="text-xl font-bold dark:text-slate-100">
-      {i18n('options_about_product_name', { defaultValue: 'Anylang Translate' })}
+      {i18n('options_about_product_name', { defaultValue: 'Anylang Translator' })}
     </h3>
     <p class="mt-2 text-slate-500 dark:text-slate-400">
       {i18n('options_about_version', { defaultValue: 'Version 0.0.1' })}

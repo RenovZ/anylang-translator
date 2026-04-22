@@ -1,6 +1,6 @@
 import i18n from '@/lib/i18n';
 
-const navItems = [
+export const navItems = [
   {
     id: 'general',
     label: i18n('options_nav_general', { defaultValue: 'General settings' }),
@@ -98,38 +98,3 @@ const navItems = [
     position: 'bottom'
   }
 ] as const;
-
-const legacyToggleModeMap: Record<string, Record<string, string>> = {
-  alwaysTranslateSite: {
-    总是翻译该网站: 'always_translate_site',
-    不自动翻译该网站: 'never_auto_translate_site'
-  },
-  hoverTrigger: {
-    '＋ Ctrl 翻译/还原该段': 'ctrl',
-    '＋ Shift 翻译/还原该段': 'shift',
-    '＋ Alt 翻译/还原该段': 'alt',
-    '＋ 长按鼠标左键': 'long_press_left_click',
-    直接翻译该段: 'direct',
-    '自定义快捷键(打开设置)': 'custom_shortcut'
-  },
-  selectionTrigger: {
-    直接触发: 'direct',
-    显示图标: 'icon',
-    显示小圆点: 'dot',
-    '按 Ctrl 触发': 'ctrl',
-    '按 Shift 触发': 'shift',
-    '按 Alt 触发': 'alt'
-  }
-};
-
-const alwaysTranslateSites = [
-  'twitter.com',
-  'x.com',
-  'www.reddit.com',
-  'www.kadaza.com',
-  'en.wikipedia.org',
-  '*.medium.com',
-  'news.ycombinator.com'
-];
-
-export { navItems, legacyToggleModeMap, alwaysTranslateSites };

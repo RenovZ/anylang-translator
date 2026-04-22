@@ -4,9 +4,11 @@
     GradientButton,
     Button,
     Dropdown,
+    DropdownGroup,
     DropdownItem,
     Toggle,
-    Tooltip
+    Tooltip,
+    DropdownHeader
   } from 'flowbite-svelte';
   import {
     ChevronDownOutline,
@@ -16,21 +18,15 @@
   } from 'flowbite-svelte-icons';
   import { browser } from 'wxt/browser';
 
+  import '@/assets/app.css';
+  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
   import { config, type AiProvider, type SelectionTriggerValue } from '@/lib/config';
-  import { promptPresets } from '@/lib/preset';
+  import { paidUserProviders, promptPresets } from '@/lib/preset';
   import { lang } from '@/lib/lang';
   import { i18n } from '@/lib/i18n';
-  import '@/assets/app.css';
   import avatar from '@/lib/avatar';
-  import {
-    alwaysTranslateToggle,
-    selectionTriggerToggle,
-    languageOptions,
-    moreItems,
-    quickActions
-  } from './data';
-
-  const providers = $derived([...$config.enabledProviders, ...$config.customProviders]);
+  import { languageOptions } from '@/lib/data';
+  import { alwaysTranslateToggle, selectionTriggerToggle, moreItems, quickActions } from './data';
 </script>
 
 <main class="min-w-80 bg-slate-100 text-sm dark:bg-slate-950/80">
@@ -72,11 +68,11 @@
         simple
         placement={position === 'source' ? 'bottom-start' : 'bottom-end'}
         class="max-h-80 overflow-y-auto shadow-md">
-        {#if position === 'source'}
-          <DropdownItem onclick={() => ($config.sourceLanguage = null)}>
-            {i18n('auto_detect', { defaultValue: 'Auto Detect' })}
-          </DropdownItem>
-        {/if}
+        <DropdownItem
+          onclick={() =>
+            ($config[position === 'source' ? 'sourceLanguage' : 'targetLanguage'] = null)}>
+          {i18n('auto_detect', { defaultValue: 'Auto Detect' })}
+        </DropdownItem>
         {#each Object.entries(lang.all()) as [langCode, langName] (langCode)}
           <DropdownItem
             onclick={() =>
@@ -106,19 +102,13 @@
           </div>
           <ChevronDownOutline class="h-6 w-6 text-slate-400" />
         </button>
-        <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
-          {#each providers as provider ((provider.type, provider.name))}
-            <DropdownItem onclick={() => ($config.translateProvider = { ...provider })}>
-              {provider.name}
-            </DropdownItem>
-          {/each}
-        </Dropdown>
+        <ProvidersDropdown />
       </div>
       {#if $config.translateProvider.type === 'ai'}
         {@const aiProvider = $config.translateProvider as AiProvider}
         {@const currentModels =
           (
-            providers.find(
+            [...$config.enabledProviders, ...paidUserProviders, ...$config.customProviders].find(
               (item) => item.type === 'ai' && item.name === aiProvider.name
             ) as AiProvider
           )?.models ?? []}
@@ -183,12 +173,12 @@
             {#each alwaysTranslateToggle.options as option (option.value)}
               <DropdownItem
                 onclick={async () => {
-                  let { alwaysTranslatedSites, dontAutoTranslatedSites } = $config;
+                  let { alwaysAutoTranslatedSites, dontAutoTranslatedSites } = $config;
                   const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
                   const site = tab.url ? new URL(tab.url).origin : window.location.origin;
                   if (option.value === 'alwaysTranslateThisSite') {
-                    if (!alwaysTranslatedSites.includes(site)) {
-                      $config.alwaysTranslatedSites = [...alwaysTranslatedSites, site];
+                    if (!alwaysAutoTranslatedSites.includes(site)) {
+                      $config.alwaysAutoTranslatedSites = [...alwaysAutoTranslatedSites, site];
                     }
                     $config.dontAutoTranslatedSites = dontAutoTranslatedSites.filter(
                       (s) => s !== site
@@ -198,7 +188,9 @@
                     if (!dontAutoTranslatedSites.includes(site)) {
                       $config.dontAutoTranslatedSites = [...dontAutoTranslatedSites, site];
                     }
-                    $config.alwaysTranslatedSites = alwaysTranslatedSites.filter((s) => s !== site);
+                    $config.alwaysAutoTranslatedSites = alwaysAutoTranslatedSites.filter(
+                      (s) => s !== site
+                    );
                   }
                 }}>
                 {option.label}

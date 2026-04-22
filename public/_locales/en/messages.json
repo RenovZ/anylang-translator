@@ -1,9 +1,90 @@
 {
+  "add": {
+    "message": "Add"
+  },
+  "always_auto_translated_lang": {
+    "message": "Always auto-translate language"
+  },
+  "always_auto_translated_lang_hint": {
+    "message": "When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts."
+  },
+  "always_auto_translated_sites": {
+    "message": "Always auto-translated sites"
+  },
+  "always_auto_translated_sites_hint": {
+    "message": "When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules."
+  },
   "auto_detect": {
     "message": "Auto Detect"
   },
+  "background_color": {
+    "message": "Background color"
+  },
+  "batch_ops": {
+    "message": "Batch operations"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "cancel_batch": {
+    "message": "Cancel batch"
+  },
+  "custom": {
+    "message": "Custom"
+  },
+  "custom_provider": {
+    "message": "Custom Providers"
+  },
+  "default_language": {
+    "message": "Default Language"
+  },
+  "delete": {
+    "message": "Delete"
+  },
+  "delete_selected": {
+    "message": "Delete selected"
+  },
+  "dont_auto_translated_lang": {
+    "message": "Don't auto-translate language"
+  },
+  "dont_auto_translated_lang_hint": {
+    "message": "When page language is one of these languages, content will not auto-translate."
+  },
+  "dont_auto_translated_sites": {
+    "message": "Don't auto-translate sites"
+  },
+  "dont_auto_translated_sites_hint": {
+    "message": "When current site matches these domains, auto-translation feature is disabled. This rule has higher priority than language rules."
+  },
+  "edit": {
+    "message": "Edit"
+  },
+  "font_family": {
+    "message": "Font family"
+  },
+  "font_size": {
+    "message": "Font size (px)"
+  },
+  "font_system_default": {
+    "message": "System default"
+  },
+  "font_weight": {
+    "message": "Font weight"
+  },
+  "free_user": {
+    "message": "Free User"
+  },
+  "general_settings": {
+    "message": "General settings"
+  },
   "guest": {
     "message": "Guest"
+  },
+  "login": {
+    "message": "Login"
+  },
+  "login_hint": {
+    "message": "Unlock membership after login"
   },
   "model": {
     "message": "Model"
@@ -71,14 +152,17 @@
   "msg_unknown_language": {
     "message": "Unknown language"
   },
+  "not_selected": {
+    "message": "Not Selected"
+  },
   "options_about_check_update": {
     "message": "Check for updates"
   },
   "options_about_description": {
-    "message": "Learn about the Anylang Translate extension."
+    "message": "Learn about the Anylang Translator extension."
   },
   "options_about_product_name": {
-    "message": "Anylang Translate"
+    "message": "Anylang Translator"
   },
   "options_about_title": {
     "message": "About"
@@ -220,171 +304,6 @@
   },
   "options_floating_title": {
     "message": "Floating ball"
-  },
-  "options_general_add_button": {
-    "message": "Add"
-  },
-  "options_general_always_translate_languages_description": {
-    "message": "When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts."
-  },
-  "options_general_always_translate_languages_title": {
-    "message": "Always-translate languages"
-  },
-  "options_general_always_translate_sites_description": {
-    "message": "When current site matches these domains, content will auto-translate to target language"
-  },
-  "options_general_always_translate_sites_title": {
-    "message": "Always-translate sites"
-  },
-  "options_general_batch_ops": {
-    "message": "Batch operations"
-  },
-  "options_general_custom_color_size": {
-    "message": "Custom color and size"
-  },
-  "options_general_custom_font_input": {
-    "message": "Use custom font"
-  },
-  "options_general_delete_button": {
-    "message": "Delete"
-  },
-  "options_general_edit_button": {
-    "message": "Edit"
-  },
-  "options_general_font_scale": {
-    "message": "Font scale (%)"
-  },
-  "options_general_font_weight": {
-    "message": "Font weight"
-  },
-  "options_general_header_reset": {
-    "message": "Reset settings"
-  },
-  "options_general_header_save": {
-    "message": "Save settings"
-  },
-  "options_general_italic": {
-    "message": "Set italic style"
-  },
-  "options_general_login_button": {
-    "message": "Log in"
-  },
-  "options_general_login_hint": {
-    "message": "Unlock membership after login"
-  },
-  "options_general_never_translate_languages_description": {
-    "message": "When a paragraph language is one of these, translation is skipped"
-  },
-  "options_general_never_translate_languages_title": {
-    "message": "Never-translate languages"
-  },
-  "options_general_never_translate_sites_description": {
-    "message": "When current site matches these domains, auto-translation is disabled. This rule has higher priority than language rules."
-  },
-  "options_general_never_translate_sites_title": {
-    "message": "Never auto-translate sites"
-  },
-  "options_general_preference_bilingual": {
-    "message": "Bilingual"
-  },
-  "options_general_preference_translation_only": {
-    "message": "Translation only"
-  },
-  "options_general_preview_all_styles": {
-    "message": "Preview all styles"
-  },
-  "options_general_restore_default_color": {
-    "message": "Restore default color"
-  },
-  "options_general_service_description": {
-    "message": "Choose a translation service"
-  },
-  "options_general_service_test": {
-    "message": "Test this service"
-  },
-  "options_general_service_title": {
-    "message": "Translation service"
-  },
-  "options_general_set_font": {
-    "message": "Set font"
-  },
-  "options_general_similar_language_bg_aria": {
-    "message": "Add background color when page and target languages are similar"
-  },
-  "options_general_similar_language_bg_description": {
-    "message": "When page and target languages are similar, add a background to translated text for easier side-by-side reading."
-  },
-  "options_general_similar_language_bg_title": {
-    "message": "Add background color when page and target languages are similar"
-  },
-  "options_general_site_placeholder": {
-    "message": "example.com"
-  },
-  "options_general_style_blur_learning": {
-    "message": "Blur (learning mode)"
-  },
-  "options_general_style_dashed_border": {
-    "message": "Dashed border"
-  },
-  "options_general_style_dashed_underline": {
-    "message": "Dashed underline"
-  },
-  "options_general_style_divider": {
-    "message": "Divider"
-  },
-  "options_general_style_dotted_underline": {
-    "message": "Dotted underline"
-  },
-  "options_general_style_highlight": {
-    "message": "Highlight"
-  },
-  "options_general_style_none": {
-    "message": "None"
-  },
-  "options_general_style_solid_border": {
-    "message": "Solid border"
-  },
-  "options_general_style_solid_underline": {
-    "message": "Solid underline"
-  },
-  "options_general_style_transparent": {
-    "message": "Transparent"
-  },
-  "options_general_target_language_description": {
-    "message": "Set the language you want content translated into"
-  },
-  "options_general_target_language_title": {
-    "message": "Target language"
-  },
-  "options_general_text_color": {
-    "message": "Text color"
-  },
-  "options_general_title": {
-    "message": "General settings"
-  },
-  "options_general_translation_preference_description": {
-    "message": "Choose display mode after translation: bilingual or translation-only"
-  },
-  "options_general_translation_preference_title": {
-    "message": "Translation preference"
-  },
-  "options_general_translation_style_description": {
-    "message": "Distinguish translated text styles; see examples below"
-  },
-  "options_general_translation_style_title": {
-    "message": "Translation display style"
-  },
-  "options_general_ui_language_description": {
-    "message": "UI language affects panel display language and does not change translation target language"
-  },
-  "options_general_ui_language_en": {
-    "message": "English"
-  },
-  "options_general_ui_language_title": {
-    "message": "UI language"
-  },
-  "options_general_ui_language_zh_hans": {
-    "message": "Chinese (Simplified)"
   },
   "options_hover_description": {
     "message": "Automatically translate when hovering over paragraphs."
@@ -584,12 +503,6 @@
   "options_shortcuts_window_title": {
     "message": "Standalone translation window"
   },
-  "options_status_reset": {
-    "message": "Defaults restored"
-  },
-  "options_status_saved": {
-    "message": "Settings saved"
-  },
   "options_subtitle_auto_aria": {
     "message": "Auto-enable bilingual subtitles"
   },
@@ -624,7 +537,7 @@
     "message": "AI terminology"
   },
   "options_title_extension_name": {
-    "message": "Anylang Translate"
+    "message": "Anylang Translator"
   },
   "options_writing_description": {
     "message": "Configure AI writing assistance and polishing features."
@@ -649,6 +562,9 @@
   },
   "options_writing_view_soon_button": {
     "message": "View upcoming capabilities"
+  },
+  "paid_user": {
+    "message": "Paid User"
   },
   "prompt": {
     "message": "Prompt"
@@ -728,6 +644,9 @@
   "provider": {
     "message": "Provider"
   },
+  "provider_test": {
+    "message": "Test this provider"
+  },
   "quick_action_doc_translate": {
     "message": "Document Translate"
   },
@@ -740,6 +659,12 @@
   "quick_action_toolbox": {
     "message": "Toolbox"
   },
+  "reset_settings": {
+    "message": "Reset settings"
+  },
+  "save": {
+    "message": "Save"
+  },
   "settings": {
     "message": "Settings"
   },
@@ -748,6 +673,12 @@
   },
   "target_language": {
     "message": "Target language"
+  },
+  "target_language_hint": {
+    "message": "Set the language you want content translated into"
+  },
+  "text_color": {
+    "message": "Text color"
   },
   "toggle_always_translate_site": {
     "message": "Always translate this site"
@@ -769,6 +700,111 @@
   },
   "translate": {
     "message": "Translate (⌥A)"
+  },
+  "translation_display_style_background": {
+    "message": "Background"
+  },
+  "translation_display_style_black_gray": {
+    "message": "Black Gray"
+  },
+  "translation_display_style_blur_learning": {
+    "message": "Blur effect (learning mode)"
+  },
+  "translation_display_style_bold": {
+    "message": "Bold"
+  },
+  "translation_display_style_custom": {
+    "message": "Custom"
+  },
+  "translation_display_style_dashed_border": {
+    "message": "Dotted Border"
+  },
+  "translation_display_style_dashed_underline": {
+    "message": "Dotted lines"
+  },
+  "translation_display_style_divider": {
+    "message": "Dividing line"
+  },
+  "translation_display_style_dotted_underline": {
+    "message": "Dotted lines"
+  },
+  "translation_display_style_highlight": {
+    "message": "Highlight"
+  },
+  "translation_display_style_italic": {
+    "message": "Italic"
+  },
+  "translation_display_style_marker": {
+    "message": "Marker"
+  },
+  "translation_display_style_marker2": {
+    "message": "Maker2"
+  },
+  "translation_display_style_none": {
+    "message": "None"
+  },
+  "translation_display_style_quote_style": {
+    "message": "quote style"
+  },
+  "translation_display_style_solid_border": {
+    "message": "Solid Border"
+  },
+  "translation_display_style_solid_underline": {
+    "message": "Straight line"
+  },
+  "translation_display_style_system_dotted_lines": {
+    "message": "System built-in dotted lines"
+  },
+  "translation_display_style_system_dotted_lines_2": {
+    "message": "System built-in dotted lines"
+  },
+  "translation_display_style_system_straight_lines": {
+    "message": "System built-in straight lines"
+  },
+  "translation_display_style_thin_dotted_lines": {
+    "message": "Thin dotted lines"
+  },
+  "translation_display_style_transparent": {
+    "message": "Transparency effect"
+  },
+  "translation_display_style_wavy_lines": {
+    "message": "wavy lines"
+  },
+  "translation_display_style_weaken": {
+    "message": "Weaken"
+  },
+  "translation_display_style_white_paper_shadow": {
+    "message": "White paper shadow effect"
+  },
+  "translation_display_styles": {
+    "message": "Translation display styles"
+  },
+  "translation_display_styles_hint": {
+    "message": "Distinguish translated text styles; see examples below"
+  },
+  "translation_mode": {
+    "message": "Translation mode"
+  },
+  "translation_mode_bilingual": {
+    "message": "Bilingual"
+  },
+  "translation_mode_hint": {
+    "message": "Choose display mode after translation: bilingual or translation-only"
+  },
+  "translation_mode_translation_only": {
+    "message": "Translation only"
+  },
+  "translation_provider": {
+    "message": "Translation provider"
+  },
+  "translation_provider_hint": {
+    "message": "Choose a translation provider"
+  },
+  "ui_language": {
+    "message": "UI language"
+  },
+  "ui_language_hint": {
+    "message": "UI language affects panel display language and does not change translation target language"
   },
   "upgrade": {
     "message": "Upgrade"

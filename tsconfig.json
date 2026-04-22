@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "useDefineForClassFields": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", ".wxt/wxt.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", ".wxt/wxt.d.ts", ".wxt/types/*.d.ts"]
 }

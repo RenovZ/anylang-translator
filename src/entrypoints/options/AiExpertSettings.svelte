@@ -2,7 +2,7 @@
   import { Select } from 'flowbite-svelte';
 
   import { i18n } from '@/lib/i18n';
-  import { promptPresetOptions } from '@/entrypoints/popup/data';
+  import { promptPresets } from '@/lib/preset';
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
   import type { OptionsProviderSectionProps } from './section-props';
@@ -29,7 +29,7 @@
       value={config.promptPreset}
       onchange={(event) =>
         updateField('promptPreset', (event.currentTarget as HTMLSelectElement).value)}>
-      {#each promptPresetOptions as option (option.value)}
+      {#each promptPresets as option (option.value)}
         <option value={option.value}>{option.label}</option>
       {/each}
     </Select>

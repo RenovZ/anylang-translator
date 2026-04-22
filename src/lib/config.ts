@@ -1,5 +1,6 @@
 import { storage } from 'wxt/utils/storage';
 import { writable, get, type Subscriber } from 'svelte/store';
+import { translationDisplayStyles } from './preset';
 
 export type ApiProvider = {
   type: 'api';
@@ -17,6 +18,23 @@ export type AiProvider = {
 export type Provider = ApiProvider | AiProvider;
 
 export type SelectionTriggerValue = 'directly' | 'show icons' | null;
+export type TranslationMode = 'bilingual' | 'translation_only';
+
+export type TranslationDisplayStyleCustom = {
+  backgroundColor: string;
+  color: string;
+  fontSize: string;
+  fontWeight: number;
+  fontFamily: string;
+  borderRadius: string;
+  padding: string;
+};
+export type TranslationDisplayStyle = {
+  value: string;
+  label: string;
+  styles: Record<string, string> | TranslationDisplayStyleCustom;
+  attributes?: Record<string, string>;
+};
 
 const defaultConfig = {
   installDateTime: null as number | null,
@@ -32,12 +50,27 @@ const defaultConfig = {
   customProviders: [] as Provider[],
   sourceLanguage: null as string | null,
   targetLanguage: null as string | null,
-  alwaysTranslatedSites: [] as string[],
-  dontAutoTranslatedSites: [] as string[],
+
   autoTranslateEnabled: false,
+  alwaysAutoTranslatedSites: [
+    'twitter.com',
+    'x.com',
+    'www.reddit.com',
+    'www.kadaza.com',
+    'en.wikipedia.org',
+    '*.medium.com',
+    'news.ycombinator.com'
+  ] as string[],
+  dontAutoTranslatedSites: ['example.com'] as string[],
+  alwaysAutoTranslatedLang: null as string | null,
+  dontAutoTranslatedLang: null as string | null,
 
   selectionTriggerTranslate: 'directly' as SelectionTriggerValue,
-  selectionTranslateEnabled: false
+  selectionTranslateEnabled: false,
+
+  translationMode: 'bilingual' as TranslationMode,
+
+  translationDisplayStyle: translationDisplayStyles[0] as TranslationDisplayStyle
 };
 
 export type Config = typeof defaultConfig;

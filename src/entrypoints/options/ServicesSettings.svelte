@@ -2,7 +2,6 @@
   import { Select } from 'flowbite-svelte';
 
   import { i18n } from '@/lib/i18n';
-  import { providerOptions } from '@/entrypoints/popup/data';
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
   import type { OptionsProviderSectionProps } from './section-props';
@@ -20,7 +19,7 @@
     defaultValue: 'Choose your model provider and default model.'
   })}>
   <!-- Provider Selection -->
-  <SectionRow
+  <!-- <SectionRow
     title={i18n('options_services_provider_title', { defaultValue: 'Provider' })}
     description={i18n('options_services_provider_description', {
       defaultValue: 'Choose your preferred AI model provider'
@@ -34,7 +33,7 @@
         <option value={option}>{option}</option>
       {/each}
     </Select>
-  </SectionRow>
+  </SectionRow> -->
 
   <!-- Default Model Selection -->
   <SectionRow

@@ -6,58 +6,45 @@
 
   import { i18n } from '@/lib/i18n';
   import '@/assets/app.css';
-  import AboutSettings from './components/AboutSettings.svelte';
-  import AdvancedSettings from './components/AdvancedSettings.svelte';
-  import AiExpertSettings from './components/AiExpertSettings.svelte';
-  import AiTermsSettings from './components/AiTermsSettings.svelte';
-  import AiWriteSettings from './components/AiWriteSettings.svelte';
-  import ChangelogSettings from './components/ChangelogSettings.svelte';
-  import DeveloperSettings from './components/DeveloperSettings.svelte';
-  import DocumentationSettings from './components/DocumentationSettings.svelte';
-  import FeedbackSettings from './components/FeedbackSettings.svelte';
-  import FloatingBallSettings from './components/FloatingBallSettings.svelte';
-  import GeneralSettings from './components/general/GeneralSettings.svelte';
-  import ImportExportSettings from './components/ImportExportSettings.svelte';
-  import InputTranslationSettings from './components/InputTranslationSettings.svelte';
-  import MangaImageSettings from './components/MangaImageSettings.svelte';
-  import MouseHoverSettings from './components/MouseHoverSettings.svelte';
-  import PricingSettings from './components/PricingSettings.svelte';
-  import SelectionTranslationSettings from './components/SelectionTranslationSettings.svelte';
-  import ServicesSettings from './components/ServicesSettings.svelte';
-  import ShortcutsSettings from './components/ShortcutsSettings.svelte';
-  import SubtitleSettings from './components/SubtitleSettings.svelte';
-  import type { V2OptionsConfig } from './types';
-  import { modelOptionsByProvider, toggles, type ToggleItem } from '@/entrypoints/popup/data';
-  import { navItems, alwaysTranslateSites } from './data';
+  import AboutSettings from './AboutSettings.svelte';
+  import AdvancedSettings from './AdvancedSettings.svelte';
+  import AiExpertSettings from './AiExpertSettings.svelte';
+  import AiTermsSettings from './AiTermsSettings.svelte';
+  import AiWriteSettings from './AiWriteSettings.svelte';
+  import ChangelogSettings from './ChangelogSettings.svelte';
+  import DeveloperSettings from './DeveloperSettings.svelte';
+  import DocumentationSettings from './DocumentationSettings.svelte';
+  import FeedbackSettings from './FeedbackSettings.svelte';
+  import FloatingBallSettings from './FloatingBallSettings.svelte';
+  import GeneralSettings from './general/GeneralSettings.svelte';
+  import ImportExportSettings from './ImportExportSettings.svelte';
+  import InputTranslationSettings from './InputTranslationSettings.svelte';
+  import MangaImageSettings from './MangaImageSettings.svelte';
+  import MouseHoverSettings from './MouseHoverSettings.svelte';
+  import PricingSettings from './PricingSettings.svelte';
+  import SelectionTranslationSettings from './SelectionTranslationSettings.svelte';
+  import ServicesSettings from './ServicesSettings.svelte';
+  import ShortcutsSettings from './ShortcutsSettings.svelte';
+  import SubtitleSettings from './SubtitleSettings.svelte';
+  import { navItems } from './data';
 
-  const STORAGE_KEY = 'options-config';
+  // const createDefaultConfig = () => ({
+  //   neverTranslateSites: [],
+  //   alwaysTranslateLanguages: ['en', 'ja'],
+  //   neverTranslateLanguages: ['zh-Hans'],
+  //   uiLanguage: 'zh-Hans',
+  //   translationPreference: 'bilingual',
+  //   translationStyle: 'none',
+  //   richTextTranslate: true,
+  //   textColor: '#FFFFFF',
+  //   fontScale: '100',
+  //   fontWeight: '400',
+  //   italicTranslate: false,
+  //   customFontEnabled: false,
+  //   customFontFamily: 'none'
+  // });
 
-  const defaultToggleModes = Object.fromEntries(
-    toggles.filter((item) => item.options?.length).map((item) => [item.key, item.options![0].value])
-  );
-
-  const createDefaultConfig = (): V2OptionsConfig => ({
-    toggleModes: { ...defaultToggleModes },
-    alwaysTranslateSites,
-    neverTranslateSites: [],
-    alwaysTranslateLanguages: ['en', 'ja'],
-    neverTranslateLanguages: ['zh-Hans'],
-    uiLanguage: 'zh-Hans',
-    translationPreference: 'bilingual',
-    translationStyle: 'none',
-    richTextTranslate: true,
-    textColor: '#FFFFFF',
-    fontScale: '100',
-    fontWeight: '400',
-    italicTranslate: false,
-    customFontEnabled: false,
-    customFontFamily: 'none'
-  });
-
-  let config = createDefaultConfig();
-  let toggleItems: ToggleItem[] = toggles.map((item) => ({ ...item }));
   let newSite = '';
-  let savedSnapshot = JSON.stringify(config);
   let saveMessage = '';
   let loading = true;
   let saving = false;
@@ -66,12 +53,6 @@
   const topNavItems = navItems.filter((item) => item.position === 'top');
   const bottomNavItems = navItems.filter((item) => item.position === 'bottom');
 
-  $: config = {
-    ...config,
-    toggles: Object.fromEntries(toggleItems.map((item) => [item.key, item.enabled]))
-  };
-
-  $: isDirty = JSON.stringify(config) !== savedSnapshot;
   $: activeNavLabel =
     navItems.find((item) => item.id === activeNavId)?.label ??
     i18n('options_nav_fallback_settings', { defaultValue: 'Settings' });
@@ -89,56 +70,6 @@
       window.removeEventListener('hashchange', handleHashChange);
     };
   });
-
-  const getProviderModels = (provider: string) => {
-    return modelOptionsByProvider[provider] ?? modelOptionsByProvider[defaultPopupConfig.provider];
-  };
-
-  const updateField = (key: 'provider' | 'model' | 'promptPreset', value: string) => {
-    if (key === 'provider') {
-      const nextModels = getProviderModels(value);
-      config = {
-        ...config,
-        provider: value,
-        model: nextModels[0] ?? ''
-      };
-      return;
-    }
-
-    config = {
-      ...config,
-      [key]: value
-    };
-  };
-
-  const getToggleConfig = (key: string) => {
-    return toggleItems.find((item) => item.key === key);
-  };
-
-  const updateToggleMode = (key: string, value: string) => {
-    config = {
-      ...config,
-      toggleModes: {
-        ...config.toggleModes,
-        [key]: value
-      }
-    };
-  };
-
-  const saveOptions = async () => {
-    saving = true;
-    await browser.storage.local.set({ [STORAGE_KEY]: config });
-    savedSnapshot = JSON.stringify(config);
-    saveMessage = i18n('options_status_saved', { defaultValue: 'Settings saved' });
-    saving = false;
-  };
-
-  const resetOptions = async () => {
-    config = createDefaultConfig();
-    toggleItems = toggles.map((item) => ({ ...item }));
-    await saveOptions();
-    saveMessage = i18n('options_status_reset', { defaultValue: 'Defaults restored' });
-  };
 
   const syncActiveNavWithHash = () => {
     const hash = window.location.hash.replace(/^#/, '');
@@ -171,7 +102,7 @@
         </div>
         <div class="flex items-center gap-3">
           <span class="text-lg font-semibold"
-            >{i18n('options_title_extension_name', { defaultValue: 'Anylang Translate' })}</span>
+            >{i18n('options_title_extension_name', { defaultValue: 'Anylang Translator' })}</span>
           <span class="text-slate-400">v0.0.1</span>
         </div>
       </div>
@@ -221,31 +152,31 @@
 
     <!-- Active Section Content -->
     {#if activeNavId === 'general'}
-      <GeneralSettings bind:config bind:newSite {saveOptions} {resetOptions} {getProviderModels} />
+      <GeneralSettings />
     {:else if activeNavId === 'services'}
-      <ServicesSettings {config} {getProviderModels} {updateField} />
+      <!-- <ServicesSettings {config} {getProviderModels} {updateField} /> -->
     {:else if activeNavId === 'ai'}
-      <AiExpertSettings {config} {updateField} />
+      <!-- <AiExpertSettings {config} {updateField} /> -->
     {:else if activeNavId === 'terms'}
       <AiTermsSettings />
     {:else if activeNavId === 'writing'}
       <AiWriteSettings />
     {:else if activeNavId === 'subtitle'}
-      <SubtitleSettings {toggleItems} />
+      <!-- <SubtitleSettings {toggleItems} /> -->
     {:else if activeNavId === 'manga'}
       <MangaImageSettings />
     {:else if activeNavId === 'input'}
       <InputTranslationSettings />
     {:else if activeNavId === 'selection-transiation'}
-      <SelectionTranslationSettings {config} {toggleItems} {getToggleConfig} {updateToggleMode} />
+      <!-- <SelectionTranslationSettings {config} {toggleItems} {getToggleConfig} {updateToggleMode} /> -->
     {:else if activeNavId === 'mouse-hover'}
-      <MouseHoverSettings {config} {toggleItems} {getToggleConfig} {updateToggleMode} />
+      <!-- <MouseHoverSettings {config} {toggleItems} {getToggleConfig} {updateToggleMode} /> -->
     {:else if activeNavId === 'floating'}
       <FloatingBallSettings />
     {:else if activeNavId === 'shortcuts'}
       <ShortcutsSettings />
     {:else if activeNavId === 'advanced'}
-      <AdvancedSettings {toggleItems} />
+      <!-- <AdvancedSettings {toggleItems} /> -->
     {:else if activeNavId === 'import-export'}
       <ImportExportSettings />
     {:else if activeNavId === 'about'}

@@ -1,4 +1,3 @@
-import type { ConfigStore } from '@/lib/Config';
 // import type { I18n } from "../lib/I18n";
 
 declare global {
@@ -11,6 +10,6 @@ declare global {
   // }
 }
 
-export type { ConfigStore };
+export type {};
 
 export {};
