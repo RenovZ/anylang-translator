@@ -1,11 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { Button } from 'flowbite-svelte';
-  import { browser } from 'wxt/browser';
+  import { browser, type PublicPath } from 'wxt/browser';
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
 
   import { i18n } from '@/lib/i18n';
   import '@/assets/app.css';
+  import General from './general/Index.svelte';
+  import ApiProviders from './api-providers/Index.svelte';
   import AboutSettings from './AboutSettings.svelte';
   import AdvancedSettings from './AdvancedSettings.svelte';
   import AiExpertSettings from './AiExpertSettings.svelte';
@@ -16,46 +18,24 @@
   import DocumentationSettings from './DocumentationSettings.svelte';
   import FeedbackSettings from './FeedbackSettings.svelte';
   import FloatingBallSettings from './FloatingBallSettings.svelte';
-  import GeneralSettings from './general/GeneralSettings.svelte';
   import ImportExportSettings from './ImportExportSettings.svelte';
   import InputTranslationSettings from './InputTranslationSettings.svelte';
   import MangaImageSettings from './MangaImageSettings.svelte';
   import MouseHoverSettings from './MouseHoverSettings.svelte';
   import PricingSettings from './PricingSettings.svelte';
   import SelectionTranslationSettings from './SelectionTranslationSettings.svelte';
-  import ServicesSettings from './ServicesSettings.svelte';
   import ShortcutsSettings from './ShortcutsSettings.svelte';
   import SubtitleSettings from './SubtitleSettings.svelte';
   import { navItems } from './data';
 
-  // const createDefaultConfig = () => ({
-  //   neverTranslateSites: [],
-  //   alwaysTranslateLanguages: ['en', 'ja'],
-  //   neverTranslateLanguages: ['zh-Hans'],
-  //   uiLanguage: 'zh-Hans',
-  //   translationPreference: 'bilingual',
-  //   translationStyle: 'none',
-  //   richTextTranslate: true,
-  //   textColor: '#FFFFFF',
-  //   fontScale: '100',
-  //   fontWeight: '400',
-  //   italicTranslate: false,
-  //   customFontEnabled: false,
-  //   customFontFamily: 'none'
-  // });
-
-  let newSite = '';
   let saveMessage = '';
   let loading = true;
   let saving = false;
-  let activeNavId: string = navItems[0].id;
+  let activeNavId: string = $state(navItems[0].id);
+  let activeNavLabel = $derived(navItems.find((item) => item.id === activeNavId)?.label);
 
   const topNavItems = navItems.filter((item) => item.position === 'top');
   const bottomNavItems = navItems.filter((item) => item.position === 'bottom');
-
-  $: activeNavLabel =
-    navItems.find((item) => item.id === activeNavId)?.label ??
-    i18n('options_nav_fallback_settings', { defaultValue: 'Settings' });
 
   onMount(() => {
     syncActiveNavWithHash();
@@ -89,8 +69,13 @@
 
     window.location.hash = id;
   };
+
+  const hoverCssUrl = browser.runtime.getURL('/contentScript/css/styles.css' as PublicPath);
 </script>
 
+<svelte:head>
+  <link rel="stylesheet" href={hoverCssUrl} />
+</svelte:head>
 <main
   class="min-h-screen bg-slate-100 text-sm text-slate-900 dark:bg-slate-950/80 dark:text-slate-50">
   <!-- Header Section -->
@@ -152,9 +137,9 @@
 
     <!-- Active Section Content -->
     {#if activeNavId === 'general'}
-      <GeneralSettings />
-    {:else if activeNavId === 'services'}
-      <!-- <ServicesSettings {config} {getProviderModels} {updateField} /> -->
+      <General />
+    {:else if activeNavId === 'api-providers'}
+      <ApiProviders />
     {:else if activeNavId === 'ai'}
       <!-- <AiExpertSettings {config} {updateField} /> -->
     {:else if activeNavId === 'terms'}
