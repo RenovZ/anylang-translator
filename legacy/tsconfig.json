@@ -1,10 +1,10 @@
 {
   "extends": "./.wxt/tsconfig.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "ES2022",
+    "module": "ES2022",
     "moduleResolution": "Bundler",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ES2022", "ES2023.Array", "DOM"],
     "strict": true,
     "noEmitOnError": false,
     "noEmit": true,

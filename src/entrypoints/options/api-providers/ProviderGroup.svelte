@@ -1,8 +1,7 @@
 <script lang="ts">
   import { type Provider } from '@/lib/config';
   import AccordionItem from '@/components/AccordionItem.svelte';
-
-  import ProviderIcon from './ProviderIcon.svelte';
+  import ProviderIcon from '@/components/ProviderIcon.svelte';
 
   interface Props {
     title: string;

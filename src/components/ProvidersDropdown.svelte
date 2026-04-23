@@ -5,6 +5,8 @@
   import { config } from '@/lib/config';
   import { goProviders, zenProviders } from '@/lib/preset';
   import { i18n } from '@/lib/i18n';
+
+  import ProviderIcon from './ProviderIcon.svelte';
 </script>
 
 <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
@@ -13,8 +15,11 @@
       {i18n('free_user', { defaultValue: 'Free User' })}
     </DropdownHeader>
     {#each $config.freeProviders as provider ((provider.type, provider.name))}
-      <DropdownItem onclick={() => ($config.pageTranslationProvider = { ...provider })}>
-        {provider.name}
+      <DropdownItem
+        class="flex items-center gap-2"
+        onclick={() => ($config.pageTranslationProvider = { ...provider })}>
+        <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
+        <span>{provider.name}</span>
       </DropdownItem>
     {/each}
   </DropdownGroup>
@@ -23,8 +28,11 @@
       {i18n('go_users', { defaultValue: 'Go Users' })}
     </DropdownHeader>
     {#each goProviders as provider ((provider.type, provider.name))}
-      <DropdownItem onclick={() => ($config.pageTranslationProvider = { ...provider })}>
-        {provider.name}
+      <DropdownItem
+        class="flex items-center gap-2"
+        onclick={() => ($config.pageTranslationProvider = { ...provider })}>
+        <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
+        <span>{provider.name} ({provider.model})</span>
       </DropdownItem>
     {/each}
   </DropdownGroup>
@@ -33,8 +41,11 @@
       {i18n('zen_users', { defaultValue: 'Zen Users' })}
     </DropdownHeader>
     {#each zenProviders as provider ((provider.type, provider.name))}
-      <DropdownItem onclick={() => ($config.pageTranslationProvider = { ...provider })}>
-        {provider.name}
+      <DropdownItem
+        class="flex items-center gap-2"
+        onclick={() => ($config.pageTranslationProvider = { ...provider })}>
+        <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
+        <span>{provider.name} ({provider.model})</span>
       </DropdownItem>
     {/each}
   </DropdownGroup>
@@ -43,8 +54,16 @@
       {i18n('custom', { defaultValue: 'Custom' })}
     </DropdownHeader>
     {#each $config.customProviders as provider ((provider.type, provider.name))}
-      <DropdownItem onclick={() => ($config.pageTranslationProvider = { ...provider })}>
-        {provider.name}
+      <DropdownItem
+        class="flex items-center gap-2"
+        onclick={() => ($config.pageTranslationProvider = { ...provider })}>
+        <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
+        <span>
+          {provider.name}
+          {#if provider.model}
+            ({provider.model})
+          {/if}
+        </span>
       </DropdownItem>
     {/each}
     <DropdownItem

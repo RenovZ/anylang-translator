@@ -4,8 +4,7 @@
   import { i18n } from '@/lib/i18n';
   import type { Provider } from '@/lib/config';
   import avatar from '@/lib/avatar';
-
-  import ProviderIcon from './ProviderIcon.svelte';
+  import ProviderIcon from '@/components/ProviderIcon.svelte';
 
   let {
     open = $bindable(false),
@@ -43,14 +42,12 @@
     ] as Provider[]
   ).toSorted((a, b) => a.name.localeCompare(b.name));
 
-  const openaiCompatibleProviders = (
-    [
-      { type: 'custom', name: '302.AI', icon: 'ai302' },
-      { type: 'custom', name: 'SiliconCloud', icon: 'siliconcloud' },
-      { type: 'custom', name: 'Volcengine', icon: 'volcengine', company: 'ByteDance' },
-      { type: 'custom', name: 'Custom Provider' }
-    ] as Provider[]
-  ).toSorted((a, b) => a.name.localeCompare(b.name));
+  const openaiCompatibleProviders = [
+    { type: 'custom', name: '302.AI', icon: 'ai302' },
+    { type: 'custom', name: 'SiliconCloud', icon: 'siliconcloud' },
+    { type: 'custom', name: 'Volcengine', icon: 'volcengine', company: 'ByteDance' },
+    { type: 'custom', name: 'Custom Provider' }
+  ] as Provider[];
 
   const sections = [
     {

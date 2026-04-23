@@ -8,71 +8,75 @@ import {
 
 export const aiProviders: AiProviderType[] = ['go', 'zen', 'custom'];
 
-export const goProviders: Provider[] = [
-  {
-    type: 'go',
-    name: 'Z.ai',
-    model: 'GLM-5.1',
-    models: ['GLM-5.1', 'GLM-5'],
-    icon: 'zai'
-  },
-  {
-    type: 'go',
-    name: 'Kimi',
-    company: 'Moonshot',
-    model: 'Kimi K2.6',
-    models: ['Kimi K2.6', 'Kimi K2.5'],
-    icon: 'kimi'
-  },
-  {
-    type: 'go',
-    name: 'MiMo',
-    company: 'Xiaomi',
-    model: 'MiMo-V2-Pro',
-    models: ['MiMo-V2-Pro', 'MiMo-V2-Omni'],
-    icon: 'xiaomimimo'
-  },
-  {
-    type: 'go',
-    name: 'MiniMax',
-    model: 'MiniMax M2.7',
-    models: ['MiniMax M2.7', 'MiniMax M2.5'],
-    icon: 'minimax'
-  },
-  {
-    type: 'go',
-    name: 'Qwen',
-    company: 'Alibaba',
-    model: 'Qwen3.6 Plus',
-    models: ['Qwen3.6 Plus', 'Qwen3.5 Plus'],
-    icon: 'qwen'
-  }
-];
+export const goProviders = (
+  [
+    {
+      type: 'go',
+      name: 'Z.ai',
+      model: 'GLM-5.1',
+      models: ['GLM-5.1', 'GLM-5'],
+      icon: 'zai'
+    },
+    {
+      type: 'go',
+      name: 'Kimi',
+      company: 'Moonshot',
+      model: 'Kimi K2.6',
+      models: ['Kimi K2.6', 'Kimi K2.5'],
+      icon: 'kimi'
+    },
+    {
+      type: 'go',
+      name: 'MiMo',
+      company: 'Xiaomi',
+      model: 'MiMo-V2-Pro',
+      models: ['MiMo-V2-Pro', 'MiMo-V2-Omni'],
+      icon: 'xiaomimimo'
+    },
+    {
+      type: 'go',
+      name: 'MiniMax',
+      model: 'MiniMax M2.7',
+      models: ['MiniMax M2.7', 'MiniMax M2.5'],
+      icon: 'minimax'
+    },
+    {
+      type: 'go',
+      name: 'Qwen',
+      company: 'Alibaba',
+      model: 'Qwen3.6 Plus',
+      models: ['Qwen3.6 Plus', 'Qwen3.5 Plus'],
+      icon: 'qwen'
+    }
+  ] as Provider[]
+).toSorted((a, b) => a.name.localeCompare(b.name));
 
-export const zenProviders: Provider[] = [
-  {
-    type: 'zen',
-    name: 'Anthropic',
-    model: 'Claude Opus 4.7',
-    models: ['Claude Opus 4.7', 'Claude Opus 4.6'],
-    icon: 'anthropic'
-  },
-  {
-    type: 'zen',
-    name: 'OpenAI',
-    model: 'GPT 5.4 Pro',
-    models: ['GPT 5.4 Pro', 'GPT 5.4'],
-    icon: 'openai'
-  },
-  {
-    type: 'zen',
-    name: 'Gemini',
-    company: 'Google',
-    model: 'Gemini 3.1 Pro',
-    models: ['Gemini 3.1 Pro', 'Gemini 3 Pro', 'Gemini 3 Flash'],
-    icon: 'gemini'
-  }
-];
+export const zenProviders = (
+  [
+    {
+      type: 'zen',
+      name: 'Anthropic',
+      model: 'Claude Opus 4.7',
+      models: ['Claude Opus 4.7', 'Claude Opus 4.6'],
+      icon: 'anthropic'
+    },
+    {
+      type: 'zen',
+      name: 'OpenAI',
+      model: 'GPT 5.4 Pro',
+      models: ['GPT 5.4 Pro', 'GPT 5.4'],
+      icon: 'openai'
+    },
+    {
+      type: 'zen',
+      name: 'Gemini',
+      company: 'Google',
+      model: 'Gemini 3.1 Pro',
+      models: ['Gemini 3.1 Pro', 'Gemini 3 Pro', 'Gemini 3 Flash'],
+      icon: 'gemini'
+    }
+  ] as Provider[]
+).toSorted((a, b) => a.name.localeCompare(b.name));
 
 export const promptPresets = [
   { value: 'general', label: i18n('prompt_preset_general', { defaultValue: 'General' }) },
