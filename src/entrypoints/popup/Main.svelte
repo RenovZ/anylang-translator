@@ -19,13 +19,13 @@
   import { browser } from 'wxt/browser';
 
   import '@/assets/app.css';
-  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
   import { config, type AiProvider, type SelectionTriggerValue } from '@/lib/config';
   import { paidUserProviders, promptPresets } from '@/lib/preset';
   import { lang } from '@/lib/lang';
   import { i18n } from '@/lib/i18n';
   import avatar from '@/lib/avatar';
   import { languageOptions } from '@/lib/data';
+  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
   import { selectionTranslateToggle, moreItems, quickActions } from './data';
 
   let currentSite = $state('');
