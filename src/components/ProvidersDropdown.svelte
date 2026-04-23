@@ -37,7 +37,9 @@
         {provider.name}
       </DropdownItem>
     {/each}
-    <DropdownItem onclick={() => browser.runtime.openOptionsPage()}>
+    <DropdownItem
+      onclick={() =>
+        browser.tabs.create({ url: browser.runtime.getURL('/options.html#api-providers') })}>
       {i18n('custom_provider', { defaultValue: 'Custom Providers' })}
     </DropdownItem>
   </DropdownGroup>

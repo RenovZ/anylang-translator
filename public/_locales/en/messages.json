@@ -17,6 +17,12 @@
   "always_auto_translated_sites_hint": {
     "message": "When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules."
   },
+  "api_providers": {
+    "message": "API Providers"
+  },
+  "api_providers_hint": {
+    "message": "Choose your model provider and default model."
+  },
   "auto_detect": {
     "message": "Auto Detect"
   },
@@ -67,6 +73,9 @@
   },
   "free_user": {
     "message": "Free User"
+  },
+  "general": {
+    "message": "General"
   },
   "general_settings": {
     "message": "General settings"
@@ -389,17 +398,11 @@
   "options_nav_docs": {
     "message": "Documentation"
   },
-  "options_nav_fallback_settings": {
-    "message": "Settings"
-  },
   "options_nav_feedback": {
     "message": "Feedback"
   },
   "options_nav_floating": {
     "message": "Floating ball"
-  },
-  "options_nav_general": {
-    "message": "General settings"
   },
   "options_nav_import_export": {
     "message": "Import/Export"
@@ -418,9 +421,6 @@
   },
   "options_nav_selection_translation": {
     "message": "Selection translation"
-  },
-  "options_nav_services": {
-    "message": "Translation services"
   },
   "options_nav_shortcuts": {
     "message": "Shortcuts"
@@ -473,17 +473,11 @@
   "options_services_default_model_title": {
     "message": "Default model"
   },
-  "options_services_description": {
-    "message": "Choose your model provider and default model."
-  },
   "options_services_provider_description": {
     "message": "Choose your preferred AI model provider"
   },
   "options_services_provider_title": {
     "message": "Provider"
-  },
-  "options_services_title": {
-    "message": "Translation services"
   },
   "options_shortcuts_description": {
     "message": "Customize global and in-page shortcuts."
