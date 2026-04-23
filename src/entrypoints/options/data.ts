@@ -3,12 +3,12 @@ import i18n from '@/lib/i18n';
 export const navItems = [
   {
     id: 'general',
-    label: i18n('options_nav_general', { defaultValue: 'General settings' }),
+    label: i18n('general', { defaultValue: 'General' }),
     position: 'top'
   },
   {
-    id: 'services',
-    label: i18n('options_nav_services', { defaultValue: 'Translation services' }),
+    id: 'api-providers',
+    label: i18n('api_providers', { defaultValue: 'API Providers' }),
     position: 'top'
   },
   { id: 'ai', label: i18n('options_nav_ai', { defaultValue: 'AI experts' }), position: 'top' },

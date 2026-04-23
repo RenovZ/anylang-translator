@@ -2,20 +2,15 @@
   import { Select } from 'flowbite-svelte';
 
   import { i18n } from '@/lib/i18n';
-  import Section from './Section.svelte';
-  import SectionRow from './SectionRow.svelte';
-  import type { OptionsProviderSectionProps } from './section-props';
-
-  export let config: OptionsProviderSectionProps['config'];
-  export let getProviderModels: OptionsProviderSectionProps['getProviderModels'];
-  export let updateField: OptionsProviderSectionProps['updateField'];
+  import Section from '../Section.svelte';
+  import SectionRow from '../SectionRow.svelte';
 </script>
 
 <!-- Services Settings Section -->
 <Section
   id="services"
-  title={i18n('options_services_title', { defaultValue: 'Translation services' })}
-  description={i18n('options_services_description', {
+  title={i18n('api_providers', { defaultValue: 'API Providers' })}
+  description={i18n('api_providers_hint', {
     defaultValue: 'Choose your model provider and default model.'
   })}>
   <!-- Provider Selection -->
@@ -36,7 +31,7 @@
   </SectionRow> -->
 
   <!-- Default Model Selection -->
-  <SectionRow
+  <!-- <SectionRow
     title={i18n('options_services_default_model_title', { defaultValue: 'Default model' })}
     description={i18n('options_services_default_model_description', {
       defaultValue: 'Choose a model under the selected provider'
@@ -49,5 +44,5 @@
         <option value={option}>{option}</option>
       {/each}
     </Select>
-  </SectionRow>
+  </SectionRow> -->
 </Section>
