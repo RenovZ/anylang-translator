@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { browser, type PublicPath } from 'wxt/browser';
   import {
     Avatar,
     Toggle,
@@ -94,13 +93,7 @@
       }
     };
   };
-
-  const hoverCssUrl = browser.runtime.getURL('/contentScript/css/styles.css' as PublicPath);
 </script>
-
-<svelte:head>
-  <link rel="stylesheet" href={hoverCssUrl} />
-</svelte:head>
 
 <SectionRow
   title={i18n('translation_display_styles', {
