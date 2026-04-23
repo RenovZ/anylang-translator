@@ -1,44 +1,76 @@
 import { i18n } from '@/lib/i18n';
-import { type Provider, type TranslationDisplayStyle } from './config';
+import {
+  AiProviderType,
+  type FeatureKey,
+  type Provider,
+  type TranslationDisplayStyle
+} from './config';
 
-export const paidUserProviders: Provider[] = [
-  { type: 'ai', name: 'OpenAI', models: ['gpt-4.1-mini', 'gpt-4.1', 'gpt-4o-mini'] },
-  { type: 'ai', name: 'Anthropic', models: ['claude-3-5-haiku', 'claude-3-7-sonnet'] },
-  { type: 'ai', name: 'Google AI', models: ['gemini-2.5-flash', 'gemini-2.5-pro'] },
-  { type: 'ai', name: 'AWS', models: ['amazon.nova-lite', 'amazon.nova-pro'] },
-  { type: 'ai', name: 'Ollama Cloud', models: ['qwen3.5-2b', 'llama3.2', 'deepseek-r1:7b'] },
-  { type: 'ai', name: 'Groq', models: ['llama-3.3-70b', 'deepseek-r1-distill-llama-70b'] },
+export const aiProviders: AiProviderType[] = ['go', 'zen', 'custom'];
+
+export const goProviders: Provider[] = [
   {
-    type: 'ai',
-    name: 'Hugging Face',
-    models: ['Qwen/Qwen2.5-7B-Instruct', 'mistralai/Mistral-7B-Instruct-v0.3']
-  },
-  { type: 'ai', name: 'Mistral AI', models: ['mistral-small-latest', 'ministral-8b-latest'] },
-  { type: 'ai', name: 'Cohere', models: ['command-r', 'command-r-plus'] },
-  {
-    type: 'ai',
-    name: 'Fireworks',
-    models: ['accounts/fireworks/models/deepseek-v3', 'accounts/fireworks/models/qwen2p5-coder-32b']
-  },
-  { type: 'ai', name: 'xAI (Grok)', models: ['grok-2-latest', 'grok-2-mini'] },
-  { type: 'ai', name: 'DeepSeek', models: ['deepseek-chat', 'deepseek-reasoner'] },
-  { type: 'ai', name: 'Perplexity', models: ['sonar', 'sonar-pro'] },
-  { type: 'ai', name: 'Azure AI', models: ['gpt-4.1-mini', 'gpt-4o-mini'] },
-  {
-    type: 'ai',
-    name: 'NVIDIA AI',
-    models: ['meta/llama-3.1-70b-instruct', 'nvidia/llama-3.1-nemotron-70b-instruct']
-  },
-  { type: 'ai', name: 'IBM', models: ['granite-3.2-8b-instruct', 'granite-3.1-2b-instruct'] },
-  {
-    type: 'ai',
-    name: 'Together',
-    models: ['meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo', 'Qwen/Qwen2.5-72B-Instruct-Turbo']
+    type: 'go',
+    name: 'Z.ai',
+    model: 'GLM-5.1',
+    models: ['GLM-5.1', 'GLM-5'],
+    icon: 'zai'
   },
   {
-    type: 'ai',
-    name: 'OpenRouter',
-    models: ['openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-2.0-flash-001']
+    type: 'go',
+    name: 'Kimi',
+    company: 'Moonshot',
+    model: 'Kimi K2.6',
+    models: ['Kimi K2.6', 'Kimi K2.5'],
+    icon: 'kimi'
+  },
+  {
+    type: 'go',
+    name: 'MiMo',
+    company: 'Xiaomi',
+    model: 'MiMo-V2-Pro',
+    models: ['MiMo-V2-Pro', 'MiMo-V2-Omni'],
+    icon: 'xiaomimimo'
+  },
+  {
+    type: 'go',
+    name: 'MiniMax',
+    model: 'MiniMax M2.7',
+    models: ['MiniMax M2.7', 'MiniMax M2.5'],
+    icon: 'minimax'
+  },
+  {
+    type: 'go',
+    name: 'Qwen',
+    company: 'Alibaba',
+    model: 'Qwen3.6 Plus',
+    models: ['Qwen3.6 Plus', 'Qwen3.5 Plus'],
+    icon: 'qwen'
+  }
+];
+
+export const zenProviders: Provider[] = [
+  {
+    type: 'zen',
+    name: 'Anthropic',
+    model: 'Claude Opus 4.7',
+    models: ['Claude Opus 4.7', 'Claude Opus 4.6'],
+    icon: 'anthropic'
+  },
+  {
+    type: 'zen',
+    name: 'OpenAI',
+    model: 'GPT 5.4 Pro',
+    models: ['GPT 5.4 Pro', 'GPT 5.4'],
+    icon: 'openai'
+  },
+  {
+    type: 'zen',
+    name: 'Gemini',
+    company: 'Google',
+    model: 'Gemini 3.1 Pro',
+    models: ['Gemini 3.1 Pro', 'Gemini 3 Pro', 'Gemini 3 Flash'],
+    icon: 'gemini'
   }
 ];
 
@@ -387,4 +419,36 @@ export const fontFamilyOptions = [
   { value: 'Microsoft YaHei, PingFang SC, sans-serif', label: 'Microsoft YaHei' },
   { value: 'Source Han Sans SC, Noto Sans SC, sans-serif', label: 'Source Han Sans SC' },
   { value: 'Noto Sans SC, Source Han Sans SC, sans-serif', label: 'Noto Sans SC' }
+];
+
+export const allFeatures: { key: FeatureKey; label: string }[] = [
+  {
+    key: 'pageTranslation',
+    label: i18n('feature_page_translation', { defaultValue: 'Page Translation' })
+  },
+  {
+    key: 'videoSubtitles',
+    label: i18n('feature_video_subtitles', { defaultValue: 'Video Subtitles' })
+  },
+  {
+    key: 'selectionToolbarTranslation',
+    label: i18n('feature_selection_toolbar', { defaultValue: 'Selection Toolbar Translation' })
+  },
+  {
+    key: 'inputTranslation',
+    label: i18n('feature_input_translation', { defaultValue: 'Input Translation' })
+  },
+  {
+    key: 'imageTranslation',
+    label: i18n('feature_image_translation', { defaultValue: 'Image Translation' })
+  },
+  {
+    key: 'improveWriting',
+    label: i18n('feature_improve_writing', { defaultValue: 'Improve Writing' })
+  },
+  { key: 'dictionary', label: i18n('feature_dictionary', { defaultValue: 'Dictionary' }) },
+  {
+    key: 'customAiAction',
+    label: i18n('feature_custom_ai_action', { defaultValue: 'Custom AI Action' })
+  }
 ];

@@ -2,6 +2,15 @@
   "add": {
     "message": "Add"
   },
+  "add_new_provider": {
+    "message": "Add New Provider"
+  },
+  "add_provider": {
+    "message": "Add Provider"
+  },
+  "advanced_options": {
+    "message": "Advanced Options"
+  },
   "always_auto_translate_this_site": {
     "message": "Always auto-translate this site"
   },
@@ -17,17 +26,23 @@
   "always_auto_translated_sites_hint": {
     "message": "When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules."
   },
+  "api_key": {
+    "message": "API Key"
+  },
   "api_providers": {
     "message": "API Providers"
   },
   "api_providers_hint": {
-    "message": "Choose your model provider and default model."
+    "message": "Configure API providers for translation and vocabulary insight. We have 20+ built-in providers and support any OpenAI-compatible API provider."
   },
   "auto_detect": {
     "message": "Auto Detect"
   },
   "background_color": {
     "message": "Background color"
+  },
+  "base_url": {
+    "message": "Base URL"
   },
   "batch_ops": {
     "message": "Batch operations"
@@ -38,10 +53,13 @@
   "cancel_batch": {
     "message": "Cancel batch"
   },
+  "click_to_test_this_provider": {
+    "message": "Click to test this provider"
+  },
   "custom": {
     "message": "Custom"
   },
-  "custom_provider": {
+  "custom_providers": {
     "message": "Custom Providers"
   },
   "default_language": {
@@ -58,6 +76,39 @@
   },
   "enable_auto_translate": {
     "message": "Enable auto-translate feature"
+  },
+  "enter_custom_model": {
+    "message": "Enter the name of the custom model"
+  },
+  "feature_custom_ai_action": {
+    "message": "Custom AI Action"
+  },
+  "feature_dictionary": {
+    "message": "Dictionary"
+  },
+  "feature_image_translation": {
+    "message": "Image Translation"
+  },
+  "feature_improve_writing": {
+    "message": "Improve Writing"
+  },
+  "feature_input_translation": {
+    "message": "Input Translation"
+  },
+  "feature_page_translation": {
+    "message": "Page Translation"
+  },
+  "feature_providers": {
+    "message": "Feature Providers"
+  },
+  "feature_selection_toolbar": {
+    "message": "Selection Toolbar Translation"
+  },
+  "feature_video_subtitles": {
+    "message": "Video Subtitles"
+  },
+  "fetch_available_models": {
+    "message": "Fetch Available Models"
   },
   "font_family": {
     "message": "Font family"
@@ -79,6 +130,12 @@
   },
   "general_settings": {
     "message": "General settings"
+  },
+  "go_user": {
+    "message": "Go User"
+  },
+  "go_users": {
+    "message": "Go Users"
   },
   "guest": {
     "message": "Guest"
@@ -467,18 +524,6 @@
   "options_selection_trigger_title": {
     "message": "Trigger mode"
   },
-  "options_services_default_model_description": {
-    "message": "Choose a model under the selected provider"
-  },
-  "options_services_default_model_title": {
-    "message": "Default model"
-  },
-  "options_services_provider_description": {
-    "message": "Choose your preferred AI model provider"
-  },
-  "options_services_provider_title": {
-    "message": "Provider"
-  },
   "options_shortcuts_description": {
     "message": "Customize global and in-page shortcuts."
   },
@@ -550,9 +595,6 @@
   },
   "options_writing_view_soon_button": {
     "message": "View upcoming capabilities"
-  },
-  "paid_user": {
-    "message": "Paid User"
   },
   "prompt": {
     "message": "Prompt"
@@ -632,6 +674,18 @@
   "provider": {
     "message": "Provider"
   },
+  "provider_description": {
+    "message": "Description"
+  },
+  "provider_name": {
+    "message": "Name"
+  },
+  "provider_options": {
+    "message": "Provider Options"
+  },
+  "provider_options_tooltip": {
+    "message": "Provider-specific options for non-standard API features like thinking/reasoning mode. See the Vercel AI SDK docs or your provider's official documentation for configuration details."
+  },
   "provider_test": {
     "message": "Test this provider"
   },
@@ -653,6 +707,9 @@
   "save": {
     "message": "Save"
   },
+  "select_provider_to_configure": {
+    "message": "Select a provider to configure"
+  },
   "selection_translate": {
     "message": "Selection translate"
   },
@@ -673,6 +730,15 @@
   },
   "target_language_hint": {
     "message": "Set the language you want content translated into"
+  },
+  "temperature": {
+    "message": "Temperature"
+  },
+  "temperature_tooltip": {
+    "message": "Controls randomness in responses. Lower values (0) are more deterministic, higher values are more creative. Range varies by provider. Leave empty to use provider default."
+  },
+  "test_connection": {
+    "message": "Test Connection"
   },
   "text_color": {
     "message": "Text color"
@@ -787,5 +853,14 @@
   },
   "upgrade": {
     "message": "Upgrade"
+  },
+  "view_provider_docs": {
+    "message": "View Provider Docs"
+  },
+  "zen_user": {
+    "message": "Zen User"
+  },
+  "zen_users": {
+    "message": "Zen Users"
   }
 }

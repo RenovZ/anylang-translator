@@ -2,20 +2,42 @@ import { storage } from 'wxt/utils/storage';
 import { writable, get, type Subscriber } from 'svelte/store';
 import { translationDisplayStyles } from './preset';
 
-export type ApiProvider = {
-  type: 'api';
+export type FeatureKey =
+  | 'pageTranslation'
+  | 'videoSubtitles'
+  | 'selectionToolbarTranslation'
+  | 'inputTranslation'
+  | 'imageTranslation'
+  | 'improveWriting'
+  | 'dictionary'
+  | 'customAiAction';
+
+export type AiProviderType = 'go' | 'zen' | 'custom';
+
+export type ProviderConfig = {
   name: string;
+  icon?: string;
+  company?: string;
+  description?: string;
+  features?: FeatureKey[];
 };
 
-export type AiProvider = {
-  type: 'ai';
-  name: string;
-  models: string[];
+export type FreeProvider = {
+  type: 'free';
+} & ProviderConfig;
+
+export type PaidProvider = {
+  type: AiProviderType;
+  baseUrl?: string;
+  apiKey?: string;
   model?: string;
+  models?: string[];
   prompt?: string;
-};
+  temperature?: number;
+  providerOptions?: Record<string, unknown>;
+} & ProviderConfig;
 
-export type Provider = ApiProvider | AiProvider;
+export type Provider = FreeProvider | PaidProvider;
 
 export type SelectionTriggerValue = 'directly' | 'show icons' | null;
 export type TranslationMode = 'bilingual' | 'translation_only';
@@ -41,15 +63,26 @@ const defaultConfig = {
   lastTimeShowingReleaseNotes: null as number | null,
   originalUserAgent: null as string | null,
   uiLanguage: 'default',
-  translateProvider: { type: 'api', name: 'Google Translator' } as Provider,
-  enabledProviders: [
-    { type: 'api', name: 'Google Translator' },
-    { type: 'api', name: 'Bing Translator' },
-    { type: 'ai', name: 'Ollama Local', models: ['qwen3.5-2b', 'llama3.2', 'deepseek-r1:7b'] }
-  ] as Provider[],
-  customProviders: [] as Provider[],
   sourceLanguage: null as string | null,
   targetLanguage: null as string | null,
+
+  freeProviders: [
+    { type: 'free', name: 'Bing Translator', icon: 'bing' },
+    { type: 'free', name: 'Google Translator', icon: 'google' }
+  ] as Provider[],
+  customProviders: [] as Provider[],
+
+  pageTranslationProvider: { type: 'free', name: 'Bing Translator', icon: 'bing' } as Provider,
+  videoSubtitlesTranslationProvider: {
+    type: 'free',
+    name: 'Bing Translator',
+    icon: 'bing'
+  } as Provider,
+  selectionTranslationProvider: { type: 'free', name: 'Bing Translator', icon: 'bing' } as Provider,
+  inputTranslationProvider: { type: 'free', name: 'Bing Translator', icon: 'bing' } as Provider,
+  improveWritingProvider: { type: 'free', name: 'Bing Translator', icon: 'bing' } as Provider,
+  imageTranslationProvider: null as Provider | null,
+  textToSpeechProvider: null as Provider | null,
 
   autoTranslateEnabled: false,
   alwaysAutoTranslatedSites: [

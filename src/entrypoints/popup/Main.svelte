@@ -19,8 +19,8 @@
   import { browser } from 'wxt/browser';
 
   import '@/assets/app.css';
-  import { config, type AiProvider, type SelectionTriggerValue } from '@/lib/config';
-  import { paidUserProviders, promptPresets } from '@/lib/preset';
+  import { config, type PaidProvider, type SelectionTriggerValue } from '@/lib/config';
+  import { aiProviders, goProviders, promptPresets, zenProviders } from '@/lib/preset';
   import { lang } from '@/lib/lang';
   import { i18n } from '@/lib/i18n';
   import avatar from '@/lib/avatar';
@@ -101,37 +101,41 @@
     <!-- providers -->
     <section class="rounded-xl bg-slate-100 dark:bg-slate-700">
       <div
-        class:rounded-b-xl={$config.translateProvider.type === 'api'}
+        class:rounded-b-xl={$config.pageTranslationProvider.type === 'free'}
         class="grid grid-cols-[88px_1fr] items-center rounded-t-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600">
         <div class="font-medium">{i18n('provider', { defaultValue: 'Provider' })}</div>
         <button type="button" class="flex flex-1 items-center justify-between">
           <div class="line-clamp-1 text-left font-medium">
-            {$config.translateProvider.name}
+            {$config.pageTranslationProvider.name}
           </div>
           <ChevronDownOutline class="h-6 w-6 text-slate-400" />
         </button>
         <ProvidersDropdown />
       </div>
-      {#if $config.translateProvider.type === 'ai'}
-        {@const aiProvider = $config.translateProvider as AiProvider}
+      {#if $config.pageTranslationProvider.type !== 'free' && aiProviders.includes($config.pageTranslationProvider.type)}
+        {@const paidProvider = $config.pageTranslationProvider as PaidProvider}
         {@const currentModels =
           (
-            [...$config.enabledProviders, ...paidUserProviders, ...$config.customProviders].find(
-              (item) => item.type === 'ai' && item.name === aiProvider.name
-            ) as AiProvider
+            [...goProviders, ...zenProviders, ...$config.customProviders].find(
+              (item) =>
+                item.type !== 'free' &&
+                aiProviders.includes(item.type) &&
+                item.name === paidProvider.name
+            ) as PaidProvider
           )?.models ?? []}
         <div
           class="grid grid-cols-[88px_1fr] items-center px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600">
           <div class="font-medium">{i18n('model', { defaultValue: 'Model' })}</div>
           <button type="button" class="flex flex-1 items-center justify-between">
             <div class="line-clamp-1 text-left font-medium">
-              {aiProvider.model}
+              {paidProvider.model}
             </div>
             <ChevronDownOutline class="h-6 w-6 text-slate-400" />
           </button>
           <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
             {#each currentModels as model (model)}
-              <DropdownItem onclick={() => ($config.translateProvider = { model, ...aiProvider })}>
+              <DropdownItem
+                onclick={() => ($config.pageTranslationProvider = { model, ...paidProvider })}>
                 {model}
               </DropdownItem>
             {/each}
@@ -142,13 +146,14 @@
           <div class="font-medium">{i18n('prompt', { defaultValue: 'Prompt' })}</div>
           <button type="button" class="flex flex-1 items-center justify-between">
             <div class="line-clamp-1 text-left font-medium">
-              {promptPresets.find((item) => item.value == aiProvider.prompt)?.label ?? ''}
+              {promptPresets.find((item) => item.value == paidProvider.prompt)?.label ?? ''}
             </div>
             <ChevronDownOutline class="h-6 w-6 text-slate-400" />
           </button>
           <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
             {#each promptPresets as { value: prompt, label } (prompt)}
-              <DropdownItem onclick={() => ($config.translateProvider = { prompt, ...aiProvider })}>
+              <DropdownItem
+                onclick={() => ($config.pageTranslationProvider = { prompt, ...paidProvider })}>
                 {label}
               </DropdownItem>
             {/each}
