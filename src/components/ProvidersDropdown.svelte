@@ -2,7 +2,7 @@
   import { Dropdown, DropdownGroup, DropdownItem, DropdownHeader } from 'flowbite-svelte';
   import { browser } from 'wxt/browser';
 
-  import { config } from '@/lib/config';
+  import { config, type PaidProvider } from '@/lib/config';
   import { goProviders, zenProviders } from '@/lib/preset';
   import { i18n } from '@/lib/i18n';
 
@@ -14,7 +14,7 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('free_user', { defaultValue: 'Free User' })}
     </DropdownHeader>
-    {#each $config.freeProviders as provider ((provider.type, provider.name))}
+    {#each $config.freeProviders as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>
@@ -27,7 +27,7 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('go_users', { defaultValue: 'Go Users' })}
     </DropdownHeader>
-    {#each goProviders as provider ((provider.type, provider.name))}
+    {#each goProviders as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>
@@ -40,7 +40,7 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('zen_users', { defaultValue: 'Zen Users' })}
     </DropdownHeader>
-    {#each zenProviders as provider ((provider.type, provider.name))}
+    {#each zenProviders as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>
@@ -53,7 +53,7 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('custom', { defaultValue: 'Custom' })}
     </DropdownHeader>
-    {#each $config.customProviders as provider ((provider.type, provider.name))}
+    {#each $config.customProviders as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>

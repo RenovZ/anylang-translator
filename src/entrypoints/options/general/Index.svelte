@@ -89,7 +89,7 @@
             imgClass="w-4 h-4" />
           <span>
             {$config.pageTranslationProvider.name}
-            {#if $config.pageTranslationProvider.model}
+            {#if $config.pageTranslationProvider.type !== 'free' && $config.pageTranslationProvider.model}
               ({$config.pageTranslationProvider.model})
             {/if}
           </span>
