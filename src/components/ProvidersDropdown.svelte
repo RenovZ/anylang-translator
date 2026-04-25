@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Dropdown, DropdownGroup, DropdownItem, DropdownHeader } from 'flowbite-svelte';
+  import { Dropdown, DropdownGroup, DropdownItem, DropdownHeader, A } from 'flowbite-svelte';
   import { browser } from 'wxt/browser';
 
   import { config, type PaidProvider } from '@/lib/config';
@@ -7,12 +7,13 @@
   import { i18n } from '@/lib/i18n';
 
   import ProviderIcon from './ProviderIcon.svelte';
+  import { PlusOutline } from 'flowbite-svelte-icons';
 </script>
 
 <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
   <DropdownGroup class="py-0">
     <DropdownHeader class="py-1 text-sm text-slate-400">
-      {i18n('free_user', { defaultValue: 'Free User' })}
+      {i18n('free_users', { defaultValue: 'Free Users' })}
     </DropdownHeader>
     {#each $config.freeProviders as provider (provider)}
       <DropdownItem
@@ -32,7 +33,15 @@
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>
         <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
-        <span>{provider.name} ({provider.model})</span>
+        <div class="flex w-full items-center justify-between text-sm font-medium">
+          <!--
+          TODO: 判断用户是否需要升级, 否则就正常展示+去掉upgrade升级提示
+          -->
+          <span class={`line-clamp-1 flex ${true ? 'cursor-not-allowed text-slate-400' : ''}`}>
+            {provider.model}
+          </span>
+          <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
+        </div>
       </DropdownItem>
     {/each}
   </DropdownGroup>
@@ -45,7 +54,15 @@
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>
         <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
-        <span>{provider.name} ({provider.model})</span>
+        <div class="flex w-full items-center justify-between text-sm font-medium">
+          <!--
+          TODO: 判断用户是否需要升级, 否则就正常展示+去掉upgrade升级提示
+          -->
+          <span class={`line-clamp-1 flex ${true ? 'cursor-not-allowed text-slate-400' : ''}`}>
+            {provider.model}
+          </span>
+          <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
+        </div>
       </DropdownItem>
     {/each}
   </DropdownGroup>
@@ -67,9 +84,11 @@
       </DropdownItem>
     {/each}
     <DropdownItem
+      class="flex items-center gap-2"
       onclick={() =>
         browser.tabs.create({ url: browser.runtime.getURL('/options.html#api-providers') })}>
-      {i18n('custom_providers', { defaultValue: 'Custom Providers' })}
+      <PlusOutline class="h-4 w-4" />
+      <span>{i18n('custom_providers', { defaultValue: 'Custom Providers' })}</span>
     </DropdownItem>
   </DropdownGroup>
 </Dropdown>

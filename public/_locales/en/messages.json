@@ -122,17 +122,14 @@
   "font_weight": {
     "message": "Font weight"
   },
-  "free_user": {
-    "message": "Free User"
+  "free_users": {
+    "message": "Free Users"
   },
   "general": {
     "message": "General"
   },
   "general_settings": {
     "message": "General settings"
-  },
-  "go_user": {
-    "message": "Go User"
   },
   "go_users": {
     "message": "Go Users"
@@ -851,14 +848,14 @@
   "ui_language_hint": {
     "message": "UI language affects panel display language and does not change translation target language"
   },
+  "unsupported_provider": {
+    "message": "Unsupported Provider"
+  },
   "upgrade": {
     "message": "Upgrade"
   },
   "view_provider_docs": {
     "message": "View Provider Docs"
-  },
-  "zen_user": {
-    "message": "Zen User"
   },
   "zen_users": {
     "message": "Zen Users"

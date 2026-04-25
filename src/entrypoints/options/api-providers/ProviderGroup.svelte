@@ -1,7 +1,10 @@
 <script lang="ts">
+  import { A } from 'flowbite-svelte';
+
   import { type Provider } from '@/lib/config';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import i18n from '@/lib/i18n';
 
   interface Props {
     title: string;
@@ -40,12 +43,36 @@
       class:dark:hover:bg-slate-800={!isSelected(provider)}
       onclick={() => (selectedProvider = provider)}>
       <ProviderIcon {provider} />
-      <span class="line-clamp-1 text-sm font-medium">
-        <span>{provider.name}</span>
-        {#if provider.type !== 'free' && provider.model}
-          <span>({provider.model})</span>
-        {/if}
-      </span>
+      {#if provider.type === 'free'}
+        <span class="line-clamp-1 text-sm font-medium">{provider.name}</span>
+      {:else if provider.type === 'go'}
+        <div class="flex w-full items-center justify-between text-sm font-medium">
+          <span class="line-clamp-1 flex">{provider.model}</span>
+          <!--
+          TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
+          -->
+          <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
+        </div>
+      {:else if provider.type === 'zen'}
+        <div class="flex w-full items-center justify-between text-sm font-medium">
+          <span class="line-clamp-1 flex">{provider.model}</span>
+          <!--
+          TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
+          -->
+          <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
+        </div>
+      {:else if provider.type === 'custom'}
+        <div class="line-clamp-1 text-sm font-medium">
+          <span>{provider.name}</span>
+          {#if provider.model}
+            <span>({provider.model})</span>
+          {/if}
+        </div>
+      {:else}
+        <span class="line-clamp-1 text-sm font-medium">
+          {i18n('unsupported_provider', { defaultValue: 'Unsupported Provider' })}
+        </span>
+      {/if}
     </button>
   {/each}
 </AccordionItem>

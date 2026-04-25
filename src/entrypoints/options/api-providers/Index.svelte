@@ -70,17 +70,17 @@
       <Accordion multiple class="rounded-none border-none">
         <ProviderGroup
           open
-          title={i18n('free_user', { defaultValue: 'Free User' })}
+          title={i18n('free_users', { defaultValue: 'Free Users' })}
           providers={$config.freeProviders}
           bind:selectedProvider />
         <ProviderGroup
           open
-          title={i18n('go_user', { defaultValue: 'Go User' })}
+          title={i18n('go_users', { defaultValue: 'Go Users' })}
           providers={goProviders}
           bind:selectedProvider />
         <ProviderGroup
           open
-          title={i18n('zen_user', { defaultValue: 'Zen User' })}
+          title={i18n('zen_users', { defaultValue: 'Zen Users' })}
           providers={zenProviders}
           bind:selectedProvider />
         <ProviderGroup
@@ -114,6 +114,12 @@
                 src={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/${selectedProvider.icon}.webp`} />
             </picture>
             <span class="text-lg font-semibold">{selectedProvider.name}</span>
+            {#if selectedProvider.type === 'go' || selectedProvider.type === 'zen'}
+              <!--
+                TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
+                -->
+              <A class="font-medium">{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
+            {/if}
           </div>
           <button
             type="button"
@@ -215,7 +221,7 @@
 
           <!-- Feature Providers -->
           <Accordion class="space-y-2 rounded-none border-none">
-            <AccordionItem open buttonClass="w-fit p-0">
+            <AccordionItem open buttonClass="w-fit p-0" contentClass="w-fit">
               {#snippet title()}
                 <span>{i18n('feature_providers', { defaultValue: 'Feature Providers' })}</span>
               {/snippet}
