@@ -17,9 +17,9 @@
     QuestionCircleOutline
   } from 'flowbite-svelte-icons';
 
-  import { config, type Provider } from '@/lib/config';
+  import { config, type Provider, type FeatureKey, type FeatureValue } from '@/lib/config';
   import { i18n } from '@/lib/i18n';
-  import { allFeatures, goProviders, zenProviders } from '@/lib/preset';
+  import { allFeatures, defaultFeatures, goProviders, zenProviders } from '@/lib/preset';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import Section from '../Section.svelte';
   import AddProviderModal from './AddProviderModal.svelte';
@@ -30,27 +30,30 @@
   let selectedProvider = $state<Provider>($config.freeProviders[0]);
 
   const handleAddProvider = (provider: Provider) => {
+    const newProvider: Provider = {
+      ...provider,
+      type: 'custom',
+      features: { ...defaultFeatures }
+    };
+
     const size = [
       ...$config.freeProviders,
       ...goProviders,
       ...zenProviders,
       ...$config.customProviders
-    ].filter((p) => p.name === provider.name).length;
+    ].filter((p) => p.name === newProvider.name).length;
 
     if (size > 0) {
-      provider.name = `${provider.name} ${size}`;
+      newProvider.name = `${newProvider.name} ${size}`;
     }
 
-    $config.customProviders = [...$config.customProviders, provider];
-
-    selectedProvider = { ...provider };
+    $config.customProviders = [...$config.customProviders, newProvider];
+    selectedProvider = $config.customProviders[$config.customProviders.length - 1];
   };
 
   const handleDeleteProvider = (provider: Provider) => {
-    $config.customProviders = $config.customProviders.filter(
-      (p) => provider.type === 'custom' && p.name !== provider.name
-    );
-    selectedProvider = { ...$config.freeProviders[0] };
+    $config.customProviders = $config.customProviders.filter((p) => p.name !== provider.name);
+    selectedProvider = $config.freeProviders[0];
   };
 </script>
 
@@ -212,13 +215,21 @@
 
           <!-- Feature Providers -->
           <Accordion class="space-y-2 rounded-none border-none">
-            <AccordionItem buttonClass="w-fit p-0">
+            <AccordionItem open buttonClass="w-fit p-0">
               {#snippet title()}
                 <span>{i18n('feature_providers', { defaultValue: 'Feature Providers' })}</span>
               {/snippet}
               <div class="space-y-2">
-                {#each allFeatures as feature (feature)}
-                  <Toggle size="small">{feature.label}</Toggle>
+                {#each (Object.entries(selectedProvider.features || {}) as [FeatureKey, FeatureValue][]).filter(([, value]) => value.unsupported !== true) as [featureKey, featureValue] (featureKey)}
+                  <Toggle
+                    size="small"
+                    disabled={featureValue.disabled}
+                    bind:checked={
+                      (selectedProvider.features as Record<FeatureKey, FeatureValue>)[featureKey]
+                        .state
+                    }>
+                    {allFeatures[featureKey]}
+                  </Toggle>
                 {/each}
               </div>
             </AccordionItem>

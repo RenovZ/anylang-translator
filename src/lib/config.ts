@@ -1,6 +1,10 @@
 import { storage } from 'wxt/utils/storage';
 import { writable, get, type Subscriber } from 'svelte/store';
-import { translationDisplayStyles } from './preset';
+import {
+  bingTranslatorProvider,
+  googleTranslatorProvider,
+  translationDisplayStyles
+} from './preset';
 
 export type FeatureKey =
   | 'pageTranslation'
@@ -12,6 +16,12 @@ export type FeatureKey =
   | 'dictionary'
   | 'customAiAction';
 
+export type FeatureValue = {
+  disabled?: boolean;
+  unsupported?: boolean;
+  state?: boolean;
+};
+
 export type AiProviderType = 'go' | 'zen' | 'custom';
 
 export type ProviderConfig = {
@@ -19,7 +29,7 @@ export type ProviderConfig = {
   icon?: string;
   company?: string;
   description?: string;
-  features?: FeatureKey[];
+  features: Record<FeatureKey, FeatureValue>;
 };
 
 export type FreeProvider = {
@@ -34,7 +44,7 @@ export type PaidProvider = {
   models?: string[];
   prompt?: string;
   temperature?: number;
-  providerOptions?: Record<string, unknown>;
+  providerOptions?: Map<string, unknown>;
 } & ProviderConfig;
 
 export type Provider = FreeProvider | PaidProvider;
@@ -66,21 +76,14 @@ const defaultConfig = {
   sourceLanguage: null as string | null,
   targetLanguage: null as string | null,
 
-  freeProviders: [
-    { type: 'free', name: 'Bing Translator', icon: 'bing' },
-    { type: 'free', name: 'Google Translator', icon: 'google' }
-  ] as Provider[],
+  freeProviders: [bingTranslatorProvider, googleTranslatorProvider] as Provider[],
   customProviders: [] as Provider[],
 
-  pageTranslationProvider: { type: 'free', name: 'Bing Translator', icon: 'bing' } as Provider,
-  videoSubtitlesTranslationProvider: {
-    type: 'free',
-    name: 'Bing Translator',
-    icon: 'bing'
-  } as Provider,
-  selectionTranslationProvider: { type: 'free', name: 'Bing Translator', icon: 'bing' } as Provider,
-  inputTranslationProvider: { type: 'free', name: 'Bing Translator', icon: 'bing' } as Provider,
-  improveWritingProvider: { type: 'free', name: 'Bing Translator', icon: 'bing' } as Provider,
+  pageTranslationProvider: bingTranslatorProvider as Provider,
+  videoSubtitlesTranslationProvider: bingTranslatorProvider as Provider,
+  selectionTranslationProvider: bingTranslatorProvider as Provider,
+  inputTranslationProvider: bingTranslatorProvider as Provider,
+  improveWritingProvider: bingTranslatorProvider as Provider,
   imageTranslationProvider: null as Provider | null,
   textToSpeechProvider: null as Provider | null,
 
