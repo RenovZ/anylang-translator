@@ -28,7 +28,7 @@
     selectedProvider.type === provider.type;
 </script>
 
-<AccordionItem {open}>
+<AccordionItem {open} contentClass="space-y-1">
   {#snippet title()}
     <span>{title}</span>
   {/snippet}
@@ -38,9 +38,9 @@
       type="button"
       class="flex w-full items-center gap-3 rounded-xl px-4 py-2 text-left transition"
       class:bg-slate-100={isSelected(provider)}
-      class:dark:bg-slate-700={isSelected(provider)}
+      class:dark:bg-slate-600={isSelected(provider)}
       class:hover:bg-slate-50={!isSelected(provider)}
-      class:dark:hover:bg-slate-800={!isSelected(provider)}
+      class:dark:hover:bg-slate-700={!isSelected(provider)}
       onclick={() => (selectedProvider = provider)}>
       <ProviderIcon {provider} />
       {#if provider.type === 'free'}

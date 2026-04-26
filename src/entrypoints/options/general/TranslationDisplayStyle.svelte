@@ -89,7 +89,7 @@
   })}>
   <div slot="controls">
     <Button
-      class="w-full justify-between rounded-xl bg-slate-100 px-3 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
+      class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <span>
         {translationDisplayStyles.find(
           (item) => item.value === $config.translationDisplayStyle.value
@@ -129,6 +129,7 @@
       <Label class="grid grid-cols-[1fr_140px_80px] items-center gap-4">
         <span>{i18n('background_color', { defaultValue: 'Background color' })}</span>
         <Input
+          class="border-none bg-gray-50 shadow dark:bg-gray-600"
           type="text"
           value={customStyles.backgroundColor}
           onchange={(e) => setCustomStyle('backgroundColor', e.currentTarget.value)} />
@@ -136,11 +137,12 @@
           type="color"
           value={customStyles.backgroundColor}
           onchange={(e) => setCustomStyle('backgroundColor', e.currentTarget.value)}
-          class="h-full px-1.5 py-1" />
+          class="h-full border-none bg-gray-50 px-1.5 py-1 shadow dark:bg-gray-600" />
       </Label>
       <Label class="grid grid-cols-[1fr_140px_80px] items-center gap-4">
         <span>{i18n('text_color', { defaultValue: 'Text color' })}</span>
         <Input
+          class="border-none bg-gray-50 shadow dark:bg-gray-600"
           type="text"
           value={customStyles.color}
           onchange={(e) => setCustomStyle('color', e.currentTarget.value)} />
@@ -148,11 +150,12 @@
           type="color"
           value={customStyles.color}
           onchange={(e) => setCustomStyle('color', e.currentTarget.value)}
-          class="h-full px-1.5 py-1" />
+          class="h-full border-none bg-gray-50 px-1.5 py-1 shadow dark:bg-gray-600" />
       </Label>
       <Label class="grid grid-cols-[1fr_200px] items-center gap-4">
         <span>{i18n('font_size', { defaultValue: 'Font size (px)' })}</span>
         <Input
+          class="border-none bg-gray-50 shadow dark:bg-gray-600"
           type="number"
           value={parseInt(customStyles.fontSize, 10)}
           onchange={(e) =>
@@ -161,6 +164,7 @@
       <Label class="grid grid-cols-[1fr_200px] items-center gap-4">
         <span>{i18n('font_weight', { defaultValue: 'Font weight' })}</span>
         <Input
+          class="border-none bg-gray-50 shadow dark:bg-gray-600"
           type="number"
           value={customStyles.fontWeight}
           onchange={(e) =>
@@ -169,6 +173,7 @@
       <Label class="grid grid-cols-[1fr_200px] items-center gap-4">
         <span>{i18n('font_family', { defaultValue: 'Font family' })}</span>
         <Select
+          classes={{ select: 'border-none bg-gray-50 shadow dark:bg-gray-600' }}
           value={customStyles?.fontFamily ?? ''}
           onchange={(e) =>
             setCustomStyle('fontFamily', (e.currentTarget as HTMLSelectElement).value)}>

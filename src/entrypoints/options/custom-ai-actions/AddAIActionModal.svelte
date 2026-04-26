@@ -30,7 +30,12 @@
   }
 </script>
 
-<Modal bind:open size="xs" outsideclose={false} classes={{ body: 'border-none' }}>
+<Modal
+  bind:open
+  size="xs"
+  outsideclose={false}
+  classes={{ body: 'border-none' }}
+  class="backdrop-blur-xs">
   <div class="flex flex-col gap-4">
     <div class="flex flex-col">
       <Heading tag="h5" class="font-medium">
@@ -47,7 +52,7 @@
     {#each templates as template (template.name)}
       <button
         type="button"
-        class="flex items-center gap-4 rounded-xl border border-gray-200 p-4 transition hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-700"
+        class="flex items-center gap-4 rounded-xl p-4 shadow transition hover:bg-slate-100 dark:hover:bg-slate-700"
         onclick={() => handleSelect(template)}>
         <Icon icon={template.icon} class="h-6 w-6" />
         <div class="flex flex-col text-left">

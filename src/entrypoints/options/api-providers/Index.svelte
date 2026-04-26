@@ -16,6 +16,7 @@
     EyeSlashOutline,
     QuestionCircleOutline
   } from 'flowbite-svelte-icons';
+  import Icon from '@iconify/svelte';
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
@@ -94,7 +95,7 @@
 
       <Button
         color="alternative"
-        class="mt-2 w-full rounded-xl dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
+        class="mt-2 w-full rounded-xl border-none text-slate-600 shadow hover:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-600"
         onclick={() => (showModal = true)}>
         <PlusOutline class="me-2 h-4 w-4" />
         {i18n('add_provider', { defaultValue: 'Add Provider' })}
@@ -142,6 +143,7 @@
             <Input
               disabled={selectedProvider.type !== 'custom'}
               type="text"
+              class="border-none bg-gray-50 shadow dark:bg-gray-600"
               bind:value={selectedProvider.name} />
           </div>
 
@@ -150,7 +152,9 @@
             <Label class="block text-sm font-medium">
               {i18n('provider_description', { defaultValue: 'Description' })}
             </Label>
-            <Textarea bind:value={selectedProvider.description} class="w-full" />
+            <Textarea
+              bind:value={selectedProvider.description}
+              class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
 
           <!-- API Key -->
@@ -172,7 +176,7 @@
                 <Input
                   type={showApiKey ? 'text' : 'password'}
                   bind:value={selectedProvider.apiKey}
-                  class="rounded-lg pr-10" />
+                  class="border-none bg-gray-50 pr-10 shadow dark:bg-gray-600" />
                 <button
                   type="button"
                   class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
@@ -193,7 +197,10 @@
               <Label class="block text-sm font-medium">
                 {i18n('base_url', { defaultValue: 'Base URL' })}
               </Label>
-              <Input type="text" bind:value={selectedProvider.baseUrl} class="rounded-lg" />
+              <Input
+                type="text"
+                bind:value={selectedProvider.baseUrl}
+                class="border-none bg-gray-50 shadow dark:bg-gray-600" />
             </div>
           {/if}
 
@@ -204,11 +211,20 @@
                 <Label class="block text-sm font-medium">
                   {i18n('model', { defaultValue: 'Model' })}
                 </Label>
-                <Button size="xs" color="alternative" class="text-xs" onclick={() => {}}>
-                  {i18n('fetch_available_models', { defaultValue: 'Fetch Available Models' })}
+                <Button
+                  size="xs"
+                  color="alternative"
+                  class="flex items-center gap-1 border-none text-xs shadow"
+                  onclick={() => {}}>
+                  <Icon icon="tabler:list-search" class="h-4 w-4" />
+                  <span>
+                    {i18n('fetch_available_models', { defaultValue: 'Fetch Available Models' })}
+                  </span>
                 </Button>
               </div>
-              <Select bind:value={selectedProvider.model}>
+              <Select
+                bind:value={selectedProvider.model}
+                classes={{ select: 'border-none shadow bg-gray-50 dark:bg-gray-600' }}>
                 {#each selectedProvider.models as model (model)}
                   <option value={model}>{model}</option>
                 {/each}
@@ -267,6 +283,7 @@
                       type="number"
                       step="0.01"
                       min="0"
+                      class="border-none bg-gray-50 shadow dark:bg-gray-600"
                       bind:value={selectedProvider.temperature} />
                   </div>
 
@@ -287,7 +304,7 @@
                         {i18n('view_provider_docs', { defaultValue: 'View Provider Docs' })}
                       </A>
                     </div>
-                    <textarea
+                    <Textarea
                       value={JSON.stringify(
                         selectedProvider.providerOptions ?? { field: 'value' },
                         null,
@@ -302,8 +319,8 @@
                           console.error(err);
                         }
                       }}
-                      class="h-32 w-full rounded-lg border border-gray-300 bg-gray-50 p-3 font-mono text-sm dark:border-gray-600 dark:bg-gray-700"
-                      spellcheck="false"></textarea>
+                      class="h-32 w-full border-none bg-gray-50 font-mono text-sm shadow dark:bg-gray-600"
+                      spellcheck="false"></Textarea>
                   </div>
                 </div>
               </AccordionItem>

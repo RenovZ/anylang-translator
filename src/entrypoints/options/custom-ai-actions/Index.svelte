@@ -1,15 +1,24 @@
 <script lang="ts">
-  import { Button, Input, Label, Select, Textarea, Toggle } from 'flowbite-svelte';
-  import { PlusOutline, TrashBinOutline } from 'flowbite-svelte-icons';
+  import { Badge, Button, Input, Label, Select, Textarea, Tooltip } from 'flowbite-svelte';
+  import { PlusOutline, TrashBinOutline, PenOutline } from 'flowbite-svelte-icons';
   import Icon from '@iconify/svelte';
 
   import config from '@/lib/config';
   import type { AIAction, OutputSchema } from '@/lib/types';
   import i18n from '@/lib/i18n';
   import Section from '../Section.svelte';
-  import AddModal from './AddModal.svelte';
+  import AddAIActionModal from './AddAIActionModal.svelte';
+  import EditFieldModal from './EditFieldModal.svelte';
 
   let showModal = $state(false);
+  let showEditModal = $state(false);
+  let editingField = $state<OutputSchema>({
+    name: '',
+    type: 'text',
+    description: '',
+    enableSpeaking: false
+  });
+  let editingIndex = $state<number>(-1);
   let selectedAIAction = $state<AIAction | null>(
     $config.customAIActions.length ? $config.customAIActions[0] : null
   );
@@ -34,18 +43,33 @@
 
   const handleAddSchemaField = () => {
     if (!selectedAIAction) return;
-    const newField: OutputSchema = {
-      name: '',
-      type: 'text',
-      description: '',
-      enableSpeaking: false
-    };
-    selectedAIAction.outputSchema = [...selectedAIAction.outputSchema, newField];
+    editingIndex = -1;
+    editingField = { name: '', type: 'text', description: '', enableSpeaking: false };
+    showEditModal = true;
   };
 
   const handleDeleteSchemaField = (index: number) => {
     if (!selectedAIAction) return;
     selectedAIAction.outputSchema = selectedAIAction.outputSchema.filter((_, i) => i !== index);
+  };
+
+  const handleEditSchemaField = (index: number) => {
+    if (!selectedAIAction) return;
+    editingIndex = index;
+    editingField = { ...selectedAIAction.outputSchema[index] };
+    showEditModal = true;
+  };
+
+  const handleSaveSchemaField = (field: OutputSchema) => {
+    if (!selectedAIAction) return;
+    if (editingIndex < 0) {
+      selectedAIAction.outputSchema = [...selectedAIAction.outputSchema, field];
+    } else {
+      const newSchema = [...selectedAIAction.outputSchema];
+      newSchema[editingIndex] = field;
+      selectedAIAction.outputSchema = newSchema;
+    }
+    editingIndex = -1;
   };
 </script>
 
@@ -57,15 +81,15 @@
   })}>
   <div class="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
     <!-- Left: AI Action List -->
-    <div class="space-y-3">
+    <div class="space-y-1">
       {#each $config.customAIActions as action (action.name)}
         <button
           type="button"
-          class="flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition"
+          class="flex w-full items-center gap-4 rounded-xl px-4 py-2 text-left transition"
           class:bg-slate-100={isSelected(action)}
-          class:dark:bg-slate-700={isSelected(action)}
+          class:dark:bg-slate-600={isSelected(action)}
           class:hover:bg-slate-50={!isSelected(action)}
-          class:dark:hover:bg-slate-800={!isSelected(action)}
+          class:dark:hover:bg-slate-700={!isSelected(action)}
           onclick={() => (selectedAIAction = action)}>
           <Icon icon={action.icon} class="h-6 w-6" />
           <div class="text-sm font-medium">{action.name}</div>
@@ -74,7 +98,7 @@
 
       <Button
         color="alternative"
-        class="mt-2 w-full rounded-xl dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
+        class="mt-5 w-full rounded-xl border-none text-slate-600 shadow hover:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-600"
         onclick={() => (showModal = true)}>
         <PlusOutline class="me-2 h-4 w-4" />
         {i18n('add_ai_action', { defaultValue: 'Add AI Action' })}
@@ -93,7 +117,8 @@
             <Input
               disabled={selectedAIAction.preset}
               type="text"
-              bind:value={selectedAIAction.name} />
+              bind:value={selectedAIAction.name}
+              class="border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
 
           <!-- Icon -->
@@ -101,7 +126,10 @@
             <Label class="block text-sm font-medium">
               {i18n('icon', { defaultValue: 'Icon' })}
             </Label>
-            <Input type="text" bind:value={selectedAIAction.icon} />
+            <Input
+              type="text"
+              bind:value={selectedAIAction.icon}
+              class="border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
 
           <!-- Provider 这里留给我完成 -->
@@ -113,7 +141,10 @@
             <Label class="block text-sm font-medium">
               {i18n('system_prompt', { defaultValue: 'System Prompt' })}
             </Label>
-            <Textarea bind:value={selectedAIAction.systemPrompt} class="w-full" rows={8} />
+            <Textarea
+              bind:value={selectedAIAction.systemPrompt}
+              rows={8}
+              class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
 
           <!-- Prompt -->
@@ -121,7 +152,10 @@
             <Label class="block text-sm font-medium">
               {i18n('prompt', { defaultValue: 'Prompt' })}
             </Label>
-            <Textarea bind:value={selectedAIAction.prompt} class="w-full" rows={6} />
+            <Textarea
+              bind:value={selectedAIAction.prompt}
+              rows={6}
+              class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
 
           <!-- Output Schema -->
@@ -130,35 +164,52 @@
               <Label class="block text-sm font-medium">
                 {i18n('output_schema', { defaultValue: 'Output Schema' })}
               </Label>
-              <Button size="xs" color="alternative" onclick={handleAddSchemaField}>
-                {i18n('add_field', { defaultValue: 'Add field' })}
+              <Button
+                size="xs"
+                color="alternative"
+                onclick={handleAddSchemaField}
+                class="border-none shadow">
+                <PlusOutline class="me-1 h-3 w-3" />
+                {i18n('add_field', { defaultValue: 'Add Field' })}
               </Button>
             </div>
             <div class="space-y-2">
               {#each selectedAIAction.outputSchema as field, index (index)}
-                <div class="grid grid-cols-[1fr_120px_1fr_auto_auto] items-center gap-2">
-                  <Input
-                    type="text"
-                    placeholder={i18n('field_name', { defaultValue: 'Name' })}
-                    bind:value={field.name} />
-                  <Select bind:value={field.type}>
-                    <option value="text">text</option>
-                    <option value="number">number</option>
-                  </Select>
-                  <Input
-                    type="text"
-                    placeholder={i18n('field_description', { defaultValue: 'Description' })}
-                    bind:value={field.description} />
-                  <Toggle size="small" bind:checked={field.enableSpeaking}>
-                    {i18n('enable_speaking', { defaultValue: 'Speak' })}
-                  </Toggle>
-                  <Button
-                    size="xs"
-                    color="alternative"
-                    class="px-2"
-                    onclick={() => handleDeleteSchemaField(index)}>
-                    <TrashBinOutline class="h-4 w-4" />
-                  </Button>
+                <div
+                  class="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2 shadow dark:bg-gray-800">
+                  <div class="flex items-center gap-1">
+                    <Icon
+                      icon="tabler:grip-vertical"
+                      class="h-4 w-4 cursor-grab text-gray-400 select-none dark:text-gray-500" />
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">
+                      {field.name}
+                    </span>
+                    <Badge color="gray" rounded>
+                      {field.type}
+                    </Badge>
+                    <span class="line-clamp-1 flex-1 text-sm text-gray-500 dark:text-gray-400">
+                      {field.description ?? ''}
+                      {#if field.description}
+                        <Tooltip class="max-w-80">{field.description}</Tooltip>
+                      {/if}
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <Button
+                      color="alternative"
+                      size="xs"
+                      class="border-none p-1 shadow"
+                      onclick={() => handleEditSchemaField(index)}>
+                      <PenOutline class="h-4 w-4" />
+                    </Button>
+                    <Button
+                      color="alternative"
+                      size="xs"
+                      class="border-none p-1 shadow"
+                      onclick={() => handleDeleteSchemaField(index)}>
+                      <TrashBinOutline class="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               {/each}
             </div>
@@ -167,7 +218,10 @@
           <!-- Delete Button -->
           {#if !selectedAIAction.preset}
             <div class="flex justify-end pt-4">
-              <Button color="red" onclick={() => handleDelete(selectedAIAction!)}>
+              <Button
+                color="red"
+                onclick={() => handleDelete(selectedAIAction!)}
+                class="border-none shadow">
                 {i18n('delete', { defaultValue: 'Delete' })}
               </Button>
             </div>
@@ -186,4 +240,9 @@
   </div>
 </Section>
 
-<AddModal bind:open={showModal} onSelect={handleAdd} />
+<AddAIActionModal bind:open={showModal} onSelect={handleAdd} />
+<EditFieldModal
+  bind:open={showEditModal}
+  field={editingField}
+  mode={editingIndex < 0 ? 'add' : 'edit'}
+  onSave={handleSaveSchemaField} />

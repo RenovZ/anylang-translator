@@ -9,10 +9,13 @@
     "message": "Select a template to quickly create a new AI action, or start from scratch."
   },
   "add_field": {
-    "message": "Add field"
+    "message": "Add Field"
   },
   "add_new_provider": {
     "message": "Add New Provider"
+  },
+  "add_output_field": {
+    "message": "Add Output Field"
   },
   "add_provider": {
     "message": "Add Provider"
@@ -89,14 +92,23 @@
   "delete_selected": {
     "message": "Delete selected"
   },
+  "description": {
+    "message": "Description"
+  },
+  "description_placeholder": {
+    "message": "Describe what this field should contain..."
+  },
   "edit": {
     "message": "Edit"
+  },
+  "edit_output_field": {
+    "message": "Edit Output Field"
   },
   "enable_auto_translate": {
     "message": "Enable auto-translate feature"
   },
   "enable_speaking": {
-    "message": "Speak"
+    "message": "Enable speaking"
   },
   "enter_custom_model": {
     "message": "Enter the name of the custom model"
@@ -131,11 +143,11 @@
   "fetch_available_models": {
     "message": "Fetch Available Models"
   },
-  "field_description": {
-    "message": "Description"
-  },
   "field_name": {
-    "message": "Name"
+    "message": "Field Name"
+  },
+  "field_type": {
+    "message": "Field Type"
   },
   "font_family": {
     "message": "Font family"

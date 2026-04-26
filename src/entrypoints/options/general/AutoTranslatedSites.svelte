@@ -25,9 +25,10 @@
     <Input
       type="text"
       placeholder="example.com"
-      class="placeholder:text-slate-400"
+      class="border-none bg-gray-50 shadow placeholder:text-slate-400 dark:bg-gray-600"
       bind:value={newSite} />
     <Button
+      class="rounded-xl border-none shadow"
       color="secondary"
       disabled={!newSite}
       onclick={async () => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Avatar, Modal } from 'flowbite-svelte';
+  import { Avatar, Heading, Modal } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
   import type { Provider } from '@/lib/types';
@@ -78,7 +78,7 @@
     {#each providers as provider (provider)}
       <button
         type="button"
-        class="flex flex-col items-center gap-2 rounded-xl p-2 transition hover:bg-gray-100 dark:hover:bg-gray-700"
+        class="flex flex-col items-center gap-2 rounded-xl p-2 transition hover:bg-slate-100 dark:hover:bg-slate-600"
         onclick={() => handleSelect(provider)}>
         <ProviderIcon {provider} avatarClass="h-10 w-10" imgClass="h-10 w-10" />
         <span class="text-center text-xs text-gray-700 dark:text-gray-300">
@@ -89,12 +89,12 @@
   </div>
 {/snippet}
 
-<Modal
-  bind:open
-  title={i18n('add_new_provider', { defaultValue: 'Add New Provider' })}
-  size="xl"
-  outsideclose={false}>
+<Modal bind:open size="xl" outsideclose={false} class="rounded-2xl backdrop-blur-xs">
   <div class="space-y-8">
+    <Heading tag="h5" class="font-medium">
+      {i18n('add_new_provider', { defaultValue: 'Add New Provider' })}
+    </Heading>
+
     {#each sections as section (section.titleKey)}
       <div>
         <h3 class="text-base font-semibold text-gray-900 dark:text-white">
