@@ -2,7 +2,8 @@
   import { Dropdown, DropdownGroup, DropdownItem, DropdownHeader, A } from 'flowbite-svelte';
   import { browser } from 'wxt/browser';
 
-  import { config, type PaidProvider } from '@/lib/config';
+  import config from '@/lib/config';
+  import type { PaidProvider } from '@/lib/types';
   import { goProviders, zenProviders } from '@/lib/preset';
   import { i18n } from '@/lib/i18n';
 

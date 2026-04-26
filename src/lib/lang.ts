@@ -1,6 +1,6 @@
 import { browser } from 'wxt/browser';
 
-import { config } from './config';
+import config from './config';
 import i18n from './i18n';
 
 const allLangNames: Record<string, Record<string, string>> = {
@@ -11659,7 +11659,7 @@ const allLangNames: Record<string, Record<string, string>> = {
   }
 };
 
-const supportedLangs: Record<string, string[]> = {
+export const supportedLangs: Record<string, string[]> = {
   google: [
     'ab',
     'ace',
@@ -12178,4 +12178,6 @@ class Lang {
   }
 }
 
-export const lang = Lang.getInstance();
+const lang = Lang.getInstance();
+
+export default lang;

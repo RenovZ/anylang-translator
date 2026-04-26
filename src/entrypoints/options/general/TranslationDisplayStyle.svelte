@@ -1,25 +1,10 @@
 <script lang="ts">
-  import {
-    Avatar,
-    Toggle,
-    Button,
-    Select,
-    Input,
-    Checkbox,
-    Radio,
-    Label,
-    Dropdown,
-    DropdownItem,
-    Tooltip
-  } from 'flowbite-svelte';
+  import { Button, Select, Input, Label, Dropdown, DropdownItem } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
-  import { config, type TranslationDisplayStyleCustom } from '@/lib/config';
-  import { lang } from '@/lib/lang';
-  import avatar from '@/lib/avatar';
-  import { i18n } from '@/lib/i18n';
-  import { languageOptions } from '@/lib/data';
-  import Section from '../Section.svelte';
+  import config from '@/lib/config';
+  import type { TranslationDisplayStyleCustom } from '@/lib/types';
+  import i18n from '@/lib/i18n';
   import SectionRow from '../SectionRow.svelte';
   import { translationDisplayStyles, fontFamilyOptions } from '@/lib/preset';
 

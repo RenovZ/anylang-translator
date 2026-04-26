@@ -2,9 +2,10 @@
   import { Button, Dropdown, DropdownItem } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
-  import { config } from '@/lib/config';
-  import { lang } from '@/lib/lang';
-  import { i18n } from '@/lib/i18n';
+  import config from '@/lib/config';
+  import lang from '@/lib/lang';
+  import i18n from '@/lib/i18n';
+
   import SectionRow from '../SectionRow.svelte';
 
   interface Props {

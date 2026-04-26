@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Avatar, Modal } from 'flowbite-svelte';
 
-  import { i18n } from '@/lib/i18n';
-  import type { Provider } from '@/lib/config';
+  import i18n from '@/lib/i18n';
+  import type { AIAction, Provider } from '@/lib/types';
   import avatar from '@/lib/avatar';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
 
@@ -11,7 +11,7 @@
     onSelect
   }: {
     open: boolean;
-    onSelect: (provider: Provider) => void;
+    onSelect: (item: AIAction) => void;
   } = $props();
 
   const allProviders = (
@@ -68,8 +68,8 @@
     }
   ];
 
-  function handleSelect(provider: Provider) {
-    onSelect(provider);
+  function handleSelect(item: AIAction) {
+    onSelect(item);
     open = false;
   }
 </script>

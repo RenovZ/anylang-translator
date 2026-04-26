@@ -3,7 +3,7 @@
   import { twMerge } from 'tailwind-merge';
 
   import avatar from '@/lib/avatar';
-  import { type Provider } from '@/lib/config';
+  import type { Provider } from '@/lib/types';
 
   let {
     provider,

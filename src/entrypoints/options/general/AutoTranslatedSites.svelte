@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Button, Input, Checkbox, Label } from 'flowbite-svelte';
 
-  import { config } from '@/lib/config';
-  import { i18n } from '@/lib/i18n';
+  import config from '@/lib/config';
+  import i18n from '@/lib/i18n';
 
   import SectionRow from '../SectionRow.svelte';
 

@@ -4,13 +4,15 @@
   import { browser, type PublicPath } from 'wxt/browser';
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
 
-  import { i18n } from '@/lib/i18n';
   import '@/assets/app.css';
+  import i18n from '@/lib/i18n';
+
   import General from './general/Index.svelte';
   import ApiProviders from './api-providers/Index.svelte';
+  import CustomAIActions from './custom-ai-actions/Index.svelte';
+
   import AboutSettings from './AboutSettings.svelte';
   import AdvancedSettings from './AdvancedSettings.svelte';
-  import AiExpertSettings from './AiExpertSettings.svelte';
   import AiTermsSettings from './AiTermsSettings.svelte';
   import AiWriteSettings from './AiWriteSettings.svelte';
   import ChangelogSettings from './ChangelogSettings.svelte';
@@ -104,7 +106,7 @@
     <!-- Sidebar Navigation -->
     <aside
       class="sticky top-24 z-10 flex h-[calc(100vh-8rem)] flex-col justify-between overflow-y-auto rounded-2xl bg-white/80 p-4 shadow-md dark:bg-slate-900/80">
-      <div class="space-y-1">
+      <div>
         {#each topNavItems as item (item.id)}
           <a
             href={`#${item.id}`}
@@ -140,8 +142,8 @@
       <General />
     {:else if activeNavId === 'api-providers'}
       <ApiProviders />
-    {:else if activeNavId === 'ai'}
-      <!-- <AiExpertSettings {config} {updateField} /> -->
+    {:else if activeNavId === 'custom-ai-actions'}
+      <CustomAIActions />
     {:else if activeNavId === 'terms'}
       <AiTermsSettings />
     {:else if activeNavId === 'writing'}

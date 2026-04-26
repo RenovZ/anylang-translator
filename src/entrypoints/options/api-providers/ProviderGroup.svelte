@@ -1,7 +1,7 @@
 <script lang="ts">
   import { A } from 'flowbite-svelte';
 
-  import { type Provider } from '@/lib/config';
+  import { type Provider } from '@/lib/types';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
   import i18n from '@/lib/i18n';

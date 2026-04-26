@@ -11,7 +11,11 @@ export const navItems = [
     label: i18n('api_providers', { defaultValue: 'API Providers' }),
     position: 'top'
   },
-  { id: 'ai', label: i18n('options_nav_ai', { defaultValue: 'AI experts' }), position: 'top' },
+  {
+    id: 'custom-ai-actions',
+    label: i18n('custom_ai_actions', { defaultValue: 'Custom AI Actions' }),
+    position: 'top'
+  },
   {
     id: 'terms',
     label: i18n('options_nav_terms', { defaultValue: 'AI terminology' }),

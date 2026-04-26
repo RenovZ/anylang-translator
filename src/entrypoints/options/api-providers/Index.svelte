@@ -17,21 +17,23 @@
     QuestionCircleOutline
   } from 'flowbite-svelte-icons';
 
-  import { config, type Provider, type FeatureKey, type FeatureValue } from '@/lib/config';
-  import { i18n } from '@/lib/i18n';
+  import config from '@/lib/config';
+  import i18n from '@/lib/i18n';
+  import { type Provider, type FeatureKey, type FeatureValue } from '@/lib/types';
   import { allFeatures, defaultFeatures, goProviders, zenProviders } from '@/lib/preset';
   import AccordionItem from '@/components/AccordionItem.svelte';
+
   import Section from '../Section.svelte';
-  import AddProviderModal from './AddProviderModal.svelte';
+  import AddModal from './AddModal.svelte';
   import ProviderGroup from './ProviderGroup.svelte';
 
   let showModal = $state(false);
   let showApiKey = $state(false);
   let selectedProvider = $state<Provider>($config.freeProviders[0]);
 
-  const handleAddProvider = (provider: Provider) => {
+  const handleAdd = (item: Provider) => {
     const newProvider: Provider = {
-      ...provider,
+      ...item,
       type: 'custom',
       features: { ...defaultFeatures }
     };
@@ -51,8 +53,8 @@
     selectedProvider = $config.customProviders[$config.customProviders.length - 1];
   };
 
-  const handleDeleteProvider = (provider: Provider) => {
-    $config.customProviders = $config.customProviders.filter((p) => p.name !== provider.name);
+  const handleDelete = (item: Provider) => {
+    $config.customProviders = $config.customProviders.filter((p) => p.name !== item.name);
     selectedProvider = $config.freeProviders[0];
   };
 </script>
@@ -311,7 +313,7 @@
           <!-- Delete Button -->
           {#if selectedProvider.type === 'custom'}
             <div class="flex justify-end pt-4">
-              <Button color="red" onclick={() => handleDeleteProvider(selectedProvider)}>
+              <Button color="red" onclick={() => handleDelete(selectedProvider)}>
                 {i18n('delete', { defaultValue: 'Delete' })}
               </Button>
             </div>
@@ -330,4 +332,4 @@
   </div>
 </Section>
 
-<AddProviderModal bind:open={showModal} onSelect={handleAddProvider} />
+<AddModal bind:open={showModal} onSelect={handleAdd} />

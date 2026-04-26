@@ -5,68 +5,13 @@ import {
   googleTranslatorProvider,
   translationDisplayStyles
 } from './preset';
-
-export type FeatureKey =
-  | 'pageTranslation'
-  | 'videoSubtitles'
-  | 'selectionToolbarTranslation'
-  | 'inputTranslation'
-  | 'imageTranslation'
-  | 'improveWriting'
-  | 'dictionary'
-  | 'customAiAction';
-
-export type FeatureValue = {
-  disabled?: boolean;
-  unsupported?: boolean;
-  state?: boolean;
-};
-
-export type AiProviderType = 'go' | 'zen' | 'custom';
-
-export type ProviderConfig = {
-  name: string;
-  icon?: string;
-  company?: string;
-  description?: string;
-  features: Record<FeatureKey, FeatureValue>;
-};
-
-export type FreeProvider = {
-  type: 'free';
-} & ProviderConfig;
-
-export type PaidProvider = {
-  type: AiProviderType;
-  baseUrl?: string;
-  apiKey?: string;
-  model?: string;
-  models?: string[];
-  prompt?: string;
-  temperature?: number;
-  providerOptions?: Map<string, unknown>;
-} & ProviderConfig;
-
-export type Provider = FreeProvider | PaidProvider;
-
-export type SelectionTriggerValue = 'directly' | 'show icons' | null;
-export type TranslationMode = 'bilingual' | 'translation_only';
-
-export type TranslationDisplayStyleCustom = {
-  backgroundColor: string;
-  color: string;
-  fontSize: string;
-  fontWeight: number;
-  fontFamily: string;
-  borderRadius: string;
-  padding: string;
-};
-export type TranslationDisplayStyle = {
-  value: string;
-  label: string;
-  styles: Record<string, string> | TranslationDisplayStyleCustom;
-  attributes?: Record<string, string>;
-};
+import type {
+  Provider,
+  SelectionTriggerValue,
+  TranslationMode,
+  TranslationDisplayStyle,
+  AIAction
+} from './types';
 
 const defaultConfig = {
   installDateTime: null as number | null,
@@ -75,17 +20,6 @@ const defaultConfig = {
   uiLanguage: 'default',
   sourceLanguage: null as string | null,
   targetLanguage: null as string | null,
-
-  freeProviders: [bingTranslatorProvider, googleTranslatorProvider] as Provider[],
-  customProviders: [] as Provider[],
-
-  pageTranslationProvider: bingTranslatorProvider as Provider,
-  videoSubtitlesTranslationProvider: bingTranslatorProvider as Provider,
-  selectionTranslationProvider: bingTranslatorProvider as Provider,
-  inputTranslationProvider: bingTranslatorProvider as Provider,
-  improveWritingProvider: bingTranslatorProvider as Provider,
-  imageTranslationProvider: null as Provider | null,
-  textToSpeechProvider: null as Provider | null,
 
   autoTranslateEnabled: false,
   alwaysAutoTranslatedSites: [
@@ -104,7 +38,19 @@ const defaultConfig = {
 
   translationMode: 'bilingual' as TranslationMode,
 
-  translationDisplayStyle: translationDisplayStyles[0] as TranslationDisplayStyle
+  translationDisplayStyle: translationDisplayStyles[0] as TranslationDisplayStyle,
+
+  freeProviders: [bingTranslatorProvider, googleTranslatorProvider] as Provider[],
+  customProviders: [] as Provider[],
+  pageTranslationProvider: bingTranslatorProvider as Provider,
+  videoSubtitlesTranslationProvider: bingTranslatorProvider as Provider,
+  selectionTranslationProvider: bingTranslatorProvider as Provider,
+  inputTranslationProvider: bingTranslatorProvider as Provider,
+  improveWritingProvider: bingTranslatorProvider as Provider,
+  imageTranslationProvider: null as Provider | null,
+  textToSpeechProvider: null as Provider | null,
+
+  customAIActions: [] as AIAction[]
 };
 
 export type Config = typeof defaultConfig;
@@ -156,4 +102,6 @@ function createConfigStore() {
   };
 }
 
-export const config = createConfigStore();
+const config = createConfigStore();
+
+export default config;

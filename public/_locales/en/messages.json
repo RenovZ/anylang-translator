@@ -2,6 +2,9 @@
   "add": {
     "message": "Add"
   },
+  "add_ai_action": {
+    "message": "Add AI Action"
+  },
   "add_new_provider": {
     "message": "Add New Provider"
   },
@@ -58,6 +61,12 @@
   },
   "custom": {
     "message": "Custom"
+  },
+  "custom_ai_actions": {
+    "message": "Custom AI Actions"
+  },
+  "custom_ai_actions_description": {
+    "message": "Add your own structured AI actions for selected text"
   },
   "custom_providers": {
     "message": "Custom Providers"
@@ -251,18 +260,6 @@
   "options_advanced_title": {
     "message": "Advanced settings"
   },
-  "options_ai_description": {
-    "message": "Choose default prompt preset and AI expert mode."
-  },
-  "options_ai_prompt_preset_description": {
-    "message": "Choose the prompt preset for your current scenario"
-  },
-  "options_ai_prompt_preset_title": {
-    "message": "Prompt preset"
-  },
-  "options_ai_title": {
-    "message": "AI experts"
-  },
   "options_button_toolbox": {
     "message": "Toolbox"
   },
@@ -439,9 +436,6 @@
   },
   "options_nav_advanced": {
     "message": "Advanced settings"
-  },
-  "options_nav_ai": {
-    "message": "AI experts"
   },
   "options_nav_changelog": {
     "message": "Changelog"
@@ -703,6 +697,9 @@
   },
   "save": {
     "message": "Save"
+  },
+  "select_ai_action_to_configure": {
+    "message": "Select an AI action to configure"
   },
   "select_provider_to_configure": {
     "message": "Select a provider to configure"
