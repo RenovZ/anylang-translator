@@ -1,10 +1,14 @@
 <script lang="ts">
-  import { Avatar, Modal } from 'flowbite-svelte';
+  import { Heading, Modal } from 'flowbite-svelte';
+  import Icon from '@iconify/svelte';
 
   import i18n from '@/lib/i18n';
-  import type { AIAction, Provider } from '@/lib/types';
-  import avatar from '@/lib/avatar';
-  import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import type { AIAction } from '@/lib/types';
+  import {
+    exampleDictionaryAIAction,
+    exampleImprovWriting,
+    exampleBlankAIAction
+  } from '@/lib/preset';
 
   let {
     open = $bindable(false),
@@ -14,98 +18,47 @@
     onSelect: (item: AIAction) => void;
   } = $props();
 
-  const allProviders = (
-    [
-      { type: 'custom', name: 'OpenAI', icon: 'openai' },
-      { type: 'custom', name: 'DeepSeek', icon: 'deepseek' },
-      { type: 'custom', name: 'Gemini', icon: 'gemini', company: 'Google' },
-      { type: 'custom', name: 'Anthropic', icon: 'anthropic' },
-      { type: 'custom', name: 'Grok', icon: 'grok' },
-      { type: 'custom', name: 'Groq', icon: 'groq' },
-      { type: 'custom', name: 'DeepInfra', icon: 'deepinfra' },
-      { type: 'custom', name: 'Mistral AI', icon: 'mistral' },
-      { type: 'custom', name: 'Together.ai', icon: 'together' },
-      { type: 'custom', name: 'Cohere', icon: 'cohere' },
-      { type: 'custom', name: 'Fireworks AI', icon: 'fireworks' },
-      { type: 'custom', name: 'Cerebras', icon: 'cerebras' },
-      { type: 'custom', name: 'Replicate', icon: 'replicate' },
-      { type: 'custom', name: 'Perplexity', icon: 'perplexity' },
-      { type: 'custom', name: 'Vercel', icon: 'vercel' },
-      { type: 'custom', name: 'Hugging Face', icon: 'huggingface' },
-      { type: 'custom', name: 'Ollama', icon: 'ollama' },
-      { type: 'custom', name: 'MiniMax', icon: 'minimax' },
-      { type: 'custom', name: 'Kimi', icon: 'kimi', company: 'Moonshot AI' },
-      { type: 'custom', name: 'Qwen', icon: 'qwen', company: 'Alibaba' },
-      { type: 'custom', name: 'Bedrock', icon: 'bedrock', company: 'Amazon' },
-      { type: 'custom', name: 'OpenRouter', icon: 'openrouter' },
-      { type: 'custom', name: 'Z.ai', icon: 'zai' }
-    ] as Provider[]
-  ).toSorted((a, b) => a.name.localeCompare(b.name));
-
-  const openaiCompatibleProviders = [
-    { type: 'custom', name: '302.AI', icon: 'ai302' },
-    { type: 'custom', name: 'SiliconCloud', icon: 'siliconcloud' },
-    { type: 'custom', name: 'Volcengine', icon: 'volcengine', company: 'ByteDance' },
-    { type: 'custom', name: 'Custom Provider' }
-  ] as Provider[];
-
-  const sections = [
-    {
-      titleKey: 'built_in_llm_providers',
-      titleDefault: 'Built-in LLM Providers',
-      hintKey: 'built_in_llm_providers_hint',
-      hintDefault:
-        'Built-in large language model providers, no need to fill in most configurations like Base URL',
-      providers: allProviders
-    },
-    {
-      titleKey: 'openai_compatible_custom_providers',
-      titleDefault: 'OpenAI Compatible Custom Providers',
-      hintKey: 'openai_compatible_custom_providers_hint',
-      hintDefault:
-        "If you can't find your desired AI provider, select Custom Provider to configure any OpenAI-compatible provider, such as Zhipu AI",
-      providers: openaiCompatibleProviders
-    }
+  const templates: AIAction[] = [
+    exampleDictionaryAIAction,
+    exampleImprovWriting,
+    exampleBlankAIAction
   ];
 
-  function handleSelect(item: AIAction) {
-    onSelect(item);
+  function handleSelect(template: AIAction) {
+    onSelect(structuredClone(template));
     open = false;
   }
 </script>
 
-{#snippet providerGrid(providers: Provider[])}
-  <div class="mt-4 grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-12">
-    {#each providers as provider (provider)}
+<Modal bind:open size="xs" outsideclose={false} classes={{ body: 'border-none' }}>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col">
+      <Heading tag="h5" class="font-medium">
+        {i18n('choose_a_template', { defaultValue: 'Choose a Template' })}
+      </Heading>
+      <p class="text-sm text-slate-400">
+        {i18n('add_ai_action_description', {
+          defaultValue:
+            'Select a template to quickly create a new AI action, or start from scratch.'
+        })}
+      </p>
+    </div>
+
+    {#each templates as template (template.name)}
       <button
         type="button"
-        class="flex flex-col items-center gap-2 rounded-xl p-2 transition hover:bg-gray-100 dark:hover:bg-gray-700"
-        onclick={() => handleSelect(provider)}>
-        <ProviderIcon {provider} avatarClass="h-10 w-10" imgClass="h-10 w-10" />
-        <span class="text-center text-xs text-gray-700 dark:text-gray-300">
-          {provider.name}
-        </span>
+        class="flex items-center gap-4 rounded-xl border border-gray-200 p-4 transition hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-700"
+        onclick={() => handleSelect(template)}>
+        <Icon icon={template.icon} class="h-6 w-6" />
+        <div class="flex flex-col text-left">
+          <span class="text-lg font-medium text-gray-900 dark:text-white">
+            {template.name}
+          </span>
+          <p class="text-sm text-slate-400">
+            {template.description}
+          </p>
+        </div>
       </button>
-    {/each}
-  </div>
-{/snippet}
-
-<Modal
-  bind:open
-  title={i18n('add_new_provider', { defaultValue: 'Add New Provider' })}
-  size="xl"
-  outsideclose={false}>
-  <div class="space-y-8">
-    {#each sections as section (section.titleKey)}
-      <div>
-        <h3 class="text-base font-semibold text-gray-900 dark:text-white">
-          {i18n(section.titleKey, { defaultValue: section.titleDefault })}
-        </h3>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {i18n(section.hintKey, { defaultValue: section.hintDefault })}
-        </p>
-        {@render providerGrid(section.providers)}
-      </div>
     {/each}
   </div>
 </Modal>

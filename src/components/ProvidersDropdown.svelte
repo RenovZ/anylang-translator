@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Dropdown, DropdownGroup, DropdownItem, DropdownHeader, A } from 'flowbite-svelte';
+  import { PlusOutline } from 'flowbite-svelte-icons';
   import { browser } from 'wxt/browser';
 
   import config from '@/lib/config';
@@ -8,7 +9,6 @@
   import { i18n } from '@/lib/i18n';
 
   import ProviderIcon from './ProviderIcon.svelte';
-  import { PlusOutline } from 'flowbite-svelte-icons';
 </script>
 
 <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">

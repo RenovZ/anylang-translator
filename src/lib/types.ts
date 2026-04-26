@@ -9,11 +9,14 @@ export type AIAction = {
   systemPrompt: string;
   prompt: string;
   outputSchema: OutputSchema[];
+  description?: string;
 };
+
+export type OutputSchemaType = 'text' | 'number';
 
 export type OutputSchema = {
   name: string;
-  type: string;
+  type: OutputSchemaType;
   description?: string;
   enableSpeaking: boolean;
 };

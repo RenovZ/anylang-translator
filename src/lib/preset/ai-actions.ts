@@ -2,7 +2,7 @@ import i18n from '@/lib/i18n';
 
 import { type OutputSchema, type AIAction } from '../types';
 
-export const defaultDictionaryAIAction: AIAction = {
+export const exampleDictionaryAIAction: AIAction = {
   preset: true,
   type: 'dictionary',
   name: 'Dictionary',
@@ -59,51 +59,52 @@ Target language: {{targetLanguage}}
   outputSchema: [
     {
       name: 'Term',
-      type: 'string',
+      type: 'text',
       description: 'The base/canonical form of the term being defined.',
       enableSpeaking: true
     },
     {
       name: 'Phonetic',
-      type: 'string',
+      type: 'text',
       description:
         "The phonetic representation of the term, using the standard notation for the term's language (e.g., IPA for English, pinyin for Mandarin, romaji for Japanese).",
       enableSpeaking: false
     },
     {
       name: 'Part of Speech',
-      type: 'string',
+      type: 'text',
       description: 'The part of speech of the term (noun, verb, adjective, etc.).',
       enableSpeaking: false
     },
     {
       name: 'Definition',
-      type: 'string',
+      type: 'text',
       description: 'A concise definition of the term that matches the surrounding paragraphs.',
       enableSpeaking: false
     },
     {
       name: 'Paragraphs',
-      type: 'string',
+      type: 'text',
       description: 'The original paragraphs surrounding the term.',
       enableSpeaking: true
     },
     {
       name: 'Paragraphs Translation',
-      type: 'string',
+      type: 'text',
       description: 'The translation of the paragraphs into the target language.',
       enableSpeaking: false
     },
     {
       name: 'Difficulty',
-      type: 'string',
+      type: 'text',
       description: 'The CEFR difficulty level of the term (A1, A2, B1, B2, C1, or C2).',
       enableSpeaking: false
     }
-  ] as OutputSchema[]
+  ] as OutputSchema[],
+  description: 'Look up words with definitions, phonetics, and paragraph translates.'
 } as const;
 
-export const defaultImprovWriting = {
+export const exampleImprovWriting: AIAction = {
   preset: true,
   type: 'improveWriting',
   name: 'Improve Writing',
@@ -150,18 +151,38 @@ Target language: {{targetLanguage}}
   outputSchema: [
     {
       name: 'Error Analysis',
-      type: 'string',
+      type: 'text',
       description:
         'Explain grammar, spelling, punctuation, and word-choice issues in {{targetLanguage}}.',
       enableSpeaking: false
     },
     {
       name: 'Improved Version',
-      type: 'string',
+      type: 'text',
       description: 'Corrected and improved version of the selected text in its original language.',
       enableSpeaking: false
     }
-  ] as OutputSchema[]
+  ] as OutputSchema[],
+  description: 'Analyze writing errors and suggest improvements.'
+} as const;
+
+export const exampleBlankAIAction: AIAction = {
+  preset: true,
+  type: 'blank',
+  name: 'Blank',
+  icon: 'tabler:sparkles',
+  systemPrompt: '',
+  prompt: '',
+  outputSchema: [
+    {
+      name: 'Result',
+      type: 'text',
+      description:
+        'Explain grammar, spelling, punctuation, and word-choice issues in {{targetLanguage}}.',
+      enableSpeaking: false
+    }
+  ] as OutputSchema[],
+  description: 'Start from scratch with an empty action.'
 } as const;
 
 export const promptPresets = [

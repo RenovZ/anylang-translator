@@ -1,4 +1,9 @@
-export { defaultDictionaryAIAction, defaultImprovWriting, promptPresets } from './ai-actions';
+export {
+  exampleDictionaryAIAction,
+  exampleImprovWriting,
+  exampleBlankAIAction,
+  promptPresets
+} from './ai-actions';
 export {
   allFeatures,
   defaultFeatures,
