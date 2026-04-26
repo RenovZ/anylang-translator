@@ -19,6 +19,8 @@
     enableSpeaking: false
   });
   let editingIndex = $state<number>(-1);
+  let dragIndex = $state<number>(-1);
+  let dragOverIndex = $state<number>(-1);
   let selectedAIAction = $state<AIAction | null>(
     $config.customAIActions.length ? $config.customAIActions[0] : null
   );
@@ -51,6 +53,31 @@
   const handleDeleteSchemaField = (index: number) => {
     if (!selectedAIAction) return;
     selectedAIAction.outputSchema = selectedAIAction.outputSchema.filter((_, i) => i !== index);
+  };
+
+  const handleDragStart = (index: number) => {
+    dragIndex = index;
+  };
+
+  const handleDragOver = (e: MouseEvent, index: number) => {
+    e.preventDefault();
+    if (dragIndex >= 0 && dragIndex !== index) {
+      dragOverIndex = index;
+    }
+  };
+
+  const handleDrop = () => {
+    if (!selectedAIAction || dragIndex < 0 || dragOverIndex < 0 || dragIndex === dragOverIndex) {
+      dragIndex = -1;
+      dragOverIndex = -1;
+      return;
+    }
+    const schema = [...selectedAIAction.outputSchema];
+    const [removed] = schema.splice(dragIndex, 1);
+    schema.splice(dragOverIndex, 0, removed);
+    selectedAIAction.outputSchema = schema;
+    dragIndex = -1;
+    dragOverIndex = -1;
   };
 
   const handleEditSchemaField = (index: number) => {
@@ -173,14 +200,24 @@
                 {i18n('add_field', { defaultValue: 'Add Field' })}
               </Button>
             </div>
-            <div class="space-y-2">
+            <div class="space-y-2" role="list">
               {#each selectedAIAction.outputSchema as field, index (index)}
                 <div
-                  class="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2 shadow dark:bg-gray-800">
+                  class="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2 shadow transition"
+                  class:opacity-50={dragIndex === index}
+                  class:border-2={dragOverIndex === index}
+                  class:border-blue-400={dragOverIndex === index}
+                  class:cursor-grabbing={dragIndex === index}
+                  role="listitem"
+                  draggable={true}
+                  ondragstart={() => handleDragStart(index)}
+                  ondragover={(e) => handleDragOver(e, index)}
+                  ondrop={handleDrop}>
                   <div class="flex items-center gap-1">
                     <Icon
                       icon="tabler:grip-vertical"
-                      class="h-4 w-4 cursor-grab text-gray-400 select-none dark:text-gray-500" />
+                      class="h-4 w-4 cursor-grab text-gray-400 select-none dark:text-gray-500"
+                      onmousedown={() => handleDragStart(index)} />
                     <span class="text-sm font-medium text-gray-900 dark:text-white">
                       {field.name}
                     </span>
