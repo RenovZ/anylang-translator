@@ -20,7 +20,9 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import { type Provider, type FeatureKey, type FeatureValue } from '@/lib/types';
+  import { untrack } from 'svelte';
+
+  import type { Provider, FeatureKey, FeatureValue, PaidProvider } from '@/lib/types';
   import { allFeatures, defaultFeatures, goProviders, zenProviders } from '@/lib/preset';
   import AccordionItem from '@/components/AccordionItem.svelte';
 
@@ -30,7 +32,7 @@
 
   let showModal = $state(false);
   let showApiKey = $state(false);
-  let selectedProvider = $state<Provider>($config.freeProviders[0]);
+  let selectedIndex = $state(0);
 
   const handleAdd = (item: Provider) => {
     const newProvider: Provider = {
@@ -39,24 +41,21 @@
       features: { ...defaultFeatures }
     };
 
-    const size = [
-      ...$config.freeProviders,
-      ...goProviders,
-      ...zenProviders,
-      ...$config.customProviders
-    ].filter((p) => p.name === newProvider.name).length;
+    const size = $config.customProviders.filter((p) => p.icon === newProvider.icon).length;
 
     if (size > 0) {
       newProvider.name = `${newProvider.name} ${size}`;
     }
 
     $config.customProviders = [...$config.customProviders, newProvider];
-    selectedProvider = $config.customProviders[$config.customProviders.length - 1];
+    selectedIndex = $config.customProviders.length - 1;
   };
 
-  const handleDelete = (item: Provider) => {
-    $config.customProviders = $config.customProviders.filter((p) => p.name !== item.name);
-    selectedProvider = $config.freeProviders[0];
+  const handleDelete = () => {
+    if (selectedIndex < 0) return;
+
+    $config.customProviders = $config.customProviders.filter((p, index) => index !== selectedIndex);
+    selectedIndex = Math.min(selectedIndex, $config.customProviders.length - 1);
   };
 </script>
 
@@ -74,23 +73,23 @@
         <ProviderGroup
           open
           title={i18n('free_users', { defaultValue: 'Free Users' })}
-          providers={$config.freeProviders}
-          bind:selectedProvider />
+          currentType="free"
+          bind:selectedIndex />
         <ProviderGroup
           open
           title={i18n('go_users', { defaultValue: 'Go Users' })}
-          providers={goProviders}
-          bind:selectedProvider />
+          currentType="go"
+          bind:selectedIndex />
         <ProviderGroup
           open
           title={i18n('zen_users', { defaultValue: 'Zen Users' })}
-          providers={zenProviders}
-          bind:selectedProvider />
+          currentType="zen"
+          bind:selectedIndex />
         <ProviderGroup
           open
           title={i18n('custom', { defaultValue: 'Custom' })}
-          providers={$config.customProviders}
-          bind:selectedProvider />
+          currentType="custom"
+          bind:selectedIndex />
       </Accordion>
 
       <Button
@@ -104,20 +103,20 @@
 
     <!-- Right: Provider Configuration -->
     <div class="rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
-      {#if selectedProvider}
+      {#if selectedIndex >= 0}
         <div class="mb-6 flex items-center justify-between">
           <div class="flex items-center gap-3">
             <picture>
               <source
                 media="(prefers-color-scheme: dark)"
-                srcset={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/dark/${selectedProvider.icon}.webp`} />
+                srcset={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/dark/${$config.customProviders[selectedIndex].icon}.webp`} />
               <img
-                alt={selectedProvider.name}
+                alt={$config.customProviders[selectedIndex].name}
                 class="flex h-6 w-6"
-                src={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/${selectedProvider.icon}.webp`} />
+                src={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/${$config.customProviders[selectedIndex].icon}.webp`} />
             </picture>
-            <span class="text-lg font-semibold">{selectedProvider.name}</span>
-            {#if selectedProvider.type === 'go' || selectedProvider.type === 'zen'}
+            <span class="text-lg font-semibold">{$config.customProviders[selectedIndex].name}</span>
+            {#if $config.customProviders[selectedIndex].type === 'go' || $config.customProviders[selectedIndex].type === 'zen'}
               <!--
                 TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
                 -->
@@ -141,10 +140,10 @@
               {i18n('provider_name', { defaultValue: 'Name' })}
             </Label>
             <Input
-              disabled={selectedProvider.type !== 'custom'}
+              disabled={$config.customProviders[selectedIndex].type !== 'custom'}
               type="text"
               class="border-none bg-gray-50 shadow dark:bg-gray-600"
-              bind:value={selectedProvider.name} />
+              bind:value={$config.customProviders[selectedIndex].name} />
           </div>
 
           <!-- Description -->
@@ -153,12 +152,12 @@
               {i18n('provider_description', { defaultValue: 'Description' })}
             </Label>
             <Textarea
-              bind:value={selectedProvider.description}
+              bind:value={$config.customProviders[selectedIndex].description}
               class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
 
           <!-- API Key -->
-          {#if selectedProvider.type === 'custom'}
+          {#if $config.customProviders[selectedIndex].type === 'custom'}
             <div class="space-y-2">
               <div class="flex items-center justify-between">
                 <Label class="text-sm font-medium">
@@ -175,7 +174,7 @@
               <div class="relative">
                 <Input
                   type={showApiKey ? 'text' : 'password'}
-                  bind:value={selectedProvider.apiKey}
+                  bind:value={($config.customProviders[selectedIndex] as PaidProvider).apiKey}
                   class="border-none bg-gray-50 pr-10 shadow dark:bg-gray-600" />
                 <button
                   type="button"
@@ -192,20 +191,20 @@
           {/if}
 
           <!-- Base URL -->
-          {#if selectedProvider.type === 'custom'}
+          {#if $config.customProviders[selectedIndex].type === 'custom'}
             <div class="space-y-2">
               <Label class="block text-sm font-medium">
                 {i18n('base_url', { defaultValue: 'Base URL' })}
               </Label>
               <Input
                 type="text"
-                bind:value={selectedProvider.baseUrl}
+                bind:value={($config.customProviders[selectedIndex] as PaidProvider).baseUrl}
                 class="border-none bg-gray-50 shadow dark:bg-gray-600" />
             </div>
           {/if}
 
           <!-- Model -->
-          {#if selectedProvider.type !== 'free'}
+          {#if $config.customProviders[selectedIndex].type !== 'free'}
             <div class="space-y-2">
               <div class="flex items-center justify-between">
                 <Label class="block text-sm font-medium">
@@ -223,9 +222,9 @@
                 </Button>
               </div>
               <Select
-                bind:value={selectedProvider.model}
+                bind:value={($config.customProviders[selectedIndex] as PaidProvider).model}
                 classes={{ select: 'border-none shadow bg-gray-50 dark:bg-gray-600' }}>
-                {#each selectedProvider.models as model (model)}
+                {#each ($config.customProviders[selectedIndex] as PaidProvider).models as model (model)}
                   <option value={model}>{model}</option>
                 {/each}
                 <!-- <option value="">
@@ -244,13 +243,17 @@
                 <span>{i18n('feature_providers', { defaultValue: 'Feature Providers' })}</span>
               {/snippet}
               <div class="space-y-2">
-                {#each (Object.entries(selectedProvider.features || {}) as [FeatureKey, FeatureValue][]).filter(([, value]) => value.unsupported !== true) as [featureKey, featureValue] (featureKey)}
+                {#each (Object.entries($config.customProviders[selectedIndex].features || {}) as [FeatureKey, FeatureValue][]).filter(([, value]) => value.unsupported !== true) as [featureKey, featureValue] (featureKey)}
                   <Toggle
                     size="small"
                     disabled={featureValue.disabled}
                     bind:checked={
-                      (selectedProvider.features as Record<FeatureKey, FeatureValue>)[featureKey]
-                        .state
+                      (
+                        $config.customProviders[selectedIndex].features as Record<
+                          FeatureKey,
+                          FeatureValue
+                        >
+                      )[featureKey].state
                     }>
                     {allFeatures[featureKey]}
                   </Toggle>
@@ -260,7 +263,7 @@
           </Accordion>
 
           <!-- Advanced Options -->
-          {#if selectedProvider.type !== 'free'}
+          {#if $config.customProviders[selectedIndex].type !== 'free'}
             <Accordion class="space-y-2 rounded-none border-none">
               <AccordionItem buttonClass="w-fit p-0">
                 {#snippet title()}
@@ -284,7 +287,9 @@
                       step="0.01"
                       min="0"
                       class="border-none bg-gray-50 shadow dark:bg-gray-600"
-                      bind:value={selectedProvider.temperature} />
+                      bind:value={
+                        ($config.customProviders[selectedIndex] as PaidProvider).temperature
+                      } />
                   </div>
 
                   <!-- Provider Options -->
@@ -306,15 +311,19 @@
                     </div>
                     <Textarea
                       value={JSON.stringify(
-                        selectedProvider.providerOptions ?? { field: 'value' },
+                        ($config.customProviders[selectedIndex] as PaidProvider)
+                          .providerOptions ?? {
+                          field: 'value'
+                        },
                         null,
                         2
                       )}
                       onchange={(e) => {
-                        if (selectedProvider.type === 'free') return;
+                        if ($config.customProviders[selectedIndex].type === 'free') return;
                         try {
                           const parsed = JSON.parse(e.currentTarget.value);
-                          selectedProvider.providerOptions = parsed;
+                          ($config.customProviders[selectedIndex] as PaidProvider).providerOptions =
+                            parsed;
                         } catch (err) {
                           console.error(err);
                         }
@@ -328,9 +337,9 @@
           {/if}
 
           <!-- Delete Button -->
-          {#if selectedProvider.type === 'custom'}
+          {#if $config.customProviders[selectedIndex].type === 'custom'}
             <div class="flex justify-end pt-4">
-              <Button color="red" onclick={() => handleDelete(selectedProvider)}>
+              <Button color="red" onclick={handleDelete}>
                 {i18n('delete', { defaultValue: 'Delete' })}
               </Button>
             </div>

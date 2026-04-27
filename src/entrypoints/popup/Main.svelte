@@ -22,7 +22,7 @@
   import i18n from '@/lib/i18n';
   import avatar from '@/lib/avatar';
   import type { PaidProvider, SelectionTriggerValue } from '@/lib/types';
-  import { aiProviders, goProviders, promptPresets, zenProviders } from '@/lib/preset';
+  import { aiProviders, promptPresets } from '@/lib/preset';
   import { languageOptions } from '@/lib/data';
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
 
@@ -116,7 +116,7 @@
         {@const paidProvider = $config.pageTranslationProvider as PaidProvider}
         {@const currentModels =
           (
-            [...goProviders, ...zenProviders, ...$config.customProviders].find(
+            $config.customProviders.find(
               (item) =>
                 item.type !== 'free' &&
                 aiProviders.includes(item.type) &&

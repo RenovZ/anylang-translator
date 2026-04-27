@@ -5,8 +5,7 @@
 
   import config from '@/lib/config';
   import type { PaidProvider } from '@/lib/types';
-  import { goProviders, zenProviders } from '@/lib/preset';
-  import { i18n } from '@/lib/i18n';
+  import i18n from '@/lib/i18n';
 
   import ProviderIcon from './ProviderIcon.svelte';
 </script>
@@ -16,7 +15,7 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('free_users', { defaultValue: 'Free Users' })}
     </DropdownHeader>
-    {#each $config.freeProviders as provider (provider)}
+    {#each $config.customProviders.filter((item) => item.type === 'free') as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>
@@ -29,7 +28,7 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('go_users', { defaultValue: 'Go Users' })}
     </DropdownHeader>
-    {#each goProviders as PaidProvider[] as provider (provider)}
+    {#each $config.customProviders.filter((item) => item.type === 'go') as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>
@@ -50,7 +49,7 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('zen_users', { defaultValue: 'Zen Users' })}
     </DropdownHeader>
-    {#each zenProviders as PaidProvider[] as provider (provider)}
+    {#each $config.customProviders.filter((item) => item.type === 'zen') as PaidProvider[] as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>
@@ -71,7 +70,7 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('custom', { defaultValue: 'Custom' })}
     </DropdownHeader>
-    {#each $config.customProviders as PaidProvider[] as provider (provider)}
+    {#each $config.customProviders.filter((item) => item.type === 'custom') as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.pageTranslationProvider = { ...provider })}>

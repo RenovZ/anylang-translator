@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { Badge, Button, Input, Label, Select, Textarea, Tooltip } from 'flowbite-svelte';
   import { PlusOutline, TrashBinOutline, PenOutline } from 'flowbite-svelte-icons';
   import Icon from '@iconify/svelte';
@@ -18,41 +19,43 @@
     description: '',
     enableSpeaking: false
   });
-  let editingIndex = $state<number>(-1);
-  let dragIndex = $state<number>(-1);
-  let dragOverIndex = $state<number>(-1);
-  let selectedAIAction = $state<AIAction | null>(
-    $config.customAIActions.length ? $config.customAIActions[0] : null
-  );
+  let editingIndex = $state(-1);
+  let dragIndex = $state(-1);
+  let dragOverIndex = $state(-1);
+  let selectedIndex = $state(-1);
 
-  const isSelected = (action: AIAction) =>
-    selectedAIAction && selectedAIAction.name === action.name;
+  onMount(() => {
+    selectedIndex = $config.customAIActions.length ? 0 : -1;
+  });
 
   const handleAdd = (item: AIAction) => {
     const newAction: AIAction = { ...item, preset: false };
-    const size = $config.customAIActions.filter((a) => a.name === newAction.name).length;
+    const size = $config.customAIActions.filter((a) => a.type === newAction.type).length;
     if (size > 0) {
       newAction.name = `${newAction.name} ${size}`;
     }
     $config.customAIActions = [...$config.customAIActions, newAction];
-    selectedAIAction = $config.customAIActions[$config.customAIActions.length - 1];
+    selectedIndex = $config.customAIActions.length - 1;
   };
 
-  const handleDelete = (item: AIAction) => {
-    $config.customAIActions = $config.customAIActions.filter((a) => a.name !== item.name);
-    selectedAIAction = $config.customAIActions.length ? $config.customAIActions[0] : null;
+  const handleDelete = () => {
+    $config.customAIActions = $config.customAIActions.filter((_, i) => i !== selectedIndex);
+    selectedIndex = Math.min(selectedIndex, $config.customAIActions.length - 1);
   };
 
   const handleAddSchemaField = () => {
-    if (!selectedAIAction) return;
+    if (selectedIndex < 0) return;
     editingIndex = -1;
     editingField = { name: '', type: 'text', description: '', enableSpeaking: false };
     showEditModal = true;
   };
 
   const handleDeleteSchemaField = (index: number) => {
-    if (!selectedAIAction) return;
-    selectedAIAction.outputSchema = selectedAIAction.outputSchema.filter((_, i) => i !== index);
+    if (selectedIndex < 0) return;
+    let { outputSchema } = $config.customAIActions[selectedIndex];
+    $config.customAIActions[selectedIndex].outputSchema = outputSchema.filter(
+      (_, i) => i !== index
+    );
   };
 
   const handleDragStart = (index: number) => {
@@ -67,34 +70,34 @@
   };
 
   const handleDrop = () => {
-    if (!selectedAIAction || dragIndex < 0 || dragOverIndex < 0 || dragIndex === dragOverIndex) {
+    if (selectedIndex < 0 || dragIndex < 0 || dragOverIndex < 0 || dragIndex === dragOverIndex) {
       dragIndex = -1;
       dragOverIndex = -1;
       return;
     }
-    const schema = [...selectedAIAction.outputSchema];
-    const [removed] = schema.splice(dragIndex, 1);
-    schema.splice(dragOverIndex, 0, removed);
-    selectedAIAction.outputSchema = schema;
+    let { outputSchema } = $config.customAIActions[selectedIndex];
+    const [removed] = outputSchema.splice(dragIndex, 1);
+    outputSchema.splice(dragOverIndex, 0, removed);
+    $config.customAIActions[selectedIndex].outputSchema = outputSchema;
     dragIndex = -1;
     dragOverIndex = -1;
   };
 
   const handleEditSchemaField = (index: number) => {
-    if (!selectedAIAction) return;
+    if (selectedIndex < 0) return;
     editingIndex = index;
-    editingField = { ...selectedAIAction.outputSchema[index] };
+    editingField = { ...$config.customAIActions[selectedIndex].outputSchema[index] };
     showEditModal = true;
   };
 
   const handleSaveSchemaField = (field: OutputSchema) => {
-    if (!selectedAIAction) return;
+    if (selectedIndex < 0) return;
+    let { outputSchema } = $config.customAIActions[selectedIndex];
     if (editingIndex < 0) {
-      selectedAIAction.outputSchema = [...selectedAIAction.outputSchema, field];
+      $config.customAIActions[selectedIndex].outputSchema = [...outputSchema, field];
     } else {
-      const newSchema = [...selectedAIAction.outputSchema];
-      newSchema[editingIndex] = field;
-      selectedAIAction.outputSchema = newSchema;
+      outputSchema[editingIndex] = field;
+      $config.customAIActions[selectedIndex].outputSchema = outputSchema;
     }
     editingIndex = -1;
   };
@@ -109,15 +112,15 @@
   <div class="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
     <!-- Left: AI Action List -->
     <div class="space-y-1">
-      {#each $config.customAIActions as action (action.name)}
+      {#each $config.customAIActions as action, index (index)}
         <button
           type="button"
           class="flex w-full items-center gap-4 rounded-xl px-4 py-2 text-left transition"
-          class:bg-slate-100={isSelected(action)}
-          class:dark:bg-slate-600={isSelected(action)}
-          class:hover:bg-slate-50={!isSelected(action)}
-          class:dark:hover:bg-slate-700={!isSelected(action)}
-          onclick={() => (selectedAIAction = action)}>
+          class:bg-slate-100={selectedIndex === index}
+          class:dark:bg-slate-600={selectedIndex === index}
+          class:hover:bg-slate-50={selectedIndex !== index}
+          class:dark:hover:bg-slate-700={selectedIndex !== index}
+          onclick={() => (selectedIndex = index)}>
           <Icon icon={action.icon} class="h-6 w-6" />
           <div class="text-sm font-medium">{action.name}</div>
         </button>
@@ -134,7 +137,7 @@
 
     <!-- Right: AI Action Configuration -->
     <div class="rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
-      {#if selectedAIAction}
+      {#if selectedIndex >= 0}
         <div class="space-y-4">
           <!-- Name -->
           <div class="space-y-2">
@@ -142,9 +145,9 @@
               {i18n('name', { defaultValue: 'Name' })}
             </Label>
             <Input
-              disabled={selectedAIAction.preset}
+              disabled={$config.customAIActions[selectedIndex].preset}
               type="text"
-              bind:value={selectedAIAction.name}
+              bind:value={$config.customAIActions[selectedIndex].name}
               class="border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
 
@@ -155,7 +158,7 @@
             </Label>
             <Input
               type="text"
-              bind:value={selectedAIAction.icon}
+              bind:value={$config.customAIActions[selectedIndex].icon}
               class="border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
 
@@ -169,7 +172,7 @@
               {i18n('system_prompt', { defaultValue: 'System Prompt' })}
             </Label>
             <Textarea
-              bind:value={selectedAIAction.systemPrompt}
+              bind:value={$config.customAIActions[selectedIndex].systemPrompt}
               rows={8}
               class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
@@ -180,7 +183,7 @@
               {i18n('prompt', { defaultValue: 'Prompt' })}
             </Label>
             <Textarea
-              bind:value={selectedAIAction.prompt}
+              bind:value={$config.customAIActions[selectedIndex].prompt}
               rows={6}
               class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
@@ -201,7 +204,7 @@
               </Button>
             </div>
             <div class="space-y-2" role="list">
-              {#each selectedAIAction.outputSchema as field, index (index)}
+              {#each $config.customAIActions[selectedIndex].outputSchema as field, index (index)}
                 <div
                   class="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2 shadow transition"
                   class:opacity-50={dragIndex === index}
@@ -253,12 +256,9 @@
           </div>
 
           <!-- Delete Button -->
-          {#if !selectedAIAction.preset}
+          {#if !$config.customAIActions[selectedIndex].preset}
             <div class="flex justify-end pt-4">
-              <Button
-                color="red"
-                onclick={() => handleDelete(selectedAIAction!)}
-                class="border-none shadow">
+              <Button color="red" onclick={handleDelete} class="border-none shadow">
                 {i18n('delete', { defaultValue: 'Delete' })}
               </Button>
             </div>

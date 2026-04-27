@@ -18,13 +18,13 @@
 
 <Section id="general" title={i18n('general_settings', { defaultValue: 'General settings' })}>
   <!-- header buttons -->
-  <svelte:fragment slot="header-actions">
+  {#snippet headerActions()}
     <div class="text-primary-600 flex items-center gap-4 text-sm">
       <button type="button" onclick={() => config.reset()}>
         {i18n('reset_settings', { defaultValue: 'Reset settings' })}
       </button>
     </div>
-  </svelte:fragment>
+  {/snippet}
 
   <!-- login state -->
   <div

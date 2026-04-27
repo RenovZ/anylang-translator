@@ -49,13 +49,13 @@ Output:
 - Definition: Being deeply moved; emotional touch
 - Paragraphs Translation: I thought this movie was boring, but the ending was moving.
 - Difficulty: B1
-  `,
+  `.trim(),
   prompt: `
 ## Input
 Selection: {{selection}}
 Paragraphs: {{paragraphs}}
 Target language: {{targetLanguage}}
-  `,
+  `.trim(),
   outputSchema: [
     {
       name: 'Term',
@@ -141,13 +141,13 @@ Example B:
 - {{targetLanguage}}: English
 - Error Analysis (English — {{targetLanguage}}): There are verb conjugation errors: "会いて" should be "会って" (te-form of 会う), and "見るました" should be "見ました" (past tense of 見る in masu-form).
 - Improved Version (Japanese — {{originLanguage}}): 昨日私は友達に会って、一緒に映画を見ました。
-  `,
+  `.trim(),
   prompt: `
 ## Input
 Selection: {{selection}}
 Paragraphs: {{paragraphs}}
 Target language: {{targetLanguage}}
-  `,
+  `.trim(),
   outputSchema: [
     {
       name: 'Error Analysis',

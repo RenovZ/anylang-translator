@@ -3,7 +3,9 @@ import { writable, get, type Subscriber } from 'svelte/store';
 import {
   bingTranslatorProvider,
   googleTranslatorProvider,
-  translationDisplayStyles
+  goProviders,
+  translationDisplayStyles,
+  zenProviders
 } from './preset';
 import type {
   Provider,
@@ -40,8 +42,12 @@ const defaultConfig = {
 
   translationDisplayStyle: translationDisplayStyles[0] as TranslationDisplayStyle,
 
-  freeProviders: [bingTranslatorProvider, googleTranslatorProvider] as Provider[],
-  customProviders: [] as Provider[],
+  customProviders: [
+    { ...bingTranslatorProvider },
+    { ...googleTranslatorProvider },
+    ...goProviders,
+    ...zenProviders
+  ] as Provider[],
   pageTranslationProvider: bingTranslatorProvider as Provider,
   videoSubtitlesTranslationProvider: bingTranslatorProvider as Provider,
   selectionTranslationProvider: bingTranslatorProvider as Provider,

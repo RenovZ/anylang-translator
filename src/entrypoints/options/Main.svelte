@@ -138,6 +138,7 @@
     </aside>
 
     <!-- Active Section Content -->
+    <!-- <div class="flex h-[calc(100vh-8rem)] flex-1"> -->
     {#if activeNavId === 'general'}
       <General />
     {:else if activeNavId === 'api-providers'}
@@ -179,5 +180,6 @@
     {:else if activeNavId === 'developer'}
       <DeveloperSettings />
     {/if}
+    <!-- </div> -->
   </div>
 </main>
