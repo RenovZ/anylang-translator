@@ -74,7 +74,7 @@
 </script>
 
 {#snippet providerGrid(providers: Provider[])}
-  <div class="mt-4 grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-12">
+  <div class="mt-4 grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-8">
     {#each providers as provider (provider)}
       <button
         type="button"
@@ -89,7 +89,12 @@
   </div>
 {/snippet}
 
-<Modal bind:open size="xl" outsideclose={false} class="rounded-2xl backdrop-blur-xs">
+<Modal
+  placement="top-center"
+  bind:open
+  size="lg"
+  outsideclose={false}
+  class="mt-20 rounded-2xl backdrop:backdrop-blur-xs">
   <div class="space-y-8">
     <Heading tag="h5" class="font-medium">
       {i18n('add_new_provider', { defaultValue: 'Add New Provider' })}

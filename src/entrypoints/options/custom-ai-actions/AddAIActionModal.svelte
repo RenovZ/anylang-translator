@@ -31,11 +31,12 @@
 </script>
 
 <Modal
+  placement="top-center"
   bind:open
   size="xs"
   outsideclose={false}
   classes={{ body: 'border-none' }}
-  class="backdrop-blur-xs">
+  class="mt-20 rounded-2xl backdrop:backdrop-blur-xs">
   <div class="flex flex-col gap-4">
     <div class="flex flex-col">
       <Heading tag="h5" class="font-medium">

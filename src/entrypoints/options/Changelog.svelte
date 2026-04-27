@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { i18n } from '@/lib/i18n';
+  import i18n from '@/lib/i18n';
   import Section from './Section.svelte';
 </script>
 
 <!-- Changelog Settings Section -->
 <Section
-  id="changelog"
   title={i18n('options_changelog_title', { defaultValue: 'Changelog' })}
   description={i18n('options_changelog_description', {
     defaultValue: 'View recent updates and new features.'

@@ -1,4 +1,10 @@
 {
+  "about": {
+    "message": "About"
+  },
+  "action_palette": {
+    "message": "Action Palette"
+  },
   "add": {
     "message": "Add"
   },
@@ -59,11 +65,17 @@
   "batch_ops": {
     "message": "Batch operations"
   },
+  "bilingual_subtitles": {
+    "message": "Bilingual Subtitles"
+  },
   "cancel": {
     "message": "Cancel"
   },
   "cancel_batch": {
     "message": "Cancel batch"
+  },
+  "changelog": {
+    "message": "Changelog"
   },
   "choose_a_template": {
     "message": "Choose a Template"
@@ -98,6 +110,9 @@
   "description_placeholder": {
     "message": "Describe what this field should contain..."
   },
+  "docs": {
+    "message": "Documentation"
+  },
   "edit": {
     "message": "Edit"
   },
@@ -113,32 +128,32 @@
   "enter_custom_model": {
     "message": "Enter the name of the custom model"
   },
-  "feature_custom_ai_action": {
-    "message": "Custom AI Action"
+  "feature_bilingual_subtitles": {
+    "message": "Bilingual Subtitles"
   },
-  "feature_dictionary": {
-    "message": "Dictionary"
+  "feature_instant_lookup": {
+    "message": "Instant Lookup"
   },
-  "feature_image_translation": {
-    "message": "Image Translation"
+  "feature_intelligent_input": {
+    "message": "Intelligent Input"
   },
-  "feature_improve_writing": {
-    "message": "Improve Writing"
+  "feature_language_bridge": {
+    "message": "Language Bridge"
   },
-  "feature_input_translation": {
-    "message": "Input Translation"
-  },
-  "feature_page_translation": {
-    "message": "Page Translation"
+  "feature_panorama_reading": {
+    "message": "Panorama Reading"
   },
   "feature_providers": {
     "message": "Feature Providers"
   },
-  "feature_selection_toolbar": {
-    "message": "Selection Toolbar Translation"
+  "feature_text_translation": {
+    "message": "Text Translation"
   },
-  "feature_video_subtitles": {
-    "message": "Video Subtitles"
+  "feature_writing_copilot": {
+    "message": "Writing Copilot"
+  },
+  "feedback": {
+    "message": "Feedback"
   },
   "fetch_available_models": {
     "message": "Fetch Available Models"
@@ -178,6 +193,15 @@
   },
   "icon": {
     "message": "Icon"
+  },
+  "instant_lookup": {
+    "message": "Instant Lookup"
+  },
+  "intelligent_input": {
+    "message": "Intelligent Input"
+  },
+  "language_bridge": {
+    "message": "Language Bridge"
   },
   "login": {
     "message": "Login"
@@ -275,27 +299,6 @@
   "options_about_website": {
     "message": "Official website"
   },
-  "options_advanced_chinese_page_description": {
-    "message": "Control whether Chinese (Simplified) pages are translated by default."
-  },
-  "options_advanced_chinese_page_title": {
-    "message": "Chinese pages"
-  },
-  "options_advanced_description": {
-    "message": "More low-level and experimental feature settings."
-  },
-  "options_advanced_experimental_body": {
-    "message": "Only advanced options already wired to storage are kept to avoid showing unsavable temporary switches."
-  },
-  "options_advanced_experimental_description": {
-    "message": "More experimental toggles will be added gradually in future versions."
-  },
-  "options_advanced_experimental_title": {
-    "message": "Experimental features"
-  },
-  "options_advanced_title": {
-    "message": "Advanced settings"
-  },
   "options_button_toolbox": {
     "message": "Toolbox"
   },
@@ -314,21 +317,6 @@
   "options_changelog_title": {
     "message": "Changelog"
   },
-  "options_developer_debug_body": {
-    "message": "For troubleshooting, use extension management page, console logs, and feedback entry."
-  },
-  "options_developer_debug_description": {
-    "message": "No standalone persisted developer debug switch is currently provided."
-  },
-  "options_developer_debug_title": {
-    "message": "Debug capability"
-  },
-  "options_developer_description": {
-    "message": "Advanced options for developer debugging and testing."
-  },
-  "options_developer_title": {
-    "message": "Developer settings"
-  },
   "options_docs_description": {
     "message": "Read detailed feature guides and tutorials."
   },
@@ -343,15 +331,6 @@
   },
   "options_docs_title": {
     "message": "Documentation"
-  },
-  "options_export_button": {
-    "message": "Export"
-  },
-  "options_export_card_description": {
-    "message": "Save all current settings to a file"
-  },
-  "options_export_card_title": {
-    "message": "Export config"
   },
   "options_feedback_description": {
     "message": "Found an issue or have ideas? Tell us."
@@ -395,39 +374,6 @@
   "options_floating_title": {
     "message": "Floating ball"
   },
-  "options_hover_description": {
-    "message": "Automatically translate when hovering over paragraphs."
-  },
-  "options_hover_enabled_description": {
-    "message": "Control whether hover can quickly translate current paragraph"
-  },
-  "options_hover_enabled_title": {
-    "message": "Enabled status"
-  },
-  "options_hover_shortcut_description": {
-    "message": "Choose the shortcut combination for hover translation"
-  },
-  "options_hover_shortcut_title": {
-    "message": "Trigger shortcut"
-  },
-  "options_hover_title": {
-    "message": "Mouse hover"
-  },
-  "options_import_button": {
-    "message": "Import"
-  },
-  "options_import_card_description": {
-    "message": "Restore settings from a backup file"
-  },
-  "options_import_card_title": {
-    "message": "Import config"
-  },
-  "options_import_export_description": {
-    "message": "Back up or restore all your configuration data."
-  },
-  "options_import_export_title": {
-    "message": "Import/Export"
-  },
   "options_input_description": {
     "message": "Quickly translate content typed in input fields."
   },
@@ -467,57 +413,6 @@
   "options_manga_title": {
     "message": "Manga/Images"
   },
-  "options_nav_about": {
-    "message": "About"
-  },
-  "options_nav_advanced": {
-    "message": "Advanced settings"
-  },
-  "options_nav_changelog": {
-    "message": "Changelog"
-  },
-  "options_nav_developer": {
-    "message": "Developer settings"
-  },
-  "options_nav_docs": {
-    "message": "Documentation"
-  },
-  "options_nav_feedback": {
-    "message": "Feedback"
-  },
-  "options_nav_floating": {
-    "message": "Floating ball"
-  },
-  "options_nav_import_export": {
-    "message": "Import/Export"
-  },
-  "options_nav_input": {
-    "message": "Input translation"
-  },
-  "options_nav_manga": {
-    "message": "Manga/Images"
-  },
-  "options_nav_mouse_hover": {
-    "message": "Mouse hover"
-  },
-  "options_nav_pricing": {
-    "message": "Pricing"
-  },
-  "options_nav_selection_translation": {
-    "message": "Selection translation"
-  },
-  "options_nav_shortcuts": {
-    "message": "Shortcuts"
-  },
-  "options_nav_subtitle": {
-    "message": "Video subtitles"
-  },
-  "options_nav_terms": {
-    "message": "AI terminology"
-  },
-  "options_nav_writing": {
-    "message": "AI Write"
-  },
   "options_pricing_description": {
     "message": "Upgrade to Pro to unlock more advanced features and premium services."
   },
@@ -532,36 +427,6 @@
   },
   "options_pricing_upgrade_button": {
     "message": "Upgrade now"
-  },
-  "options_selection_description": {
-    "message": "Quickly view translations after selecting text."
-  },
-  "options_selection_enabled_description": {
-    "message": "Control whether the selection translation entry is shown"
-  },
-  "options_selection_enabled_title": {
-    "message": "Enabled status"
-  },
-  "options_selection_title": {
-    "message": "Selection translation"
-  },
-  "options_selection_trigger_description": {
-    "message": "Choose how selection translation is triggered"
-  },
-  "options_selection_trigger_title": {
-    "message": "Trigger mode"
-  },
-  "options_shortcuts_description": {
-    "message": "Customize global and in-page shortcuts."
-  },
-  "options_shortcuts_title": {
-    "message": "Shortcuts"
-  },
-  "options_shortcuts_window_description": {
-    "message": "Global shortcut to open the standalone translation window"
-  },
-  "options_shortcuts_window_title": {
-    "message": "Standalone translation window"
   },
   "options_subtitle_auto_aria": {
     "message": "Auto-enable bilingual subtitles"
@@ -626,8 +491,14 @@
   "output_schema": {
     "message": "Output Schema"
   },
+  "panorama_reading": {
+    "message": "Panorama Reading"
+  },
   "paragraphs_tooltip": {
     "message": "Intersecting paragraph text joined with blank lines, truncated to the first 2000 characters when sent to custom AI actions"
+  },
+  "pricing": {
+    "message": "Pricing"
   },
   "prompt": {
     "message": "Prompt"
@@ -740,6 +611,9 @@
   "save": {
     "message": "Save"
   },
+  "select_a_navigation_item_to_access": {
+    "message": "Select a navigation item to access"
+  },
   "select_ai_action_to_configure": {
     "message": "Select an AI action to configure"
   },
@@ -787,6 +661,9 @@
   },
   "text_color": {
     "message": "Text color"
+  },
+  "text_translation": {
+    "message": "Text Translation"
   },
   "translate": {
     "message": "Translate (⌥A)"
@@ -910,6 +787,9 @@
   },
   "web_title_tooltip": {
     "message": "Webpage title"
+  },
+  "writing_copilot": {
+    "message": "Writing Copilot"
   },
   "zen_users": {
     "message": "Zen Users"

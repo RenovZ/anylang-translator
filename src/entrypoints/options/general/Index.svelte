@@ -16,7 +16,7 @@
   import TranslationDisplayStyle from './TranslationDisplayStyle.svelte';
 </script>
 
-<Section id="general" title={i18n('general_settings', { defaultValue: 'General settings' })}>
+<Section title={i18n('general_settings', { defaultValue: 'General settings' })}>
   <!-- header buttons -->
   {#snippet headerActions()}
     <div class="text-primary-600 flex items-center gap-4 text-sm">

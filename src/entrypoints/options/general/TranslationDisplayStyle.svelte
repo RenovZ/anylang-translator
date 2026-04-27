@@ -102,7 +102,6 @@
         <DropdownItem
           onclick={() => {
             if (item.value === 'custom') {
-              console.log(item);
               const currentStyles = $config.translationDisplayStyle.styles;
               const isCustom =
                 $config.translationDisplayStyle.value === 'custom' &&

@@ -4,33 +4,32 @@ import type { AiProviderType, FeatureItem, FeatureKey, FeatureValue, Provider } 
 // Ordered feature definitions for consistent UI rendering (array order = display order)
 export const featureItems: FeatureItem[] = [
   {
-    key: 'pageTranslation',
-    label: i18n('feature_page_translation', { defaultValue: 'Page Translation' })
+    key: 'textTranslation',
+    label: i18n('feature_text_translation', { defaultValue: 'Text Translation' })
   },
   {
-    key: 'videoSubtitles',
-    label: i18n('feature_video_subtitles', { defaultValue: 'Video Subtitles' })
+    key: 'languageBridge',
+    label: i18n('feature_language_bridge', { defaultValue: 'Language Bridge' })
   },
   {
-    key: 'selectionToolbarTranslation',
-    label: i18n('feature_selection_toolbar', { defaultValue: 'Selection Toolbar Translation' })
+    key: 'bilingualSubtitles',
+    label: i18n('feature_bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' })
   },
   {
-    key: 'inputTranslation',
-    label: i18n('feature_input_translation', { defaultValue: 'Input Translation' })
+    key: 'instantLookup',
+    label: i18n('feature_instant_lookup', { defaultValue: 'Instant Lookup' })
   },
   {
-    key: 'imageTranslation',
-    label: i18n('feature_image_translation', { defaultValue: 'Image Translation' })
+    key: 'intelligentInput',
+    label: i18n('feature_intelligent_input', { defaultValue: 'Intelligent Input' })
   },
   {
-    key: 'improveWriting',
-    label: i18n('feature_improve_writing', { defaultValue: 'Improve Writing' })
+    key: 'writingCopilot',
+    label: i18n('feature_writing_copilot', { defaultValue: 'Writing Copilot' })
   },
-  { key: 'dictionary', label: i18n('feature_dictionary', { defaultValue: 'Dictionary' }) },
   {
-    key: 'customAiAction',
-    label: i18n('feature_custom_ai_action', { defaultValue: 'Custom AI Action' })
+    key: 'panoramaReading',
+    label: i18n('feature_panorama_reading', { defaultValue: 'Panorama Reading' })
   }
 ];
 
@@ -38,25 +37,23 @@ export const featureItems: FeatureItem[] = [
 export const featureKeys: FeatureKey[] = featureItems.map((f) => f.key);
 
 export const defaultFeatures: Record<FeatureKey, FeatureValue> = {
-  pageTranslation: { state: false },
-  videoSubtitles: { state: false },
-  selectionToolbarTranslation: { state: false },
-  inputTranslation: { state: false },
-  imageTranslation: { state: false },
-  improveWriting: { state: false },
-  dictionary: { state: false },
-  customAiAction: { state: false }
+  textTranslation: { state: false },
+  languageBridge: { state: false },
+  bilingualSubtitles: { state: false },
+  instantLookup: { state: false },
+  intelligentInput: { state: false },
+  writingCopilot: { state: false },
+  panoramaReading: { state: false }
 };
 
 const defaultOpenedFeatures: Record<FeatureKey, FeatureValue> = {
-  pageTranslation: { disabled: true, state: true },
-  videoSubtitles: { disabled: true, state: true },
-  selectionToolbarTranslation: { disabled: true, state: true },
-  inputTranslation: { disabled: true, state: true },
-  imageTranslation: { disabled: true, state: true },
-  improveWriting: { disabled: true, state: true },
-  dictionary: { disabled: true, state: true },
-  customAiAction: { disabled: true, state: true }
+  textTranslation: { disabled: true, state: true },
+  languageBridge: { disabled: true, state: true },
+  bilingualSubtitles: { disabled: true, state: true },
+  instantLookup: { disabled: true, state: true },
+  intelligentInput: { disabled: true, state: true },
+  writingCopilot: { disabled: true, state: true },
+  panoramaReading: { disabled: true, state: true }
 } as const;
 
 export const bingTranslatorProvider: Provider = {
@@ -65,10 +62,12 @@ export const bingTranslatorProvider: Provider = {
   icon: 'bing',
   features: {
     ...defaultOpenedFeatures,
-    imageTranslation: { unsupported: true },
-    improveWriting: { unsupported: true },
-    dictionary: { unsupported: true },
-    customAiAction: { unsupported: true }
+    languageBridge: { unsupported: true },
+    bilingualSubtitles: { unsupported: true },
+    instantLookup: { unsupported: true },
+    intelligentInput: { unsupported: true },
+    writingCopilot: { unsupported: true },
+    panoramaReading: { unsupported: true }
   }
 } as const;
 
@@ -78,10 +77,12 @@ export const googleTranslatorProvider: Provider = {
   icon: 'google',
   features: {
     ...defaultOpenedFeatures,
-    imageTranslation: { unsupported: true },
-    improveWriting: { unsupported: true },
-    dictionary: { unsupported: true },
-    customAiAction: { unsupported: true }
+    languageBridge: { unsupported: true },
+    bilingualSubtitles: { unsupported: true },
+    instantLookup: { unsupported: true },
+    intelligentInput: { unsupported: true },
+    writingCopilot: { unsupported: true },
+    panoramaReading: { unsupported: true }
   }
 } as const;
 

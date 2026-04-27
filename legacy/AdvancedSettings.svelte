@@ -1,17 +1,13 @@
 <script lang="ts">
   import { Toggle } from 'flowbite-svelte';
 
-  import { i18n } from '@/lib/i18n';
+  import i18n from '@/lib/i18n';
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
-  import type { OptionsSectionSharedProps } from './section-props';
-
-  export let toggleItems: OptionsSectionSharedProps['toggleItems'];
 </script>
 
 <!-- Advanced Settings Section -->
 <Section
-  id="advanced"
   title={i18n('options_advanced_title', { defaultValue: 'Advanced settings' })}
   description={i18n('options_advanced_description', {
     defaultValue: 'More low-level and experimental feature settings.'
@@ -23,11 +19,13 @@
       defaultValue: 'Control whether Chinese (Simplified) pages are translated by default.'
     })}>
     <div slot="controls" class="flex items-center justify-end">
+      <!--
       <Toggle
         bind:checked={toggleItems[3].enabled}
         size="small"
         classes={{ span: 'me-0 cursor-pointer bg-gray-300' }}
         aria-label={toggleItems[3].label} />
+        -->
     </div>
   </SectionRow>
 

@@ -8,7 +8,6 @@
 
 <!-- Floating Ball Settings Section -->
 <Section
-  id="floating"
   title={i18n('options_floating_title', { defaultValue: 'Floating ball' })}
   description={i18n('options_floating_description', {
     defaultValue: 'Quick translation floating ball settings on page edges.'

@@ -1,14 +1,12 @@
 <script lang="ts">
   import { Button } from 'flowbite-svelte';
 
-  import { i18n } from '@/lib/i18n';
+  import i18n from '@/lib/i18n';
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
 </script>
 
-<!-- AI Terminology Settings Section -->
 <Section
-  id="terms"
   title={i18n('options_terms_title', { defaultValue: 'AI terminology' })}
   description={i18n('options_terms_description', {
     defaultValue: 'Manage your translation glossary for consistent terms.'

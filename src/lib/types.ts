@@ -22,14 +22,13 @@ export type OutputSchema = {
 };
 
 export type FeatureKey =
-  | 'pageTranslation'
-  | 'videoSubtitles'
-  | 'selectionToolbarTranslation'
-  | 'inputTranslation'
-  | 'imageTranslation'
-  | 'improveWriting'
-  | 'dictionary'
-  | 'customAiAction';
+  | 'textTranslation'
+  | 'languageBridge'
+  | 'bilingualSubtitles'
+  | 'instantLookup'
+  | 'intelligentInput'
+  | 'writingCopilot'
+  | 'panoramaReading';
 
 export type FeatureValue = {
   disabled?: boolean;

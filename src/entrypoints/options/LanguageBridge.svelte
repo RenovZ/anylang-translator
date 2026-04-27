@@ -1,14 +1,13 @@
 <script lang="ts">
   import { Button } from 'flowbite-svelte';
 
-  import { i18n } from '@/lib/i18n';
+  import i18n from '@/lib/i18n';
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
 </script>
 
 <!-- AI Write Settings Section -->
 <Section
-  id="writing"
   title={i18n('options_writing_title', { defaultValue: 'AI Write' })}
   description={i18n('options_writing_description', {
     defaultValue: 'Configure AI writing assistance and polishing features.'

@@ -8,7 +8,6 @@
 
 <!-- About Settings Section -->
 <Section
-  id="about"
   title={i18n('options_about_title', { defaultValue: 'About' })}
   description={i18n('options_about_description', {
     defaultValue: 'Learn about the Anylang Translator extension.'

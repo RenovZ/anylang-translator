@@ -7,7 +7,6 @@
 
 <!-- Pricing Settings Section -->
 <Section
-  id="pricing"
   title={i18n('options_pricing_title', { defaultValue: 'Pricing' })}
   description={i18n('options_pricing_description', {
     defaultValue: 'Upgrade to Pro to unlock more advanced features and premium services.'

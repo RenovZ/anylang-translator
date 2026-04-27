@@ -7,69 +7,29 @@
   import '@/assets/app.css';
   import i18n from '@/lib/i18n';
 
-  import General from './general/Index.svelte';
-  import ApiProviders from './api-providers/Index.svelte';
-  import CustomAIActions from './custom-ai-actions/Index.svelte';
+  import Empty from './Empty.svelte';
+  import { topNavItems, bottomNavItems } from './data';
 
-  import AboutSettings from './AboutSettings.svelte';
-  import AdvancedSettings from './AdvancedSettings.svelte';
-  import AiTermsSettings from './AiTermsSettings.svelte';
-  import AiWriteSettings from './AiWriteSettings.svelte';
-  import ChangelogSettings from './ChangelogSettings.svelte';
-  import DeveloperSettings from './DeveloperSettings.svelte';
-  import DocumentationSettings from './DocumentationSettings.svelte';
-  import FeedbackSettings from './FeedbackSettings.svelte';
-  import FloatingBallSettings from './FloatingBallSettings.svelte';
-  import ImportExportSettings from './ImportExportSettings.svelte';
-  import InputTranslationSettings from './InputTranslationSettings.svelte';
-  import MangaImageSettings from './MangaImageSettings.svelte';
-  import MouseHoverSettings from './MouseHoverSettings.svelte';
-  import PricingSettings from './PricingSettings.svelte';
-  import SelectionTranslationSettings from './SelectionTranslationSettings.svelte';
-  import ShortcutsSettings from './ShortcutsSettings.svelte';
-  import SubtitleSettings from './SubtitleSettings.svelte';
-  import { navItems } from './data';
+  const navItems = [...topNavItems, ...bottomNavItems];
 
-  let saveMessage = '';
-  let loading = true;
-  let saving = false;
   let activeNavId: string = $state(navItems[0].id);
-  let activeNavLabel = $derived(navItems.find((item) => item.id === activeNavId)?.label);
-
-  const topNavItems = navItems.filter((item) => item.position === 'top');
-  const bottomNavItems = navItems.filter((item) => item.position === 'bottom');
+  const activeNav = $derived(navItems.find((item) => item.id === activeNavId));
 
   onMount(() => {
     syncActiveNavWithHash();
-
-    const handleHashChange = () => {
-      syncActiveNavWithHash();
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
+    window.addEventListener('hashchange', syncActiveNavWithHash);
+    return () => window.removeEventListener('hashchange', syncActiveNavWithHash);
   });
 
   const syncActiveNavWithHash = () => {
     const hash = window.location.hash.replace(/^#/, '');
-    if (hash && navItems.some((item) => item.id === hash)) {
-      activeNavId = hash;
-      return;
-    }
-
-    activeNavId = navItems[0].id;
+    activeNavId = navItems.find((item) => item.id === hash)?.id ?? navItems[0].id;
   };
 
   const goToSection = (id: string) => {
-    if (window.location.hash === `#${id}`) {
-      activeNavId = id;
-      return;
+    if (window.location.hash !== `#${id}`) {
+      window.location.hash = id;
     }
-
-    window.location.hash = id;
   };
 
   const hoverCssUrl = browser.runtime.getURL('/contentScript/css/styles.css' as PublicPath);
@@ -80,7 +40,7 @@
 </svelte:head>
 <main
   class="min-h-screen bg-slate-100 text-sm text-slate-900 dark:bg-slate-950/80 dark:text-slate-50">
-  <!-- Header Section -->
+  <!-- Header -->
   <header
     id="page-header"
     class="sticky top-0 z-99 bg-white/80 shadow backdrop-blur-xs dark:bg-slate-900/80">
@@ -90,22 +50,23 @@
           <WandMagicSparklesSolid class="h-5 w-5" />
         </div>
         <div class="flex items-center gap-3">
-          <span class="text-lg font-semibold"
-            >{i18n('options_title_extension_name', { defaultValue: 'Anylang Translator' })}</span>
+          <span class="text-lg font-semibold">
+            {i18n('options_title_extension_name', { defaultValue: 'Anylang Translator' })}
+          </span>
           <span class="text-slate-400">v0.0.1</span>
         </div>
       </div>
-
       <Button
         color="alternative"
-        class="rounded-xl px-4 py-2 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
-        >⚒️ {i18n('options_button_toolbox', { defaultValue: 'Toolbox' })}</Button>
+        class="rounded-xl px-4 py-2 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700">
+        ⚒️ {i18n('options_button_toolbox', { defaultValue: 'Toolbox' })}
+      </Button>
     </div>
   </header>
 
-  <!-- Main Content Area -->
+  <!-- Main Content -->
   <div id="page-main" class="mx-auto grid max-w-7xl grid-cols-[240px_1fr] gap-8 px-6 py-8">
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar -->
     <aside
       id="page-sidebar"
       class="sticky top-24 z-10 flex h-[calc(100vh-8rem)] flex-col justify-between overflow-y-auto rounded-2xl bg-white/80 p-4 shadow-md dark:bg-slate-900/80">
@@ -123,7 +84,6 @@
           </a>
         {/each}
       </div>
-
       <div class="space-y-1">
         {#each bottomNavItems as item (item.id)}
           <a
@@ -140,47 +100,15 @@
       </div>
     </aside>
 
-    <!-- Active Section Content -->
-    {#if activeNavId === 'general'}
-      <General />
-    {:else if activeNavId === 'api-providers'}
-      <ApiProviders />
-    {:else if activeNavId === 'custom-ai-actions'}
-      <CustomAIActions />
-    {:else if activeNavId === 'terms'}
-      <AiTermsSettings />
-    {:else if activeNavId === 'writing'}
-      <AiWriteSettings />
-    {:else if activeNavId === 'subtitle'}
-      <!-- <SubtitleSettings {toggleItems} /> -->
-    {:else if activeNavId === 'manga'}
-      <MangaImageSettings />
-    {:else if activeNavId === 'input'}
-      <InputTranslationSettings />
-    {:else if activeNavId === 'selection-transiation'}
-      <!-- <SelectionTranslationSettings {config} {toggleItems} {getToggleConfig} {updateToggleMode} /> -->
-    {:else if activeNavId === 'mouse-hover'}
-      <!-- <MouseHoverSettings {config} {toggleItems} {getToggleConfig} {updateToggleMode} /> -->
-    {:else if activeNavId === 'floating'}
-      <FloatingBallSettings />
-    {:else if activeNavId === 'shortcuts'}
-      <ShortcutsSettings />
-    {:else if activeNavId === 'advanced'}
-      <!-- <AdvancedSettings {toggleItems} /> -->
-    {:else if activeNavId === 'import-export'}
-      <ImportExportSettings />
-    {:else if activeNavId === 'about'}
-      <AboutSettings />
-    {:else if activeNavId === 'pricing'}
-      <PricingSettings />
-    {:else if activeNavId === 'docs'}
-      <DocumentationSettings />
-    {:else if activeNavId === 'changelog'}
-      <ChangelogSettings />
-    {:else if activeNavId === 'feedback'}
-      <FeedbackSettings />
-    {:else if activeNavId === 'developer'}
-      <DeveloperSettings />
-    {/if}
+    <!-- Content Area - Dynamic component rendering -->
+    <div class="min-h-0">
+      {#if activeNav}
+        <!-- {@const SvelteComponent = activeNav.component}
+        <SvelteComponent /> -->
+        <activeNav.component />
+      {:else}
+        <Empty />
+      {/if}
+    </div>
   </div>
 </main>

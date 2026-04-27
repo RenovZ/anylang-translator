@@ -2,8 +2,7 @@
   import { twMerge } from 'tailwind-merge';
 
   interface Props {
-    id: string;
-    title: string;
+    title?: string;
     description?: string;
     class?: string;
     children: import('svelte').Snippet;
@@ -12,7 +11,6 @@
   }
 
   const {
-    id,
     title,
     description,
     class: className = '',
@@ -114,14 +112,18 @@
   );
 </script>
 
-<section {id} class={classList} bind:this={mainRef}>
+<section class={classList} bind:this={mainRef}>
   <div bind:this={headerRef} class="flex shrink-0 items-start justify-between gap-6">
-    <div>
-      <h2 class="text-lg font-semibold">{title}</h2>
-      {#if description}
-        <p class="mt-1 text-sm text-slate-400">{description}</p>
-      {/if}
-    </div>
+    {#if title || description}
+      <div>
+        {#if title}
+          <h2 class="text-lg font-semibold">{title}</h2>
+        {/if}
+        {#if description}
+          <p class="mt-1 text-sm text-slate-400">{description}</p>
+        {/if}
+      </div>
+    {/if}
     {@render headerActions?.()}
   </div>
 

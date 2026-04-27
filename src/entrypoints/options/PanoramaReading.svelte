@@ -1,14 +1,13 @@
 <script lang="ts">
   import { Button } from 'flowbite-svelte';
 
-  import { i18n } from '@/lib/i18n';
+  import i18n from '@/lib/i18n';
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
 </script>
 
 <!-- Manga/Images Settings Section -->
 <Section
-  id="manga"
   title={i18n('options_manga_title', { defaultValue: 'Manga/Images' })}
   description={i18n('options_manga_description', {
     defaultValue: 'Configure translation recognition settings for images and manga.'

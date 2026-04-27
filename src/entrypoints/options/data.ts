@@ -1,104 +1,129 @@
 import i18n from '@/lib/i18n';
 
-export const navItems = [
+import General from './general/Index.svelte';
+import ApiProviders from './api-providers/Index.svelte';
+import CustomAiActions from './custom-ai-actions/Index.svelte';
+import TextTranslation from './TextTranslation.svelte';
+import LanguageBridge from './LanguageBridge.svelte';
+import BilingualSubtitles from './BilingualSubtitles.svelte';
+import IntelligentInput from './IntelligentInput.svelte';
+import WritingCopilot from './WritingCopilot.svelte';
+import InstantLookup from './InstantLookup.svelte';
+import PanoramaReading from './PanoramaReading.svelte';
+import ActionPalette from './ActionPalette.svelte';
+
+import About from './About.svelte';
+import Pricing from './Pricing.svelte';
+import Docs from './Docs.svelte';
+import Changelog from './Changelog.svelte';
+import Feedback from './Feedback.svelte';
+
+export type NavItem = {
+  id: string;
+  label: string;
+  position: 'top' | 'bottom';
+  component: import('svelte').Component;
+};
+
+export const topNavItems = [
   {
     id: 'general',
     label: i18n('general', { defaultValue: 'General' }),
-    position: 'top'
+    position: 'top',
+    component: General
   },
   {
     id: 'api-providers',
     label: i18n('api_providers', { defaultValue: 'API Providers' }),
-    position: 'top'
+    position: 'top',
+    component: ApiProviders
   },
   {
     id: 'custom-ai-actions',
     label: i18n('custom_ai_actions', { defaultValue: 'Custom AI Actions' }),
-    position: 'top'
+    position: 'top',
+    component: CustomAiActions
   },
   {
-    id: 'terms',
-    label: i18n('options_nav_terms', { defaultValue: 'AI terminology' }),
-    position: 'top'
+    id: 'text-translation',
+    label: i18n('text_translation', { defaultValue: 'Text Translation' }),
+    position: 'top',
+    component: TextTranslation
   },
   {
-    id: 'writing',
-    label: i18n('options_nav_writing', { defaultValue: 'AI Write' }),
-    position: 'top'
+    id: 'language-bridge',
+    label: i18n('language_bridge', { defaultValue: 'Language Bridge' }),
+    position: 'top',
+    component: LanguageBridge
   },
   {
-    id: 'subtitle',
-    label: i18n('options_nav_subtitle', { defaultValue: 'Video subtitles' }),
-    position: 'top'
+    id: 'bilingual-subtitles',
+    label: i18n('bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' }),
+    position: 'top',
+    component: BilingualSubtitles
   },
   {
-    id: 'manga',
-    label: i18n('options_nav_manga', { defaultValue: 'Manga/Images' }),
-    position: 'top'
+    id: 'intelligent-input',
+    label: i18n('intelligent_input', { defaultValue: 'Intelligent Input' }),
+    position: 'top',
+    component: IntelligentInput
   },
   {
-    id: 'input',
-    label: i18n('options_nav_input', { defaultValue: 'Input translation' }),
-    position: 'top'
+    id: 'writing-copilot',
+    label: i18n('writing_copilot', { defaultValue: 'Writing Copilot' }),
+    position: 'top',
+    component: WritingCopilot
   },
   {
-    id: 'selection-transiation',
-    label: i18n('options_nav_selection_translation', { defaultValue: 'Selection translation' }),
-    position: 'top'
+    id: 'instant-lookup',
+    label: i18n('instant_lookup', { defaultValue: 'Instant Lookup' }),
+    position: 'top',
+    component: InstantLookup
   },
   {
-    id: 'mouse-hover',
-    label: i18n('options_nav_mouse_hover', { defaultValue: 'Mouse hover' }),
-    position: 'top'
+    // Reading Copilot
+    id: 'panorama-reading',
+    label: i18n('panorama_reading', { defaultValue: 'Panorama Reading' }),
+    position: 'top',
+    component: PanoramaReading
   },
   {
-    id: 'floating',
-    label: i18n('options_nav_floating', { defaultValue: 'Floating ball' }),
-    position: 'top'
-  },
-  {
-    id: 'shortcuts',
-    label: i18n('options_nav_shortcuts', { defaultValue: 'Shortcuts' }),
-    position: 'top'
-  },
-  {
-    id: 'advanced',
-    label: i18n('options_nav_advanced', { defaultValue: 'Advanced settings' }),
-    position: 'top'
-  },
-  {
-    id: 'import-export',
-    label: i18n('options_nav_import_export', { defaultValue: 'Import/Export' }),
-    position: 'top'
-  },
+    id: 'action-palette',
+    label: i18n('action_palette', { defaultValue: 'Action Palette' }),
+    position: 'top',
+    component: ActionPalette
+  }
+] as const;
+
+export const bottomNavItems = [
   {
     id: 'about',
-    label: i18n('options_nav_about', { defaultValue: 'About' }),
-    position: 'top'
+    label: i18n('about', { defaultValue: 'About' }),
+    position: 'bottom',
+    component: About
   },
   {
     id: 'pricing',
-    label: i18n('options_nav_pricing', { defaultValue: 'Pricing' }),
-    position: 'bottom'
+    label: i18n('pricing', { defaultValue: 'Pricing' }),
+    position: 'bottom',
+    component: Pricing
   },
   {
     id: 'docs',
-    label: i18n('options_nav_docs', { defaultValue: 'Documentation' }),
-    position: 'bottom'
+    label: i18n('docs', { defaultValue: 'Documentation' }),
+    position: 'bottom',
+    component: Docs
   },
   {
     id: 'changelog',
-    label: i18n('options_nav_changelog', { defaultValue: 'Changelog' }),
-    position: 'bottom'
+    label: i18n('changelog', { defaultValue: 'Changelog' }),
+    position: 'bottom',
+    component: Changelog
   },
   {
     id: 'feedback',
-    label: i18n('options_nav_feedback', { defaultValue: 'Feedback' }),
-    position: 'bottom'
-  },
-  {
-    id: 'developer',
-    label: i18n('options_nav_developer', { defaultValue: 'Developer settings' }),
-    position: 'bottom'
+    label: i18n('feedback', { defaultValue: 'Feedback' }),
+    position: 'bottom',
+    component: Feedback
   }
 ] as const;

@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { i18n } from '@/lib/i18n';
+  import i18n from '@/lib/i18n';
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
 </script>
 
 <!-- Input Translation Settings Section -->
 <Section
-  id="input"
   title={i18n('options_input_title', { defaultValue: 'Input translation' })}
   description={i18n('options_input_description', {
     defaultValue: 'Quickly translate content typed in input fields.'
