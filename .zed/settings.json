@@ -5,5 +5,8 @@
       "command": "prettier",
       "arguments": ["--stdin-filepath", "{buffer_path}"]
     }
+  },
+  "inlay_hints": {
+    "enabled": false
   }
 }

@@ -20,7 +20,6 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import { untrack } from 'svelte';
 
   import type { Provider, FeatureKey, FeatureValue, PaidProvider } from '@/lib/types';
   import { allFeatures, defaultFeatures, goProviders, zenProviders } from '@/lib/preset';
@@ -61,14 +60,15 @@
 
 <Section
   id="api-providers"
+  limitHeight
   title={i18n('api_providers', { defaultValue: 'API Providers' })}
   description={i18n('api_providers_hint', {
     defaultValue:
       'Configure API providers for translation and vocabulary insight. We have 20+ built-in providers and support any OpenAI-compatible API provider.'
   })}>
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
+  <div class="grid h-full grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
     <!-- Left: Provider List -->
-    <div class="space-y-3">
+    <div class="h-full space-y-3 overflow-y-auto">
       <Accordion multiple class="rounded-none border-none">
         <ProviderGroup
           open
@@ -102,7 +102,7 @@
     </div>
 
     <!-- Right: Provider Configuration -->
-    <div class="rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
+    <div class="h-full overflow-y-auto rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
       {#if selectedIndex >= 0}
         <div class="mb-6 flex items-center justify-between">
           <div class="flex items-center gap-3">

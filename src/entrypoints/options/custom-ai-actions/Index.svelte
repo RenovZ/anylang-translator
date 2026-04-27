@@ -22,11 +22,7 @@
   let editingIndex = $state(-1);
   let dragIndex = $state(-1);
   let dragOverIndex = $state(-1);
-  let selectedIndex = $state(-1);
-
-  onMount(() => {
-    selectedIndex = $config.customAIActions.length ? 0 : -1;
-  });
+  let selectedIndex = $derived($config.customAIActions.length ? 0 : -1);
 
   const handleAdd = (item: AIAction) => {
     const newAction: AIAction = { ...item, preset: false };
@@ -105,13 +101,14 @@
 
 <Section
   id="custom-ai-actions"
+  limitHeight
   title={i18n('custom_ai_actions', { defaultValue: 'Custom AI Actions' })}
   description={i18n('custom_ai_actions_description', {
     defaultValue: 'Customize AI Actions, when selected text, the actions shown in the toolbar'
   })}>
-  <div class="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
+  <div class="grid h-full grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
     <!-- Left: AI Action List -->
-    <div class="space-y-1">
+    <div class="h-full space-y-1 overflow-y-auto">
       {#each $config.customAIActions as action, index (index)}
         <button
           type="button"
@@ -136,7 +133,7 @@
     </div>
 
     <!-- Right: AI Action Configuration -->
-    <div class="rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
+    <div class="h-full overflow-y-auto rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
       {#if selectedIndex >= 0}
         <div class="space-y-4">
           <!-- Name -->

@@ -81,7 +81,9 @@
 <main
   class="min-h-screen bg-slate-100 text-sm text-slate-900 dark:bg-slate-950/80 dark:text-slate-50">
   <!-- Header Section -->
-  <header class="sticky top-0 z-10 bg-white/80 shadow backdrop-blur-xs dark:bg-slate-900/80">
+  <header
+    id="page-header"
+    class="sticky top-0 z-99 bg-white/80 shadow backdrop-blur-xs dark:bg-slate-900/80">
     <div class="mx-auto flex items-center justify-between px-6 py-4">
       <div class="flex items-center gap-3">
         <div class="bg-primary-500 rounded-xl p-2 text-white shadow-md">
@@ -102,9 +104,10 @@
   </header>
 
   <!-- Main Content Area -->
-  <div class="mx-auto grid max-w-7xl grid-cols-[240px_1fr] gap-8 px-6 py-8">
+  <div id="page-main" class="mx-auto grid max-w-7xl grid-cols-[240px_1fr] gap-8 px-6 py-8">
     <!-- Sidebar Navigation -->
     <aside
+      id="page-sidebar"
       class="sticky top-24 z-10 flex h-[calc(100vh-8rem)] flex-col justify-between overflow-y-auto rounded-2xl bg-white/80 p-4 shadow-md dark:bg-slate-900/80">
       <div>
         {#each topNavItems as item (item.id)}
@@ -138,7 +141,6 @@
     </aside>
 
     <!-- Active Section Content -->
-    <!-- <div class="flex h-[calc(100vh-8rem)] flex-1"> -->
     {#if activeNavId === 'general'}
       <General />
     {:else if activeNavId === 'api-providers'}
@@ -180,6 +182,5 @@
     {:else if activeNavId === 'developer'}
       <DeveloperSettings />
     {/if}
-    <!-- </div> -->
   </div>
 </main>

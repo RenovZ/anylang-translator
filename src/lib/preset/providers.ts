@@ -68,6 +68,14 @@ export const goProviders = (
   [
     {
       type: 'go',
+      name: 'DeepSeek',
+      model: 'DeepSeek-V4-Pro',
+      models: ['DeepSeek-V4-Pro', 'DeepSeek-V4-Flash'],
+      icon: 'deepseek',
+      features: { ...defaultOpenedFeatures } as const
+    },
+    {
+      type: 'go',
       name: 'Z.ai',
       model: 'GLM-5.1',
       models: ['GLM-5.1', 'GLM-5'],
