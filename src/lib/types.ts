@@ -37,6 +37,12 @@ export type FeatureValue = {
   state?: boolean;
 };
 
+// Ordered feature definition for consistent UI rendering
+export type FeatureItem = {
+  key: FeatureKey;
+  label: string;
+};
+
 export type AiProviderType = 'go' | 'zen' | 'custom';
 
 export type ProviderConfig = {

@@ -22,7 +22,7 @@
   import i18n from '@/lib/i18n';
 
   import type { Provider, FeatureKey, FeatureValue, PaidProvider } from '@/lib/types';
-  import { allFeatures, defaultFeatures, goProviders, zenProviders } from '@/lib/preset';
+  import { defaultFeatures, featureItems, featureKeys } from '@/lib/preset';
   import AccordionItem from '@/components/AccordionItem.svelte';
 
   import Section from '../Section.svelte';
@@ -243,7 +243,9 @@
                 <span>{i18n('feature_providers', { defaultValue: 'Feature Providers' })}</span>
               {/snippet}
               <div class="space-y-2">
-                {#each (Object.entries($config.customProviders[selectedIndex].features || {}) as [FeatureKey, FeatureValue][]).filter(([, value]) => value.unsupported !== true) as [featureKey, featureValue] (featureKey)}
+                {#each featureKeys
+                  .filter((key: FeatureKey) => $config.customProviders[selectedIndex].features?.[key]?.unsupported !== true)
+                  .map((key: FeatureKey) => [key, $config.customProviders[selectedIndex].features![key]] as [FeatureKey, FeatureValue]) as [featureKey, featureValue] (featureKey)}
                   <Toggle
                     size="small"
                     disabled={featureValue.disabled}
@@ -255,7 +257,7 @@
                         >
                       )[featureKey].state
                     }>
-                    {allFeatures[featureKey]}
+                    {featureItems.find((f) => f.key === featureKey)?.label}
                   </Toggle>
                 {/each}
               </div>

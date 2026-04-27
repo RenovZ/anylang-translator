@@ -1,18 +1,41 @@
 import i18n from '@/lib/i18n';
-import { AiProviderType, type FeatureKey, type FeatureValue, type Provider } from '../types';
+import type { AiProviderType, FeatureItem, FeatureKey, FeatureValue, Provider } from '../types';
 
-export const allFeatures: Record<FeatureKey, string> = {
-  pageTranslation: i18n('feature_page_translation', { defaultValue: 'Page Translation' }),
-  videoSubtitles: i18n('feature_video_subtitles', { defaultValue: 'Video Subtitles' }),
-  selectionToolbarTranslation: i18n('feature_selection_toolbar', {
-    defaultValue: 'Selection Toolbar Translation'
-  }),
-  inputTranslation: i18n('feature_input_translation', { defaultValue: 'Input Translation' }),
-  imageTranslation: i18n('feature_image_translation', { defaultValue: 'Image Translation' }),
-  improveWriting: i18n('feature_improve_writing', { defaultValue: 'Improve Writing' }),
-  dictionary: i18n('feature_dictionary', { defaultValue: 'Dictionary' }),
-  customAiAction: i18n('feature_custom_ai_action', { defaultValue: 'Custom AI Action' })
-};
+// Ordered feature definitions for consistent UI rendering (array order = display order)
+export const featureItems: FeatureItem[] = [
+  {
+    key: 'pageTranslation',
+    label: i18n('feature_page_translation', { defaultValue: 'Page Translation' })
+  },
+  {
+    key: 'videoSubtitles',
+    label: i18n('feature_video_subtitles', { defaultValue: 'Video Subtitles' })
+  },
+  {
+    key: 'selectionToolbarTranslation',
+    label: i18n('feature_selection_toolbar', { defaultValue: 'Selection Toolbar Translation' })
+  },
+  {
+    key: 'inputTranslation',
+    label: i18n('feature_input_translation', { defaultValue: 'Input Translation' })
+  },
+  {
+    key: 'imageTranslation',
+    label: i18n('feature_image_translation', { defaultValue: 'Image Translation' })
+  },
+  {
+    key: 'improveWriting',
+    label: i18n('feature_improve_writing', { defaultValue: 'Improve Writing' })
+  },
+  { key: 'dictionary', label: i18n('feature_dictionary', { defaultValue: 'Dictionary' }) },
+  {
+    key: 'customAiAction',
+    label: i18n('feature_custom_ai_action', { defaultValue: 'Custom AI Action' })
+  }
+];
+
+// Feature keys in display order (derived from featureItems array)
+export const featureKeys: FeatureKey[] = featureItems.map((f) => f.key);
 
 export const defaultFeatures: Record<FeatureKey, FeatureValue> = {
   pageTranslation: { state: false },
