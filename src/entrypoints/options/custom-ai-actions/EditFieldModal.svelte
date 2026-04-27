@@ -1,8 +1,10 @@
 <script lang="ts">
-  import { Button, Input, Label, Modal, Select, Textarea, Toggle } from 'flowbite-svelte';
+  import { Button, Input, Label, Modal, Select, Textarea, Toggle, Tooltip } from 'flowbite-svelte';
 
   import type { OutputSchema } from '@/lib/types';
   import i18n from '@/lib/i18n';
+
+  import Variables from './Variables.svelte';
 
   let {
     open = $bindable(false),
@@ -22,6 +24,7 @@
     description: '',
     enableSpeaking: false
   });
+  let descriptionRef: HTMLTextAreaElement | undefined = $state(undefined);
 
   $effect(() => {
     if (open) {
@@ -29,22 +32,10 @@
     }
   });
 
-  function handleSave() {
+  const handleSave = () => {
     onSave({ ...localField });
     open = false;
-  }
-
-  const variables = [
-    '{{selection}}',
-    '{{paragraphs}}',
-    '{{targetLanguage}}',
-    '{{webTitle}}',
-    '{{webContent}}'
-  ];
-
-  function insertVariable(variable: string) {
-    localField.description = (localField.description ?? '') + variable;
-  }
+  };
 </script>
 
 <Modal bind:open size="xs" outsideclose={false} autoclose={false}>
@@ -84,22 +75,14 @@
         {i18n('description', { defaultValue: 'Description' })}
       </Label>
       <Textarea
+        bind:elementRef={descriptionRef}
         bind:value={localField.description}
         rows={4}
         class="w-full border-none bg-gray-50 shadow placeholder:text-slate-400 dark:bg-gray-600"
         placeholder={i18n('description_placeholder', {
           defaultValue: 'Describe what this field should contain...'
         })} />
-      <div class="flex flex-wrap gap-2">
-        {#each variables as variable (variable)}
-          <Button
-            color="alternative"
-            class="rounded-md border-none px-2 py-1 text-xs shadow"
-            onclick={() => insertVariable(variable)}>
-            {variable}
-          </Button>
-        {/each}
-      </div>
+      <Variables bind:textareaRef={descriptionRef} />
     </div>
 
     <div class="flex items-center gap-2">

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { Badge, Button, Input, Label, Select, Textarea, Tooltip } from 'flowbite-svelte';
   import { PlusOutline, TrashBinOutline, PenOutline } from 'flowbite-svelte-icons';
   import Icon from '@iconify/svelte';
@@ -7,9 +6,11 @@
   import config from '@/lib/config';
   import type { AIAction, OutputSchema } from '@/lib/types';
   import i18n from '@/lib/i18n';
+
   import Section from '../Section.svelte';
   import AddAIActionModal from './AddAIActionModal.svelte';
   import EditFieldModal from './EditFieldModal.svelte';
+  import Variables from './Variables.svelte';
 
   let showModal = $state(false);
   let showEditModal = $state(false);
@@ -23,6 +24,10 @@
   let dragIndex = $state(-1);
   let dragOverIndex = $state(-1);
   let selectedIndex = $derived($config.customAIActions.length ? 0 : -1);
+
+  // Refs for textarea elements to insert variables
+  let systemPromptRef: HTMLTextAreaElement | undefined = $state(undefined);
+  let promptRef: HTMLTextAreaElement | undefined = $state(undefined);
 
   const handleAdd = (item: AIAction) => {
     const newAction: AIAction = { ...item, preset: false };
@@ -153,10 +158,15 @@
             <Label class="block text-sm font-medium">
               {i18n('icon', { defaultValue: 'Icon' })}
             </Label>
-            <Input
-              type="text"
-              bind:value={$config.customAIActions[selectedIndex].icon}
-              class="border-none bg-gray-50 shadow dark:bg-gray-600" />
+            <div class="flex items-center gap-2">
+              <span class="rounded-lg bg-gray-50 p-2 shadow dark:bg-gray-600">
+                <Icon icon={$config.customAIActions[selectedIndex].icon} class="h-6 w-6" />
+              </span>
+              <Input
+                type="text"
+                bind:value={$config.customAIActions[selectedIndex].icon}
+                class="border-none bg-gray-50 shadow dark:bg-gray-600" />
+            </div>
           </div>
 
           <!-- Provider 这里留给我完成 -->
@@ -169,9 +179,11 @@
               {i18n('system_prompt', { defaultValue: 'System Prompt' })}
             </Label>
             <Textarea
+              bind:elementRef={systemPromptRef}
               bind:value={$config.customAIActions[selectedIndex].systemPrompt}
               rows={8}
               class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
+            <Variables bind:textareaRef={systemPromptRef} />
           </div>
 
           <!-- Prompt -->
@@ -180,9 +192,11 @@
               {i18n('prompt', { defaultValue: 'Prompt' })}
             </Label>
             <Textarea
+              bind:elementRef={promptRef}
               bind:value={$config.customAIActions[selectedIndex].prompt}
               rows={6}
               class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
+            <Variables bind:textareaRef={promptRef} />
           </div>
 
           <!-- Output Schema -->

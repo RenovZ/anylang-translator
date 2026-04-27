@@ -626,6 +626,9 @@
   "output_schema": {
     "message": "Output Schema"
   },
+  "paragraphs_tooltip": {
+    "message": "Intersecting paragraph text joined with blank lines, truncated to the first 2000 characters when sent to custom AI actions"
+  },
   "prompt": {
     "message": "Prompt"
   },
@@ -743,6 +746,9 @@
   "select_provider_to_configure": {
     "message": "Select a provider to configure"
   },
+  "selection_tooltip": {
+    "message": "Selected text content"
+  },
   "selection_translate": {
     "message": "Selection translate"
   },
@@ -766,6 +772,9 @@
   },
   "target_language_hint": {
     "message": "Set the language you want content translated into"
+  },
+  "target_language_tooltip": {
+    "message": "User's target language"
   },
   "temperature": {
     "message": "Temperature"
@@ -895,6 +904,12 @@
   },
   "view_provider_docs": {
     "message": "View Provider Docs"
+  },
+  "web_content_tooltip": {
+    "message": "Webpage content extracted from the current page, truncated to the first 2000 characters"
+  },
+  "web_title_tooltip": {
+    "message": "Webpage title"
   },
   "zen_users": {
     "message": "Zen Users"

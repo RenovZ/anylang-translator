@@ -289,3 +289,29 @@ export const promptPresets = [
     label: i18n('prompt_preset_more_experts', { defaultValue: 'More translation experts' })
   }
 ];
+
+export const aiActionVariables = [
+  {
+    value: '{{selection}}',
+    label: i18n('selection_tooltip', { defaultValue: 'Selected text content' })
+  },
+  {
+    value: '{{paragraphs}}',
+    label: i18n('paragraphs_tooltip', {
+      defaultValue:
+        'Intersecting paragraph text joined with blank lines, truncated to the first 2000 characters when sent to custom AI actions'
+    })
+  },
+  {
+    value: '{{targetLanguage}}',
+    label: i18n('target_language_tooltip', { defaultValue: "User's target language" })
+  },
+  { value: '{{webTitle}}', label: i18n('web_title_tooltip', { defaultValue: 'Webpage title' }) },
+  {
+    value: '{{webContent}}',
+    label: i18n('web_content_tooltip', {
+      defaultValue:
+        'Webpage content extracted from the current page, truncated to the first 2000 characters'
+    })
+  }
+];
