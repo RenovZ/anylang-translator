@@ -101,14 +101,12 @@
     </aside>
 
     <!-- Content Area - Dynamic component rendering -->
-    <div class="min-h-0">
-      {#if activeNav}
-        <!-- {@const SvelteComponent = activeNav.component}
-        <SvelteComponent /> -->
-        <activeNav.component />
-      {:else}
-        <Empty />
-      {/if}
-    </div>
+    {#if activeNav}
+      {@const SvelteComponent = activeNav.component}
+      <SvelteComponent />
+      <!-- <activeNav.component /> -->
+    {:else}
+      <Empty />
+    {/if}
   </div>
 </main>

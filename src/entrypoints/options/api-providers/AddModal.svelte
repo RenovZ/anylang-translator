@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Avatar, Heading, Modal } from 'flowbite-svelte';
+  import { Avatar, Heading } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
   import type { Provider } from '@/lib/types';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import ModalWrapper from '@/components/ModalWrapper.svelte';
 
   let {
     open = $bindable(false),
@@ -89,12 +90,7 @@
   </div>
 {/snippet}
 
-<Modal
-  placement="top-center"
-  bind:open
-  size="lg"
-  outsideclose={false}
-  class="mt-20 rounded-2xl backdrop:backdrop-blur-xs">
+<ModalWrapper bind:open>
   <div class="space-y-8">
     <Heading tag="h5" class="font-medium">
       {i18n('add_new_provider', { defaultValue: 'Add New Provider' })}
@@ -112,4 +108,4 @@
       </div>
     {/each}
   </div>
-</Modal>
+</ModalWrapper>

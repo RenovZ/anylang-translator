@@ -22,13 +22,15 @@
   import i18n from '@/lib/i18n';
 
   import type { Provider, FeatureKey, FeatureValue, PaidProvider } from '@/lib/types';
-  import { defaultFeatures, featureItems, featureKeys } from '@/lib/preset';
+  import { defaultAIFeatures, featureItems, featureKeys } from '@/lib/preset';
   import AccordionItem from '@/components/AccordionItem.svelte';
+  import ConfirmPopover from '@/components/ConfirmPopover.svelte';
 
   import Section from '../Section.svelte';
   import AddModal from './AddModal.svelte';
   import ProviderGroup from './ProviderGroup.svelte';
 
+  let showPopover = $state(false);
   let showModal = $state(false);
   let showApiKey = $state(false);
   let selectedIndex = $state(0);
@@ -37,7 +39,7 @@
     const newProvider: Provider = {
       ...item,
       type: 'custom',
-      features: { ...defaultFeatures }
+      features: { ...defaultAIFeatures }
     };
 
     const size = $config.customProviders.filter((p) => p.icon === newProvider.icon).length;
@@ -55,6 +57,7 @@
 
     $config.customProviders = $config.customProviders.filter((p, index) => index !== selectedIndex);
     selectedIndex = Math.min(selectedIndex, $config.customProviders.length - 1);
+    showPopover = false;
   };
 </script>
 
@@ -65,9 +68,9 @@
     defaultValue:
       'Configure API providers for translation and vocabulary insight. We have 20+ built-in providers and support any OpenAI-compatible API provider.'
   })}>
-  <div class="grid max-h-full grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
+  <div class="grid h-full grid-cols-1 items-start gap-2 lg:grid-cols-[280px_1fr]">
     <!-- Left: Provider List -->
-    <div class="max-h-full space-y-3 overflow-y-auto">
+    <div class="max-h-full space-y-3 overflow-y-auto px-1 pb-4">
       <Accordion multiple class="rounded-none border-none">
         <ProviderGroup
           open
@@ -243,18 +246,17 @@
               {/snippet}
               <div class="space-y-2">
                 {#each featureKeys
-                  .filter((key: FeatureKey) => $config.customProviders[selectedIndex].features?.[key]?.unsupported !== true)
+                  .filter((key: FeatureKey) => key in $config.customProviders[selectedIndex].features)
                   .map((key: FeatureKey) => [key, $config.customProviders[selectedIndex].features![key]] as [FeatureKey, FeatureValue]) as [featureKey, featureValue] (featureKey)}
                   <Toggle
                     size="small"
                     disabled={featureValue.disabled}
                     bind:checked={
                       (
-                        $config.customProviders[selectedIndex].features as Record<
-                          FeatureKey,
-                          FeatureValue
+                        $config.customProviders[selectedIndex].features as Partial<
+                          Record<FeatureKey, FeatureValue>
                         >
-                      )[featureKey].state
+                      )[featureKey]!.state
                     }>
                     {featureItems.find((f) => f.key === featureKey)?.label}
                   </Toggle>
@@ -340,9 +342,17 @@
           <!-- Delete Button -->
           {#if $config.customProviders[selectedIndex].type === 'custom'}
             <div class="flex justify-end pt-4">
-              <Button color="red" onclick={handleDelete}>
+              <Button color="red">
                 {i18n('delete', { defaultValue: 'Delete' })}
               </Button>
+              <ConfirmPopover
+                bind:showPopover
+                title={i18n('delete_provider_title', { defaultValue: 'Delete Provider?' })}
+                description={i18n('delete_provider_description', {
+                  defaultValue: 'Are you sure to delete this provider?'
+                })}
+                handleConfirm={handleDelete}
+                trigger="click" />
             </div>
           {/if}
         </div>

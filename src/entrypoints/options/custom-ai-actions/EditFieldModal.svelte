@@ -3,6 +3,7 @@
 
   import type { OutputSchema } from '@/lib/types';
   import i18n from '@/lib/i18n';
+  import ModalWrapper from '@/components/ModalWrapper.svelte';
 
   import Variables from './Variables.svelte';
 
@@ -38,7 +39,7 @@
   };
 </script>
 
-<Modal bind:open size="xs" outsideclose={false} autoclose={false}>
+<ModalWrapper bind:open size="xs">
   <div class="flex flex-col gap-4">
     <h3 class="text-lg font-medium text-gray-900 dark:text-white">
       {#if mode === 'add'}
@@ -102,4 +103,4 @@
       </Button>
     </div>
   </div>
-</Modal>
+</ModalWrapper>

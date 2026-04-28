@@ -9,6 +9,7 @@
     exampleImprovWriting,
     exampleBlankAIAction
   } from '@/lib/preset';
+  import ModalWrapper from '@/components/ModalWrapper.svelte';
 
   let {
     open = $bindable(false),
@@ -30,13 +31,7 @@
   }
 </script>
 
-<Modal
-  placement="top-center"
-  bind:open
-  size="xs"
-  outsideclose={false}
-  classes={{ body: 'border-none' }}
-  class="mt-20 rounded-2xl backdrop:backdrop-blur-xs">
+<ModalWrapper bind:open size="xs">
   <div class="flex flex-col gap-4">
     <div class="flex flex-col">
       <Heading tag="h5" class="font-medium">
@@ -67,4 +62,4 @@
       </button>
     {/each}
   </div>
-</Modal>
+</ModalWrapper>

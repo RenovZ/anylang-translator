@@ -11,7 +11,9 @@
   import AddAIActionModal from './AddAIActionModal.svelte';
   import EditFieldModal from './EditFieldModal.svelte';
   import Variables from './Variables.svelte';
+  import ConfirmPopover from '@/components/ConfirmPopover.svelte';
 
+  let showPopover = $state(false);
   let showModal = $state(false);
   let showEditModal = $state(false);
   let editingField = $state<OutputSchema>({
@@ -42,6 +44,7 @@
   const handleDelete = () => {
     $config.customAIActions = $config.customAIActions.filter((_, i) => i !== selectedIndex);
     selectedIndex = Math.min(selectedIndex, $config.customAIActions.length - 1);
+    showPopover = false;
   };
 
   const handleAddSchemaField = () => {
@@ -110,9 +113,9 @@
   description={i18n('custom_ai_actions_description', {
     defaultValue: 'Customize AI Actions, when selected text, the actions shown in the toolbar'
   })}>
-  <div class="grid max-h-full grid-cols-1 gap-4 lg:grid-cols-[280px_1fr]">
+  <div class="grid h-full grid-cols-1 items-start gap-2 lg:grid-cols-[280px_1fr]">
     <!-- Left: AI Action List -->
-    <div class="max-h-full space-y-1 overflow-y-auto">
+    <div class="max-h-full space-y-1 overflow-y-auto px-1 pb-4">
       {#each $config.customAIActions as action, index (index)}
         <button
           type="button"
@@ -268,9 +271,17 @@
           <!-- Delete Button -->
           {#if !$config.customAIActions[selectedIndex].preset}
             <div class="flex justify-end pt-4">
-              <Button color="red" onclick={handleDelete} class="border-none shadow">
+              <Button color="red" onclick={() => (showPopover = true)} class="border-none shadow">
                 {i18n('delete', { defaultValue: 'Delete' })}
               </Button>
+              <ConfirmPopover
+                bind:showPopover
+                title={i18n('delete_ai_action_title', { defaultValue: 'Delete AI Action?' })}
+                description={i18n('delete_ai_action_description', {
+                  defaultValue: 'Are you sure to delete this AI action?'
+                })}
+                handleConfirm={handleDelete}
+                trigger="click" />
             </div>
           {/if}
         </div>

@@ -5,7 +5,7 @@ export {
   promptPresets
 } from './ai-actions';
 export {
-  defaultFeatures,
+  defaultAIFeatures,
   featureItems,
   featureKeys,
   bingTranslatorProvider,

@@ -32,7 +32,6 @@ export type FeatureKey =
 
 export type FeatureValue = {
   disabled?: boolean;
-  unsupported?: boolean;
   state?: boolean;
 };
 
@@ -49,7 +48,7 @@ export type ProviderConfig = {
   icon?: string;
   company?: string;
   description?: string;
-  features: Record<FeatureKey, FeatureValue>;
+  features: Partial<Record<FeatureKey, FeatureValue>>;
 };
 
 export type FreeProvider = {

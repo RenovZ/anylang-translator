@@ -36,8 +36,7 @@ export const featureItems: FeatureItem[] = [
 // Feature keys in display order (derived from featureItems array)
 export const featureKeys: FeatureKey[] = featureItems.map((f) => f.key);
 
-export const defaultFeatures: Record<FeatureKey, FeatureValue> = {
-  textTranslation: { state: false },
+export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
   languageBridge: { state: false },
   bilingualSubtitles: { state: false },
   instantLookup: { state: false },
@@ -46,8 +45,7 @@ export const defaultFeatures: Record<FeatureKey, FeatureValue> = {
   panoramaReading: { state: false }
 };
 
-const defaultOpenedFeatures: Record<FeatureKey, FeatureValue> = {
-  textTranslation: { disabled: true, state: true },
+const defaultOpenedFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
   languageBridge: { disabled: true, state: true },
   bilingualSubtitles: { disabled: true, state: true },
   instantLookup: { disabled: true, state: true },
@@ -61,14 +59,8 @@ export const bingTranslatorProvider: Provider = {
   name: 'Bing Translator',
   icon: 'bing',
   features: {
-    ...defaultOpenedFeatures,
-    languageBridge: { unsupported: true },
-    bilingualSubtitles: { unsupported: true },
-    instantLookup: { unsupported: true },
-    intelligentInput: { unsupported: true },
-    writingCopilot: { unsupported: true },
-    panoramaReading: { unsupported: true }
-  }
+    textTranslation: { state: true }
+  } as const
 } as const;
 
 export const googleTranslatorProvider: Provider = {
@@ -76,14 +68,8 @@ export const googleTranslatorProvider: Provider = {
   name: 'Google Translator',
   icon: 'google',
   features: {
-    ...defaultOpenedFeatures,
-    languageBridge: { unsupported: true },
-    bilingualSubtitles: { unsupported: true },
-    instantLookup: { unsupported: true },
-    intelligentInput: { unsupported: true },
-    writingCopilot: { unsupported: true },
-    panoramaReading: { unsupported: true }
-  }
+    textTranslation: { state: true }
+  } as const
 } as const;
 
 export const aiProviders: AiProviderType[] = ['go', 'zen', 'custom'];

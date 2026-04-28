@@ -101,6 +101,18 @@
   "delete": {
     "message": "Delete"
   },
+  "delete_ai_action_description": {
+    "message": "Are you sure to delete this AI action?"
+  },
+  "delete_ai_action_title": {
+    "message": "Delete AI Action?"
+  },
+  "delete_provider_description": {
+    "message": "Are you sure to delete this provider?"
+  },
+  "delete_provider_title": {
+    "message": "Delete Provider?"
+  },
   "delete_selected": {
     "message": "Delete selected"
   },
@@ -277,6 +289,9 @@
   },
   "name": {
     "message": "Name"
+  },
+  "no": {
+    "message": "No"
   },
   "not_selected": {
     "message": "Not Selected"
@@ -790,6 +805,9 @@
   },
   "writing_copilot": {
     "message": "Writing Copilot"
+  },
+  "yes": {
+    "message": "Yes, I'm sure"
   },
   "zen_users": {
     "message": "Zen Users"
