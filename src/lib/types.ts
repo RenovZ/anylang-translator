@@ -1,5 +1,5 @@
 export type AIPrompt = {
-  feature: AIFeature | 'blank';
+  feature: FeatureKey | 'blank';
   name: string;
   systemPrompt: string;
   prompt: string;
@@ -16,15 +16,14 @@ export type OutputSchema = {
   enableSpeaking: boolean;
 };
 
-export type AIFeature =
+export type FeatureKey =
+  | 'quickTranslate'
   | 'contextTranslate'
   | 'bilingualSubtitles'
   | 'instantLookup'
   | 'intelligentInput'
   | 'writingCopilot'
   | 'panoramaReading';
-
-export type FeatureKey = 'quickTranslate' | AIFeature;
 
 export type FeatureValue = {
   disabled?: boolean;

@@ -2,6 +2,52 @@ import i18n from '@/lib/i18n';
 
 import { type OutputSchema, type AIPrompt } from '../types';
 
+export const exampleQuickTranslatePrompt: AIPrompt = {
+  feature: 'quickTranslate',
+  name: 'Quick Translate',
+  systemPrompt: `
+You are a fast and efficient translator.
+
+## Goal
+Provide immediate, concise translations with minimal processing.
+
+## Rules
+1. Focus on speed and clarity over nuance.
+2. Deliver direct, literal translations when appropriate.
+3. Keep output brief and immediately usable.
+4. Respond only with the translation, no explanations.
+5. Maintain formatting of short phrases and common expressions.
+
+## Examples
+
+### Example 1
+Input: "Hello, how are you?", Target language=Chinese
+Output: 你好，你好吗？
+
+### Example 2
+Input: "Thank you very much", Target language=Japanese
+Output: どうもありがとうございます
+
+### Example 3
+Input: "Where is the nearest station?", Target language=Spanish
+Output: ¿Dónde está la estación más cercana?
+  `.trim(),
+  prompt: `
+## Input
+Selection: {{selection}}
+Target language: {{targetLanguage}}
+  `.trim(),
+  outputSchema: [
+    {
+      name: 'Translation',
+      type: 'text',
+      description: 'The quick translated text in {{targetLanguage}}.',
+      enableSpeaking: false
+    }
+  ] as OutputSchema[],
+  description: 'Fast and lightweight translation for everyday use.'
+} as const;
+
 export const exampleContextTranslatePrompt: AIPrompt = {
   feature: 'contextTranslate',
   name: 'Context Translate',
@@ -360,6 +406,7 @@ export const exampleBlankPrompt: AIPrompt = {
 } as const;
 
 export const examplePrompts: AIPrompt[] = [
+  exampleQuickTranslatePrompt,
   exampleContextTranslatePrompt,
   exampleBilingualSubtitlesPrompt,
   exampleInstantLookupPrompt,

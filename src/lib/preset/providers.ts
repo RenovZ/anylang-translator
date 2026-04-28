@@ -37,6 +37,7 @@ export const featureItems: FeatureItem[] = [
 export const featureKeys: FeatureKey[] = featureItems.map((f) => f.key);
 
 export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
+  quickTranslate: { state: false },
   contextTranslate: { state: false },
   bilingualSubtitles: { state: false },
   instantLookup: { state: false },
@@ -46,6 +47,7 @@ export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
 };
 
 const defaultOpenedFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
+  quickTranslate: { disabled: true, state: true },
   contextTranslate: { disabled: true, state: true },
   bilingualSubtitles: { disabled: true, state: true },
   instantLookup: { disabled: true, state: true },
