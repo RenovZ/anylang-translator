@@ -1,5 +1,9 @@
 # Browser Extension (WXT + Svelte)
 
+## Commit Style
+
+Refer to `~/commit.md`
+
 ## Dev Commands
 
 ```bash
@@ -26,11 +30,11 @@ npm run lint         # eslint + prettier --check
 
 ## Entrypoints
 
-| Entrypoint | Path |
-|------------|------|
-| Popup | `src/entrypoints/popup/main.ts` |
-| Options | `src/entrypoints/options/main.ts` |
-| Content | `src/entrypoints/content/index.ts` |
+| Entrypoint | Path                                  |
+| ---------- | ------------------------------------- |
+| Popup      | `src/entrypoints/popup/main.ts`       |
+| Options    | `src/entrypoints/options/main.ts`     |
+| Content    | `src/entrypoints/content/index.ts`    |
 | Background | `src/entrypoints/background/index.ts` |
 
 ## Build Output
