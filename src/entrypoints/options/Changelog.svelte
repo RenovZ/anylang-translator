@@ -1,14 +1,11 @@
 <script lang="ts">
   import i18n from '@/lib/i18n';
+
   import Section from './Section.svelte';
+  import { changelogNav } from './data';
 </script>
 
-<!-- Changelog Settings Section -->
-<Section
-  title={i18n('options_changelog_title', { defaultValue: 'Changelog' })}
-  description={i18n('options_changelog_description', {
-    defaultValue: 'View recent updates and new features.'
-  })}>
+<Section title={changelogNav.title}>
   <!-- Changelog Timeline -->
   <div class="space-y-6 border-l-2 border-slate-200 pl-6 dark:border-slate-700">
     <!-- Version Entry -->

@@ -4,12 +4,12 @@ import type { AiProviderType, FeatureItem, FeatureKey, FeatureValue, Provider } 
 // Ordered feature definitions for consistent UI rendering (array order = display order)
 export const featureItems: FeatureItem[] = [
   {
-    key: 'textTranslation',
-    label: i18n('feature_text_translation', { defaultValue: 'Text Translation' })
+    key: 'quickTranslate',
+    label: i18n('feature_quick_translate', { defaultValue: 'Quick Translate' })
   },
   {
-    key: 'languageBridge',
-    label: i18n('feature_language_bridge', { defaultValue: 'Language Bridge' })
+    key: 'contextTranslate',
+    label: i18n('feature_context_translate', { defaultValue: 'Context Translate' })
   },
   {
     key: 'bilingualSubtitles',
@@ -37,7 +37,7 @@ export const featureItems: FeatureItem[] = [
 export const featureKeys: FeatureKey[] = featureItems.map((f) => f.key);
 
 export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
-  languageBridge: { state: false },
+  contextTranslate: { state: false },
   bilingualSubtitles: { state: false },
   instantLookup: { state: false },
   intelligentInput: { state: false },
@@ -46,7 +46,7 @@ export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
 };
 
 const defaultOpenedFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
-  languageBridge: { disabled: true, state: true },
+  contextTranslate: { disabled: true, state: true },
   bilingualSubtitles: { disabled: true, state: true },
   instantLookup: { disabled: true, state: true },
   intelligentInput: { disabled: true, state: true },
@@ -59,7 +59,7 @@ export const bingTranslatorProvider: Provider = {
   name: 'Bing Translator',
   icon: 'bing',
   features: {
-    textTranslation: { state: true }
+    quickTranslate: { state: true }
   } as const
 } as const;
 
@@ -68,7 +68,7 @@ export const googleTranslatorProvider: Provider = {
   name: 'Google Translator',
   icon: 'google',
   features: {
-    textTranslation: { state: true }
+    quickTranslate: { state: true }
   } as const
 } as const;
 

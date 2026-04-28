@@ -56,7 +56,7 @@
   "api_providers": {
     "message": "API Providers"
   },
-  "api_providers_hint": {
+  "api_providers_description": {
     "message": "Configure API providers for translation and vocabulary insight. We have 20+ built-in providers and support any OpenAI-compatible API provider."
   },
   "auto_detect": {
@@ -74,6 +74,12 @@
   "bilingual_subtitles": {
     "message": "Bilingual Subtitles"
   },
+  "bilingual_subtitles_description": {
+    "message": "Real-time bilingual subtitles powered by contextual AI, making video content clearer, richer, and easier to follow."
+  },
+  "bilingual_subtitles_label": {
+    "message": "Watch in two languages at once."
+  },
   "cancel": {
     "message": "Cancel"
   },
@@ -88,6 +94,15 @@
   },
   "click_to_test_this_provider": {
     "message": "Click to test this provider"
+  },
+  "context_translate": {
+    "message": "Context Translate"
+  },
+  "context_translate_description": {
+    "message": "Go beyond literal conversion with AI-powered translation shaped by context, nuance, and intent."
+  },
+  "context_translate_label": {
+    "message": "Translation that understands meaning."
   },
   "custom": {
     "message": "Custom"
@@ -143,14 +158,14 @@
   "feature_bilingual_subtitles": {
     "message": "Bilingual Subtitles"
   },
+  "feature_context_translate": {
+    "message": "Context Translate"
+  },
   "feature_instant_lookup": {
     "message": "Instant Lookup"
   },
   "feature_intelligent_input": {
     "message": "Intelligent Input"
-  },
-  "feature_language_bridge": {
-    "message": "Language Bridge"
   },
   "feature_panorama_reading": {
     "message": "Panorama Reading"
@@ -158,8 +173,8 @@
   "feature_providers": {
     "message": "Feature Providers"
   },
-  "feature_text_translation": {
-    "message": "Text Translation"
+  "feature_quick_translate": {
+    "message": "Quick Translate"
   },
   "feature_writing_copilot": {
     "message": "Writing Copilot"
@@ -194,9 +209,6 @@
   "general": {
     "message": "General"
   },
-  "general_settings": {
-    "message": "General settings"
-  },
   "go_users": {
     "message": "Go Users"
   },
@@ -206,11 +218,20 @@
   "instant_lookup": {
     "message": "Instant Lookup"
   },
+  "instant_lookup_description": {
+    "message": "Understand words, idioms, and concepts instantly with AI-powered explanations and multilingual insight."
+  },
+  "instant_lookup_label": {
+    "message": "More than a dictionary."
+  },
   "intelligent_input": {
     "message": "Intelligent Input"
   },
-  "language_bridge": {
-    "message": "Language Bridge"
+  "intelligent_input_description": {
+    "message": "Generate polished multilingual text directly where you type — from quick replies to forms and everyday writing."
+  },
+  "intelligent_input_label": {
+    "message": "Think less. Express more."
   },
   "login": {
     "message": "Login"
@@ -296,14 +317,8 @@
   "options_about_check_update": {
     "message": "Check for updates"
   },
-  "options_about_description": {
-    "message": "Learn about the Anylang Translator extension."
-  },
   "options_about_product_name": {
     "message": "Anylang Translator"
-  },
-  "options_about_title": {
-    "message": "About"
   },
   "options_about_version": {
     "message": "Version 0.0.1"
@@ -314,9 +329,6 @@
   "options_button_toolbox": {
     "message": "Toolbox"
   },
-  "options_changelog_description": {
-    "message": "View recent updates and new features."
-  },
   "options_changelog_item_1": {
     "message": "Initial release"
   },
@@ -326,12 +338,6 @@
   "options_changelog_item_3": {
     "message": "Supports bilingual webpage translation"
   },
-  "options_changelog_title": {
-    "message": "Changelog"
-  },
-  "options_docs_description": {
-    "message": "Read detailed feature guides and tutorials."
-  },
   "options_docs_official_description": {
     "message": "Detailed docs and FAQ for all features"
   },
@@ -340,12 +346,6 @@
   },
   "options_docs_open_button": {
     "message": "Open docs"
-  },
-  "options_docs_title": {
-    "message": "Documentation"
-  },
-  "options_feedback_description": {
-    "message": "Found an issue or have ideas? Tell us."
   },
   "options_feedback_discord_button": {
     "message": "Join Discord community"
@@ -358,12 +358,6 @@
   },
   "options_feedback_submit_title": {
     "message": "Submit feedback"
-  },
-  "options_feedback_title": {
-    "message": "Feedback"
-  },
-  "options_floating_description": {
-    "message": "Quick translation floating ball settings on page edges."
   },
   "options_floating_site_rule_button": {
     "message": "View site rule guide"
@@ -383,12 +377,6 @@
   "options_floating_strategy_title": {
     "message": "Current strategy"
   },
-  "options_floating_title": {
-    "message": "Floating ball"
-  },
-  "options_input_description": {
-    "message": "Quickly translate content typed in input fields."
-  },
   "options_input_status_body": {
     "message": "This version keeps the entry hint; the actual shortcut switch will be added once shortcut settings stabilize."
   },
@@ -397,12 +385,6 @@
   },
   "options_input_status_title": {
     "message": "Feature status"
-  },
-  "options_input_title": {
-    "message": "Input translation"
-  },
-  "options_manga_description": {
-    "message": "Configure translation recognition settings for images and manga."
   },
   "options_manga_guide_button": {
     "message": "View image translation guide"
@@ -422,20 +404,11 @@
   "options_manga_scene_title": {
     "message": "Applicable scenarios"
   },
-  "options_manga_title": {
-    "message": "Manga/Images"
-  },
-  "options_pricing_description": {
-    "message": "Upgrade to Pro to unlock more advanced features and premium services."
-  },
   "options_pricing_pro_description": {
     "message": "Enjoy premium services like DeepL and OpenAI translation"
   },
   "options_pricing_pro_title": {
     "message": "Pro membership"
-  },
-  "options_pricing_title": {
-    "message": "Pricing"
   },
   "options_pricing_upgrade_button": {
     "message": "Upgrade now"
@@ -449,15 +422,6 @@
   "options_subtitle_auto_title": {
     "message": "Auto-enable bilingual subtitles"
   },
-  "options_subtitle_description": {
-    "message": "Configure bilingual subtitle translation for online videos."
-  },
-  "options_subtitle_title": {
-    "message": "Video subtitles"
-  },
-  "options_terms_description": {
-    "message": "Manage your translation glossary for consistent terms."
-  },
   "options_terms_empty_hint": {
     "message": "After enabling, you can add and manage terms here"
   },
@@ -470,14 +434,8 @@
   "options_terms_status_title": {
     "message": "Glossary status"
   },
-  "options_terms_title": {
-    "message": "AI terminology"
-  },
   "options_title_extension_name": {
     "message": "Anylang Translator"
-  },
-  "options_writing_description": {
-    "message": "Configure AI writing assistance and polishing features."
   },
   "options_writing_status_body": {
     "message": "Writing templates, tone preferences, and auto-polish rules will be available in future versions."
@@ -487,9 +445,6 @@
   },
   "options_writing_status_title": {
     "message": "Feature status"
-  },
-  "options_writing_title": {
-    "message": "AI Write"
   },
   "options_writing_usage_description": {
     "message": "For now, choose model and prompt in popup panel first, then use writing capability."
@@ -505,6 +460,12 @@
   },
   "panorama_reading": {
     "message": "Panorama Reading"
+  },
+  "panorama_reading_description": {
+    "message": "Extract key ideas, surface critical details, and grasp context faster with AI-enhanced reading intelligence."
+  },
+  "panorama_reading_label": {
+    "message": "See the whole picture."
   },
   "paragraphs_tooltip": {
     "message": "Intersecting paragraph text joined with blank lines, truncated to the first 2000 characters when sent to custom AI actions"
@@ -614,6 +575,15 @@
   "quick_action_toolbox": {
     "message": "Toolbox"
   },
+  "quick_translate": {
+    "message": "Quick Translate"
+  },
+  "quick_translate_description": {
+    "message": "Fast and lightweight translation for everyday use. Prioritizes speed over deep contextual understanding, so nuance and precision may be limited in complex content."
+  },
+  "quick_translate_label": {
+    "message": "Instant translation, zero friction."
+  },
   "reset_settings": {
     "message": "Reset settings"
   },
@@ -670,9 +640,6 @@
   },
   "text_color": {
     "message": "Text color"
-  },
-  "text_translation": {
-    "message": "Text Translation"
   },
   "translate": {
     "message": "Translate (⌥A)"
@@ -799,6 +766,12 @@
   },
   "writing_copilot": {
     "message": "Writing Copilot"
+  },
+  "writing_copilot_description": {
+    "message": "Draft, refine, and elevate your writing with context-aware assistance for clarity, tone, and precision."
+  },
+  "writing_copilot_label": {
+    "message": "Write with an AI co-author."
   },
   "yes": {
     "message": "Yes, I'm sure"

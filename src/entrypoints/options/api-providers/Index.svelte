@@ -29,6 +29,7 @@
   import Section from '../Section.svelte';
   import AddModal from './AddModal.svelte';
   import ProviderGroup from './ProviderGroup.svelte';
+  import { apiProvidersNav } from '../data';
 
   let showPopover = $state(false);
   let showModal = $state(false);
@@ -61,13 +62,7 @@
   };
 </script>
 
-<Section
-  limitHeight
-  title={i18n('api_providers', { defaultValue: 'API Providers' })}
-  description={i18n('api_providers_hint', {
-    defaultValue:
-      'Configure API providers for translation and vocabulary insight. We have 20+ built-in providers and support any OpenAI-compatible API provider.'
-  })}>
+<Section limitHeight title={apiProvidersNav.title} description={apiProvidersNav.description}>
   <div class="grid h-full grid-cols-1 items-start gap-2 lg:grid-cols-[280px_1fr]">
     <!-- Left: Provider List -->
     <div class="max-h-full space-y-3 overflow-y-auto px-1 pb-4">

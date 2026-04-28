@@ -1,18 +1,21 @@
 <script lang="ts">
-  import { Button } from 'flowbite-svelte';
+  import { Button, Alert, Heading } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
+
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
+  import { contextTranslateNav as nav } from './data';
 </script>
 
-<!-- AI Write Settings Section -->
-<Section
-  title={i18n('options_writing_title', { defaultValue: 'AI Write' })}
-  description={i18n('options_writing_description', {
-    defaultValue: 'Configure AI writing assistance and polishing features.'
-  })}>
-  <!-- Feature Status Info -->
+<Section title={nav.title}>
+  {#snippet description()}
+    <Alert color="orange" class="w-full space-y-1 shadow">
+      <span class="text-sm font-bold">{nav.label}</span>
+      <p>{nav.description}</p>
+    </Alert>
+  {/snippet}
+
   <SectionRow
     title={i18n('options_writing_status_title', { defaultValue: 'Feature status' })}
     description={i18n('options_writing_status_description', {

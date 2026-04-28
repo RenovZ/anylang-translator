@@ -6,12 +6,13 @@
   import config from '@/lib/config';
   import type { AIPrompt, OutputSchema } from '@/lib/types';
   import i18n from '@/lib/i18n';
+  import ConfirmPopover from '@/components/ConfirmPopover.svelte';
 
   import Section from '../Section.svelte';
   import AddAIPromptModal from './AddAIPromptModal.svelte';
   import EditFieldModal from './EditFieldModal.svelte';
   import Variables from './Variables.svelte';
-  import ConfirmPopover from '@/components/ConfirmPopover.svelte';
+  import { aiPromptsNav } from '../data';
 
   let showPopover = $state(false);
   let showModal = $state(false);
@@ -107,13 +108,7 @@
   };
 </script>
 
-<Section
-  limitHeight
-  title={i18n('ai_prompts', { defaultValue: 'AI Prompts' })}
-  description={i18n('ai_prompts_description', {
-    defaultValue:
-      'Configure prompts for custom API providers. Customize model instructions to shape responses and behavior across providers.'
-  })}>
+<Section limitHeight title={aiPromptsNav.title} description={aiPromptsNav.description}>
   <div class="grid h-full grid-cols-1 items-start gap-2 lg:grid-cols-[280px_1fr]">
     <!-- Left: AI Prompt List -->
     <div class="max-h-full space-y-1 overflow-y-auto px-1 pb-4">

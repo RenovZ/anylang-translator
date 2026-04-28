@@ -2,15 +2,13 @@
   import { Button } from 'flowbite-svelte';
 
   import { i18n } from '@/lib/i18n';
+
   import Section from './Section.svelte';
+  import { pricingNav } from './data';
 </script>
 
 <!-- Pricing Settings Section -->
-<Section
-  title={i18n('options_pricing_title', { defaultValue: 'Pricing' })}
-  description={i18n('options_pricing_description', {
-    defaultValue: 'Upgrade to Pro to unlock more advanced features and premium services.'
-  })}>
+<Section title={pricingNav.title}>
   <!-- Pro Membership Card -->
   <div
     class="border-primary-200 bg-primary-50 dark:border-primary-800 dark:bg-primary-900/20 rounded-2xl border-2 p-8 text-center">

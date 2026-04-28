@@ -1,16 +1,20 @@
 <script lang="ts">
+  import { Alert } from 'flowbite-svelte';
   import i18n from '@/lib/i18n';
+
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
+  import { intelligentInputNav as nav } from './data';
 </script>
 
-<!-- Input Translation Settings Section -->
-<Section
-  title={i18n('options_input_title', { defaultValue: 'Input translation' })}
-  description={i18n('options_input_description', {
-    defaultValue: 'Quickly translate content typed in input fields.'
-  })}>
-  <!-- Feature Status Info -->
+<Section title={nav.title}>
+  {#snippet description()}
+    <Alert color="green" class="w-full space-y-1 shadow">
+      <span class="text-sm font-bold">{nav.label}</span>
+      <p>{nav.description}</p>
+    </Alert>
+  {/snippet}
+
   <SectionRow
     title={i18n('options_input_status_title', { defaultValue: 'Feature status' })}
     description={i18n('options_input_status_description', {

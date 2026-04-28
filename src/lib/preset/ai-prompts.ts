@@ -2,9 +2,9 @@ import i18n from '@/lib/i18n';
 
 import { type OutputSchema, type AIPrompt } from '../types';
 
-export const exampleLanguageBridgePrompt: AIPrompt = {
-  feature: 'languageBridge',
-  name: 'Language Bridge',
+export const exampleContextTranslatePrompt: AIPrompt = {
+  feature: 'contextTranslate',
+  name: 'Context Translate',
   systemPrompt: `
 You are a professional translator for language learners.
 
@@ -360,7 +360,7 @@ export const exampleBlankPrompt: AIPrompt = {
 } as const;
 
 export const examplePrompts: AIPrompt[] = [
-  exampleLanguageBridgePrompt,
+  exampleContextTranslatePrompt,
   exampleBilingualSubtitlesPrompt,
   exampleInstantLookupPrompt,
   exampleIntelligentInputPrompt,

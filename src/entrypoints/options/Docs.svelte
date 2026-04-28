@@ -2,16 +2,13 @@
   import { Button } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
+
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
+  import { docsNav } from './data';
 </script>
 
-<!-- Documentation Settings Section -->
-<Section
-  title={i18n('options_docs_title', { defaultValue: 'Documentation' })}
-  description={i18n('options_docs_description', {
-    defaultValue: 'Read detailed feature guides and tutorials.'
-  })}>
+<Section title={docsNav.title}>
   <!-- Official Docs Link -->
   <SectionRow
     title={i18n('options_docs_official_title', { defaultValue: 'Official docs' })}

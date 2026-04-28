@@ -14,9 +14,11 @@
   import AutoTranslatedSites from './AutoTranslatedSites.svelte';
   import AutoTranslatedLang from './AutoTranslatedLang.svelte';
   import TranslationDisplayStyle from './TranslationDisplayStyle.svelte';
+
+  import { generalNav } from '../data';
 </script>
 
-<Section title={i18n('general_settings', { defaultValue: 'General settings' })}>
+<Section title={generalNav.title}>
   <!-- header buttons -->
   {#snippet headerActions()}
     <div class="text-primary-600 flex items-center gap-4 text-sm">

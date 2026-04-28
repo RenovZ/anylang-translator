@@ -1,16 +1,20 @@
 <script lang="ts">
-  import { Button } from 'flowbite-svelte';
+  import { Button, Alert } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
+
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
+  import { quickTranslateNav as nav } from './data';
 </script>
 
-<Section
-  title={i18n('options_terms_title', { defaultValue: 'AI terminology' })}
-  description={i18n('options_terms_description', {
-    defaultValue: 'Manage your translation glossary for consistent terms.'
-  })}>
+<Section title={nav.title}>
+  {#snippet description()}
+    <Alert color="red" class="w-full space-y-1 shadow">
+      <span class="text-sm font-bold">{nav.label}</span>
+      <p>{nav.description}</p>
+    </Alert>
+  {/snippet}
   <!-- Glossary Status -->
   <SectionRow
     title={i18n('options_terms_status_title', { defaultValue: 'Glossary status' })}

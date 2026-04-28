@@ -1,5 +1,5 @@
 export {
-  exampleLanguageBridgePrompt,
+  exampleContextTranslatePrompt as exampleLanguageBridgePrompt,
   exampleBilingualSubtitlesPrompt,
   exampleInstantLookupPrompt,
   exampleIntelligentInputPrompt,

@@ -17,14 +17,14 @@ export type OutputSchema = {
 };
 
 export type AIFeature =
-  | 'languageBridge'
+  | 'contextTranslate'
   | 'bilingualSubtitles'
   | 'instantLookup'
   | 'intelligentInput'
   | 'writingCopilot'
   | 'panoramaReading';
 
-export type FeatureKey = 'textTranslation' | AIFeature;
+export type FeatureKey = 'quickTranslate' | AIFeature;
 
 export type FeatureValue = {
   disabled?: boolean;

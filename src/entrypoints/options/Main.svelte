@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button } from 'flowbite-svelte';
+  import { Button, Indicator } from 'flowbite-svelte';
   import { browser, type PublicPath } from 'wxt/browser';
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
+  import { twMerge } from 'tailwind-merge';
 
   import '@/assets/app.css';
   import i18n from '@/lib/i18n';
@@ -75,12 +76,18 @@
           <a
             href={`#${item.id}`}
             onclick={() => goToSection(item.id)}
-            class={`flex w-full items-center rounded-2xl px-4 py-3 text-left transition ${
+            class={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition ${
               activeNavId === item.id
-                ? 'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600'
+                ? twMerge(
+                    'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600',
+                    'font' in item ? item.font : ''
+                  )
                 : 'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700'
             }`}>
-            {item.label}
+            <span>{item.title}</span>
+            {#if 'indicator' in item && item.indicator}
+              <Indicator class={item.indicator} />
+            {/if}
           </a>
         {/each}
       </div>
@@ -94,7 +101,7 @@
                 ? 'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600'
                 : 'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700'
             }`}>
-            {item.label}
+            {item.title}
           </a>
         {/each}
       </div>

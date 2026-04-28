@@ -1,18 +1,21 @@
 <script lang="ts">
-  import { Button } from 'flowbite-svelte';
+  import { Button, Alert } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
+
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
+  import { panoramaReadingNav as nav } from './data';
 </script>
 
-<!-- Manga/Images Settings Section -->
-<Section
-  title={i18n('options_manga_title', { defaultValue: 'Manga/Images' })}
-  description={i18n('options_manga_description', {
-    defaultValue: 'Configure translation recognition settings for images and manga.'
-  })}>
-  <!-- Image Recognition Info -->
+<Section title={nav.title}>
+  {#snippet description()}
+    <Alert color="blue" class="w-full space-y-1 shadow">
+      <span class="text-sm font-bold">{nav.label}</span>
+      <p>{nav.description}</p>
+    </Alert>
+  {/snippet}
+
   <SectionRow
     title={i18n('options_manga_ocr_title', { defaultValue: 'Image recognition' })}
     description={i18n('options_manga_ocr_description', {

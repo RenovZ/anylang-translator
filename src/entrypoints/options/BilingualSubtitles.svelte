@@ -1,19 +1,23 @@
 <script lang="ts">
-  import { Toggle } from 'flowbite-svelte';
+  import { Alert, Toggle } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
+
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
+  import { bilingualSubtitlesNav as nav } from './data';
 
   // Local state instead of props
   let autoEnable = $state(false);
 </script>
 
-<Section
-  title={i18n('options_subtitle_title', { defaultValue: 'Video subtitles' })}
-  description={i18n('options_subtitle_description', {
-    defaultValue: 'Configure bilingual subtitle translation for online videos.'
-  })}>
+<Section title={nav.title}>
+  {#snippet description()}
+    <Alert color="cyan" class="w-full space-y-1 shadow">
+      <span class="text-sm font-bold">{nav.label}</span>
+      <p>{nav.description}</p>
+    </Alert>
+  {/snippet}
   <SectionRow
     title={i18n('options_subtitle_auto_title', {
       defaultValue: 'Auto-enable bilingual subtitles'

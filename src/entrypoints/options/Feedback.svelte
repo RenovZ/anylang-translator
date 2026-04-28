@@ -2,16 +2,13 @@
   import { Button } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
+
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
+  import { feedbackNav } from './data';
 </script>
 
-<!-- Feedback Settings Section -->
-<Section
-  title={i18n('options_feedback_title', { defaultValue: 'Feedback' })}
-  description={i18n('options_feedback_description', {
-    defaultValue: 'Found an issue or have ideas? Tell us.'
-  })}>
+<Section title={feedbackNav.title}>
   <!-- Submit Feedback Links -->
   <SectionRow
     title={i18n('options_feedback_submit_title', { defaultValue: 'Submit feedback' })}

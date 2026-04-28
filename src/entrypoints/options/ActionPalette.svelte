@@ -2,16 +2,13 @@
   import { Button } from 'flowbite-svelte';
 
   import { i18n } from '@/lib/i18n';
+
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
+  import { actionPaletteNav } from './data';
 </script>
 
-<!-- Floating Ball Settings Section -->
-<Section
-  title={i18n('options_floating_title', { defaultValue: 'Floating ball' })}
-  description={i18n('options_floating_description', {
-    defaultValue: 'Quick translation floating ball settings on page edges.'
-  })}>
+<Section title={actionPaletteNav.title}>
   <!-- Current Strategy Info -->
   <SectionRow
     title={i18n('options_floating_strategy_title', { defaultValue: 'Current strategy' })}

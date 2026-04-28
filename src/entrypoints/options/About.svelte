@@ -3,15 +3,12 @@
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
 
   import { i18n } from '@/lib/i18n';
+
   import Section from './Section.svelte';
+  import { aboutNav } from './data';
 </script>
 
-<!-- About Settings Section -->
-<Section
-  title={i18n('options_about_title', { defaultValue: 'About' })}
-  description={i18n('options_about_description', {
-    defaultValue: 'Learn about the Anylang Translator extension.'
-  })}>
+<Section title={aboutNav.title}>
   <!-- About Content -->
   <div class="flex flex-col items-center justify-center py-8">
     <!-- Logo -->
