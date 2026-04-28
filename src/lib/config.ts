@@ -2,6 +2,7 @@ import { storage } from 'wxt/utils/storage';
 import { writable, get, type Subscriber } from 'svelte/store';
 import {
   bingTranslatorProvider,
+  examplePrompts,
   googleTranslatorProvider,
   goProviders,
   translationDisplayStyles,
@@ -12,7 +13,7 @@ import type {
   SelectionTriggerValue,
   TranslationMode,
   TranslationDisplayStyle,
-  AIAction
+  AIPrompt
 } from './types';
 
 const defaultConfig = {
@@ -43,20 +44,20 @@ const defaultConfig = {
   translationDisplayStyle: translationDisplayStyles[0] as TranslationDisplayStyle,
 
   customProviders: [
-    { ...bingTranslatorProvider },
-    { ...googleTranslatorProvider },
-    ...goProviders,
-    ...zenProviders
+    structuredClone(bingTranslatorProvider),
+    structuredClone(googleTranslatorProvider),
+    ...structuredClone(goProviders),
+    ...structuredClone(zenProviders)
   ] as Provider[],
-  pageTranslationProvider: bingTranslatorProvider as Provider,
-  videoSubtitlesTranslationProvider: bingTranslatorProvider as Provider,
-  selectionTranslationProvider: bingTranslatorProvider as Provider,
-  inputTranslationProvider: bingTranslatorProvider as Provider,
-  improveWritingProvider: bingTranslatorProvider as Provider,
+  pageTranslationProvider: structuredClone(bingTranslatorProvider) as Provider,
+  videoSubtitlesTranslationProvider: structuredClone(bingTranslatorProvider) as Provider,
+  selectionTranslationProvider: structuredClone(bingTranslatorProvider) as Provider,
+  inputTranslationProvider: structuredClone(bingTranslatorProvider) as Provider,
+  improveWritingProvider: structuredClone(bingTranslatorProvider) as Provider,
   imageTranslationProvider: null as Provider | null,
   textToSpeechProvider: null as Provider | null,
 
-  customAIActions: [] as AIAction[]
+  customAIPrompts: structuredClone(examplePrompts) as AIPrompt[]
 };
 
 export type Config = typeof defaultConfig;

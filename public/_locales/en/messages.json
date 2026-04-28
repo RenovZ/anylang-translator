@@ -8,11 +8,11 @@
   "add": {
     "message": "Add"
   },
-  "add_ai_action": {
-    "message": "Add AI Action"
+  "add_ai_prompt": {
+    "message": "Add AI Prompt"
   },
-  "add_ai_action_description": {
-    "message": "Select a template to quickly create a new AI action, or start from scratch."
+  "add_ai_prompt_description": {
+    "message": "Select a template to quickly create a new AI prompt, or start from scratch."
   },
   "add_field": {
     "message": "Add Field"
@@ -28,6 +28,12 @@
   },
   "advanced_options": {
     "message": "Advanced Options"
+  },
+  "ai_prompts": {
+    "message": "AI Prompts"
+  },
+  "ai_prompts_description": {
+    "message": "Configure prompts for custom API providers. Customize model instructions to shape responses and behavior across providers."
   },
   "always_auto_translate_this_site": {
     "message": "Always auto-translate this site"
@@ -86,12 +92,6 @@
   "custom": {
     "message": "Custom"
   },
-  "custom_ai_actions": {
-    "message": "Custom AI Actions"
-  },
-  "custom_ai_actions_description": {
-    "message": "Customize AI Actions, when selected text, the actions shown in the toolbar"
-  },
   "custom_providers": {
     "message": "Custom Providers"
   },
@@ -101,11 +101,11 @@
   "delete": {
     "message": "Delete"
   },
-  "delete_ai_action_description": {
-    "message": "Are you sure to delete this AI action?"
+  "delete_ai_prompt_description": {
+    "message": "Are you sure to delete this AI prompt?"
   },
-  "delete_ai_action_title": {
-    "message": "Delete AI Action?"
+  "delete_ai_prompt_title": {
+    "message": "Delete AI Prompt?"
   },
   "delete_provider_description": {
     "message": "Are you sure to delete this provider?"
@@ -202,9 +202,6 @@
   },
   "guest": {
     "message": "Guest"
-  },
-  "icon": {
-    "message": "Icon"
   },
   "instant_lookup": {
     "message": "Instant Lookup"
@@ -593,9 +590,6 @@
   "provider": {
     "message": "Provider"
   },
-  "provider_description": {
-    "message": "Description"
-  },
   "provider_name": {
     "message": "Name"
   },
@@ -629,8 +623,8 @@
   "select_a_navigation_item_to_access": {
     "message": "Select a navigation item to access"
   },
-  "select_ai_action_to_configure": {
-    "message": "Select an AI action to configure"
+  "select_ai_prompt_to_configure": {
+    "message": "Select an AI Prompt to configure"
   },
   "select_provider_to_configure": {
     "message": "Select a provider to configure"

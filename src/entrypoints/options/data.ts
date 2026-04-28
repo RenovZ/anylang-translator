@@ -1,8 +1,8 @@
 import i18n from '@/lib/i18n';
 
 import General from './general/Index.svelte';
-import ApiProviders from './api-providers/Index.svelte';
-import CustomAiActions from './custom-ai-actions/Index.svelte';
+import APIProviders from './api-providers/Index.svelte';
+import AIPrompts from './ai-prompts/Index.svelte';
 import TextTranslation from './TextTranslation.svelte';
 import LanguageBridge from './LanguageBridge.svelte';
 import BilingualSubtitles from './BilingualSubtitles.svelte';
@@ -36,13 +36,13 @@ export const topNavItems = [
     id: 'api-providers',
     label: i18n('api_providers', { defaultValue: 'API Providers' }),
     position: 'top',
-    component: ApiProviders
+    component: APIProviders
   },
   {
-    id: 'custom-ai-actions',
-    label: i18n('custom_ai_actions', { defaultValue: 'Custom AI Actions' }),
+    id: 'ai-prompts',
+    label: i18n('ai_prompts', { defaultValue: 'AI Prompts' }),
     position: 'top',
-    component: CustomAiActions
+    component: AIPrompts
   },
   {
     id: 'text-translation',

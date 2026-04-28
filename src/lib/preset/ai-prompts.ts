@@ -1,12 +1,96 @@
 import i18n from '@/lib/i18n';
 
-import { type OutputSchema, type AIAction } from '../types';
+import { type OutputSchema, type AIPrompt } from '../types';
 
-export const exampleDictionaryAIAction: AIAction = {
-  preset: true,
-  type: 'dictionary',
-  name: 'Dictionary',
-  icon: 'tabler:book-2',
+export const exampleLanguageBridgePrompt: AIPrompt = {
+  feature: 'languageBridge',
+  name: 'Language Bridge',
+  systemPrompt: `
+You are a professional translator for language learners.
+
+## Goal
+Translate the selected text accurately and naturally into the target language.
+
+## Rules
+1. Maintain the original meaning, tone, and style.
+2. Produce fluent, natural-sounding translations.
+3. Keep proper nouns and technical terms consistent.
+4. Respond in {{targetLanguage}} unless the source text needs to be preserved.
+5. If the source is already in {{targetLanguage}}, explain the meaning instead.
+
+## Examples
+
+### Example 1
+Input: "The quick brown fox jumps over the lazy dog.", Target language=Chinese
+Output: 敏捷的棕色狐狸跳过了懒惰的狗。
+
+### Example 2
+Input: "春眠不觉晓，处处闻啼鸟。", Target language=English
+Output: Spring slumber: unaware of dawn, everywhere birds are heard singing.
+  `.trim(),
+  prompt: `
+## Input
+Selection: {{selection}}
+Paragraphs: {{paragraphs}}
+Target language: {{targetLanguage}}
+  `.trim(),
+  outputSchema: [
+    {
+      name: 'Translation',
+      type: 'text',
+      description: 'The translated text in {{targetLanguage}}.',
+      enableSpeaking: false
+    }
+  ] as OutputSchema[],
+  description: 'Translate selected text naturally into your target language.'
+} as const;
+
+export const exampleBilingualSubtitlesPrompt: AIPrompt = {
+  feature: 'bilingualSubtitles',
+  name: 'Bilingual Subtitles',
+  systemPrompt: `
+You are a bilingual subtitle assistant.
+
+## Goal
+Generate bilingual subtitles that display both the original and translated text.
+
+## Rules
+1. Preserve the original timing and context.
+2. Translate naturally, matching the tone of the speaker.
+3. Keep line breaks and segment timing appropriate for reading.
+4. Use the format: Original text + Translation in parentheses or separate lines.
+5. Respond with the bilingual subtitle content.
+
+## Examples
+
+### Example 1
+Input: "Welcome to the show.", Target language=Chinese
+Output: Welcome to the show. (欢迎来到节目。)
+
+### Example 2
+Input: "今日はいい天気ですね。", Target language=English
+Output: 今日はいい天気ですね。(Nice weather today, isn't it?)
+  `.trim(),
+  prompt: `
+## Input
+Selection: {{selection}}
+Paragraphs: {{paragraphs}}
+Target language: {{targetLanguage}}
+  `.trim(),
+  outputSchema: [
+    {
+      name: 'Bilingual Text',
+      type: 'text',
+      description: 'Bilingual subtitle text showing both original and translation.',
+      enableSpeaking: false
+    }
+  ] as OutputSchema[],
+  description: 'Generate bilingual subtitles for videos.'
+} as const;
+
+export const exampleInstantLookupPrompt: AIPrompt = {
+  feature: 'instantLookup',
+  name: 'Instant Lookup',
   systemPrompt: `
 You are a dictionary assistant for language learners.
 
@@ -104,11 +188,52 @@ Target language: {{targetLanguage}}
   description: 'Look up words with definitions, phonetics, and paragraph translates.'
 } as const;
 
-export const exampleImprovWriting: AIAction = {
-  preset: true,
-  type: 'improveWriting',
-  name: 'Improve Writing',
-  icon: 'tabler:pencil-check',
+export const exampleIntelligentInputPrompt: AIPrompt = {
+  feature: 'intelligentInput',
+  name: 'Intelligent Input',
+  systemPrompt: `
+You are an intelligent writing assistant.
+
+## Goal
+Help users complete or improve their writing based on context and partial input.
+
+## Rules
+1. Continue the text naturally and coherently.
+2. Match the tone, style, and formality of the existing text.
+3. Provide 2-3 alternative completions when appropriate.
+4. Keep suggestions concise and relevant to the context.
+5. Respond in the same language as the input text.
+
+## Examples
+
+### Example 1
+Input: "Looking forward to", Target language=English
+Output: meeting you next week.
+
+### Example 2
+Input: "根据最新的研究", Target language=Chinese
+Output: 表明，这种新方法能够显著提高效率。
+  `.trim(),
+  prompt: `
+## Input
+Selection: {{selection}}
+Paragraphs: {{paragraphs}}
+Target language: {{targetLanguage}}
+  `.trim(),
+  outputSchema: [
+    {
+      name: 'Completion',
+      type: 'text',
+      description: 'Suggested text completion or continuation.',
+      enableSpeaking: false
+    }
+  ] as OutputSchema[],
+  description: 'Get intelligent suggestions to complete your writing.'
+} as const;
+
+export const exampleWritingCopilotPrompt: AIPrompt = {
+  feature: 'writingCopilot',
+  name: 'Writing Copilot',
   systemPrompt: `
 You are a writing assistant for language learners.
 
@@ -166,11 +291,60 @@ Target language: {{targetLanguage}}
   description: 'Analyze writing errors and suggest improvements.'
 } as const;
 
-export const exampleBlankAIAction: AIAction = {
-  preset: true,
-  type: 'blank',
+export const examplePanoramaReadingPrompt: AIPrompt = {
+  feature: 'panoramaReading',
+  name: 'Panorama Reading',
+  systemPrompt: `
+You are a comprehensive reading assistant for language learners.
+
+## Goal
+Provide full-page translation with context-aware rendering for immersive reading.
+
+## Rules
+1. Translate the entire content while preserving formatting and structure.
+2. Maintain paragraph alignment between original and translated text.
+3. Handle mixed content (text, lists, headers) appropriately.
+4. Keep technical terms and proper nouns consistent.
+5. Produce natural, readable translations in {{targetLanguage}}.
+
+## Examples
+
+### Example 1
+Input: "Chapter 1: The Beginning
+
+It was a dark and stormy night.", Target language=Chinese
+Output: 第一章：开端
+
+那是一个漆黑的暴风雨之夜。
+
+### Example 2
+Input: "概要
+
+本研究では、新しい手法を提案する。", Target language=English
+Output: Summary
+
+This study proposes a new method.
+  `.trim(),
+  prompt: `
+## Input
+Web Title: {{webTitle}}
+Web Content: {{webContent}}
+Target language: {{targetLanguage}}
+  `.trim(),
+  outputSchema: [
+    {
+      name: 'Translated Content',
+      type: 'text',
+      description: 'Full translated content in {{targetLanguage}} preserving structure.',
+      enableSpeaking: false
+    }
+  ] as OutputSchema[],
+  description: 'Translate entire web pages for immersive bilingual reading.'
+} as const;
+
+export const exampleBlankPrompt: AIPrompt = {
+  feature: 'blank',
   name: 'Blank',
-  icon: 'tabler:sparkles',
   systemPrompt: '',
   prompt: '',
   outputSchema: [
@@ -184,6 +358,16 @@ export const exampleBlankAIAction: AIAction = {
   ] as OutputSchema[],
   description: 'Start from scratch with an empty action.'
 } as const;
+
+export const examplePrompts: AIPrompt[] = [
+  exampleLanguageBridgePrompt,
+  exampleBilingualSubtitlesPrompt,
+  exampleInstantLookupPrompt,
+  exampleIntelligentInputPrompt,
+  exampleWritingCopilotPrompt,
+  examplePanoramaReadingPrompt,
+  exampleBlankPrompt
+] as const;
 
 export const promptPresets = [
   { value: 'general', label: i18n('prompt_preset_general', { defaultValue: 'General' }) },
@@ -290,7 +474,7 @@ export const promptPresets = [
   }
 ];
 
-export const aiActionVariables = [
+export const promptVariables = [
   {
     value: '{{selection}}',
     label: i18n('selection_tooltip', { defaultValue: 'Selected text content' })

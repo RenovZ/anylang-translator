@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button, Tooltip } from 'flowbite-svelte';
 
-  import { aiActionVariables } from '@/lib/preset/ai-actions';
+  import { promptVariables } from '@/lib/preset';
 
   interface Props {
     handleInsert?: (variable: string) => void;
@@ -42,7 +42,7 @@
 </script>
 
 <div class="flex flex-wrap gap-2">
-  {#each aiActionVariables as variable (variable.value)}
+  {#each promptVariables as variable (variable.value)}
     <Button
       color="alternative"
       class="rounded-md border-none px-2 py-1 text-xs shadow"

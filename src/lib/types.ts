@@ -1,11 +1,6 @@
-export type AIActionType = 'dictionary' | 'improveWriting' | 'blank';
-
-export type AIAction = {
-  preset: boolean;
-  type: AIActionType;
+export type AIPrompt = {
+  feature: AIFeature | 'blank';
   name: string;
-  icon: string;
-  provider?: PaidProvider;
   systemPrompt: string;
   prompt: string;
   outputSchema: OutputSchema[];
@@ -21,14 +16,15 @@ export type OutputSchema = {
   enableSpeaking: boolean;
 };
 
-export type FeatureKey =
-  | 'textTranslation'
+export type AIFeature =
   | 'languageBridge'
   | 'bilingualSubtitles'
   | 'instantLookup'
   | 'intelligentInput'
   | 'writingCopilot'
   | 'panoramaReading';
+
+export type FeatureKey = 'textTranslation' | AIFeature;
 
 export type FeatureValue = {
   disabled?: boolean;
@@ -47,7 +43,6 @@ export type ProviderConfig = {
   name: string;
   icon?: string;
   company?: string;
-  description?: string;
   features: Partial<Record<FeatureKey, FeatureValue>>;
 };
 
@@ -64,7 +59,7 @@ export type PaidProvider = {
   prompt?: string;
   temperature?: number;
   providerOptions?: Map<string, unknown>;
-  aiAction?: AIAction;
+  aiAction?: AIPrompt;
 } & ProviderConfig;
 
 export type Provider = FreeProvider | PaidProvider;

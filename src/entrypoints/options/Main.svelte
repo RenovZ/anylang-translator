@@ -102,9 +102,7 @@
 
     <!-- Content Area - Dynamic component rendering -->
     {#if activeNav}
-      {@const SvelteComponent = activeNav.component}
-      <SvelteComponent />
-      <!-- <activeNav.component /> -->
+      <activeNav.component />
     {:else}
       <Empty />
     {/if}

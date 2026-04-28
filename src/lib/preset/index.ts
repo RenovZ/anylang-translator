@@ -1,9 +1,15 @@
 export {
-  exampleDictionaryAIAction,
-  exampleImprovWriting,
-  exampleBlankAIAction,
-  promptPresets
-} from './ai-actions';
+  exampleLanguageBridgePrompt,
+  exampleBilingualSubtitlesPrompt,
+  exampleInstantLookupPrompt,
+  exampleIntelligentInputPrompt,
+  exampleWritingCopilotPrompt,
+  examplePanoramaReadingPrompt,
+  exampleBlankPrompt,
+  examplePrompts,
+  promptPresets,
+  promptVariables
+} from './ai-prompts';
 export {
   defaultAIFeatures,
   featureItems,

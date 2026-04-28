@@ -4,11 +4,11 @@
   import Icon from '@iconify/svelte';
 
   import config from '@/lib/config';
-  import type { AIAction, OutputSchema } from '@/lib/types';
+  import type { AIPrompt, OutputSchema } from '@/lib/types';
   import i18n from '@/lib/i18n';
 
   import Section from '../Section.svelte';
-  import AddAIActionModal from './AddAIActionModal.svelte';
+  import AddAIPromptModal from './AddAIPromptModal.svelte';
   import EditFieldModal from './EditFieldModal.svelte';
   import Variables from './Variables.svelte';
   import ConfirmPopover from '@/components/ConfirmPopover.svelte';
@@ -25,25 +25,25 @@
   let editingIndex = $state(-1);
   let dragIndex = $state(-1);
   let dragOverIndex = $state(-1);
-  let selectedIndex = $derived($config.customAIActions.length ? 0 : -1);
+  let selectedIndex = $derived($config.customAIPrompts.length ? 0 : -1);
 
   // Refs for textarea elements to insert variables
   let systemPromptRef: HTMLTextAreaElement | undefined = $state(undefined);
   let promptRef: HTMLTextAreaElement | undefined = $state(undefined);
 
-  const handleAdd = (item: AIAction) => {
-    const newAction: AIAction = { ...item, preset: false };
-    const size = $config.customAIActions.filter((a) => a.type === newAction.type).length;
+  const handleAdd = (item: AIPrompt) => {
+    const newAction: AIPrompt = { ...item };
+    const size = $config.customAIPrompts.filter((a) => a.feature === newAction.feature).length;
     if (size > 0) {
       newAction.name = `${newAction.name} ${size}`;
     }
-    $config.customAIActions = [...$config.customAIActions, newAction];
-    selectedIndex = $config.customAIActions.length - 1;
+    $config.customAIPrompts = [...$config.customAIPrompts, newAction];
+    selectedIndex = $config.customAIPrompts.length - 1;
   };
 
   const handleDelete = () => {
-    $config.customAIActions = $config.customAIActions.filter((_, i) => i !== selectedIndex);
-    selectedIndex = Math.min(selectedIndex, $config.customAIActions.length - 1);
+    $config.customAIPrompts = $config.customAIPrompts.filter((_, i) => i !== selectedIndex);
+    selectedIndex = Math.min(selectedIndex, $config.customAIPrompts.length - 1);
     showPopover = false;
   };
 
@@ -56,8 +56,8 @@
 
   const handleDeleteSchemaField = (index: number) => {
     if (selectedIndex < 0) return;
-    let { outputSchema } = $config.customAIActions[selectedIndex];
-    $config.customAIActions[selectedIndex].outputSchema = outputSchema.filter(
+    let { outputSchema } = $config.customAIPrompts[selectedIndex];
+    $config.customAIPrompts[selectedIndex].outputSchema = outputSchema.filter(
       (_, i) => i !== index
     );
   };
@@ -79,10 +79,10 @@
       dragOverIndex = -1;
       return;
     }
-    let { outputSchema } = $config.customAIActions[selectedIndex];
+    let { outputSchema } = $config.customAIPrompts[selectedIndex];
     const [removed] = outputSchema.splice(dragIndex, 1);
     outputSchema.splice(dragOverIndex, 0, removed);
-    $config.customAIActions[selectedIndex].outputSchema = outputSchema;
+    $config.customAIPrompts[selectedIndex].outputSchema = outputSchema;
     dragIndex = -1;
     dragOverIndex = -1;
   };
@@ -90,18 +90,18 @@
   const handleEditSchemaField = (index: number) => {
     if (selectedIndex < 0) return;
     editingIndex = index;
-    editingField = { ...$config.customAIActions[selectedIndex].outputSchema[index] };
+    editingField = { ...$config.customAIPrompts[selectedIndex].outputSchema[index] };
     showEditModal = true;
   };
 
   const handleSaveSchemaField = (field: OutputSchema) => {
     if (selectedIndex < 0) return;
-    let { outputSchema } = $config.customAIActions[selectedIndex];
+    let { outputSchema } = $config.customAIPrompts[selectedIndex];
     if (editingIndex < 0) {
-      $config.customAIActions[selectedIndex].outputSchema = [...outputSchema, field];
+      $config.customAIPrompts[selectedIndex].outputSchema = [...outputSchema, field];
     } else {
       outputSchema[editingIndex] = field;
-      $config.customAIActions[selectedIndex].outputSchema = outputSchema;
+      $config.customAIPrompts[selectedIndex].outputSchema = outputSchema;
     }
     editingIndex = -1;
   };
@@ -109,14 +109,15 @@
 
 <Section
   limitHeight
-  title={i18n('custom_ai_actions', { defaultValue: 'Custom AI Actions' })}
-  description={i18n('custom_ai_actions_description', {
-    defaultValue: 'Customize AI Actions, when selected text, the actions shown in the toolbar'
+  title={i18n('ai_prompts', { defaultValue: 'AI Prompts' })}
+  description={i18n('ai_prompts_description', {
+    defaultValue:
+      'Configure prompts for custom API providers. Customize model instructions to shape responses and behavior across providers.'
   })}>
   <div class="grid h-full grid-cols-1 items-start gap-2 lg:grid-cols-[280px_1fr]">
-    <!-- Left: AI Action List -->
+    <!-- Left: AI Prompt List -->
     <div class="max-h-full space-y-1 overflow-y-auto px-1 pb-4">
-      {#each $config.customAIActions as action, index (index)}
+      {#each $config.customAIPrompts as action, index (index)}
         <button
           type="button"
           class="flex w-full items-center gap-4 rounded-xl px-4 py-2 text-left transition"
@@ -125,7 +126,6 @@
           class:hover:bg-slate-50={selectedIndex !== index}
           class:dark:hover:bg-slate-700={selectedIndex !== index}
           onclick={() => (selectedIndex = index)}>
-          <Icon icon={action.icon} class="h-6 w-6" />
           <div class="text-sm font-medium">{action.name}</div>
         </button>
       {/each}
@@ -135,11 +135,11 @@
         class="mt-5 w-full rounded-xl border-none text-slate-600 shadow hover:bg-slate-50 dark:text-slate-100 dark:hover:bg-slate-600"
         onclick={() => (showModal = true)}>
         <PlusOutline class="me-2 h-4 w-4" />
-        {i18n('add_ai_action', { defaultValue: 'Add AI Action' })}
+        {i18n('add_ai_prompt', { defaultValue: 'Add AI Prompt' })}
       </Button>
     </div>
 
-    <!-- Right: AI Action Configuration -->
+    <!-- Right: AI Prompt Configuration -->
     <div class="max-h-full overflow-y-auto rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
       {#if selectedIndex >= 0}
         <div class="space-y-4">
@@ -149,31 +149,10 @@
               {i18n('name', { defaultValue: 'Name' })}
             </Label>
             <Input
-              disabled={$config.customAIActions[selectedIndex].preset}
               type="text"
-              bind:value={$config.customAIActions[selectedIndex].name}
+              bind:value={$config.customAIPrompts[selectedIndex].name}
               class="border-none bg-gray-50 shadow dark:bg-gray-600" />
           </div>
-
-          <!-- Icon -->
-          <div class="space-y-2">
-            <Label class="block text-sm font-medium">
-              {i18n('icon', { defaultValue: 'Icon' })}
-            </Label>
-            <div class="flex items-center gap-2">
-              <span class="rounded-lg bg-gray-50 p-2 shadow dark:bg-gray-600">
-                <Icon icon={$config.customAIActions[selectedIndex].icon} class="h-6 w-6" />
-              </span>
-              <Input
-                type="text"
-                bind:value={$config.customAIActions[selectedIndex].icon}
-                class="border-none bg-gray-50 shadow dark:bg-gray-600" />
-            </div>
-          </div>
-
-          <!-- Provider 这里留给我完成 -->
-
-          <!-- UsedInTheseSites 这里留给我完成 -->
 
           <!-- System Prompt -->
           <div class="space-y-2">
@@ -182,7 +161,7 @@
             </Label>
             <Textarea
               bind:elementRef={systemPromptRef}
-              bind:value={$config.customAIActions[selectedIndex].systemPrompt}
+              bind:value={$config.customAIPrompts[selectedIndex].systemPrompt}
               rows={8}
               class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
             <Variables bind:textareaRef={systemPromptRef} />
@@ -195,7 +174,7 @@
             </Label>
             <Textarea
               bind:elementRef={promptRef}
-              bind:value={$config.customAIActions[selectedIndex].prompt}
+              bind:value={$config.customAIPrompts[selectedIndex].prompt}
               rows={6}
               class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
             <Variables bind:textareaRef={promptRef} />
@@ -217,7 +196,7 @@
               </Button>
             </div>
             <div class="space-y-2" role="list">
-              {#each $config.customAIActions[selectedIndex].outputSchema as field, index (index)}
+              {#each $config.customAIPrompts[selectedIndex].outputSchema as field, index (index)}
                 <div
                   class="flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2 shadow transition"
                   class:opacity-50={dragIndex === index}
@@ -269,27 +248,25 @@
           </div>
 
           <!-- Delete Button -->
-          {#if !$config.customAIActions[selectedIndex].preset}
-            <div class="flex justify-end pt-4">
-              <Button color="red" onclick={() => (showPopover = true)} class="border-none shadow">
-                {i18n('delete', { defaultValue: 'Delete' })}
-              </Button>
-              <ConfirmPopover
-                bind:showPopover
-                title={i18n('delete_ai_action_title', { defaultValue: 'Delete AI Action?' })}
-                description={i18n('delete_ai_action_description', {
-                  defaultValue: 'Are you sure to delete this AI action?'
-                })}
-                handleConfirm={handleDelete}
-                trigger="click" />
-            </div>
-          {/if}
+          <div class="flex justify-end pt-4">
+            <Button color="red" onclick={() => (showPopover = true)} class="border-none shadow">
+              {i18n('delete', { defaultValue: 'Delete' })}
+            </Button>
+            <ConfirmPopover
+              bind:showPopover
+              title={i18n('delete_ai_prompt_title', { defaultValue: 'Delete AI Prompt?' })}
+              description={i18n('delete_ai_prompt_description', {
+                defaultValue: 'Are you sure to delete this AI prompt?'
+              })}
+              handleConfirm={handleDelete}
+              trigger="click" />
+          </div>
         </div>
       {:else}
         <div class="flex h-64 items-center justify-center text-gray-400">
           <p>
-            {i18n('select_ai_action_to_configure', {
-              defaultValue: 'Select an AI action to configure'
+            {i18n('select_ai_prompt_to_configure', {
+              defaultValue: 'Select an AI Prompt to configure'
             })}
           </p>
         </div>
@@ -298,7 +275,7 @@
   </div>
 </Section>
 
-<AddAIActionModal bind:open={showModal} onSelect={handleAdd} />
+<AddAIPromptModal bind:open={showModal} onSelect={handleAdd} />
 <EditFieldModal
   bind:open={showEditModal}
   field={editingField}

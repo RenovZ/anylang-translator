@@ -148,16 +148,6 @@
               bind:value={$config.customProviders[selectedIndex].name} />
           </div>
 
-          <!-- Description -->
-          <div class="space-y-2">
-            <Label class="block text-sm font-medium">
-              {i18n('provider_description', { defaultValue: 'Description' })}
-            </Label>
-            <Textarea
-              bind:value={$config.customProviders[selectedIndex].description}
-              class="w-full border-none bg-gray-50 shadow dark:bg-gray-600" />
-          </div>
-
           <!-- API Key -->
           {#if $config.customProviders[selectedIndex].type === 'custom'}
             <div class="space-y-2">
