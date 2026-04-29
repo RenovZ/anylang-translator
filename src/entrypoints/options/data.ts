@@ -3,8 +3,7 @@ import i18n from '@/lib/i18n';
 import General from './general/Index.svelte';
 import APIProviders from './api-providers/Index.svelte';
 import AIPrompts from './ai-prompts/Index.svelte';
-import QuickTranslate from './QuickTranslate.svelte';
-import ContextTranslate from './ContextTranslate.svelte';
+import AdaptiveTranslate from './adaptive-translate/Index.svelte';
 import BilingualSubtitles from './BilingualSubtitles.svelte';
 import IntelligentInput from './IntelligentInput.svelte';
 import WritingCopilot from './WritingCopilot.svelte';
@@ -21,7 +20,7 @@ import Feedback from './Feedback.svelte';
 export type NavItem = {
   id: string;
   title: string;
-  label?: string;
+  subtitle?: string;
   description?: string;
   position: 'top' | 'bottom';
   component: import('svelte').Component;
@@ -29,7 +28,7 @@ export type NavItem = {
   indicator?: string;
 };
 
-export const generalNav = {
+export const generalNav: NavItem = {
   id: 'general',
   title: i18n('general', { defaultValue: 'General' }),
   position: 'top',
@@ -47,7 +46,7 @@ export const apiProvidersNav = {
   component: APIProviders
 } as const;
 
-export const aiPromptsNav = {
+export const aiPromptsNav: NavItem = {
   id: 'ai-prompts',
   title: i18n('ai_prompts', { defaultValue: 'AI Prompts' }),
   description: i18n('ai_prompts_description', {
@@ -58,103 +57,93 @@ export const aiPromptsNav = {
   component: AIPrompts
 } as const;
 
-export const quickTranslateNav = {
-  id: 'quick-translate',
-  title: i18n('quick_translate', { defaultValue: 'Quick Translate' }),
-  label: i18n('quick_translate_label', { defaultValue: 'Instant translation, zero friction.' }),
-  description: i18n('quick_translate_description', {
+export const adaptiveTranslateNav: NavItem = {
+  id: 'adaptive-translate',
+  title: i18n('adaptive_translate', { defaultValue: 'Adaptive Translate' }),
+  subtitle: i18n('adaptive_translate_subtitle', {
+    defaultValue: 'Fast when you need speed. Deep when meaning matters.'
+  }),
+  description: i18n('adaptive_translate_description', {
     defaultValue:
-      'Fast and lightweight translation for everyday use. Prioritizes speed over deep contextual understanding, so nuance and precision may be limited in complex content.'
+      'Adaptive translation that combines lightweight instant translation with context-aware AI understanding, balancing speed, nuance, and quality across different scenarios.'
   }),
   position: 'top',
-  component: QuickTranslate,
-  font: 'text-red-500',
-  indicator: 'bg-red-500'
+  component: AdaptiveTranslate,
+  font: 'text-orange-500 dark:text-orange-400',
+  indicator: 'bg-orange-500 dark:bg-orange-400'
 } as const;
 
-export const contextTranslateNav = {
-  id: 'context-translate',
-  title: i18n('context_translate', { defaultValue: 'Context Translate' }),
-  label: i18n('context_translate_label', { defaultValue: 'Translation that understands meaning.' }),
-  description: i18n('context_translate_description', {
-    defaultValue:
-      'Go beyond literal conversion with AI-powered translation shaped by context, nuance, and intent.'
-  }),
-  position: 'top',
-  component: ContextTranslate,
-  font: 'text-orange-500',
-  indicator: 'bg-orange-500'
-} as const;
-
-export const instantLookupNav = {
+export const instantLookupNav: NavItem = {
   id: 'instant-lookup',
   title: i18n('instant_lookup', { defaultValue: 'Instant Lookup' }),
-  label: i18n('instant_lookup_label', { defaultValue: 'More than a dictionary.' }),
+  subtitle: i18n('instant_lookup_subtitle', { defaultValue: 'More than a dictionary.' }),
   description: i18n('instant_lookup_description', {
     defaultValue:
       'Understand words, idioms, and concepts instantly with AI-powered explanations and multilingual insight.'
   }),
   position: 'top',
   component: InstantLookup,
-  font: 'text-yellow-500',
-  indicator: 'bg-yellow-500'
+  font: 'text-yellow-500 dark:text-yellow-400',
+  indicator: 'bg-yellow-500 dark:bg-yellow-400'
 } as const;
 
-export const intelligentInputNav = {
+export const intelligentInputNav: NavItem = {
   id: 'intelligent-input',
   title: i18n('intelligent_input', { defaultValue: 'Intelligent Input' }),
-  label: i18n('intelligent_input_label', { defaultValue: 'Think less. Express more.' }),
+  subtitle: i18n('intelligent_input_subtitle', { defaultValue: 'Think less. Express more.' }),
   description: i18n('intelligent_input_description', {
     defaultValue:
       'Generate polished multilingual text directly where you type — from quick replies to forms and everyday writing.'
   }),
   position: 'top',
   component: IntelligentInput,
-  font: 'text-green-500',
-  indicator: 'bg-green-500'
+  font: 'text-green-500 dark:text-green-400',
+  indicator: 'bg-green-500 dark:bg-green-400'
 } as const;
 
-export const bilingualSubtitlesNav = {
+export const bilingualSubtitlesNav: NavItem = {
   id: 'bilingual-subtitles',
   title: i18n('bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' }),
-  label: i18n('bilingual_subtitles_label', { defaultValue: 'Watch in two languages at once.' }),
+  subtitle: i18n('bilingual_subtitles_subtitle', {
+    defaultValue: 'Watch in two languages at once.'
+  }),
   description: i18n('bilingual_subtitles_description', {
     defaultValue:
       'Real-time bilingual subtitles powered by contextual AI, making video content clearer, richer, and easier to follow.'
   }),
   position: 'top',
   component: BilingualSubtitles,
-  font: 'text-cyan-500',
-  indicator: 'bg-cyan-500'
+  font: 'text-cyan-500 dark:text-cyan-400',
+  indicator: 'bg-cyan-500 dark:bg-cyan-400'
 } as const;
 
-export const panoramaReadingNav = {
+export const panoramaReadingNav: NavItem = {
   // Reading Copilot
   id: 'panorama-reading',
   title: i18n('panorama_reading', { defaultValue: 'Panorama Reading' }),
-  label: i18n('panorama_reading_label', { defaultValue: 'See the whole picture.' }),
+  subtitle: i18n('panorama_reading_subtitle', { defaultValue: 'See the whole picture.' }),
   description: i18n('panorama_reading_description', {
     defaultValue:
       'Extract key ideas, surface critical details, and grasp context faster with AI-enhanced reading intelligence.'
   }),
   position: 'top',
   component: PanoramaReading,
-  font: 'text-blue-500',
-  indicator: 'bg-blue-500'
+  font: 'text-blue-500 dark:text-blue-400',
+  indicator: 'bg-blue-500 dark:bg-blue-400'
 } as const;
 
-export const writingCopilotNav = {
+export const writingCopilotNav: NavItem = {
   id: 'writing-copilot',
   title: i18n('writing_copilot', { defaultValue: 'Writing Copilot' }),
-  label: i18n('writing_copilot_label', { defaultValue: 'Write with an AI co-author.' }),
+  subtitle: i18n('writing_copilot_subtitle', { defaultValue: 'Write with an AI co-author.' }),
   description: i18n('writing_copilot_description', {
     defaultValue:
       'Draft, refine, and elevate your writing with context-aware assistance for clarity, tone, and precision.'
   }),
   position: 'top',
   component: WritingCopilot,
-  font: 'text-violet-500',
-  indicator: 'bg-violet-500'
+  font: 'text-violet-500 dark:text-violet-400',
+  indicator: 'bg-violet-500 dark:bg-violet-400'
 } as const;
 
 export const actionPaletteNav = {
@@ -168,8 +157,7 @@ export const topNavItems = [
   generalNav,
   apiProvidersNav,
   aiPromptsNav,
-  quickTranslateNav,
-  contextTranslateNav,
+  adaptiveTranslateNav,
   instantLookupNav,
   intelligentInputNav,
   bilingualSubtitlesNav,

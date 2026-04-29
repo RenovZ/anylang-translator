@@ -101,19 +101,19 @@
     <!-- providers -->
     <section class="rounded-xl bg-slate-100 dark:bg-slate-700">
       <div
-        class:rounded-b-xl={$config.pageTranslationProvider.type === 'free'}
+        class:rounded-b-xl={$config.quickTranslateProvider.type === 'free'}
         class="grid grid-cols-[88px_1fr] items-center rounded-t-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600">
         <div class="font-medium">{i18n('provider', { defaultValue: 'Provider' })}</div>
         <button type="button" class="flex flex-1 items-center justify-between">
           <div class="line-clamp-1 text-left font-medium">
-            {$config.pageTranslationProvider.name}
+            {$config.quickTranslateProvider.name}
           </div>
           <ChevronDownOutline class="h-6 w-6 text-slate-400" />
         </button>
         <ProvidersDropdown />
       </div>
-      {#if $config.pageTranslationProvider.type !== 'free' && aiProviders.includes($config.pageTranslationProvider.type)}
-        {@const paidProvider = $config.pageTranslationProvider as PaidProvider}
+      {#if $config.quickTranslateProvider.type !== 'free' && aiProviders.includes($config.quickTranslateProvider.type)}
+        {@const paidProvider = $config.quickTranslateProvider as PaidProvider}
         {@const currentModels =
           (
             $config.customProviders.find(
@@ -135,7 +135,7 @@
           <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
             {#each currentModels as model (model)}
               <DropdownItem
-                onclick={() => ($config.pageTranslationProvider = { model, ...paidProvider })}>
+                onclick={() => ($config.quickTranslateProvider = { model, ...paidProvider })}>
                 {model}
               </DropdownItem>
             {/each}
@@ -153,7 +153,7 @@
           <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
             {#each promptPresets as { value: prompt, label } (prompt)}
               <DropdownItem
-                onclick={() => ($config.pageTranslationProvider = { prompt, ...paidProvider })}>
+                onclick={() => ($config.quickTranslateProvider = { prompt, ...paidProvider })}>
                 {label}
               </DropdownItem>
             {/each}

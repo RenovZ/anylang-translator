@@ -18,7 +18,7 @@
     {#each $config.customProviders.filter((item) => item.type === 'free') as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
-        onclick={() => ($config.pageTranslationProvider = { ...provider })}>
+        onclick={() => ($config.quickTranslateProvider = { ...provider })}>
         <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
         <span>{provider.name}</span>
       </DropdownItem>
@@ -31,7 +31,7 @@
     {#each $config.customProviders.filter((item) => item.type === 'go') as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
-        onclick={() => ($config.pageTranslationProvider = { ...provider })}>
+        onclick={() => ($config.quickTranslateProvider = { ...provider })}>
         <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <!--
@@ -52,7 +52,7 @@
     {#each $config.customProviders.filter((item) => item.type === 'zen') as PaidProvider[] as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
-        onclick={() => ($config.pageTranslationProvider = { ...provider })}>
+        onclick={() => ($config.quickTranslateProvider = { ...provider })}>
         <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <!--
@@ -73,7 +73,7 @@
     {#each $config.customProviders.filter((item) => item.type === 'custom') as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
-        onclick={() => ($config.pageTranslationProvider = { ...provider })}>
+        onclick={() => ($config.quickTranslateProvider = { ...provider })}>
         <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
         <span>
           {provider.name}

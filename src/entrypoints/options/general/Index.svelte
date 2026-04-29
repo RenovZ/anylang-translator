@@ -11,9 +11,6 @@
 
   import Section from '../Section.svelte';
   import SectionRow from '../SectionRow.svelte';
-  import AutoTranslatedSites from './AutoTranslatedSites.svelte';
-  import AutoTranslatedLang from './AutoTranslatedLang.svelte';
-  import TranslationDisplayStyle from './TranslationDisplayStyle.svelte';
 
   import { generalNav } from '../data';
 </script>
@@ -75,36 +72,6 @@
     </div>
   </SectionRow>
 
-  <!-- translation provider -->
-  <SectionRow
-    title={i18n('translation_provider', { defaultValue: 'Translation provider' })}
-    description={i18n('translation_provider_hint', {
-      defaultValue: 'Choose a translation provider'
-    })}>
-    <div class="flex w-full flex-col items-end space-y-3" slot="controls">
-      <Button
-        class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
-        <div class="flex items-center gap-2">
-          <ProviderIcon
-            provider={$config.pageTranslationProvider}
-            avatarClass="w-4 h-4"
-            imgClass="w-4 h-4" />
-          <span>
-            {$config.pageTranslationProvider.name}
-            {#if $config.pageTranslationProvider.type !== 'free' && $config.pageTranslationProvider.model}
-              ({$config.pageTranslationProvider.model})
-            {/if}
-          </span>
-        </div>
-        <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
-      </Button>
-      <ProvidersDropdown />
-      <button class="text-primary-600 w-fit text-sm">
-        {i18n('provider_test', { defaultValue: 'Test this provider' })}
-      </button>
-    </div>
-  </SectionRow>
-
   <!-- UI language -->
   <SectionRow
     title={i18n('ui_language', { defaultValue: 'UI language' })}
@@ -130,65 +97,4 @@
       </Dropdown>
     </div>
   </SectionRow>
-
-  <!-- translation mode -->
-  <SectionRow
-    title={i18n('translation_mode', {
-      defaultValue: 'Translation mode'
-    })}
-    description={i18n('translation_mode_hint', {
-      defaultValue: 'Choose display mode after translation: bilingual or translation-only'
-    })}>
-    <div slot="controls">
-      <Button
-        class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
-        <span>{$config.translationMode}</span>
-        <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
-      </Button>
-      <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-        <DropdownItem onclick={() => ($config.translationMode = 'bilingual')}>
-          {i18n('translation_mode_bilingual', { defaultValue: 'Bilingual' })}
-        </DropdownItem>
-        <DropdownItem onclick={() => ($config.translationMode = 'translation_only')}>
-          {i18n('translation_mode_translation_only', {
-            defaultValue: 'Translation only'
-          })}
-        </DropdownItem>
-      </Dropdown>
-    </div>
-  </SectionRow>
-
-  <!-- enable auto-translate -->
-  <SectionRow
-    title={i18n('enable_auto_translate', {
-      defaultValue: 'Enable auto-translate feature'
-    })}>
-    <Toggle
-      slot="controls"
-      class="ms-auto"
-      bind:checked={$config.autoTranslateEnabled}
-      size="small"
-      classes={{
-        span: 'me-0 cursor-pointer bg-slate-200 dark:bg-slate-600'
-      }} />
-  </SectionRow>
-
-  <!-- always auto-translated sites -->
-  <AutoTranslatedSites
-    title={i18n('always_auto_translated_sites', { defaultValue: 'Always auto-translated sites' })}
-    description={i18n('always_auto_translated_sites_hint', {
-      defaultValue:
-        'When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules.'
-    })} />
-
-  <!-- always auto-translated language -->
-  <AutoTranslatedLang
-    title={i18n('always_auto_translated_lang', { defaultValue: 'Always auto-translate language' })}
-    description={i18n('always_auto_translated_lang_hint', {
-      defaultValue:
-        'When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts.'
-    })} />
-
-  <!-- translation display style -->
-  <TranslationDisplayStyle />
 </Section>

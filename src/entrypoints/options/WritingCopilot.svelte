@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { Alert } from 'flowbite-svelte';
-
   import i18n from '@/lib/i18n';
 
   import Section from './Section.svelte';
@@ -8,14 +6,7 @@
   import { writingCopilotNav as nav } from './data';
 </script>
 
-<Section title={nav.title}>
-  {#snippet description()}
-    <Alert color="violet" class="w-full space-y-1 shadow">
-      <span class="text-sm font-bold">{nav.label}</span>
-      <p>{nav.description}</p>
-    </Alert>
-  {/snippet}
-
+<Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
   <SectionRow
     title={i18n('options_subtitle_auto_title', {
       defaultValue: 'Auto-enable bilingual subtitles'

@@ -4,16 +4,8 @@ import type { AiProviderType, FeatureItem, FeatureKey, FeatureValue, Provider } 
 // Ordered feature definitions for consistent UI rendering (array order = display order)
 export const featureItems: FeatureItem[] = [
   {
-    key: 'quickTranslate',
-    label: i18n('feature_quick_translate', { defaultValue: 'Quick Translate' })
-  },
-  {
-    key: 'contextTranslate',
-    label: i18n('feature_context_translate', { defaultValue: 'Context Translate' })
-  },
-  {
-    key: 'bilingualSubtitles',
-    label: i18n('feature_bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' })
+    key: 'adaptiveTranslate',
+    label: i18n('feature_adaptive_translate', { defaultValue: 'Adaptive Translate' })
   },
   {
     key: 'instantLookup',
@@ -24,12 +16,16 @@ export const featureItems: FeatureItem[] = [
     label: i18n('feature_intelligent_input', { defaultValue: 'Intelligent Input' })
   },
   {
-    key: 'writingCopilot',
-    label: i18n('feature_writing_copilot', { defaultValue: 'Writing Copilot' })
+    key: 'bilingualSubtitles',
+    label: i18n('feature_bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' })
   },
   {
     key: 'panoramaReading',
     label: i18n('feature_panorama_reading', { defaultValue: 'Panorama Reading' })
+  },
+  {
+    key: 'writingCopilot',
+    label: i18n('feature_writing_copilot', { defaultValue: 'Writing Copilot' })
   }
 ];
 
@@ -37,8 +33,7 @@ export const featureItems: FeatureItem[] = [
 export const featureKeys: FeatureKey[] = featureItems.map((f) => f.key);
 
 export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
-  quickTranslate: { state: false },
-  contextTranslate: { state: false },
+  adaptiveTranslate: { state: false },
   bilingualSubtitles: { state: false },
   instantLookup: { state: false },
   intelligentInput: { state: false },
@@ -47,8 +42,7 @@ export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
 };
 
 const defaultOpenedFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
-  quickTranslate: { disabled: true, state: true },
-  contextTranslate: { disabled: true, state: true },
+  adaptiveTranslate: { disabled: true, state: true },
   bilingualSubtitles: { disabled: true, state: true },
   instantLookup: { disabled: true, state: true },
   intelligentInput: { disabled: true, state: true },
@@ -61,7 +55,7 @@ export const bingTranslatorProvider: Provider = {
   name: 'Bing Translator',
   icon: 'bing',
   features: {
-    quickTranslate: { state: true }
+    adaptiveTranslate: { state: true }
   } as const
 } as const;
 
@@ -70,7 +64,7 @@ export const googleTranslatorProvider: Provider = {
   name: 'Google Translator',
   icon: 'google',
   features: {
-    quickTranslate: { state: true }
+    adaptiveTranslate: { state: true }
   } as const
 } as const;
 

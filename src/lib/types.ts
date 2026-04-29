@@ -17,13 +17,12 @@ export type OutputSchema = {
 };
 
 export type FeatureKey =
-  | 'quickTranslate'
-  | 'contextTranslate'
-  | 'bilingualSubtitles'
+  | 'adaptiveTranslate'
   | 'instantLookup'
   | 'intelligentInput'
-  | 'writingCopilot'
-  | 'panoramaReading';
+  | 'bilingualSubtitles'
+  | 'panoramaReading'
+  | 'writingCopilot';
 
 export type FeatureValue = {
   disabled?: boolean;

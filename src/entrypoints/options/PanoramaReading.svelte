@@ -8,14 +8,7 @@
   import { panoramaReadingNav as nav } from './data';
 </script>
 
-<Section title={nav.title}>
-  {#snippet description()}
-    <Alert color="blue" class="w-full space-y-1 shadow">
-      <span class="text-sm font-bold">{nav.label}</span>
-      <p>{nav.description}</p>
-    </Alert>
-  {/snippet}
-
+<Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
   <SectionRow
     title={i18n('options_manga_ocr_title', { defaultValue: 'Image recognition' })}
     description={i18n('options_manga_ocr_description', {

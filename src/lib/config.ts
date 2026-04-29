@@ -49,13 +49,13 @@ const defaultConfig = {
     ...structuredClone(goProviders),
     ...structuredClone(zenProviders)
   ] as Provider[],
-  pageTranslationProvider: structuredClone(bingTranslatorProvider) as Provider,
-  videoSubtitlesTranslationProvider: structuredClone(bingTranslatorProvider) as Provider,
-  selectionTranslationProvider: structuredClone(bingTranslatorProvider) as Provider,
-  inputTranslationProvider: structuredClone(bingTranslatorProvider) as Provider,
-  improveWritingProvider: structuredClone(bingTranslatorProvider) as Provider,
-  imageTranslationProvider: null as Provider | null,
-  textToSpeechProvider: null as Provider | null,
+  quickTranslateProvider: structuredClone(bingTranslatorProvider) as Provider,
+  contextTranslateProvider: null as Provider | null,
+  instantLookupProvider: null as Provider | null,
+  intelligentInputProvider: null as Provider | null,
+  bilingualSubtitlesProvider: null as Provider | null,
+  panoramaReadingProvider: null as Provider | null,
+  writingCopilotProvider: null as Provider | null,
 
   customAIPrompts: structuredClone(examplePrompts) as AIPrompt[]
 };

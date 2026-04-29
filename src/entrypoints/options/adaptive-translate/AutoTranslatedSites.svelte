@@ -29,7 +29,6 @@
       bind:value={newSite} />
     <Button
       class="rounded-xl border-none shadow"
-      color="secondary"
       disabled={!newSite}
       onclick={async () => {
         let { alwaysAutoTranslatedSites } = $config;

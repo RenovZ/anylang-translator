@@ -3,7 +3,7 @@ import i18n from '@/lib/i18n';
 import { type OutputSchema, type AIPrompt } from '../types';
 
 export const exampleQuickTranslatePrompt: AIPrompt = {
-  feature: 'quickTranslate',
+  feature: 'adaptiveTranslate',
   name: 'Quick Translate',
   systemPrompt: `
 You are a fast and efficient translator.
@@ -49,7 +49,7 @@ Target language: {{targetLanguage}}
 } as const;
 
 export const exampleContextTranslatePrompt: AIPrompt = {
-  feature: 'contextTranslate',
+  feature: 'adaptiveTranslate',
   name: 'Context Translate',
   systemPrompt: `
 You are a professional translator for language learners.

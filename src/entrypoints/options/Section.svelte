@@ -3,6 +3,7 @@
 
   interface Props {
     title?: string | import('svelte').Snippet;
+    subtitle?: string | import('svelte').Snippet;
     description?: string | import('svelte').Snippet;
     class?: string;
     children: import('svelte').Snippet;
@@ -12,6 +13,7 @@
 
   const {
     title,
+    subtitle,
     description,
     class: className = '',
     children,
@@ -114,7 +116,7 @@
 
 <section class={classList} bind:this={mainRef}>
   <div bind:this={headerRef} class="flex shrink-0 flex-col items-start gap-2">
-    {#if title || description}
+    {#if title || subtitle || description}
       {#if title}
         {#if typeof title === 'string'}
           <h2 class="text-lg font-semibold">{title}</h2>
@@ -122,13 +124,22 @@
           {@render title()}
         {/if}
       {/if}
-      {#if description}
-        {#if typeof description === 'string'}
-          <p class="mt-1 text-sm text-slate-400">{description}</p>
-        {:else}
-          {@render description()}
+      <div>
+        {#if subtitle}
+          {#if typeof subtitle === 'string'}
+            <h3 class="text-sm font-semibold text-slate-400">{subtitle}</h3>
+          {:else}
+            {@render subtitle()}
+          {/if}
         {/if}
-      {/if}
+        {#if description}
+          {#if typeof description === 'string'}
+            <p class="text-sm text-slate-400">{description}</p>
+          {:else}
+            {@render description()}
+          {/if}
+        {/if}
+      </div>
     {/if}
     {@render headerActions?.()}
   </div>
@@ -136,7 +147,7 @@
   <!-- Content area with calculated height -->
   <div
     bind:this={contentRef}
-    class="mt-10 space-y-10 overflow-auto"
+    class="space-y-10 overflow-auto pt-10 pr-1"
     style={`height: ${contentHeight};`}>
     {@render children?.()}
   </div>
