@@ -6,13 +6,12 @@
   import { examplePrompts } from '@/lib/preset';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
 
-  let {
-    open = $bindable(false),
-    onSelect
-  }: {
+  interface Prop {
     open: boolean;
     onSelect: (item: AIPrompt) => void;
-  } = $props();
+  }
+
+  let { open = $bindable(false), onSelect }: Prop = $props();
 
   function handleSelect(template: AIPrompt) {
     onSelect(structuredClone(template));

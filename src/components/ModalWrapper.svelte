@@ -27,6 +27,6 @@
   {size}
   {outsideclose}
   class={twMerge('mt-20 rounded-2xl backdrop:backdrop-blur-xs', className)}
-  classes={{ body: 'border-none' }}>
+  classes={{ body: 'border-none max-h-[calc(100vh-10rem)] max-w-full overflow-y-auto' }}>
   {@render children()}
 </Modal>

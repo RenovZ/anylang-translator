@@ -4,7 +4,6 @@
 
   import avatar from '@/lib/avatar';
   import type { Provider } from '@/lib/types';
-  import { QuestionCircleSolid } from 'flowbite-svelte-icons';
 
   let {
     provider,
@@ -35,6 +34,4 @@
       })}
       size="lg" />
   {/if}
-{:else}
-  <QuestionCircleSolid class={twMerge('h-auto w-6', className)} />
 {/if}
