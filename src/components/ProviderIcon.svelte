@@ -4,34 +4,37 @@
 
   import avatar from '@/lib/avatar';
   import type { Provider } from '@/lib/types';
+  import { QuestionCircleSolid } from 'flowbite-svelte-icons';
 
   let {
     provider,
-    avatarClass,
-    imgClass
+    class: className
   }: {
-    provider: Provider;
-    avatarClass?: string;
-    imgClass?: string;
+    provider: Provider | null;
+    class?: string;
   } = $props();
 </script>
 
-{#if provider.icon}
-  <picture>
-    <source
-      media="(prefers-color-scheme: dark)"
-      srcset={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/dark/${provider.icon}.webp`} />
-    <img
-      alt={provider.name}
-      class={twMerge('flex h-auto w-6', imgClass)}
-      src={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/${provider.icon}.webp`} />
-  </picture>
+{#if provider}
+  {#if provider.icon}
+    <picture>
+      <source
+        media="(prefers-color-scheme: dark)"
+        srcset={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/dark/${provider.icon}.webp`} />
+      <img
+        alt={provider.name}
+        class={twMerge('flex h-auto w-6', className)}
+        src={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/${provider.icon}.webp`} />
+    </picture>
+  {:else}
+    <Avatar
+      class={twMerge('h-auto w-6', className)}
+      src={avatar.dicebear(provider.name, {
+        chars: 1,
+        backgroundType: ['gradientLinear']
+      })}
+      size="lg" />
+  {/if}
 {:else}
-  <Avatar
-    class={twMerge('h-auto w-6', avatarClass)}
-    src={avatar.dicebear(provider.name, {
-      chars: 1,
-      backgroundType: ['gradientLinear']
-    })}
-    size="lg" />
+  <QuestionCircleSolid class={twMerge('h-auto w-6', className)} />
 {/if}

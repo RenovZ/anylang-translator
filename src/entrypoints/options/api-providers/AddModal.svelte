@@ -81,7 +81,7 @@
         type="button"
         class="flex flex-col items-center gap-2 rounded-xl p-2 transition hover:bg-slate-100 dark:hover:bg-slate-600"
         onclick={() => handleSelect(provider)}>
-        <ProviderIcon {provider} avatarClass="h-auto w-10" imgClass="h-auto w-10" />
+        <ProviderIcon {provider} class="w-10" />
         <span class="text-center text-xs text-gray-700 dark:text-gray-300">
           {provider.name}
         </span>

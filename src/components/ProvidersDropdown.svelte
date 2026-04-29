@@ -19,7 +19,7 @@
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.quickTranslateProvider = { ...provider })}>
-        <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
+        <ProviderIcon {provider} class="w-4" />
         <span>{provider.name}</span>
       </DropdownItem>
     {/each}
@@ -32,7 +32,7 @@
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.quickTranslateProvider = { ...provider })}>
-        <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
+        <ProviderIcon {provider} class="w-4" />
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <!--
           TODO: 判断用户是否需要升级, 否则就正常展示+去掉upgrade升级提示
@@ -53,7 +53,7 @@
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.quickTranslateProvider = { ...provider })}>
-        <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
+        <ProviderIcon {provider} class="w-4" />
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <!--
           TODO: 判断用户是否需要升级, 否则就正常展示+去掉upgrade升级提示
@@ -74,7 +74,7 @@
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config.quickTranslateProvider = { ...provider })}>
-        <ProviderIcon {provider} avatarClass="w-4 h-4" imgClass="w-4 h-4" />
+        <ProviderIcon {provider} class="w-4" />
         <span>
           {provider.name}
           {#if provider.model}
