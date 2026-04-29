@@ -110,7 +110,7 @@
           </div>
           <ChevronDownOutline class="h-6 w-6 text-slate-400" />
         </button>
-        <ProvidersDropdown />
+        <ProvidersDropdown field="quickTranslateProvider" />
       </div>
       {#if $config.quickTranslateProvider.type !== 'free' && aiProviders.includes($config.quickTranslateProvider.type)}
         {@const paidProvider = $config.quickTranslateProvider as PaidProvider}

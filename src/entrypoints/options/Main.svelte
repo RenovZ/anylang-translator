@@ -80,13 +80,13 @@
               activeNavId === item.id
                 ? twMerge(
                     'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600',
-                    'font' in item ? item.font : ''
+                    'textStyle' in item ? item.textStyle : ''
                   )
                 : 'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700'
             }`}>
             <span>{item.title}</span>
-            {#if 'indicator' in item && item.indicator}
-              <Indicator class={item.indicator} />
+            {#if 'indicatorStyle' in item && item.indicatorStyle}
+              <Indicator class={item.indicatorStyle} />
             {/if}
           </a>
         {/each}

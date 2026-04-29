@@ -1,4 +1,6 @@
 import i18n from '@/lib/i18n';
+import type { OptionsNavItem } from '@/lib/types';
+import { apiProvidersId } from '@/components/ProvidersDropdown.svelte';
 
 import General from './general/Index.svelte';
 import APIProviders from './api-providers/Index.svelte';
@@ -17,26 +19,15 @@ import Docs from './Docs.svelte';
 import Changelog from './Changelog.svelte';
 import Feedback from './Feedback.svelte';
 
-export type NavItem = {
-  id: string;
-  title: string;
-  subtitle?: string;
-  description?: string;
-  position: 'top' | 'bottom';
-  component: import('svelte').Component;
-  font?: string;
-  indicator?: string;
-};
-
-export const generalNav: NavItem = {
+export const generalNav: OptionsNavItem = {
   id: 'general',
   title: i18n('general', { defaultValue: 'General' }),
   position: 'top',
   component: General
 } as const;
 
-export const apiProvidersNav = {
-  id: 'api-providers',
+export const apiProvidersNav: OptionsNavItem = {
+  id: apiProvidersId,
   title: i18n('api_providers', { defaultValue: 'API Providers' }),
   description: i18n('api_providers_description', {
     defaultValue:
@@ -46,7 +37,7 @@ export const apiProvidersNav = {
   component: APIProviders
 } as const;
 
-export const aiPromptsNav: NavItem = {
+export const aiPromptsNav: OptionsNavItem = {
   id: 'ai-prompts',
   title: i18n('ai_prompts', { defaultValue: 'AI Prompts' }),
   description: i18n('ai_prompts_description', {
@@ -57,7 +48,7 @@ export const aiPromptsNav: NavItem = {
   component: AIPrompts
 } as const;
 
-export const adaptiveTranslateNav: NavItem = {
+export const adaptiveTranslateNav: OptionsNavItem = {
   id: 'adaptive-translate',
   title: i18n('adaptive_translate', { defaultValue: 'Adaptive Translate' }),
   subtitle: i18n('adaptive_translate_subtitle', {
@@ -69,11 +60,11 @@ export const adaptiveTranslateNav: NavItem = {
   }),
   position: 'top',
   component: AdaptiveTranslate,
-  font: 'text-orange-500 dark:text-orange-400',
-  indicator: 'bg-orange-500 dark:bg-orange-400'
+  textStyle: 'text-orange-500 dark:text-orange-400',
+  indicatorStyle: 'bg-orange-500 dark:bg-orange-400'
 } as const;
 
-export const instantLookupNav: NavItem = {
+export const instantLookupNav: OptionsNavItem = {
   id: 'instant-lookup',
   title: i18n('instant_lookup', { defaultValue: 'Instant Lookup' }),
   subtitle: i18n('instant_lookup_subtitle', { defaultValue: 'More than a dictionary.' }),
@@ -83,11 +74,11 @@ export const instantLookupNav: NavItem = {
   }),
   position: 'top',
   component: InstantLookup,
-  font: 'text-yellow-500 dark:text-yellow-400',
-  indicator: 'bg-yellow-500 dark:bg-yellow-400'
+  textStyle: 'text-yellow-500 dark:text-yellow-400',
+  indicatorStyle: 'bg-yellow-500 dark:bg-yellow-400'
 } as const;
 
-export const intelligentInputNav: NavItem = {
+export const intelligentInputNav: OptionsNavItem = {
   id: 'intelligent-input',
   title: i18n('intelligent_input', { defaultValue: 'Intelligent Input' }),
   subtitle: i18n('intelligent_input_subtitle', { defaultValue: 'Think less. Express more.' }),
@@ -97,11 +88,11 @@ export const intelligentInputNav: NavItem = {
   }),
   position: 'top',
   component: IntelligentInput,
-  font: 'text-green-500 dark:text-green-400',
-  indicator: 'bg-green-500 dark:bg-green-400'
+  textStyle: 'text-green-500 dark:text-green-400',
+  indicatorStyle: 'bg-green-500 dark:bg-green-400'
 } as const;
 
-export const bilingualSubtitlesNav: NavItem = {
+export const bilingualSubtitlesNav: OptionsNavItem = {
   id: 'bilingual-subtitles',
   title: i18n('bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' }),
   subtitle: i18n('bilingual_subtitles_subtitle', {
@@ -113,11 +104,11 @@ export const bilingualSubtitlesNav: NavItem = {
   }),
   position: 'top',
   component: BilingualSubtitles,
-  font: 'text-cyan-500 dark:text-cyan-400',
-  indicator: 'bg-cyan-500 dark:bg-cyan-400'
+  textStyle: 'text-cyan-500 dark:text-cyan-400',
+  indicatorStyle: 'bg-cyan-500 dark:bg-cyan-400'
 } as const;
 
-export const panoramaReadingNav: NavItem = {
+export const panoramaReadingNav: OptionsNavItem = {
   // Reading Copilot
   id: 'panorama-reading',
   title: i18n('panorama_reading', { defaultValue: 'Panorama Reading' }),
@@ -128,11 +119,11 @@ export const panoramaReadingNav: NavItem = {
   }),
   position: 'top',
   component: PanoramaReading,
-  font: 'text-blue-500 dark:text-blue-400',
-  indicator: 'bg-blue-500 dark:bg-blue-400'
+  textStyle: 'text-blue-500 dark:text-blue-400',
+  indicatorStyle: 'bg-blue-500 dark:bg-blue-400'
 } as const;
 
-export const writingCopilotNav: NavItem = {
+export const writingCopilotNav: OptionsNavItem = {
   id: 'writing-copilot',
   title: i18n('writing_copilot', { defaultValue: 'Writing Copilot' }),
   subtitle: i18n('writing_copilot_subtitle', { defaultValue: 'Write with an AI co-author.' }),
@@ -142,8 +133,8 @@ export const writingCopilotNav: NavItem = {
   }),
   position: 'top',
   component: WritingCopilot,
-  font: 'text-violet-500 dark:text-violet-400',
-  indicator: 'bg-violet-500 dark:bg-violet-400'
+  textStyle: 'text-violet-500 dark:text-violet-400',
+  indicatorStyle: 'bg-violet-500 dark:bg-violet-400'
 } as const;
 
 export const actionPaletteNav = {

@@ -33,13 +33,13 @@
           </span>
         {:else}
           <span class="line-clamp-1 text-slate-300 dark:text-slate-500">
-            {'-'.repeat(10)}
+            {'-'.repeat(6)}
           </span>
         {/if}
       </div>
       <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
     </Button>
-    <ProvidersDropdown />
+    <ProvidersDropdown {field} showFreeProviders={field === 'quickTranslateProvider'} />
     <button class="text-primary-600 w-fit text-sm">
       {i18n('provider_test', { defaultValue: 'Test this provider' })}
     </button>

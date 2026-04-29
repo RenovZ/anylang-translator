@@ -218,9 +218,6 @@
   "font_size": {
     "message": "Font size (px)"
   },
-  "font_system_default": {
-    "message": "System default"
-  },
   "font_weight": {
     "message": "Font weight"
   },
@@ -605,6 +602,9 @@
   "source_language": {
     "message": "Source language"
   },
+  "system_default": {
+    "message": "System Default"
+  },
   "system_prompt": {
     "message": "System Prompt"
   },
@@ -635,77 +635,38 @@
   "translation_display_style_background": {
     "message": "Background"
   },
-  "translation_display_style_black_gray": {
-    "message": "Black Gray"
-  },
-  "translation_display_style_blur_learning": {
-    "message": "Blur effect (learning mode)"
-  },
-  "translation_display_style_bold": {
-    "message": "Bold"
+  "translation_display_style_blur": {
+    "message": "Blur"
   },
   "translation_display_style_custom": {
     "message": "Custom"
   },
-  "translation_display_style_dashed_border": {
-    "message": "Dotted Border"
-  },
   "translation_display_style_dashed_underline": {
     "message": "Dotted lines"
   },
-  "translation_display_style_divider": {
-    "message": "Dividing line"
-  },
-  "translation_display_style_dotted_underline": {
-    "message": "Dotted lines"
-  },
-  "translation_display_style_highlight": {
-    "message": "Highlight"
-  },
-  "translation_display_style_italic": {
-    "message": "Italic"
-  },
-  "translation_display_style_marker": {
-    "message": "Marker"
-  },
-  "translation_display_style_marker2": {
-    "message": "Maker2"
+  "translation_display_style_mark": {
+    "message": "Mark"
   },
   "translation_display_style_none": {
     "message": "None"
   },
-  "translation_display_style_quote_style": {
-    "message": "quote style"
+  "translation_display_style_quoted": {
+    "message": "Quoted"
   },
-  "translation_display_style_solid_border": {
-    "message": "Solid Border"
+  "translation_display_style_shadow_effect": {
+    "message": "Shadow effect"
   },
   "translation_display_style_solid_underline": {
     "message": "Straight line"
   },
-  "translation_display_style_system_dotted_lines": {
-    "message": "System built-in dotted lines"
-  },
-  "translation_display_style_system_dotted_lines_2": {
-    "message": "System built-in dotted lines"
-  },
-  "translation_display_style_system_straight_lines": {
-    "message": "System built-in straight lines"
-  },
-  "translation_display_style_thin_dotted_lines": {
-    "message": "Thin dotted lines"
-  },
   "translation_display_style_transparent": {
-    "message": "Transparency effect"
+    "message": "Transparent"
   },
   "translation_display_style_wavy_lines": {
-    "message": "wavy lines"
+    "message": "Wavy Lines"
   },
   "translation_display_style_weaken": {
     "message": "Weaken"
-  },
-  "translation_display_style_white_paper_shadow": {
-    "message": "White paper shadow effect"
   },
   "ui_language": {
     "message": "UI language"
