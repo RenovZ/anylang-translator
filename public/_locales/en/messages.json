@@ -680,6 +680,9 @@
   "settings": {
     "message": "Settings"
   },
+  "shortcuts_manual_toast": {
+    "message": "Please manually enter in the address bar."
+  },
   "shortcuts_settings_chrome": {
     "message": "Please modify in Chrome extension shortcuts settings page"
   },
