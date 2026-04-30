@@ -1,11 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Button, Indicator } from 'flowbite-svelte';
+  import { Button, Indicator, Toast } from 'flowbite-svelte';
   import { browser, type PublicPath } from 'wxt/browser';
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
   import { twMerge } from 'tailwind-merge';
 
   import '@/assets/app.css';
+  import { syncShortcutsFromBrowser } from '@/lib/preset/shortcut';
   import i18n from '@/lib/i18n';
 
   import Empty from './Empty.svelte';
@@ -17,6 +18,7 @@
   const activeNav = $derived(navItems.find((item) => item.id === activeNavId));
 
   onMount(() => {
+    syncShortcutsFromBrowser();
     syncActiveNavWithHash();
     window.addEventListener('hashchange', syncActiveNavWithHash);
     return () => window.removeEventListener('hashchange', syncActiveNavWithHash);

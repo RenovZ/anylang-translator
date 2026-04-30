@@ -5,6 +5,7 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
+  import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
@@ -24,6 +25,10 @@
     })}
     field="quickTranslate" />
 
+  <FeatureShortcut
+    title={i18n('quick_translate_shortcut', { defaultValue: 'Quick translate shortcut' })}
+    field="quickTranslate" />
+
   <!-- quick translate api provider -->
   <FeatureProvider
     field="quickTranslate"
@@ -39,6 +44,10 @@
     title={i18n('context_translate_icon', {
       defaultValue: 'Context translate icon'
     })}
+    field="contextTranslate" />
+
+  <FeatureShortcut
+    title={i18n('context_translate_shortcut', { defaultValue: 'Context translate shortcut' })}
     field="contextTranslate" />
 
   <!-- context translate api provider -->

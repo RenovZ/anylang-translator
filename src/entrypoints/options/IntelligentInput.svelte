@@ -5,6 +5,7 @@
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
+  import FeatureShortcut from '@/components/FeatureShortcut.svelte';
 
   import Section from './Section.svelte';
   import { intelligentInputNav as nav } from './data';
@@ -18,6 +19,10 @@
     title={i18n('intelligent_input_icon', {
       defaultValue: 'Intelligent input icon'
     })}
+    {field} />
+
+  <FeatureShortcut
+    title={i18n('intelligent_input_shortcut', { defaultValue: 'Intelligent input shortcut' })}
     {field} />
 
   <!-- api provider -->

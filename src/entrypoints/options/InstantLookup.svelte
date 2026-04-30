@@ -6,6 +6,7 @@
   import SectionRow from '@/components/SectionRow.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
+  import FeatureShortcut from '@/components/FeatureShortcut.svelte';
 
   import Section from './Section.svelte';
   import { instantLookupNav as nav } from './data';
@@ -19,6 +20,10 @@
     title={i18n('instant_lookup_icon', {
       defaultValue: 'Instant lookup icon'
     })}
+    {field} />
+
+  <FeatureShortcut
+    title={i18n('instant_lookup_shortcut', { defaultValue: 'Instant lookup shortcut' })}
     {field} />
 
   <!-- api provider -->

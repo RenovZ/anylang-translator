@@ -42,6 +42,7 @@ const defaultConfig = {
   quickTranslate: {
     icon: 'ri:translate',
     provider: structuredClone(bingTranslatorProvider),
+    shortcut: ['Alt', 'Q'], // Win/Linux: ['Alt', 'Q'], macOS: ['⌥', 'Q']
     autoAppliedEnabled: false,
     autoAppliedSites: [
       'twitter.com',
@@ -57,7 +58,8 @@ const defaultConfig = {
 
   contextTranslate: {
     icon: 'ri:translate-ai',
-    provider: null as Provider | null
+    provider: null as Provider | null,
+    shortcut: ['Alt', 'C'] // Win/Linux: ['Alt', 'C'], macOS: ['⌥', 'C']
     // 使用quickTranslate配置的信息
     // autoAppliedEnabled: undefined,
     // autoAppliedSites: undefined,
@@ -66,27 +68,32 @@ const defaultConfig = {
 
   instantLookup: {
     icon: 'lucide:book-open-text',
-    provider: null as Provider | null
+    provider: null as Provider | null,
+    shortcut: ['Alt', 'L'] // Win/Linux: ['Alt', 'L'], macOS: ['⌥', 'L']
   } as FeatureConfig,
 
   intelligentInput: {
     icon: 'tabler:keyboard',
-    provider: null as Provider | null
+    provider: null as Provider | null,
+    shortcut: ['Alt', 'I'] // Win/Linux: ['Alt', 'I'], macOS: ['⌥', 'I']
   } as FeatureConfig,
 
   bilingualSubtitles: {
     icon: 'tabler:subtitles',
-    provider: structuredClone(bingTranslatorProvider) as Provider | null
+    provider: structuredClone(bingTranslatorProvider) as Provider | null,
+    shortcut: [] // Win/Linux: ['Alt', 'S'], macOS: ['⌥', 'S']
   } as FeatureConfig,
 
   panoramaReading: {
     icon: 'tabler:scan-traces',
-    provider: null as Provider | null
+    provider: null as Provider | null,
+    shortcut: [] // Win/Linux: ['Alt', 'P'], macOS: ['⌥', 'P']
   } as FeatureConfig,
 
   writingCopilot: {
     icon: 'tabler:feather-filled',
-    provider: null as Provider | null
+    provider: null as Provider | null,
+    shortcut: [] // Win/Linux: ['Alt', 'W'], macOS: ['⌥', 'W']
   } as FeatureConfig,
 
   customAIPrompts: structuredClone(examplePrompts) as AIPrompt[]

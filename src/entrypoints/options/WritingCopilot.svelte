@@ -5,6 +5,7 @@
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
+  import FeatureShortcut from '@/components/FeatureShortcut.svelte';
 
   import Section from './Section.svelte';
   import { writingCopilotNav as nav } from './data';
@@ -18,6 +19,10 @@
     title={i18n('writing_copilot_icon', {
       defaultValue: 'Writing copilot icon'
     })}
+    {field} />
+
+  <FeatureShortcut
+    title={i18n('writing_copilot_shortcut', { defaultValue: 'Writing copilot shortcut' })}
     {field} />
 
   <!-- api provider -->

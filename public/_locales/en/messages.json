@@ -143,6 +143,9 @@
   "bilingual_subtitles_provider_description": {
     "message": "Choose from a variety of API providers to power your bilingual subtitles."
   },
+  "bilingual_subtitles_shortcut": {
+    "message": "Bilingual subtitles shortcut"
+  },
   "bilingual_subtitles_subtitle": {
     "message": "Watch in two languages at once."
   },
@@ -170,11 +173,17 @@
   "context_translate_provider_description": {
     "message": "Go beyond literal conversion with AI-powered translation shaped by context, nuance, and intent."
   },
+  "context_translate_shortcut": {
+    "message": "Context translate shortcut"
+  },
   "custom": {
     "message": "Custom"
   },
   "custom_providers": {
     "message": "Custom Providers"
+  },
+  "customize_shortcuts": {
+    "message": "Customize shortcuts"
   },
   "default_language": {
     "message": "Default Language"
@@ -311,6 +320,9 @@
   "instant_lookup_provider_description": {
     "message": "Choose from a variety of API providers to power your instant lookup."
   },
+  "instant_lookup_shortcut": {
+    "message": "Instant lookup shortcut"
+  },
   "instant_lookup_subtitle": {
     "message": "More than a dictionary."
   },
@@ -328,6 +340,9 @@
   },
   "intelligent_input_provider_description": {
     "message": "Choose from a variety of API providers to power your intelligent input."
+  },
+  "intelligent_input_shortcut": {
+    "message": "Intelligent input shortcut"
   },
   "intelligent_input_subtitle": {
     "message": "Think less. Express more."
@@ -509,6 +524,9 @@
   "panorama_reading_provider_description": {
     "message": "Choose from a variety of API providers to power your panorama reading."
   },
+  "panorama_reading_shortcut": {
+    "message": "Panorama reading shortcut"
+  },
   "panorama_reading_subtitle": {
     "message": "See the whole picture."
   },
@@ -629,6 +647,9 @@
   "quick_translate_provider_description": {
     "message": "Fast and lightweight translation for everyday use. Prioritizes speed over deep contextual understanding, so nuance and precision may be limited in complex content."
   },
+  "quick_translate_shortcut": {
+    "message": "Quick translate shortcut"
+  },
   "reset_settings": {
     "message": "Reset settings"
   },
@@ -658,6 +679,21 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "shortcuts_settings_chrome": {
+    "message": "Please modify in Chrome extension shortcuts settings page"
+  },
+  "shortcuts_settings_default": {
+    "message": "Please modify in browser extension shortcuts settings page"
+  },
+  "shortcuts_settings_edge": {
+    "message": "Please modify in Edge extension shortcuts settings page"
+  },
+  "shortcuts_settings_firefox": {
+    "message": "Please find this extension in Firefox Add-ons Manager, click the gear icon > Manage Extension Shortcuts"
+  },
+  "shortcuts_settings_safari": {
+    "message": "Safari extension shortcuts need to be configured in System Settings > Keyboard > Shortcuts"
   },
   "source_language": {
     "message": "Source language"
@@ -763,6 +799,9 @@
   },
   "writing_copilot_provider_description": {
     "message": "Choose from a variety of API providers to power your writing copilot."
+  },
+  "writing_copilot_shortcut": {
+    "message": "Writing copilot shortcut"
   },
   "writing_copilot_subtitle": {
     "message": "Write with an AI co-author."

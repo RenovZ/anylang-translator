@@ -7,6 +7,7 @@
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
+  import FeatureShortcut from '@/components/FeatureShortcut.svelte';
 
   import Section from './Section.svelte';
   import { panoramaReadingNav as nav } from './data';
@@ -20,6 +21,10 @@
     title={i18n('panorama_reading_icon', {
       defaultValue: 'Panorama reading icon'
     })}
+    {field} />
+
+  <FeatureShortcut
+    title={i18n('panorama_reading_shortcut', { defaultValue: 'Panorama reading shortcut' })}
     {field} />
 
   <!-- api provider -->

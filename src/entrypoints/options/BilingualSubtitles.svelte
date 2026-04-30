@@ -7,6 +7,7 @@
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
+  import FeatureShortcut from '@/components/FeatureShortcut.svelte';
 
   import Section from './Section.svelte';
   import { bilingualSubtitlesNav as nav } from './data';
@@ -20,6 +21,10 @@
     title={i18n('bilingual_subtitles_icon', {
       defaultValue: 'Bilingual subtitles icon'
     })}
+    {field} />
+
+  <FeatureShortcut
+    title={i18n('bilingual_subtitles_shortcut', { defaultValue: 'Bilingual subtitles shortcut' })}
     {field} />
 
   <!-- api provider -->

@@ -61,7 +61,43 @@ export default defineConfig({
   },
   manifest: {
     default_locale: 'en',
-    permissions: ['storage']
+    permissions: ['storage'],
+    commands: {
+      // 核心功能：带默认快捷键（Chrome 最多支持 4 个 suggested_key）
+      'quick-translate': {
+        suggested_key: {
+          default: 'Alt+Q'
+        },
+        description: 'Quick Translate'
+      },
+      'context-translate': {
+        suggested_key: {
+          default: 'Alt+C'
+        },
+        description: 'Context Translate'
+      },
+      'instant-lookup': {
+        suggested_key: {
+          default: 'Alt+L'
+        },
+        description: 'Instant Lookup'
+      },
+      'intelligent-input': {
+        suggested_key: {
+          default: 'Alt+I'
+        },
+        description: 'Intelligent Input'
+      },
+      'bilingual-subtitles': {
+        description: 'Bilingual Subtitles'
+      },
+      'panorama-reading': {
+        description: 'Panorama Reading'
+      },
+      'writing-copilot': {
+        description: 'Writing Copilot'
+      }
+    }
   },
   vite: () => ({
     plugins: [i18nExtractionPlugin()],

@@ -21,7 +21,6 @@
   import lang from '@/lib/lang';
   import i18n from '@/lib/i18n';
   import avatar from '@/lib/avatar';
-  import { syncShortcutsFromBrowser } from '@/lib/preset/shortcut';
   import type { PaidProvider, SelectionTriggerValue } from '@/lib/types';
   import { aiProviders, promptPresets } from '@/lib/preset';
   import { languageOptions } from '@/lib/data';
@@ -32,7 +31,6 @@
   let currentSite = $state('');
 
   $effect(() => {
-    syncShortcutsFromBrowser();
     browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
       currentSite = tab.url ? new URL(tab.url).origin : window.location.origin;
     });
@@ -175,8 +173,6 @@
       </Button>
     </section>
 
-    <!--
-    TODO:
     <section class="flex flex-col gap-3">
       <div class="flex items-center justify-between gap-3">
         <span class="line-clamp-1 font-medium">
@@ -247,9 +243,7 @@
           aria-label={selectionTranslateToggle.label} />
       </div>
     </section>
-    -->
 
-    <!--
     <section class="grid grid-cols-3 gap-3 text-sm">
       {#each quickActions as action (action.label)}
         <Button
@@ -262,7 +256,6 @@
         {/if}
       {/each}
     </section>
-    -->
   </section>
 
   <footer class="flex items-center justify-between p-2 text-sm">
