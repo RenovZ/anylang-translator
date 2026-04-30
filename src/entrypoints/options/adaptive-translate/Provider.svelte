@@ -6,8 +6,7 @@
   import i18n from '@/lib/i18n';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
-
-  import SectionRow from '../SectionRow.svelte';
+  import SectionRow from '@/components/SectionRow.svelte';
 
   interface Prop {
     title: string;

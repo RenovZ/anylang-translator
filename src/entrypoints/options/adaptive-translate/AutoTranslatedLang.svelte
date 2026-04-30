@@ -5,8 +5,7 @@
   import config from '@/lib/config';
   import lang from '@/lib/lang';
   import i18n from '@/lib/i18n';
-
-  import SectionRow from '../SectionRow.svelte';
+  import SectionRow from '@/components/SectionRow.svelte';
 
   interface Props {
     title: string;

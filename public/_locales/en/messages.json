@@ -104,6 +104,9 @@
   "click_to_test_this_provider": {
     "message": "Click to test this provider"
   },
+  "context_translate_icon": {
+    "message": "Context translate icon"
+  },
   "context_translate_provider": {
     "message": "Context translate provider"
   },
@@ -211,6 +214,9 @@
   },
   "field_type": {
     "message": "Field Type"
+  },
+  "find_more_icons": {
+    "message": "Find more icons"
   },
   "font_family": {
     "message": "Font family"
@@ -562,6 +568,9 @@
   },
   "quick_action_toolbox": {
     "message": "Toolbox"
+  },
+  "quick_translate_icon": {
+    "message": "Quick translate icon"
   },
   "quick_translate_provider": {
     "message": "Quick translate provider"

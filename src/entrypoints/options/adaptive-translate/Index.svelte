@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { Button, Dropdown, DropdownItem, Toggle } from 'flowbite-svelte';
+  import { A, Button, Dropdown, DropdownItem, Input, Toggle } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
+  import FeatureIcon from '@/components/FeatureIcon.svelte';
+  import SectionRow from '@/components/SectionRow.svelte';
 
   import Section from '../Section.svelte';
-  import SectionRow from '../SectionRow.svelte';
   import { adaptiveTranslateNav as nav } from '../data';
 
   import AutoTranslatedSites from './AutoTranslatedSites.svelte';
@@ -18,6 +19,13 @@
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
+  <!-- quick translate icon -->
+  <FeatureIcon
+    title={i18n('quick_translate_icon', {
+      defaultValue: 'Quick translate icon'
+    })}
+    field="quickTranslateIcon" />
+
   <!-- quick translate api provider -->
   <Provider
     field="quickTranslateProvider"
@@ -26,6 +34,13 @@
       defaultValue:
         'Fast and lightweight translation for everyday use. Prioritizes speed over deep contextual understanding, so nuance and precision may be limited in complex content.'
     })} />
+
+  <!-- context translate icon -->
+  <FeatureIcon
+    title={i18n('context_translate_icon', {
+      defaultValue: 'Context translate icon'
+    })}
+    field="contextTranslateIcon" />
 
   <!-- context translate api provider -->
   <Provider

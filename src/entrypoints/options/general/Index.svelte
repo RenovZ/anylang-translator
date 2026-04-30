@@ -6,12 +6,9 @@
   import lang from '@/lib/lang';
   import avatar from '@/lib/avatar';
   import i18n from '@/lib/i18n';
-  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
-  import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import SectionRow from '@/components/SectionRow.svelte';
 
   import Section from '../Section.svelte';
-  import SectionRow from '../SectionRow.svelte';
-
   import { generalNav } from '../data';
 </script>
 

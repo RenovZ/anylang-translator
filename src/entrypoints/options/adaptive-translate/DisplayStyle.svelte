@@ -5,7 +5,7 @@
   import config from '@/lib/config';
   import type { TranslationDisplayStyleCustom } from '@/lib/types';
   import i18n from '@/lib/i18n';
-  import SectionRow from '../SectionRow.svelte';
+  import SectionRow from '@/components/SectionRow.svelte';
   import { translationDisplayStyles, fontFamilyOptions } from '@/lib/preset';
 
   const previewTextEn =

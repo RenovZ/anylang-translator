@@ -2,9 +2,9 @@
   import { Toggle } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
+  import SectionRow from '@/components/SectionRow.svelte';
 
   import Section from './Section.svelte';
-  import SectionRow from './SectionRow.svelte';
   import { bilingualSubtitlesNav as nav } from './data';
 
   // Local state instead of props

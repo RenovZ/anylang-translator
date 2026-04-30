@@ -49,13 +49,21 @@ const defaultConfig = {
     ...structuredClone(goProviders),
     ...structuredClone(zenProviders)
   ] as Provider[],
+
   quickTranslateProvider: structuredClone(bingTranslatorProvider) as Provider,
+  quickTranslateIcon: 'ri:translate',
   contextTranslateProvider: null as Provider | null,
+  contextTranslateIcon: 'ri:translate-ai',
   instantLookupProvider: null as Provider | null,
+  instantLookupIcon: 'lucide:book-open-text',
   intelligentInputProvider: null as Provider | null,
+  intelligentInputIcon: 'tabler:keyboard',
   bilingualSubtitlesProvider: null as Provider | null,
+  bilingualSubtitlesIcon: 'tabler:subtitles',
   panoramaReadingProvider: null as Provider | null,
+  panoramaReadingIcon: 'tabler:scan-traces',
   writingCopilotProvider: null as Provider | null,
+  writingCopilotIcon: 'tabler:feather-filled',
 
   customAIPrompts: structuredClone(examplePrompts) as AIPrompt[]
 };
