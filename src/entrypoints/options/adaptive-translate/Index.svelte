@@ -4,18 +4,16 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import ProviderIcon from '@/components/ProviderIcon.svelte';
-  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
+  import FeatureProvider from '@/components/FeatureProvider.svelte';
+  import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
+  import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
 
   import Section from '../Section.svelte';
   import { adaptiveTranslateNav as nav } from '../data';
 
-  import AutoTranslatedSites from './AutoTranslatedSites.svelte';
-  import AutoTranslatedLang from './AutoTranslatedLang.svelte';
   import DisplayStyle from './DisplayStyle.svelte';
-  import Provider from './Provider.svelte';
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
@@ -24,27 +22,28 @@
     title={i18n('quick_translate_icon', {
       defaultValue: 'Quick translate icon'
     })}
-    field="quickTranslateIcon" />
+    field="quickTranslate" />
 
   <!-- quick translate api provider -->
-  <Provider
-    field="quickTranslateProvider"
+  <FeatureProvider
+    field="quickTranslate"
     title={i18n('quick_translate_provider', { defaultValue: 'Quick translate provider' })}
     description={i18n('quick_translate_provider_description', {
       defaultValue:
         'Fast and lightweight translation for everyday use. Prioritizes speed over deep contextual understanding, so nuance and precision may be limited in complex content.'
-    })} />
+    })}
+    showFreeProviders={true} />
 
   <!-- context translate icon -->
   <FeatureIcon
     title={i18n('context_translate_icon', {
       defaultValue: 'Context translate icon'
     })}
-    field="contextTranslateIcon" />
+    field="contextTranslate" />
 
   <!-- context translate api provider -->
-  <Provider
-    field="contextTranslateProvider"
+  <FeatureProvider
+    field="contextTranslate"
     title={i18n('context_translate_provider', { defaultValue: 'Context translate provider' })}
     description={i18n('context_translate_provider_description', {
       defaultValue:
@@ -59,7 +58,7 @@
     <Toggle
       slot="controls"
       class="ms-auto"
-      bind:checked={$config.autoTranslateEnabled}
+      bind:checked={$config.quickTranslate.autoAppliedEnabled}
       size="small"
       classes={{
         span: 'me-0 cursor-pointer bg-slate-200 dark:bg-slate-600'
@@ -67,17 +66,19 @@
   </SectionRow>
 
   <!-- always auto-translated sites -->
-  <AutoTranslatedSites
+  <FeatureAutoAppliedSites
+    field="quickTranslate"
     title={i18n('always_auto_translated_sites', { defaultValue: 'Always auto-translated sites' })}
-    description={i18n('always_auto_translated_sites_hint', {
+    description={i18n('always_auto_translated_sites_description', {
       defaultValue:
         'When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules.'
     })} />
 
   <!-- always auto-translated language -->
-  <AutoTranslatedLang
+  <FeatureAutoAppliedLang
+    field="quickTranslate"
     title={i18n('always_auto_translated_lang', { defaultValue: 'Always auto-translate language' })}
-    description={i18n('always_auto_translated_lang_hint', {
+    description={i18n('always_auto_translated_lang_description', {
       defaultValue:
         'When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts.'
     })} />

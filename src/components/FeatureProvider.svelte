@@ -4,17 +4,20 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import ProviderIcon from '@/components/ProviderIcon.svelte';
-  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
-  import SectionRow from '@/components/SectionRow.svelte';
+  import type { FeatureConfigKey } from '@/lib/types';
+
+  import ProviderIcon from './ProviderIcon.svelte';
+  import ProvidersDropdown from './ProvidersDropdown.svelte';
+  import SectionRow from './SectionRow.svelte';
 
   interface Prop {
     title: string;
     description: string;
-    field: 'quickTranslateProvider' | 'contextTranslateProvider';
+    showFreeProviders?: boolean;
+    field: FeatureConfigKey;
   }
 
-  const { title, description, field }: Prop = $props();
+  const { title, description, field, showFreeProviders = false }: Prop = $props();
 </script>
 
 <SectionRow {title} {description}>
@@ -22,12 +25,12 @@
     <Button
       class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <div class="flex items-center gap-2">
-        <ProviderIcon provider={$config[field]} class="w-4" />
-        {#if $config[field]}
+        <ProviderIcon provider={$config[field].provider} class="w-4" />
+        {#if $config[field].provider}
           <span>
-            {$config[field].name}
-            {#if $config[field].type !== 'free' && $config[field].model}
-              ({$config[field].model})
+            {$config[field].provider.name}
+            {#if $config[field].provider.type !== 'free' && $config[field].provider.model}
+              ({$config[field].provider.model})
             {/if}
           </span>
         {:else}
@@ -38,7 +41,7 @@
       </div>
       <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
     </Button>
-    <ProvidersDropdown {field} showFreeProviders={field === 'quickTranslateProvider'} />
+    <ProvidersDropdown {field} {showFreeProviders} />
     <button class="text-primary-600 w-fit text-sm">
       {i18n('provider_test', { defaultValue: 'Test this provider' })}
     </button>

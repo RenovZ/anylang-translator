@@ -44,19 +44,67 @@
   "ai_prompts_description": {
     "message": "Configure prompts for custom API providers. Customize model instructions to shape responses and behavior across providers."
   },
+  "always_apply_bilingual_subtitles_lang": {
+    "message": "Always apply bilingual subtitles language"
+  },
+  "always_apply_bilingual_subtitles_lang_description": {
+    "message": "When page language is one of these languages, content will automatically apply bilingual subtitles to target language. Site rules still take priority on conflicts."
+  },
+  "always_apply_bilingual_subtitles_sites": {
+    "message": "Always apply bilingual subtitles sites"
+  },
+  "always_apply_bilingual_subtitles_sites_description": {
+    "message": "When current site matches these domains, content will automatically apply bilingual subtitles to target language. This rule has higher priority than language rules."
+  },
+  "always_apply_intelligent_input_lang": {
+    "message": "Always apply intelligent input language"
+  },
+  "always_apply_intelligent_input_sites": {
+    "message": "Always apply intelligent input sites"
+  },
+  "always_apply_intelligent_input_sites_description": {
+    "message": "When current site matches these domains, content will automatically apply intelligent input to target language. This rule has higher priority than language rules."
+  },
+  "always_apply_panorama_reading_lang": {
+    "message": "Always apply panorama reading language"
+  },
+  "always_apply_panorama_reading_lang_description": {
+    "message": "When page language is one of these languages, content will automatically apply panorama reading to target language. Site rules still take priority on conflicts."
+  },
+  "always_apply_panorama_reading_sites": {
+    "message": "Always apply panorama reading sites"
+  },
+  "always_apply_panorama_reading_sites_description": {
+    "message": "When current site matches these domains, content will automatically apply panorama reading to target language. This rule has higher priority than language rules."
+  },
+  "always_apply_writing_copilot_lang": {
+    "message": "Always apply writing copilot language"
+  },
+  "always_apply_writing_copilot_lang_description": {
+    "message": "When page language is one of these languages, content will automatically apply writing copilot to target language. Site rules still take priority on conflicts."
+  },
+  "always_apply_writing_copilot_sites": {
+    "message": "Always apply writing copilot sites"
+  },
+  "always_apply_writing_copilot_sites_description": {
+    "message": "When current site matches these domains, content will automatically apply writing copilot to target language. This rule has higher priority than language rules."
+  },
+  "always_auto_intelligent_input_lang_description": {
+    "message": "When page language is one of these languages, content will automatically apply intelligent input to target language. Site rules still take priority on conflicts."
+  },
   "always_auto_translate_this_site": {
     "message": "Always auto-translate this site"
   },
   "always_auto_translated_lang": {
     "message": "Always auto-translate language"
   },
-  "always_auto_translated_lang_hint": {
+  "always_auto_translated_lang_description": {
     "message": "When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts."
   },
   "always_auto_translated_sites": {
     "message": "Always auto-translated sites"
   },
-  "always_auto_translated_sites_hint": {
+  "always_auto_translated_sites_description": {
     "message": "When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules."
   },
   "api_key": {
@@ -85,6 +133,15 @@
   },
   "bilingual_subtitles_description": {
     "message": "Real-time bilingual subtitles powered by contextual AI, making video content clearer, richer, and easier to follow."
+  },
+  "bilingual_subtitles_icon": {
+    "message": "Bilingual subtitles icon"
+  },
+  "bilingual_subtitles_provider": {
+    "message": "Bilingual subtitles provider"
+  },
+  "bilingual_subtitles_provider_description": {
+    "message": "Choose from a variety of API providers to power your bilingual subtitles."
   },
   "bilingual_subtitles_subtitle": {
     "message": "Watch in two languages at once."
@@ -245,6 +302,15 @@
   "instant_lookup_description": {
     "message": "Understand words, idioms, and concepts instantly with AI-powered explanations and multilingual insight."
   },
+  "instant_lookup_icon": {
+    "message": "Instant lookup icon"
+  },
+  "instant_lookup_provider": {
+    "message": "Instant lookup provider"
+  },
+  "instant_lookup_provider_description": {
+    "message": "Choose from a variety of API providers to power your instant lookup."
+  },
   "instant_lookup_subtitle": {
     "message": "More than a dictionary."
   },
@@ -253,6 +319,15 @@
   },
   "intelligent_input_description": {
     "message": "Generate polished multilingual text directly where you type — from quick replies to forms and everyday writing."
+  },
+  "intelligent_input_icon": {
+    "message": "Intelligent input icon"
+  },
+  "intelligent_input_provider": {
+    "message": "Intelligent input provider"
+  },
+  "intelligent_input_provider_description": {
+    "message": "Choose from a variety of API providers to power your intelligent input."
   },
   "intelligent_input_subtitle": {
     "message": "Think less. Express more."
@@ -335,6 +410,9 @@
   "no": {
     "message": "No"
   },
+  "no_sites": {
+    "message": "No sites"
+  },
   "not_selected": {
     "message": "Not Selected"
   },
@@ -401,33 +479,6 @@
   "options_floating_strategy_title": {
     "message": "Current strategy"
   },
-  "options_input_status_body": {
-    "message": "This version keeps the entry hint; the actual shortcut switch will be added once shortcut settings stabilize."
-  },
-  "options_input_status_description": {
-    "message": "Trigger conditions are being unified into one shortcut system."
-  },
-  "options_input_status_title": {
-    "message": "Feature status"
-  },
-  "options_manga_guide_button": {
-    "message": "View image translation guide"
-  },
-  "options_manga_ocr_body": {
-    "message": "No standalone OCR engine config is needed now; global service config is reused."
-  },
-  "options_manga_ocr_description": {
-    "message": "This capability follows main translation service settings; granular OCR options will arrive later."
-  },
-  "options_manga_ocr_title": {
-    "message": "Image recognition"
-  },
-  "options_manga_scene_description": {
-    "message": "Useful for manga dialogue, screenshots, and subtitle-free image content."
-  },
-  "options_manga_scene_title": {
-    "message": "Applicable scenarios"
-  },
   "options_pricing_pro_description": {
     "message": "Enjoy premium services like DeepL and OpenAI translation"
   },
@@ -436,15 +487,6 @@
   },
   "options_pricing_upgrade_button": {
     "message": "Upgrade now"
-  },
-  "options_subtitle_auto_aria": {
-    "message": "Auto-enable bilingual subtitles"
-  },
-  "options_subtitle_auto_description": {
-    "message": "Automatically show bilingual subtitles on supported sites"
-  },
-  "options_subtitle_auto_title": {
-    "message": "Auto-enable bilingual subtitles"
   },
   "options_title_extension_name": {
     "message": "Anylang Translator"
@@ -457,6 +499,15 @@
   },
   "panorama_reading_description": {
     "message": "Extract key ideas, surface critical details, and grasp context faster with AI-enhanced reading intelligence."
+  },
+  "panorama_reading_icon": {
+    "message": "Panorama reading icon"
+  },
+  "panorama_reading_provider": {
+    "message": "Panorama reading provider"
+  },
+  "panorama_reading_provider_description": {
+    "message": "Choose from a variety of API providers to power your panorama reading."
   },
   "panorama_reading_subtitle": {
     "message": "See the whole picture."
@@ -703,6 +754,15 @@
   },
   "writing_copilot_description": {
     "message": "Draft, refine, and elevate your writing with context-aware assistance for clarity, tone, and precision."
+  },
+  "writing_copilot_icon": {
+    "message": "Writing copilot icon"
+  },
+  "writing_copilot_provider": {
+    "message": "Writing copilot provider"
+  },
+  "writing_copilot_provider_description": {
+    "message": "Choose from a variety of API providers to power your writing copilot."
   },
   "writing_copilot_subtitle": {
     "message": "Write with an AI co-author."

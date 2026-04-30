@@ -8,21 +8,14 @@
   import { browser } from 'wxt/browser';
 
   import config from '@/lib/config';
-  import type { PaidProvider, Provider } from '@/lib/types';
+  import type { FeatureConfigKey, PaidProvider, Provider } from '@/lib/types';
   import i18n from '@/lib/i18n';
 
   import ProviderIcon from './ProviderIcon.svelte';
 
   interface Prop {
     showFreeProviders?: boolean;
-    field:
-      | 'quickTranslateProvider'
-      | 'contextTranslateProvider'
-      | 'instantLookupProvider'
-      | 'intelligentInputProvider'
-      | 'bilingualSubtitlesProvider'
-      | 'panoramaReadingProvider'
-      | 'writingCopilotProvider';
+    field: FeatureConfigKey;
   }
 
   let { showFreeProviders = true, field }: Prop = $props();
@@ -37,7 +30,7 @@
       {#each $config.customProviders.filter((item) => item.type === 'free') as provider (provider)}
         <DropdownItem
           class="flex items-center gap-2"
-          onclick={() => ($config[field] = { ...provider })}>
+          onclick={() => ($config[field].provider = { ...provider })}>
           <ProviderIcon {provider} class="w-4" />
           <span>{provider.name}</span>
         </DropdownItem>
@@ -51,7 +44,7 @@
     {#each $config.customProviders.filter((item) => item.type === 'go') as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
-        onclick={() => ($config[field] = { ...provider })}>
+        onclick={() => ($config[field].provider = { ...provider })}>
         <ProviderIcon {provider} class="w-4" />
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <!--
@@ -72,7 +65,7 @@
     {#each $config.customProviders.filter((item) => item.type === 'zen') as PaidProvider[] as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
-        onclick={() => ($config[field] = { ...provider })}>
+        onclick={() => ($config[field].provider = { ...provider })}>
         <ProviderIcon {provider} class="w-4" />
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <!--
@@ -93,7 +86,7 @@
     {#each $config.customProviders.filter((item) => item.type === 'custom') as PaidProvider[] as provider (provider)}
       <DropdownItem
         class="flex items-center gap-2"
-        onclick={() => ($config[field] = { ...provider })}>
+        onclick={() => ($config[field].provider = { ...provider })}>
         <ProviderIcon {provider} class="w-4" />
         <span>
           {provider.name}

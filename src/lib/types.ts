@@ -46,6 +46,23 @@ export type FeatureItem = {
   label: string;
 };
 
+export type FeatureConfig = {
+  icon: string;
+  provider: Provider | null;
+  autoAppliedEnabled?: boolean;
+  autoAppliedSites?: string[];
+  autoAppliedLang?: string;
+};
+
+export type FeatureConfigKey =
+  | 'quickTranslate'
+  | 'contextTranslate'
+  | 'instantLookup'
+  | 'intelligentInput'
+  | 'bilingualSubtitles'
+  | 'panoramaReading'
+  | 'writingCopilot';
+
 export type AiProviderType = 'go' | 'zen' | 'custom';
 
 export type ProviderConfig = {

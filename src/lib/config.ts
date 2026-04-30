@@ -13,7 +13,8 @@ import type {
   SelectionTriggerValue,
   TranslationMode,
   TranslationDisplayStyle,
-  AIPrompt
+  AIPrompt,
+  FeatureConfig
 } from './types';
 
 const defaultConfig = {
@@ -21,20 +22,8 @@ const defaultConfig = {
   lastTimeShowingReleaseNotes: null as number | null,
   originalUserAgent: null as string | null,
   uiLanguage: 'default',
-  sourceLanguage: null as string | null,
-  targetLanguage: null as string | null,
-
-  autoTranslateEnabled: false,
-  alwaysAutoTranslatedSites: [
-    'twitter.com',
-    'x.com',
-    'www.reddit.com',
-    'www.kadaza.com',
-    'en.wikipedia.org',
-    '*.medium.com',
-    'news.ycombinator.com'
-  ] as string[],
-  alwaysAutoTranslatedLang: null as string | null,
+  sourceLanguage: undefined as string | undefined,
+  targetLanguage: undefined as string | undefined,
 
   selectionTriggerTranslate: 'directly' as SelectionTriggerValue,
   selectionTranslateEnabled: false,
@@ -50,20 +39,55 @@ const defaultConfig = {
     ...structuredClone(zenProviders)
   ] as Provider[],
 
-  quickTranslateProvider: structuredClone(bingTranslatorProvider) as Provider,
-  quickTranslateIcon: 'ri:translate',
-  contextTranslateProvider: null as Provider | null,
-  contextTranslateIcon: 'ri:translate-ai',
-  instantLookupProvider: null as Provider | null,
-  instantLookupIcon: 'lucide:book-open-text',
-  intelligentInputProvider: null as Provider | null,
-  intelligentInputIcon: 'tabler:keyboard',
-  bilingualSubtitlesProvider: null as Provider | null,
-  bilingualSubtitlesIcon: 'tabler:subtitles',
-  panoramaReadingProvider: null as Provider | null,
-  panoramaReadingIcon: 'tabler:scan-traces',
-  writingCopilotProvider: null as Provider | null,
-  writingCopilotIcon: 'tabler:feather-filled',
+  quickTranslate: {
+    icon: 'ri:translate',
+    provider: structuredClone(bingTranslatorProvider),
+    autoAppliedEnabled: false,
+    autoAppliedSites: [
+      'twitter.com',
+      'x.com',
+      'www.reddit.com',
+      'www.kadaza.com',
+      'en.wikipedia.org',
+      '*.medium.com',
+      'news.ycombinator.com'
+    ],
+    autoAppliedLang: undefined
+  } as FeatureConfig,
+
+  contextTranslate: {
+    icon: 'ri:translate-ai',
+    provider: null as Provider | null
+    // 使用quickTranslate配置的信息
+    // autoAppliedEnabled: undefined,
+    // autoAppliedSites: undefined,
+    // autoAppliedLang: undefined
+  } as FeatureConfig,
+
+  instantLookup: {
+    icon: 'lucide:book-open-text',
+    provider: null as Provider | null
+  } as FeatureConfig,
+
+  intelligentInput: {
+    icon: 'tabler:keyboard',
+    provider: null as Provider | null
+  } as FeatureConfig,
+
+  bilingualSubtitles: {
+    icon: 'tabler:subtitles',
+    provider: structuredClone(bingTranslatorProvider) as Provider | null
+  } as FeatureConfig,
+
+  panoramaReading: {
+    icon: 'tabler:scan-traces',
+    provider: null as Provider | null
+  } as FeatureConfig,
+
+  writingCopilot: {
+    icon: 'tabler:feather-filled',
+    provider: null as Provider | null
+  } as FeatureConfig,
 
   customAIPrompts: structuredClone(examplePrompts) as AIPrompt[]
 };

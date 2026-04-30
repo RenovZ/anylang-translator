@@ -5,14 +5,17 @@
   import config from '@/lib/config';
   import lang from '@/lib/lang';
   import i18n from '@/lib/i18n';
-  import SectionRow from '@/components/SectionRow.svelte';
+  import type { FeatureConfigKey } from '@/lib/types';
+
+  import SectionRow from './SectionRow.svelte';
 
   interface Props {
     title: string;
     description: string;
+    field: FeatureConfigKey;
   }
 
-  const { title, description }: Props = $props();
+  const { title, description, field }: Props = $props();
 </script>
 
 <SectionRow {title} {description}>
@@ -20,17 +23,17 @@
     <Button
       class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <span>
-        {lang.codeToLang($config.alwaysAutoTranslatedLang) ??
+        {lang.codeToLang($config[field].autoAppliedLang) ??
           i18n('not_selected', { defaultValue: 'Not Selected' })}
       </span>
       <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
     </Button>
     <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-      <DropdownItem onclick={() => ($config.alwaysAutoTranslatedLang = null)}>
+      <DropdownItem onclick={() => ($config[field].autoAppliedLang = undefined)}>
         {i18n('not_selected', { defaultValue: 'Not Selected' })}
       </DropdownItem>
       {#each Object.entries(lang.all()) as [langCode, langName] (langCode)}
-        <DropdownItem onclick={() => ($config.alwaysAutoTranslatedLang = langCode)}>
+        <DropdownItem onclick={() => ($config[field].autoAppliedLang = langCode)}>
           {langName}
         </DropdownItem>
       {/each}

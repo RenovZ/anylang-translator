@@ -12077,7 +12077,7 @@ class Lang {
   /**
    * 将语言代码转换为当前界面语言下的显示名称。
    */
-  codeToLang(langCode: string | null) {
+  codeToLang(langCode: string | undefined) {
     if (!langCode) return;
 
     if (langCode === 'und') {

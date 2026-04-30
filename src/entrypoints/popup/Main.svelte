@@ -78,7 +78,7 @@
         class="max-h-80 overflow-y-auto shadow-md">
         <DropdownItem
           onclick={() =>
-            ($config[position === 'source' ? 'sourceLanguage' : 'targetLanguage'] = null)}>
+            ($config[position === 'source' ? 'sourceLanguage' : 'targetLanguage'] = undefined)}>
           {i18n('auto_detect', { defaultValue: 'Auto Detect' })}
         </DropdownItem>
         {#each Object.entries(lang.all()) as [langCode, langName] (langCode)}
@@ -101,19 +101,19 @@
     <!-- providers -->
     <section class="rounded-xl bg-slate-100 dark:bg-slate-700">
       <div
-        class:rounded-b-xl={$config.quickTranslateProvider.type === 'free'}
+        class:rounded-b-xl={$config.quickTranslate.provider?.type === 'free'}
         class="grid grid-cols-[88px_1fr] items-center rounded-t-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600">
         <div class="font-medium">{i18n('provider', { defaultValue: 'Provider' })}</div>
         <button type="button" class="flex flex-1 items-center justify-between">
           <div class="line-clamp-1 text-left font-medium">
-            {$config.quickTranslateProvider.name}
+            {$config.quickTranslate.provider?.name}
           </div>
           <ChevronDownOutline class="h-6 w-6 text-slate-400" />
         </button>
-        <ProvidersDropdown field="quickTranslateProvider" />
+        <ProvidersDropdown field="quickTranslate" />
       </div>
-      {#if $config.quickTranslateProvider.type !== 'free' && aiProviders.includes($config.quickTranslateProvider.type)}
-        {@const paidProvider = $config.quickTranslateProvider as PaidProvider}
+      {#if $config.quickTranslate.provider && $config.quickTranslate.provider.type !== 'free' && aiProviders.includes($config.quickTranslate.provider.type)}
+        {@const paidProvider = $config.quickTranslate.provider as PaidProvider}
         {@const currentModels =
           (
             $config.customProviders.find(
@@ -135,7 +135,7 @@
           <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
             {#each currentModels as model (model)}
               <DropdownItem
-                onclick={() => ($config.quickTranslateProvider = { model, ...paidProvider })}>
+                onclick={() => ($config.quickTranslate.provider = { model, ...paidProvider })}>
                 {model}
               </DropdownItem>
             {/each}
@@ -153,7 +153,7 @@
           <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
             {#each promptPresets as { value: prompt, label } (prompt)}
               <DropdownItem
-                onclick={() => ($config.quickTranslateProvider = { prompt, ...paidProvider })}>
+                onclick={() => ($config.quickTranslate.provider = { prompt, ...paidProvider })}>
                 {label}
               </DropdownItem>
             {/each}
@@ -173,6 +173,8 @@
       </Button>
     </section>
 
+    <!--
+    TODO:
     <section class="flex flex-col gap-3">
       <div class="flex items-center justify-between gap-3">
         <span class="line-clamp-1 font-medium">
@@ -243,6 +245,7 @@
           aria-label={selectionTranslateToggle.label} />
       </div>
     </section>
+    -->
 
     <section class="grid grid-cols-3 gap-3 text-sm">
       {#each quickActions as action (action.label)}

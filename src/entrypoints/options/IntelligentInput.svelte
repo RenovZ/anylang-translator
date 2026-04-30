@@ -1,24 +1,52 @@
 <script lang="ts">
   import i18n from '@/lib/i18n';
   import SectionRow from '@/components/SectionRow.svelte';
+  import FeatureIcon from '@/components/FeatureIcon.svelte';
+  import FeatureProvider from '@/components/FeatureProvider.svelte';
+  import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
+  import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
 
   import Section from './Section.svelte';
   import { intelligentInputNav as nav } from './data';
+
+  const field = 'intelligentInput';
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
-  <SectionRow
-    title={i18n('options_input_status_title', { defaultValue: 'Feature status' })}
-    description={i18n('options_input_status_description', {
-      defaultValue: 'Trigger conditions are being unified into one shortcut system.'
-    })}>
-    <div
-      slot="controls"
-      class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400">
-      {i18n('options_input_status_body', {
-        defaultValue:
-          'This version keeps the entry hint; the actual shortcut switch will be added once shortcut settings stabilize.'
-      })}
-    </div>
-  </SectionRow>
+  <!-- icon -->
+  <FeatureIcon
+    title={i18n('intelligent_input_icon', {
+      defaultValue: 'Intelligent input icon'
+    })}
+    {field} />
+
+  <!-- api provider -->
+  <FeatureProvider
+    {field}
+    title={i18n('intelligent_input_provider', { defaultValue: 'Intelligent input provider' })}
+    description={i18n('intelligent_input_provider_description', {
+      defaultValue: 'Choose from a variety of API providers to power your intelligent input.'
+    })} />
+
+  <!-- always apply intelligent input sites -->
+  <FeatureAutoAppliedSites
+    {field}
+    title={i18n('always_apply_intelligent_input_sites', {
+      defaultValue: 'Always apply intelligent input sites'
+    })}
+    description={i18n('always_apply_intelligent_input_sites_description', {
+      defaultValue:
+        'When current site matches these domains, content will automatically apply intelligent input to target language. This rule has higher priority than language rules.'
+    })} />
+
+  <!-- always apply intelligent input language -->
+  <FeatureAutoAppliedLang
+    {field}
+    title={i18n('always_apply_intelligent_input_lang', {
+      defaultValue: 'Always apply intelligent input language'
+    })}
+    description={i18n('always_auto_intelligent_input_lang_description', {
+      defaultValue:
+        'When page language is one of these languages, content will automatically apply intelligent input to target language. Site rules still take priority on conflicts.'
+    })} />
 </Section>

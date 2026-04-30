@@ -3,40 +3,52 @@
 
   import i18n from '@/lib/i18n';
   import SectionRow from '@/components/SectionRow.svelte';
+  import FeatureIcon from '@/components/FeatureIcon.svelte';
+  import FeatureProvider from '@/components/FeatureProvider.svelte';
+  import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
+  import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
 
   import Section from './Section.svelte';
   import { panoramaReadingNav as nav } from './data';
+
+  const field = 'panoramaReading';
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
-  <SectionRow
-    title={i18n('options_manga_ocr_title', { defaultValue: 'Image recognition' })}
-    description={i18n('options_manga_ocr_description', {
-      defaultValue:
-        'This capability follows main translation service settings; granular OCR options will arrive later.'
-    })}>
-    <div
-      slot="controls"
-      class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400">
-      {i18n('options_manga_ocr_body', {
-        defaultValue:
-          'No standalone OCR engine config is needed now; global service config is reused.'
-      })}
-    </div>
-  </SectionRow>
+  <!-- icon -->
+  <FeatureIcon
+    title={i18n('panorama_reading_icon', {
+      defaultValue: 'Panorama reading icon'
+    })}
+    {field} />
 
-  <!-- Applicable Scenarios Link -->
-  <SectionRow
-    title={i18n('options_manga_scene_title', { defaultValue: 'Applicable scenarios' })}
-    description={i18n('options_manga_scene_description', {
-      defaultValue: 'Useful for manga dialogue, screenshots, and subtitle-free image content.'
-    })}>
-    <Button
-      slot="controls"
-      color="alternative"
-      class="w-full rounded-xl dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
-      >{i18n('options_manga_guide_button', {
-        defaultValue: 'View image translation guide'
-      })}</Button>
-  </SectionRow>
+  <!-- api provider -->
+  <FeatureProvider
+    {field}
+    title={i18n('panorama_reading_provider', { defaultValue: 'Panorama reading provider' })}
+    description={i18n('panorama_reading_provider_description', {
+      defaultValue: 'Choose from a variety of API providers to power your panorama reading.'
+    })} />
+
+  <!-- always apply panorama reading sites -->
+  <FeatureAutoAppliedSites
+    {field}
+    title={i18n('always_apply_panorama_reading_sites', {
+      defaultValue: 'Always apply panorama reading sites'
+    })}
+    description={i18n('always_apply_panorama_reading_sites_description', {
+      defaultValue:
+        'When current site matches these domains, content will automatically apply panorama reading to target language. This rule has higher priority than language rules.'
+    })} />
+
+  <!-- always apply panorama reading language -->
+  <FeatureAutoAppliedLang
+    {field}
+    title={i18n('always_apply_panorama_reading_lang', {
+      defaultValue: 'Always apply panorama reading language'
+    })}
+    description={i18n('always_apply_panorama_reading_lang_description', {
+      defaultValue:
+        'When page language is one of these languages, content will automatically apply panorama reading to target language. Site rules still take priority on conflicts.'
+    })} />
 </Section>

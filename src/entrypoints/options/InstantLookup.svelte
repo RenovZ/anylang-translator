@@ -1,21 +1,31 @@
 <script lang="ts">
+  import { Button } from 'flowbite-svelte';
+
+  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import SectionRow from '@/components/SectionRow.svelte';
+  import FeatureIcon from '@/components/FeatureIcon.svelte';
+  import FeatureProvider from '@/components/FeatureProvider.svelte';
 
   import Section from './Section.svelte';
   import { instantLookupNav as nav } from './data';
+
+  const field = 'instantLookup';
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
-  <SectionRow
-    title={i18n('options_subtitle_auto_title', {
-      defaultValue: 'Auto-enable bilingual subtitles'
+  <!-- icon -->
+  <FeatureIcon
+    title={i18n('instant_lookup_icon', {
+      defaultValue: 'Instant lookup icon'
     })}
-    description={i18n('options_subtitle_auto_description', {
-      defaultValue: 'Automatically show bilingual subtitles on supported sites'
-    })}>
-    <div slot="controls" class="flex items-center justify-end">
-      <!-- TODO: -->
-    </div>
-  </SectionRow>
+    {field} />
+
+  <!-- api provider -->
+  <FeatureProvider
+    {field}
+    title={i18n('instant_lookup_provider', { defaultValue: 'Instant lookup provider' })}
+    description={i18n('instant_lookup_provider_description', {
+      defaultValue: 'Choose from a variety of API providers to power your instant lookup.'
+    })} />
 </Section>
