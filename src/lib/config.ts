@@ -148,6 +148,4 @@ function createConfigStore() {
   };
 }
 
-const config = createConfigStore();
-
-export default config;
+export default createConfigStore();

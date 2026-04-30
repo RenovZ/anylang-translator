@@ -21,10 +21,3 @@ export {
   zenProviders
 } from './providers';
 export { translationDisplayStyles, fontFamilyOptions } from './general';
-export {
-  getShortcutDisplay,
-  shortcutToString,
-  getShortcutsSettingsUrl,
-  openShortcutsSettings,
-  syncShortcutsFromBrowser
-} from './shortcut';

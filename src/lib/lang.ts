@@ -12178,6 +12178,4 @@ class Lang {
   }
 }
 
-const lang = Lang.getInstance();
-
-export default lang;
+export default Lang.getInstance();

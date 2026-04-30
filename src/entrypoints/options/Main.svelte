@@ -6,7 +6,7 @@
   import { twMerge } from 'tailwind-merge';
 
   import '@/assets/app.css';
-  import { syncShortcutsFromBrowser } from '@/lib/preset/shortcut';
+  import shortcut from '@/lib/shortcut';
   import i18n from '@/lib/i18n';
 
   import Empty from './Empty.svelte';
@@ -18,7 +18,7 @@
   const activeNav = $derived(navItems.find((item) => item.id === activeNavId));
 
   onMount(() => {
-    syncShortcutsFromBrowser();
+    shortcut.syncFromBrowser();
     syncActiveNavWithHash();
     window.addEventListener('hashchange', syncActiveNavWithHash);
     return () => window.removeEventListener('hashchange', syncActiveNavWithHash);

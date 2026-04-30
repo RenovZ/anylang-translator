@@ -21,7 +21,7 @@
   import lang from '@/lib/lang';
   import i18n from '@/lib/i18n';
   import avatar from '@/lib/avatar';
-  import { syncShortcutsFromBrowser } from '@/lib/preset/shortcut';
+  import shortcut from '@/lib/shortcut';
   import type { PaidProvider, SelectionTriggerValue } from '@/lib/types';
   import { aiProviders, promptPresets } from '@/lib/preset';
   import { languageOptions } from '@/lib/data';
@@ -32,7 +32,7 @@
   let currentSite = $state('');
 
   $effect(() => {
-    syncShortcutsFromBrowser();
+    shortcut.syncFromBrowser();
     browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
       currentSite = tab.url ? new URL(tab.url).origin : window.location.origin;
     });

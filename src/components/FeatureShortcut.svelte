@@ -2,11 +2,7 @@
   import { Kbd, Tooltip } from 'flowbite-svelte';
 
   import config from '@/lib/config';
-  import {
-    getShortcutDisplay,
-    getShortcutsSettingsUrl,
-    openShortcutsSettings
-  } from '@/lib/preset/shortcut';
+  import shortcut from '@/lib/shortcut';
   import i18n from '@/lib/i18n';
   import type { FeatureConfigKey } from '@/lib/types';
 
@@ -19,10 +15,10 @@
   }
 
   const { title, description, field }: Prop = $props();
-  const shortcutSettings = getShortcutsSettingsUrl();
+  const shortcutSettings = shortcut.getSettingsUrl();
 
   const handleClick = () => {
-    openShortcutsSettings(
+    shortcut.openSettings(
       () =>
         alert(
           i18n('shortcuts_copy_toast', {
@@ -42,7 +38,7 @@
 <SectionRow {title} {description}>
   <div class="flex flex-col space-y-3" slot="controls">
     <div class="flex gap-2 self-end">
-      {#each getShortcutDisplay($config[field].shortcut) as key (key)}
+      {#each shortcut.formatForDisplay($config[field].shortcut) as key (key)}
         <Kbd class="place-content-center border-none text-base shadow">{key}</Kbd>
       {/each}
     </div>
