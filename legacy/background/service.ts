@@ -224,7 +224,7 @@ class BingAuthHelper {
 class Service {
   /**
    * 用作进行中的内存翻译缓存，确保相同请求复用同一次 `XMLHttpRequest`。
-   * */
+   */
   private readonly translationsInProgress = new Map<string, TranslationInfo>();
 
   /**

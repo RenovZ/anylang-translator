@@ -1,9 +1,9 @@
 import { browser } from 'wxt/browser';
 
-import { checkedLastError } from '@/lib/error';
 import { config } from '@/lib/config';
-import { platformInfo } from '@/lib/platform-info';
+import { checkedLastError } from '@/lib/error';
 import { languages } from '@/lib/languages';
+import { platformInfo } from '@/lib/platform-info';
 
 const htmlTagsInlineText = [
   '#text',

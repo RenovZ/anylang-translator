@@ -7,11 +7,11 @@ import {
   zenProviders
 } from '../src/lib/preset';
 import type {
+  AIPrompt,
   Provider,
   SelectionTriggerValue,
-  TranslationMode,
   TranslationDisplayStyle,
-  AIPrompt
+  TranslationMode
 } from '../src/lib/types';
 
 const defaultConfig = {

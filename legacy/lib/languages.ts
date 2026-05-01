@@ -12192,7 +12192,7 @@ class Languages {
       'ckb',
       'dv',
       'fa',
-      'he', //iw
+      'he', // iw
       'ks',
       // `ku` 在这里等价视为 `ckb`。
       'ms-Arab',

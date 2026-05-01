@@ -1,8 +1,8 @@
 import { type Browser, browser } from 'wxt/browser';
 
+import { config } from '@/lib/config';
 import { checkedLastError } from '@/lib/error';
 import { tabsCreate } from '@/lib/tabs';
-import { config } from '@/lib/config';
 
 export class Controller {
   private readonly tabToMimeType: Record<number, string | undefined> = {};

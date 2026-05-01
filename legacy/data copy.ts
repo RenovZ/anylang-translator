@@ -138,4 +138,4 @@ const previewTextEn =
 const previewTextZh =
   '长夜将至，我从今开始守望，至死方休。我将不娶妻、不封地、不生子。我将不戴宝冠，不争荣宠。我将尽忠职守，生死于斯。';
 
-export { translationStyleOptions, previewTextEn, previewTextZh };
+export { previewTextEn, previewTextZh, translationStyleOptions };

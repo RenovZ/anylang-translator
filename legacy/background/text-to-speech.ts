@@ -333,7 +333,9 @@ export class TextToSpeech {
     'https://www.bing.com/tfettts?isVertical=1',
     'POST',
     () =>
-      `&&IG=${encodeURIComponent(BingTTSAuthHelper.IG ?? '')}&IID=${encodeURIComponent(BingTTSAuthHelper.IID ?? '')}.1`,
+      `&&IG=${encodeURIComponent(BingTTSAuthHelper.IG ?? '')}&IID=${encodeURIComponent(
+        BingTTSAuthHelper.IID ?? ''
+      )}.1`,
     (text, targetLanguage) => {
       const languageData = BingTTSAuthHelper.getLanguageData(targetLanguage);
       if (

@@ -155,10 +155,12 @@ export class ShowOriginal {
     if (!this.divElement) return;
     if (!this.originalTextIsShowing) return;
 
-    if (event.target === this.currentNodeOverMouse && event.relatedTarget === this.divElement)
+    if (event.target === this.currentNodeOverMouse && event.relatedTarget === this.divElement) {
       return;
-    if (event.target === this.divElement && event.relatedTarget === this.currentNodeOverMouse)
+    }
+    if (event.target === this.divElement && event.relatedTarget === this.currentNodeOverMouse) {
       return;
+    }
     this.hideOriginalText();
   };
 
