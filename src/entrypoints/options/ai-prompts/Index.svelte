@@ -1,18 +1,19 @@
 <script lang="ts">
   import { Badge, Button, Input, Label, Select, Textarea, Tooltip } from 'flowbite-svelte';
-  import { PlusOutline, TrashBinOutline, PenOutline } from 'flowbite-svelte-icons';
+  import { PenOutline, PlusOutline, TrashBinOutline } from 'flowbite-svelte-icons';
   import Icon from '@iconify/svelte';
 
   import config from '@/lib/config';
-  import type { AIPrompt, OutputSchema } from '@/lib/types';
   import i18n from '@/lib/i18n';
+  import type { AIPrompt, OutputSchema } from '@/lib/types';
   import ConfirmPopover from '@/components/ConfirmPopover.svelte';
 
+  import { aiPromptsNav } from '../data';
   import Section from '../Section.svelte';
+
   import AddAIPromptModal from './AddAIPromptModal.svelte';
   import EditFieldModal from './EditFieldModal.svelte';
   import Variables from './Variables.svelte';
-  import { aiPromptsNav } from '../data';
 
   let showPopover = $state(false);
   let showModal = $state(false);

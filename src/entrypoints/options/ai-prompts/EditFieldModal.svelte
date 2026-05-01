@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Button, Input, Label, Modal, Select, Textarea, Toggle, Tooltip } from 'flowbite-svelte';
 
-  import type { OutputSchema } from '@/lib/types';
   import i18n from '@/lib/i18n';
+  import type { OutputSchema } from '@/lib/types';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
 
   import Variables from './Variables.svelte';

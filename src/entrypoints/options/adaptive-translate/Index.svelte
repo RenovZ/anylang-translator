@@ -4,15 +4,15 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import FeatureIcon from '@/components/FeatureIcon.svelte';
-  import FeatureShortcut from '@/components/FeatureShortcut.svelte';
-  import FeatureProvider from '@/components/FeatureProvider.svelte';
-  import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
+  import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
+  import FeatureIcon from '@/components/FeatureIcon.svelte';
+  import FeatureProvider from '@/components/FeatureProvider.svelte';
+  import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
 
-  import Section from '../Section.svelte';
   import { adaptiveTranslateNav as nav } from '../data';
+  import Section from '../Section.svelte';
 
   import DisplayStyle from './DisplayStyle.svelte';
 </script>

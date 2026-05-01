@@ -3,8 +3,8 @@
 
   import { i18n } from '@/lib/i18n';
 
-  import Section from './Section.svelte';
   import { pricingNav } from './data';
+  import Section from './Section.svelte';
 </script>
 
 <!-- Pricing Settings Section -->

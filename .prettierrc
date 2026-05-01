@@ -4,12 +4,31 @@
   "trailingComma": "none",
   "bracketSameLine": true,
   "printWidth": 100,
-  "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-svelte",
+    "prettier-plugin-tailwindcss"
+  ],
+  "importOrder": [
+    "^\\w(.*)$",
+    "^@(?!/).+$",
+    "",
+    "^@/lib/(?!preset/)(.*)$",
+    "^@/lib/preset/(.*)$",
+    "^@/components/(.*)$",
+    "^@/(.*)$",
+    "",
+    "^\\.\\./(.*)$",
+    "",
+    "^\\./(.*)$"
+  ],
+  "importOrderParserPlugins": ["typescript"],
   "overrides": [
     {
       "files": "*.svelte",
       "options": {
-        "parser": "svelte"
+        "parser": "svelte",
+        "importOrderParserPlugins": ["typescript"]
       }
     }
   ]

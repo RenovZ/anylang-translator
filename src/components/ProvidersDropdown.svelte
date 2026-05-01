@@ -3,13 +3,13 @@
 </script>
 
 <script lang="ts">
-  import { Dropdown, DropdownGroup, DropdownItem, DropdownHeader, A } from 'flowbite-svelte';
+  import { A, Dropdown, DropdownGroup, DropdownHeader, DropdownItem } from 'flowbite-svelte';
   import { PlusOutline } from 'flowbite-svelte-icons';
   import { browser } from 'wxt/browser';
 
   import config from '@/lib/config';
-  import type { FeatureConfigKey, PaidProvider, Provider } from '@/lib/types';
   import i18n from '@/lib/i18n';
+  import type { FeatureConfigKey, PaidProvider, Provider } from '@/lib/types';
 
   import ProviderIcon from './ProviderIcon.svelte';
 

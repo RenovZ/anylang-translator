@@ -3,8 +3,8 @@
 
   import i18n from '@/lib/i18n';
   import type { Provider } from '@/lib/types';
-  import ProviderIcon from '@/components/ProviderIcon.svelte';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
+  import ProviderIcon from '@/components/ProviderIcon.svelte';
 
   let {
     open = $bindable(false),

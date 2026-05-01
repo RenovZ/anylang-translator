@@ -4,8 +4,8 @@
 
   import { i18n } from '@/lib/i18n';
 
-  import Section from './Section.svelte';
   import { aboutNav } from './data';
+  import Section from './Section.svelte';
 </script>
 
 <Section title={aboutNav.title}>

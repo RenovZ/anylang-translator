@@ -1,7 +1,6 @@
 <script lang="ts">
-  import IconifyIcon from '@iconify/svelte';
-  import { addIcon } from '@iconify/svelte';
   import { icons as flowbiteIcons } from '@iconify-json/flowbite';
+  import IconifyIcon, { addIcon } from '@iconify/svelte';
 
   // 只打包项目中 hardcoded 使用的具体图标，不是整个集合
   addIcon('flowbite:chevron-down-outline', flowbiteIcons['chevron-down-outline']);

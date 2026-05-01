@@ -1,16 +1,17 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { Button, Indicator, Toast } from 'flowbite-svelte';
-  import { browser, type PublicPath } from 'wxt/browser';
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
+  import { onMount } from 'svelte';
   import { twMerge } from 'tailwind-merge';
+  import { browser, type PublicPath } from 'wxt/browser';
 
   import '@/assets/app.css';
-  import shortcut from '@/lib/shortcut';
-  import i18n from '@/lib/i18n';
 
+  import i18n from '@/lib/i18n';
+  import shortcut from '@/lib/shortcut';
+
+  import { bottomNavItems, topNavItems } from './data';
   import Empty from './Empty.svelte';
-  import { topNavItems, bottomNavItems } from './data';
 
   const navItems = [...topNavItems, ...bottomNavItems];
 

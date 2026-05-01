@@ -1,4 +1,4 @@
-import { type Browser, browser } from 'wxt/browser';
+import { browser, type Browser } from 'wxt/browser';
 
 /**
  * 创建新标签页；桌面端会尽量把当前标签页设置为 opener，便于保持跳转关系。

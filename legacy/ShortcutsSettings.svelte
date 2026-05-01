@@ -1,5 +1,6 @@
 <script lang="ts">
   import { i18n } from '@/lib/i18n';
+
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
 </script>

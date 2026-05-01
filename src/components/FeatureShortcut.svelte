@@ -2,8 +2,8 @@
   import { Kbd, Tooltip } from 'flowbite-svelte';
 
   import config from '@/lib/config';
-  import shortcut from '@/lib/shortcut';
   import i18n from '@/lib/i18n';
+  import shortcut from '@/lib/shortcut';
   import type { FeatureConfigKey } from '@/lib/types';
 
   import SectionRow from './SectionRow.svelte';

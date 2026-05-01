@@ -1,5 +1,6 @@
 <script lang="ts">
   import { A, Input } from 'flowbite-svelte';
+  import { twMerge } from 'tailwind-merge';
   import Icon from '@iconify/svelte';
 
   import config from '@/lib/config';
@@ -7,7 +8,6 @@
   import type { FeatureConfigKey } from '@/lib/types';
 
   import SectionRow from './SectionRow.svelte';
-  import { twMerge } from 'tailwind-merge';
 
   interface Prop {
     title: string;

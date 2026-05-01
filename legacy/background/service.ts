@@ -2,6 +2,7 @@ import { browser } from 'wxt/browser';
 
 import { config } from '@/lib/config';
 import { languages } from '@/lib/languages';
+
 import type { TranslationCache } from './cache';
 
 type TranslationStatus = 'complete' | 'translating' | 'error';

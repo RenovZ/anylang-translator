@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Button, Select, Input, Label, Dropdown, DropdownItem } from 'flowbite-svelte';
+  import { Button, Dropdown, DropdownItem, Input, Label, Select } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
   import config from '@/lib/config';
-  import type { TranslationDisplayStyleCustom } from '@/lib/types';
   import i18n from '@/lib/i18n';
+  import { fontFamilyOptions, translationDisplayStyles } from '@/lib/preset';
+  import type { TranslationDisplayStyleCustom } from '@/lib/types';
   import SectionRow from '@/components/SectionRow.svelte';
-  import { translationDisplayStyles, fontFamilyOptions } from '@/lib/preset';
 
   const previewTextEn =
     'Night gathers, and now my watch begins. It shall not end until my death. I shall take no wife, hold no lands, father no children.';

@@ -3,6 +3,7 @@ import { browser } from 'wxt/browser';
 import { config } from '@/lib/config';
 import { checkedLastError } from '@/lib/error';
 import { platformInfo } from '@/lib/platform-info';
+
 import { ShowOriginal } from './show-original';
 
 type PageLanguageState = 'original' | 'translated';

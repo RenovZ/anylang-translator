@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, Input, Checkbox, Label } from 'flowbite-svelte';
+  import { Button, Checkbox, Input, Label } from 'flowbite-svelte';
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';

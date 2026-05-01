@@ -2,6 +2,7 @@
   import { Button } from 'flowbite-svelte';
 
   import { i18n } from '@/lib/i18n';
+
   import Section from './Section.svelte';
 </script>
 

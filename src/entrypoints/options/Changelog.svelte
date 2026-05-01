@@ -1,8 +1,8 @@
 <script lang="ts">
   import i18n from '@/lib/i18n';
 
-  import Section from './Section.svelte';
   import { changelogNav } from './data';
+  import Section from './Section.svelte';
 </script>
 
 <Section title={changelogNav.title}>

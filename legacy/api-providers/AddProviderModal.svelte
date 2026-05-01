@@ -1,8 +1,9 @@
 <script lang="ts">
   import { Modal } from 'flowbite-svelte';
+
+  import type { Provider } from '@/lib/config';
   import { i18n } from '@/lib/i18n';
   import { paidUserProviders } from '@/lib/preset';
-  import type { Provider } from '@/lib/config';
 
   let {
     open = $bindable(false),

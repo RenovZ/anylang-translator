@@ -1,4 +1,5 @@
 import { browser } from 'wxt/browser';
+
 import config from './config';
 import i18n from './i18n';
 import type { FeatureConfig, FeatureConfigKey } from './types';

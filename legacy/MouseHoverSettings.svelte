@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { Toggle, Select } from 'flowbite-svelte';
+  import { Select, Toggle } from 'flowbite-svelte';
 
   import { i18n } from '@/lib/i18n';
+
+  import type { OptionsSectionSharedProps } from './section-props';
   import Section from './Section.svelte';
   import SectionRow from './SectionRow.svelte';
-  import type { OptionsSectionSharedProps } from './section-props';
 
   export let config: OptionsSectionSharedProps['config'];
   export let toggleItems: OptionsSectionSharedProps['toggleItems'];

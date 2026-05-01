@@ -3,13 +3,13 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import SectionRow from '@/components/SectionRow.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
+  import SectionRow from '@/components/SectionRow.svelte';
 
-  import Section from './Section.svelte';
   import { instantLookupNav as nav } from './data';
+  import Section from './Section.svelte';
 
   const field = 'instantLookup';
 </script>

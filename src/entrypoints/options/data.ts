@@ -2,22 +2,21 @@ import i18n from '@/lib/i18n';
 import type { OptionsNavItem } from '@/lib/types';
 import { apiProvidersId } from '@/components/ProvidersDropdown.svelte';
 
-import General from './general/Index.svelte';
-import APIProviders from './api-providers/Index.svelte';
-import AIPrompts from './ai-prompts/Index.svelte';
-import AdaptiveTranslate from './adaptive-translate/Index.svelte';
-import BilingualSubtitles from './BilingualSubtitles.svelte';
-import IntelligentInput from './IntelligentInput.svelte';
-import WritingCopilot from './WritingCopilot.svelte';
-import InstantLookup from './InstantLookup.svelte';
-import PanoramaReading from './PanoramaReading.svelte';
-import ActionPalette from './ActionPalette.svelte';
-
 import About from './About.svelte';
-import Pricing from './Pricing.svelte';
-import Docs from './Docs.svelte';
+import ActionPalette from './ActionPalette.svelte';
+import AdaptiveTranslate from './adaptive-translate/Index.svelte';
+import AIPrompts from './ai-prompts/Index.svelte';
+import APIProviders from './api-providers/Index.svelte';
+import BilingualSubtitles from './BilingualSubtitles.svelte';
 import Changelog from './Changelog.svelte';
+import Docs from './Docs.svelte';
 import Feedback from './Feedback.svelte';
+import General from './general/Index.svelte';
+import InstantLookup from './InstantLookup.svelte';
+import IntelligentInput from './IntelligentInput.svelte';
+import PanoramaReading from './PanoramaReading.svelte';
+import Pricing from './Pricing.svelte';
+import WritingCopilot from './WritingCopilot.svelte';
 
 export const generalNav: OptionsNavItem = {
   id: 'general',

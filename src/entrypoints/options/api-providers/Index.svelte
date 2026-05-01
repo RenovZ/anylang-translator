@@ -11,25 +11,25 @@
     Tooltip
   } from 'flowbite-svelte';
   import {
-    PlusOutline,
     EyeOutline,
     EyeSlashOutline,
+    PlusOutline,
     QuestionCircleOutline
   } from 'flowbite-svelte-icons';
   import Icon from '@iconify/svelte';
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-
-  import type { Provider, FeatureKey, FeatureValue, PaidProvider } from '@/lib/types';
   import { defaultAIFeatures, featureItems, featureKeys } from '@/lib/preset';
+  import type { FeatureKey, FeatureValue, PaidProvider, Provider } from '@/lib/types';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ConfirmPopover from '@/components/ConfirmPopover.svelte';
 
+  import { apiProvidersNav } from '../data';
   import Section from '../Section.svelte';
+
   import AddModal from './AddModal.svelte';
   import ProviderGroup from './ProviderGroup.svelte';
-  import { apiProvidersNav } from '../data';
 
   let showPopover = $state(false);
   let showModal = $state(false);

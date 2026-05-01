@@ -1,11 +1,13 @@
 <script lang="ts">
   import { Button, Input, Label, Select } from 'flowbite-svelte';
-  import { PlusOutline, EyeOutline, EyeSlashOutline } from 'flowbite-svelte-icons';
+  import { EyeOutline, EyeSlashOutline, PlusOutline } from 'flowbite-svelte-icons';
 
-  import { config, type Provider, type FeatureKey } from '@/lib/config';
+  import { config, type FeatureKey, type Provider } from '@/lib/config';
   import { i18n } from '@/lib/i18n';
   import { allFeatures } from '@/lib/preset';
+
   import Section from '../Section.svelte';
+
   import AddProviderModal from './AddProviderModal.svelte';
 
   let showModal = $state(false);

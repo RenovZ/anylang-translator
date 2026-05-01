@@ -1,33 +1,34 @@
 <script lang="ts">
   import {
     Avatar,
-    GradientButton,
     Button,
     Dropdown,
     DropdownItem,
+    GradientButton,
     Toggle,
     Tooltip
   } from 'flowbite-svelte';
   import {
-    ChevronDownOutline,
     ArrowRightOutline,
-    LanguageOutline,
-    CogOutline
+    ChevronDownOutline,
+    CogOutline,
+    LanguageOutline
   } from 'flowbite-svelte-icons';
   import { browser } from 'wxt/browser';
 
   import '@/assets/app.css';
-  import config from '@/lib/config';
-  import lang from '@/lib/lang';
-  import i18n from '@/lib/i18n';
+
   import avatar from '@/lib/avatar';
+  import config from '@/lib/config';
+  import { languageOptions } from '@/lib/data';
+  import i18n from '@/lib/i18n';
+  import lang from '@/lib/lang';
+  import { aiProviders, promptPresets } from '@/lib/preset';
   import shortcut from '@/lib/shortcut';
   import type { PaidProvider, SelectionTriggerValue } from '@/lib/types';
-  import { aiProviders, promptPresets } from '@/lib/preset';
-  import { languageOptions } from '@/lib/data';
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
 
-  import { selectionTranslateToggle, moreItems, quickActions } from './data';
+  import { moreItems, quickActions, selectionTranslateToggle } from './data';
 
   let currentSite = $state('');
 

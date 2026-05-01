@@ -4,8 +4,8 @@
   import { i18n } from '@/lib/i18n';
   import SectionRow from '@/components/SectionRow.svelte';
 
-  import Section from './Section.svelte';
   import { actionPaletteNav } from './data';
+  import Section from './Section.svelte';
 </script>
 
 <Section title={actionPaletteNav.title}>

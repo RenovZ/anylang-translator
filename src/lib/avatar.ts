@@ -1,6 +1,5 @@
+import { bottts, initials } from '@dicebear/collection';
 import { createAvatar } from '@dicebear/core';
-import { initials } from '@dicebear/collection';
-import { bottts } from '@dicebear/collection';
 
 const dicebear = (username: string | undefined, options = {}) => {
   const defaultOptions = { seed: username };

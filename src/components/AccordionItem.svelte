@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AccordionItem } from 'flowbite-svelte';
-  import { ChevronRightOutline, ChevronDownOutline } from 'flowbite-svelte-icons';
+  import { ChevronDownOutline, ChevronRightOutline } from 'flowbite-svelte-icons';
   import { twMerge } from 'tailwind-merge';
 
   interface Props {

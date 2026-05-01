@@ -1,4 +1,5 @@
 import i18n from '@/lib/i18n';
+
 import type { AiProviderType, FeatureItem, FeatureKey, FeatureValue, Provider } from '../types';
 
 // Ordered feature definitions for consistent UI rendering (array order = display order)

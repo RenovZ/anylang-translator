@@ -3,8 +3,8 @@
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
   import config from '@/lib/config';
-  import lang from '@/lib/lang';
   import i18n from '@/lib/i18n';
+  import lang from '@/lib/lang';
   import type { FeatureConfigKey } from '@/lib/types';
 
   import SectionRow from './SectionRow.svelte';

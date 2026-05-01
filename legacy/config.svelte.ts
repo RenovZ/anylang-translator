@@ -1,4 +1,5 @@
 import { storage } from 'wxt/utils/storage';
+
 import {
   bingTranslatorProvider,
   googleTranslatorProvider,

@@ -1,4 +1,5 @@
 import { browser } from 'wxt/browser';
+
 import shortcut from '@/lib/shortcut';
 
 export default defineBackground(() => {

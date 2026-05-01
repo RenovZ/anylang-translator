@@ -1,4 +1,5 @@
 import { mount } from 'svelte';
+
 import Main from './Main.svelte';
 
 const main = mount(Main, {

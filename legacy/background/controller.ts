@@ -1,4 +1,4 @@
-import { type Browser, browser } from 'wxt/browser';
+import { browser, type Browser } from 'wxt/browser';
 
 import { config } from '@/lib/config';
 import { checkedLastError } from '@/lib/error';

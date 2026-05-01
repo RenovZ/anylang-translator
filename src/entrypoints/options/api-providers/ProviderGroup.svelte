@@ -1,11 +1,11 @@
 <script lang="ts">
   import { A } from 'flowbite-svelte';
 
+  import config from '@/lib/config';
+  import i18n from '@/lib/i18n';
   import type { AiProviderType } from '@/lib/types';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
-  import i18n from '@/lib/i18n';
-  import config from '@/lib/config';
 
   interface Props {
     title: string;

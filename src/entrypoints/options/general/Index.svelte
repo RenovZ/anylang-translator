@@ -2,14 +2,14 @@
   import { Avatar, Button, Dropdown, DropdownItem, Toggle } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
-  import config from '@/lib/config';
-  import lang from '@/lib/lang';
   import avatar from '@/lib/avatar';
+  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
+  import lang from '@/lib/lang';
   import SectionRow from '@/components/SectionRow.svelte';
 
-  import Section from '../Section.svelte';
   import { generalNav } from '../data';
+  import Section from '../Section.svelte';
 </script>
 
 <Section title={generalNav.title}>

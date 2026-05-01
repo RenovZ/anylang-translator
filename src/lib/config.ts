@@ -1,5 +1,6 @@
+import { get, writable, type Subscriber } from 'svelte/store';
 import { storage } from 'wxt/utils/storage';
-import { writable, get, type Subscriber } from 'svelte/store';
+
 import {
   bingTranslatorProvider,
   examplePrompts,
@@ -9,12 +10,12 @@ import {
   zenProviders
 } from './preset';
 import type {
+  AIPrompt,
+  FeatureConfig,
   Provider,
   SelectionTriggerValue,
-  TranslationMode,
   TranslationDisplayStyle,
-  AIPrompt,
-  FeatureConfig
+  TranslationMode
 } from './types';
 
 const defaultConfig = {
