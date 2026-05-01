@@ -13,3 +13,13 @@ declare global {
 export type {};
 
 export {};
+
+// Type definitions for unplugin-icons
+// ~icons/tabler/arrow-right
+// ~icons/ri/translate
+// ~icons/lucide/anything
+declare module '~icons/*' {
+  import type { Component } from 'svelte';
+  const component: Component;
+  export default component;
+}
