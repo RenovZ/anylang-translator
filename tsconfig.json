@@ -9,7 +9,10 @@
     "noEmitOnError": false,
     "noEmit": true,
     "skipLibCheck": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "paths": {
+      "~icons/*": ["./.wxt/types/icons.d.ts"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", ".wxt/wxt.d.ts", ".wxt/types/*.d.ts"]
 }

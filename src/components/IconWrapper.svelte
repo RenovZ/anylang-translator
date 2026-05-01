@@ -2,7 +2,7 @@
   import { twMerge } from 'tailwind-merge';
   import Icon from '@iconify/svelte';
 
-  import LocalIcon, { icons, type IconName } from './LocalIcon.svelte';
+  import LocalIcon, { icons as localIcons } from './LocalIcon.svelte';
 
   interface Props {
     icon: string;
@@ -12,12 +12,11 @@
 
   const { icon, class: className = '', ...rest }: Props = $props();
 
-  // Check if icon exists in local icons
-  const isLocalIcon = $derived(icon in icons);
+  const isLocal = $derived(icon in localIcons);
 </script>
 
-{#if isLocalIcon}
-  <LocalIcon icon={icon as IconName} class={twMerge('h-auto shrink-0', className)} {...rest} />
+{#if isLocal}
+  <LocalIcon {icon} class={twMerge('h-auto shrink-0', className)} {...rest} />
 {:else}
   <Icon {icon} class={twMerge('h-auto shrink-0', className)} {...rest} />
 {/if}

@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'wxt';
 
 const configFile = fileURLToPath(import.meta.url);
@@ -99,7 +100,7 @@ export default defineConfig({
     }
   },
   vite: () => ({
-    plugins: [i18nExtractionPlugin()],
+    plugins: [i18nExtractionPlugin(), Icons({ compiler: 'svelte' })],
     server: {
       host: '0.0.0.0'
     },
