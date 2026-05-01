@@ -509,6 +509,9 @@
   "output_schema": {
     "message": "Output Schema"
   },
+  "page_translate": {
+    "message": "Translate page"
+  },
   "panorama_reading": {
     "message": "Panorama Reading"
   },
@@ -701,6 +704,9 @@
   "source_language": {
     "message": "Source language"
   },
+  "swap_languages": {
+    "message": "Swap languages"
+  },
   "system_default": {
     "message": "System Default"
   },
@@ -729,7 +735,10 @@
     "message": "Text color"
   },
   "translate": {
-    "message": "Translate (⌥A)"
+    "message": "Translate"
+  },
+  "translating": {
+    "message": "Translating..."
   },
   "translation_display_style_background": {
     "message": "Background"

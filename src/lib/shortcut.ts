@@ -2,7 +2,23 @@ import { browser } from 'wxt/browser';
 
 import config from './config';
 import i18n from './i18n';
-import type { FeatureConfig, FeatureConfigKey } from './types';
+import {
+  CMD_BILINGUAL_SUBTITLES,
+  CMD_CONTEXT_TRANSLATE,
+  CMD_INSTANT_LOOKUP,
+  CMD_INTELLIGENT_INPUT,
+  CMD_PANORAMA_READING,
+  CMD_QUICK_TRANSLATE,
+  CMD_WRITING_COPILOT,
+  FEAT_BILINGUAL_SUBTITLES,
+  FEAT_CONTEXT_TRANSLATE,
+  FEAT_INSTANT_LOOKUP,
+  FEAT_INTELLIGENT_INPUT,
+  FEAT_PANORAMA_READING,
+  FEAT_QUICK_TRANSLATE,
+  FEAT_WRITING_COPILOT
+} from './preset/constants';
+import type { FeatureConfig, FeatureField } from './types';
 
 /**
  * 快捷键管理器 - 统一处理快捷键的显示、解析和同步
@@ -27,13 +43,13 @@ export class ShortcutManager {
   };
 
   private readonly COMMAND_MAP = {
-    'quick-translate': 'quickTranslate',
-    'context-translate': 'contextTranslate',
-    'instant-lookup': 'instantLookup',
-    'intelligent-input': 'intelligentInput',
-    'bilingual-subtitles': 'bilingualSubtitles',
-    'panorama-reading': 'panoramaReading',
-    'writing-copilot': 'writingCopilot'
+    [CMD_QUICK_TRANSLATE]: FEAT_QUICK_TRANSLATE,
+    [CMD_CONTEXT_TRANSLATE]: FEAT_CONTEXT_TRANSLATE,
+    [CMD_INSTANT_LOOKUP]: FEAT_INSTANT_LOOKUP,
+    [CMD_INTELLIGENT_INPUT]: FEAT_INTELLIGENT_INPUT,
+    [CMD_BILINGUAL_SUBTITLES]: FEAT_BILINGUAL_SUBTITLES,
+    [CMD_PANORAMA_READING]: FEAT_PANORAMA_READING,
+    [CMD_WRITING_COPILOT]: FEAT_WRITING_COPILOT
   } as const;
 
   private readonly SETTINGS_URLS: Record<string, { url: string; description: string }> = {
@@ -191,7 +207,7 @@ export class ShortcutManager {
       const current = currentConfig[configKey] as FeatureConfig;
 
       if (JSON.stringify(current.shortcut) !== JSON.stringify(shortcutKeys)) {
-        (newConfig as Record<FeatureConfigKey, FeatureConfig>)[configKey] = {
+        (newConfig as Record<FeatureField, FeatureConfig>)[configKey] = {
           ...current,
           shortcut: shortcutKeys
         };

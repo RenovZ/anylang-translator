@@ -2,6 +2,7 @@
   import { Alert, Button } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
+  import { FEAT_PANORAMA_READING } from '@/lib/preset/constants';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
@@ -12,7 +13,7 @@
   import { panoramaReadingNav as nav } from './data';
   import Section from './Section.svelte';
 
-  const field = 'panoramaReading';
+  const field = FEAT_PANORAMA_READING;
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>

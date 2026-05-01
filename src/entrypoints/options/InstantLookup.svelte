@@ -3,6 +3,7 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
+  import { FEAT_INSTANT_LOOKUP } from '@/lib/preset/constants';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
@@ -11,7 +12,7 @@
   import { instantLookupNav as nav } from './data';
   import Section from './Section.svelte';
 
-  const field = 'instantLookup';
+  const field = FEAT_INSTANT_LOOKUP;
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>

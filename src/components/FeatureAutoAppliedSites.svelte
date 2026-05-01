@@ -3,14 +3,14 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { FeatureConfigKey } from '@/lib/types';
+  import type { FeatureField } from '@/lib/types';
 
   import SectionRow from './SectionRow.svelte';
 
   interface Props {
     title: string;
     description: string;
-    field: FeatureConfigKey;
+    field: FeatureField;
   }
 
   const { title, description, field }: Props = $props();

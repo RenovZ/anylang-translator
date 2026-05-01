@@ -1,5 +1,6 @@
 <script lang="ts">
   import i18n from '@/lib/i18n';
+  import { FEAT_INTELLIGENT_INPUT } from '@/lib/preset/constants';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
@@ -10,7 +11,7 @@
   import { intelligentInputNav as nav } from './data';
   import Section from './Section.svelte';
 
-  const field = 'intelligentInput';
+  const field = FEAT_INTELLIGENT_INPUT;
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>

@@ -1,3 +1,7 @@
+import type { CommandName, FeatureField, FeatureKey, MessageType } from './preset/constants';
+
+export type { CommandName, FeatureField, FeatureKey, MessageType };
+
 export type OptionsNavItem = {
   id: string;
   title: string;
@@ -27,14 +31,6 @@ export type OutputSchema = {
   enableSpeaking: boolean;
 };
 
-export type FeatureKey =
-  | 'adaptiveTranslate'
-  | 'instantLookup'
-  | 'intelligentInput'
-  | 'bilingualSubtitles'
-  | 'panoramaReading'
-  | 'writingCopilot';
-
 export type FeatureValue = {
   disabled?: boolean;
   state?: boolean;
@@ -54,15 +50,6 @@ export type FeatureConfig = {
   autoAppliedSites?: string[];
   autoAppliedLang?: string;
 };
-
-export type FeatureConfigKey =
-  | 'quickTranslate'
-  | 'contextTranslate'
-  | 'instantLookup'
-  | 'intelligentInput'
-  | 'bilingualSubtitles'
-  | 'panoramaReading'
-  | 'writingCopilot';
 
 export type AiProviderType = 'go' | 'zen' | 'custom';
 

@@ -4,6 +4,7 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
+  import { FEAT_CONTEXT_TRANSLATE, FEAT_QUICK_TRANSLATE } from '@/lib/preset/constants';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
@@ -23,15 +24,15 @@
     title={i18n('quick_translate_icon', {
       defaultValue: 'Quick translate icon'
     })}
-    field="quickTranslate" />
+    field={FEAT_QUICK_TRANSLATE} />
 
   <FeatureShortcut
     title={i18n('quick_translate_shortcut', { defaultValue: 'Quick translate shortcut' })}
-    field="quickTranslate" />
+    field={FEAT_QUICK_TRANSLATE} />
 
   <!-- quick translate api provider -->
   <FeatureProvider
-    field="quickTranslate"
+    field={FEAT_QUICK_TRANSLATE}
     title={i18n('quick_translate_provider', { defaultValue: 'Quick translate provider' })}
     description={i18n('quick_translate_provider_description', {
       defaultValue:
@@ -44,15 +45,15 @@
     title={i18n('context_translate_icon', {
       defaultValue: 'Context translate icon'
     })}
-    field="contextTranslate" />
+    field={FEAT_CONTEXT_TRANSLATE} />
 
   <FeatureShortcut
     title={i18n('context_translate_shortcut', { defaultValue: 'Context translate shortcut' })}
-    field="contextTranslate" />
+    field={FEAT_CONTEXT_TRANSLATE} />
 
   <!-- context translate api provider -->
   <FeatureProvider
-    field="contextTranslate"
+    field={FEAT_CONTEXT_TRANSLATE}
     title={i18n('context_translate_provider', { defaultValue: 'Context translate provider' })}
     description={i18n('context_translate_provider_description', {
       defaultValue:
@@ -76,7 +77,7 @@
 
   <!-- always auto-translated sites -->
   <FeatureAutoAppliedSites
-    field="quickTranslate"
+    field={FEAT_QUICK_TRANSLATE}
     title={i18n('always_auto_translated_sites', { defaultValue: 'Always auto-translated sites' })}
     description={i18n('always_auto_translated_sites_description', {
       defaultValue:
@@ -85,7 +86,7 @@
 
   <!-- always auto-translated language -->
   <FeatureAutoAppliedLang
-    field="quickTranslate"
+    field={FEAT_QUICK_TRANSLATE}
     title={i18n('always_auto_translated_lang', { defaultValue: 'Always auto-translate language' })}
     description={i18n('always_auto_translated_lang_description', {
       defaultValue:

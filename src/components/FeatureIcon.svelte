@@ -5,7 +5,7 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { FeatureConfigKey } from '@/lib/types';
+  import type { FeatureField } from '@/lib/types';
 
   import SectionRow from './SectionRow.svelte';
 
@@ -13,7 +13,7 @@
     title: string;
     description?: string;
     iconClass?: string;
-    field: FeatureConfigKey;
+    field: FeatureField;
   }
 
   const { title, description, iconClass, field }: Prop = $props();

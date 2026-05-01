@@ -9,13 +9,13 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { FeatureConfigKey, PaidProvider, Provider } from '@/lib/types';
+  import type { FeatureField, PaidProvider, Provider } from '@/lib/types';
 
   import ProviderIcon from './ProviderIcon.svelte';
 
   interface Prop {
     showFreeProviders?: boolean;
-    field: FeatureConfigKey;
+    field: FeatureField;
   }
 
   let { showFreeProviders = true, field }: Prop = $props();

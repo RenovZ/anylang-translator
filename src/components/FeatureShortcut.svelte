@@ -4,7 +4,7 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import shortcut from '@/lib/shortcut';
-  import type { FeatureConfigKey } from '@/lib/types';
+  import type { FeatureField } from '@/lib/types';
 
   import SectionRow from './SectionRow.svelte';
   import type { ToastProp } from './ToastWrapper.svelte';
@@ -13,7 +13,7 @@
   interface Prop {
     title: string;
     description?: string;
-    field: FeatureConfigKey;
+    field: FeatureField;
   }
 
   const { title, description, field }: Prop = $props();

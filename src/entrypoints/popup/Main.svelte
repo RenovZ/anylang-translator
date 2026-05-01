@@ -23,7 +23,12 @@
   import { languageOptions } from '@/lib/data';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
-  import { aiProviders, promptPresets } from '@/lib/preset';
+  import {
+    aiProviders,
+    CMD_QUICK_TRANSLATE,
+    MSG_QUICK_TRANSLATE,
+    promptPresets
+  } from '@/lib/preset';
   import shortcut from '@/lib/shortcut';
   import type { PaidProvider, SelectionTriggerValue } from '@/lib/types';
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
@@ -31,6 +36,7 @@
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
 
   let currentSite = $state('');
+  let isTranslating = $state(false);
 
   $effect(() => {
     shortcut.syncFromBrowser();
@@ -38,6 +44,82 @@
       currentSite = tab.url ? new URL(tab.url).origin : window.location.origin;
     });
   });
+
+  // Trigger quick translate on active tab
+  async function triggerQuickTranslate() {
+    try {
+      isTranslating = true;
+      const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+      const activeTab = tabs[0];
+
+      if (!activeTab?.id) {
+        console.error('No active tab found');
+        return;
+      }
+
+      // Check if we can inject into this tab
+      if (
+        activeTab.url?.startsWith('chrome://') ||
+        activeTab.url?.startsWith('edge://') ||
+        activeTab.url?.startsWith('about:') ||
+        activeTab.url?.startsWith('moz-extension://')
+      ) {
+        console.error('Cannot translate browser internal pages');
+        return;
+      }
+
+      await browser.tabs.sendMessage(activeTab.id, {
+        type: MSG_QUICK_TRANSLATE,
+        action: CMD_QUICK_TRANSLATE
+      });
+
+      // Close popup after triggering
+      window.close();
+    } catch (error) {
+      console.error('Failed to trigger quick translate:', error);
+      // Try to inject content script first
+      try {
+        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+        const activeTab = tabs[0];
+        if (activeTab?.id) {
+          await browser.scripting.executeScript({
+            target: { tabId: activeTab.id },
+            files: ['/content-scripts/content.js']
+          });
+          await browser.tabs.sendMessage(activeTab.id, {
+            type: MSG_QUICK_TRANSLATE,
+            action: CMD_QUICK_TRANSLATE
+          });
+          window.close();
+        }
+      } catch (injectError) {
+        console.error('Failed to inject content script:', injectError);
+      }
+    } finally {
+      isTranslating = false;
+    }
+  }
+
+  // Swap source and target languages
+  function swapLanguages() {
+    const temp = $config.sourceLanguage;
+    $config.sourceLanguage = $config.targetLanguage;
+    $config.targetLanguage = temp;
+  }
+
+  // Format shortcut for display
+  function formatShortcut(shortcut: string[]): string {
+    if (!shortcut?.length) return '';
+    return shortcut
+      .map((k, i) => {
+        const key = k.charAt(0).toUpperCase() + k.slice(1);
+        if (key === 'Alt') return navigator.userAgent.toUpperCase().includes('MAC') ? '⌥' : 'Alt';
+        if (key === 'Command' || key === 'Meta')
+          return navigator.userAgent.toUpperCase().includes('MAC') ? '⌘' : 'Ctrl';
+        return key;
+      })
+      .join('+');
+  }
 </script>
 
 <main class="min-w-80 bg-slate-100 text-sm dark:bg-slate-950/80">
@@ -97,7 +179,14 @@
     <!-- languages -->
     <section class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
       {@render languageDropdown('source')}
-      <ArrowRightOutline class="h-6 w-6 shrink-0 text-slate-400" />
+      <button
+        type="button"
+        onclick={swapLanguages}
+        class="rounded-full p-1 hover:bg-slate-200 dark:hover:bg-slate-700"
+        title={i18n('swap_languages', { defaultValue: 'Swap languages' })}>
+        <ArrowRightOutline
+          class="h-6 w-6 shrink-0 rotate-90 text-slate-400 transition-transform hover:text-slate-600 dark:hover:text-slate-300" />
+      </button>
       {@render languageDropdown('target')}
     </section>
 
@@ -168,11 +257,29 @@
     <section class="flex items-center gap-3">
       <Button
         pill
-        class="bg-slate-100 p-2 hover:bg-slate-200/70 dark:bg-slate-700 hover:dark:bg-slate-600">
+        class="bg-slate-100 p-2 hover:bg-slate-200/70 dark:bg-slate-700 hover:dark:bg-slate-600"
+        title={i18n('page_translate', { defaultValue: 'Translate page' })}>
         <LanguageOutline class="text-primary-500 h-6 w-6 shrink-0" />
       </Button>
-      <Button class="flex-1 rounded-xl text-base">
-        {i18n('translate', { defaultValue: 'Translate (⌥A)' })}
+      <Button
+        class="flex-1 rounded-xl text-base"
+        onclick={triggerQuickTranslate}
+        disabled={isTranslating}>
+        {#if isTranslating}
+          <span class="inline-flex items-center gap-2">
+            <span
+              class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+            ></span>
+            {i18n('translating', { defaultValue: 'Translating...' })}
+          </span>
+        {:else}
+          {i18n('translate', { defaultValue: 'Translate' })}
+          {#if $config.quickTranslate.shortcut?.length}
+            <span class="ml-1 text-xs opacity-70">
+              ({formatShortcut($config.quickTranslate.shortcut)})
+            </span>
+          {/if}
+        {/if}
       </Button>
     </section>
 

@@ -2,6 +2,7 @@
   import { Toggle } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
+  import { FEAT_BILINGUAL_SUBTITLES } from '@/lib/preset/constants';
   import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
@@ -12,7 +13,7 @@
   import { bilingualSubtitlesNav as nav } from './data';
   import Section from './Section.svelte';
 
-  const field = 'bilingualSubtitles';
+  const field = FEAT_BILINGUAL_SUBTITLES;
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>

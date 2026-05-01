@@ -4,7 +4,7 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { FeatureConfigKey } from '@/lib/types';
+  import type { FeatureField } from '@/lib/types';
 
   import ProviderIcon from './ProviderIcon.svelte';
   import ProvidersDropdown from './ProvidersDropdown.svelte';
@@ -14,7 +14,7 @@
     title: string;
     description: string;
     showFreeProviders?: boolean;
-    field: FeatureConfigKey;
+    field: FeatureField;
   }
 
   const { title, description, field, showFreeProviders = false }: Prop = $props();

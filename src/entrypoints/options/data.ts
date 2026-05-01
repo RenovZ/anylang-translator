@@ -197,5 +197,5 @@ export const bottomNavItems = [
   pricingNav,
   docsNav,
   changelogNav,
-  feedbackNav
+  feedbackNav,
 ] as const;
