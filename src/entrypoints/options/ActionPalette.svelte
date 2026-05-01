@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button } from 'flowbite-svelte';
 
-  import { i18n } from '@/lib/i18n';
+  import i18n from '@/lib/i18n';
   import SectionRow from '@/components/SectionRow.svelte';
 
   import { actionPaletteNav } from './data';

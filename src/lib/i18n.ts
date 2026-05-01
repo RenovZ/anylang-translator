@@ -10,7 +10,7 @@ export type I18nOptions = {
   substitutions?: I18nSubstitutions;
 };
 
-export function i18n(key: string, options?: I18nOptions): string {
+function i18n(key: string, options?: I18nOptions): string {
   if (dev) {
     return options?.defaultValue ?? key;
   }

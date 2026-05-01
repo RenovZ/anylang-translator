@@ -16,7 +16,6 @@
     PlusOutline,
     QuestionCircleOutline
   } from 'flowbite-svelte-icons';
-  import Icon from '@iconify/svelte';
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
@@ -24,6 +23,7 @@
   import type { FeatureKey, FeatureValue, PaidProvider, Provider } from '@/lib/types';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ConfirmPopover from '@/components/ConfirmPopover.svelte';
+  import IconWrapper from '@/components/IconWrapper.svelte';
 
   import { apiProvidersNav } from '../data';
   import Section from '../Section.svelte';
@@ -202,7 +202,7 @@
                   color="alternative"
                   class="flex items-center gap-1 border-none text-xs shadow"
                   onclick={() => {}}>
-                  <Icon icon="tabler:list-search" class="h-4 w-4" />
+                  <IconWrapper icon="tabler:list-search" class="h-4 w-4" />
                   <span>
                     {i18n('fetch_available_models', { defaultValue: 'Fetch Available Models' })}
                   </span>

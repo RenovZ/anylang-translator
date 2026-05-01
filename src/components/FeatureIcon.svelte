@@ -1,11 +1,11 @@
 <script lang="ts">
   import { A, Input } from 'flowbite-svelte';
   import { twMerge } from 'tailwind-merge';
-  import Icon from '@iconify/svelte';
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import type { FeatureField } from '@/lib/types';
+  import IconWrapper from '@/components/IconWrapper.svelte';
 
   import SectionRow from './SectionRow.svelte';
 
@@ -23,7 +23,7 @@
   <div class="flex flex-col space-y-3" slot="controls">
     <div class="flex gap-2">
       <span class="content-center rounded-lg border-none p-2 shadow">
-        <Icon icon={$config[field].icon} class={twMerge('h-auto w-6', iconClass)} />
+        <IconWrapper icon={$config[field].icon} class={twMerge('h-auto w-6 shrink-0', iconClass)} />
       </span>
       <Input
         type="text"

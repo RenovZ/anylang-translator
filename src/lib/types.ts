@@ -46,7 +46,6 @@ export type FeatureConfig = {
   icon: string;
   provider: Provider | null;
   shortcut: string[];
-  autoAppliedEnabled?: boolean;
   autoAppliedSites?: string[];
   autoAppliedLang?: string;
 };

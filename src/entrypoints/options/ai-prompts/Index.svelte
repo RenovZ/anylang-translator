@@ -1,12 +1,12 @@
 <script lang="ts">
   import { Badge, Button, Input, Label, Select, Textarea, Tooltip } from 'flowbite-svelte';
   import { PenOutline, PlusOutline, TrashBinOutline } from 'flowbite-svelte-icons';
-  import Icon from '@iconify/svelte';
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import type { AIPrompt, OutputSchema } from '@/lib/types';
   import ConfirmPopover from '@/components/ConfirmPopover.svelte';
+  import IconWrapper from '@/components/IconWrapper.svelte';
 
   import { aiPromptsNav } from '../data';
   import Section from '../Section.svelte';
@@ -205,7 +205,7 @@
                   ondragover={(e) => handleDragOver(e, index)}
                   ondrop={handleDrop}>
                   <div class="flex items-center gap-1">
-                    <Icon
+                    <IconWrapper
                       icon="tabler:grip-vertical"
                       class="h-4 w-4 cursor-grab text-gray-400 select-none dark:text-gray-500"
                       onmousedown={() => handleDragStart(index)} />

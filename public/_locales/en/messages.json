@@ -164,6 +164,9 @@
   "click_to_test_this_provider": {
     "message": "Click to test this provider"
   },
+  "context_translate": {
+    "message": "Context Translate"
+  },
   "context_translate_icon": {
     "message": "Context translate icon"
   },
@@ -614,9 +617,6 @@
   "prompt_preset_web3": {
     "message": "Web3 translation master"
   },
-  "provider": {
-    "message": "Provider"
-  },
   "provider_name": {
     "message": "Name"
   },
@@ -640,6 +640,9 @@
   },
   "quick_action_toolbox": {
     "message": "Toolbox"
+  },
+  "quick_translate": {
+    "message": "Quick Translate"
   },
   "quick_translate_icon": {
     "message": "Quick translate icon"
@@ -703,9 +706,6 @@
   },
   "source_language": {
     "message": "Source language"
-  },
-  "swap_languages": {
-    "message": "Swap languages"
   },
   "system_default": {
     "message": "System Default"

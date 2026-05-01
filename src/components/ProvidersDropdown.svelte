@@ -5,6 +5,7 @@
 <script lang="ts">
   import { A, Dropdown, DropdownGroup, DropdownHeader, DropdownItem } from 'flowbite-svelte';
   import { PlusOutline } from 'flowbite-svelte-icons';
+  import { twMerge } from 'tailwind-merge';
   import { browser } from 'wxt/browser';
 
   import config from '@/lib/config';
@@ -16,12 +17,13 @@
   interface Prop {
     showFreeProviders?: boolean;
     field: FeatureField;
+    class?: string;
   }
 
-  let { showFreeProviders = true, field }: Prop = $props();
+  let { showFreeProviders = true, field, class: className }: Prop = $props();
 </script>
 
-<Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
+<Dropdown simple placement="bottom-end" class={twMerge('max-h-72 overflow-y-auto', className)}>
   {#if showFreeProviders}
     <DropdownGroup class="py-0">
       <DropdownHeader class="py-1 text-sm text-slate-400">

@@ -22,12 +22,12 @@
         srcset={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/dark/${provider.icon}.webp`} />
       <img
         alt={provider.name}
-        class={twMerge('flex h-auto w-6', className)}
+        class={twMerge('flex h-auto w-6 shrink-0', className)}
         src={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/${provider.icon}.webp`} />
     </picture>
   {:else}
     <Avatar
-      class={twMerge('h-auto w-6', className)}
+      class={twMerge('h-auto w-6 shrink-0', className)}
       src={avatar.dicebear(provider.name, {
         chars: 1,
         backgroundType: ['gradientLinear']

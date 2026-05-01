@@ -1,4 +1,4 @@
-import { i18n } from '@/lib/i18n';
+import i18n from '@/lib/i18n';
 
 export const languageOptions = [
   i18n('source_language', { defaultValue: 'Source language' }),

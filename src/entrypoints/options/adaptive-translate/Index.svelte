@@ -61,7 +61,7 @@
     })} />
 
   <!-- enable auto-translate -->
-  <SectionRow
+  <!-- <SectionRow
     title={i18n('enable_auto_translate', {
       defaultValue: 'Enable auto-translate feature'
     })}>
@@ -73,7 +73,7 @@
       classes={{
         span: 'me-0 cursor-pointer bg-slate-200 dark:bg-slate-600'
       }} />
-  </SectionRow>
+  </SectionRow> -->
 
   <!-- always auto-translated sites -->
   <FeatureAutoAppliedSites

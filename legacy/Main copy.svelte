@@ -26,23 +26,14 @@
   import {
     aiProviders,
     CMD_QUICK_TRANSLATE,
-    FEAT_BILINGUAL_SUBTITLES,
-    FEAT_CONTEXT_TRANSLATE,
-    FEAT_INSTANT_LOOKUP,
-    FEAT_INTELLIGENT_INPUT,
-    FEAT_PANORAMA_READING,
-    FEAT_QUICK_TRANSLATE,
-    FEAT_WRITING_COPILOT,
     MSG_QUICK_TRANSLATE,
     promptPresets
   } from '@/lib/preset';
   import shortcut from '@/lib/shortcut';
   import type { PaidProvider, SelectionTriggerValue } from '@/lib/types';
-  import LocalIcon from '@/components/LocalIcon.svelte';
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
 
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
-  import Feature from './Feature.svelte';
 
   let currentSite = $state('');
   let isTranslating = $state(false);
@@ -108,10 +99,24 @@
       isTranslating = false;
     }
   }
+
+  // Format shortcut for display
+  function formatShortcut(shortcut: string[]): string {
+    if (!shortcut?.length) return '';
+    return shortcut
+      .map((k, i) => {
+        const key = k.charAt(0).toUpperCase() + k.slice(1);
+        if (key === 'Alt') return navigator.userAgent.toUpperCase().includes('MAC') ? '⌥' : 'Alt';
+        if (key === 'Command' || key === 'Meta')
+          return navigator.userAgent.toUpperCase().includes('MAC') ? '⌘' : 'Ctrl';
+        return key;
+      })
+      .join('+');
+  }
 </script>
 
 <main class="min-w-80 bg-slate-100 text-sm dark:bg-slate-950/80">
-  <section class="space-y-6 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
+  <section class="space-y-4 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
     <!-- header -->
     <header class="flex items-center justify-between">
       <div class="flex items-center justify-between gap-2">
@@ -133,7 +138,7 @@
     {#snippet languageDropdown(position: 'source' | 'target')}
       {@const currentLang = position === 'source' ? $config.sourceLanguage : $config.targetLanguage}
       <Button
-        class="rounded-xl border-none bg-slate-100 p-1 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
+        class="rounded-xl bg-slate-100 px-3 py-2 text-slate-900 hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <div class="flex flex-col text-left">
           <span class="line-clamp-1 font-medium">
             {lang.codeToLang(currentLang) ?? i18n('auto_detect', { defaultValue: 'Auto Detect' })}
@@ -143,8 +148,7 @@
           </span>
           <Tooltip class="text-xs">{languageOptions[position === 'source' ? 0 : 1]}</Tooltip>
         </div>
-        <!-- <ChevronDownOutline class="h-5 w-5 text-slate-400" /> -->
-        <LocalIcon icon="tabler:chevron-down" class="h-4 w-4" />
+        <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
       </Button>
       <Dropdown
         simple
@@ -168,103 +172,75 @@
     <!-- languages -->
     <section class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
       {@render languageDropdown('source')}
-      <!-- <ArrowRightOutline class="h-6 w-6 text-slate-400" /> -->
-      <LocalIcon icon="tabler:arrow-right" class="h-5 w-5" />
+      <ArrowRightOutline class="h-6 w-6 shrink-0" />
       {@render languageDropdown('target')}
     </section>
 
-    <!-- adaptive-translate feature -->
-    <section class="space-y-4">
-      <Feature
-        field={FEAT_QUICK_TRANSLATE}
-        showFreeProviders={true}
-        classes={{
-          button:
-            'rounded-lg border-none bg-slate-100 p-1 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600'
-        }}>
-        {#snippet title()}
-          <Button
-            color="secondary"
-            size="xs"
-            class="flex items-center border-none px-1 py-1.5 font-medium shadow">
-            <span>{i18n('quick_translate', { defaultValue: 'Quick Translate' })}</span>
-            {#if $config.quickTranslate.shortcut?.length}
-              <span>
-                ({shortcut.formatForDisplay($config.quickTranslate.shortcut).join('')})
-              </span>
-            {/if}
-          </Button>
-        {/snippet}
-      </Feature>
-      <Feature
-        field={FEAT_CONTEXT_TRANSLATE}
-        classes={{
-          button:
-            'rounded-lg border-none bg-slate-100 p-1 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600'
-        }}>
-        {#snippet title()}
-          <Button size="xs" class="flex items-center border-none px-1 py-1.5 font-medium shadow">
-            <span>{i18n('context_translate', { defaultValue: 'Context Translate' })}</span>
-            {#if $config.contextTranslate.shortcut?.length}
-              <span>
-                ({shortcut.formatForDisplay($config.contextTranslate.shortcut).join('')})
-              </span>
-            {/if}
-          </Button>
-        {/snippet}
-      </Feature>
-      <div class="flex items-center justify-between gap-2">
-        <span class="line-clamp-1 font-medium">
-          {i18n('always_auto_translate_this_site', {
-            defaultValue: 'Always auto-translate this site'
-          })}
-        </span>
-        <Toggle
-          checked={currentSite
-            ? $config.quickTranslate.autoAppliedSites?.includes(currentSite)
-            : false}
-          onchange={() => {
-            const { autoAppliedSites } = $config.quickTranslate;
-            if (autoAppliedSites?.includes(currentSite)) {
-              $config.quickTranslate.autoAppliedSites = autoAppliedSites.filter(
-                (s) => s !== currentSite
-              );
-            } else {
-              $config.quickTranslate.autoAppliedSites = [...(autoAppliedSites ?? []), currentSite];
-            }
-          }}
-          size="small"
-          classes={{
-            span: 'cursor-pointer bg-slate-200 dark:bg-slate-600 m-0'
-          }} />
+    <!-- providers -->
+    <section class="rounded-xl bg-slate-100 dark:bg-slate-700">
+      <div
+        class:rounded-b-xl={$config.quickTranslate.provider?.type === 'free'}
+        class="grid grid-cols-[88px_1fr] items-center rounded-t-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600">
+        <div class="font-medium">{i18n('provider', { defaultValue: 'Provider' })}</div>
+        <button type="button" class="flex flex-1 items-center justify-between">
+          <div class="line-clamp-1 text-left font-medium">
+            {$config.quickTranslate.provider?.name}
+          </div>
+          <ChevronDownOutline class="h-6 w-6 text-slate-400" />
+        </button>
+        <ProvidersDropdown field="quickTranslate" />
       </div>
+      {#if $config.quickTranslate.provider && $config.quickTranslate.provider.type !== 'free' && aiProviders.includes($config.quickTranslate.provider.type)}
+        {@const paidProvider = $config.quickTranslate.provider as PaidProvider}
+        {@const currentModels =
+          (
+            $config.customProviders.find(
+              (item) =>
+                item.type !== 'free' &&
+                aiProviders.includes(item.type) &&
+                item.name === paidProvider.name
+            ) as PaidProvider
+          )?.models ?? []}
+        <div
+          class="grid grid-cols-[88px_1fr] items-center px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600">
+          <div class="font-medium">{i18n('model', { defaultValue: 'Model' })}</div>
+          <button type="button" class="flex flex-1 items-center justify-between">
+            <div class="line-clamp-1 text-left font-medium">
+              {paidProvider.model}
+            </div>
+            <ChevronDownOutline class="h-6 w-6 text-slate-400" />
+          </button>
+          <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
+            {#each currentModels as model (model)}
+              <DropdownItem
+                onclick={() => ($config.quickTranslate.provider = { model, ...paidProvider })}>
+                {model}
+              </DropdownItem>
+            {/each}
+          </Dropdown>
+        </div>
+        <div
+          class="grid grid-cols-[88px_1fr] items-center rounded-b-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600">
+          <div class="font-medium">{i18n('prompt', { defaultValue: 'Prompt' })}</div>
+          <button type="button" class="flex flex-1 items-center justify-between">
+            <div class="line-clamp-1 text-left font-medium">
+              {promptPresets.find((item) => item.value == paidProvider.prompt)?.label ?? ''}
+            </div>
+            <ChevronDownOutline class="h-6 w-6 text-slate-400" />
+          </button>
+          <Dropdown simple placement="bottom-end" class="max-h-72 overflow-y-auto">
+            {#each promptPresets as { value: prompt, label } (prompt)}
+              <DropdownItem
+                onclick={() => ($config.quickTranslate.provider = { prompt, ...paidProvider })}>
+                {label}
+              </DropdownItem>
+            {/each}
+          </Dropdown>
+        </div>
+      {/if}
     </section>
 
-    <!-- features -->
-    <section class="rounded-xl bg-slate-100 shadow dark:bg-slate-700">
-      <Feature
-        classes={{ main: 'rounded-t-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
-        title={i18n('instant_lookup', { defaultValue: 'Instant Lookup' })}
-        field={FEAT_INSTANT_LOOKUP} />
-      <Feature
-        classes={{ main: 'px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
-        title={i18n('intelligent_input', { defaultValue: 'Intelligent Input' })}
-        field={FEAT_INTELLIGENT_INPUT} />
-      <Feature
-        classes={{ main: 'px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
-        title={i18n('bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' })}
-        field={FEAT_BILINGUAL_SUBTITLES} />
-      <Feature
-        classes={{ main: 'px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
-        title={i18n('panorama_reading', { defaultValue: 'Panorama Reading' })}
-        field={FEAT_PANORAMA_READING} />
-      <Feature
-        classes={{ main: 'rounded-b-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
-        title={i18n('writing_copilot', { defaultValue: 'Writing Copilot' })}
-        field={FEAT_WRITING_COPILOT} />
-    </section>
-
-    <!-- <section class="flex items-center gap-3">
+    <section class="flex items-center gap-3">
       <Button
         pill
         class="bg-slate-100 p-2 hover:bg-slate-200/70 dark:bg-slate-700 hover:dark:bg-slate-600"
@@ -286,12 +262,12 @@
           {i18n('translate', { defaultValue: 'Translate' })}
           {#if $config.quickTranslate.shortcut?.length}
             <span class="ml-1 text-xs opacity-70">
-              ({shortcut.formatForDisplay($config.quickTranslate.shortcut).join(' ')})
+              ({formatShortcut($config.quickTranslate.shortcut)})
             </span>
           {/if}
         {/if}
       </Button>
-    </section> -->
+    </section>
 
     <!--
     TODO:

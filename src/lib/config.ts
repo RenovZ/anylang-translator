@@ -44,7 +44,6 @@ const defaultConfig = {
     icon: 'ri:translate',
     provider: structuredClone(bingTranslatorProvider),
     shortcut: ['Alt', 'Q'], // Win/Linux: ['Alt', 'Q'], macOS: ['⌥', 'Q']
-    autoAppliedEnabled: false,
     autoAppliedSites: [
       'twitter.com',
       'x.com',
@@ -62,7 +61,6 @@ const defaultConfig = {
     provider: null as Provider | null,
     shortcut: ['Alt', 'C'] // Win/Linux: ['Alt', 'C'], macOS: ['⌥', 'C']
     // 使用quickTranslate配置的信息
-    // autoAppliedEnabled: undefined,
     // autoAppliedSites: undefined,
     // autoAppliedLang: undefined
   } as FeatureConfig,
