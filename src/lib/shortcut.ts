@@ -23,7 +23,7 @@ import type { FeatureConfig, FeatureField } from './types';
 /**
  * 快捷键管理器 - 统一处理快捷键的显示、解析和同步
  */
-export class ShortcutManager {
+class Shortcut {
   // ========== 静态配置 ==========
   private readonly KEY_MAP: Record<string, { win: string; mac: string }> = {
     Alt: { win: 'Alt', mac: '⌥' },
@@ -80,15 +80,6 @@ export class ShortcutManager {
       })
     }
   };
-
-  private static instance: ShortcutManager;
-  private constructor() {}
-  static getInstance(): ShortcutManager {
-    if (!ShortcutManager.instance) {
-      ShortcutManager.instance = new ShortcutManager();
-    }
-    return ShortcutManager.instance;
-  }
 
   // ========== 平台检测 ==========
   isMac(): boolean {
@@ -223,4 +214,4 @@ export class ShortcutManager {
   }
 }
 
-export default ShortcutManager.getInstance();
+export default new Shortcut();

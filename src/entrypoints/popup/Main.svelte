@@ -23,6 +23,7 @@
   import { languageOptions } from '@/lib/data';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
+  import { logger } from '@/lib/logger';
   import {
     aiProviders,
     CMD_QUICK_TRANSLATE,
@@ -39,7 +40,6 @@
   import shortcut from '@/lib/shortcut';
   import type { PaidProvider, SelectionTriggerValue } from '@/lib/types';
   import LocalIcon from '@/components/LocalIcon.svelte';
-  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
 
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
   import Feature from './Feature.svelte';
@@ -62,7 +62,7 @@
       const activeTab = tabs[0];
 
       if (!activeTab?.id) {
-        console.error('No active tab found');
+        logger.error('No active tab found');
         return;
       }
 
@@ -73,7 +73,7 @@
         activeTab.url?.startsWith('about:') ||
         activeTab.url?.startsWith('moz-extension://')
       ) {
-        console.error('Cannot translate browser internal pages');
+        logger.error('Cannot translate browser internal pages');
         return;
       }
 
@@ -85,7 +85,7 @@
       // Close popup after triggering
       window.close();
     } catch (error) {
-      console.error('Failed to trigger quick translate:', error);
+      logger.error('Failed to trigger quick translate:', error);
       // Try to inject content script first
       try {
         const tabs = await browser.tabs.query({ active: true, currentWindow: true });
@@ -102,7 +102,7 @@
           window.close();
         }
       } catch (injectError) {
-        console.error('Failed to inject content script:', injectError);
+        logger.error('Failed to inject content script:', injectError);
       }
     } finally {
       isTranslating = false;

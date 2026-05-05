@@ -14,18 +14,7 @@ export interface TranslateResult {
   error?: string;
 }
 
-export class TranslationService {
-  private static instance: TranslationService;
-
-  private constructor() {}
-
-  static getInstance(): TranslationService {
-    if (!TranslationService.instance) {
-      TranslationService.instance = new TranslationService();
-    }
-    return TranslationService.instance;
-  }
-
+class Translation {
   async translate(options: TranslateOptions, config: Config): Promise<TranslateResult> {
     const { text, sourceLang, targetLang } = options;
     const provider = config.quickTranslate.provider;
@@ -196,4 +185,4 @@ export class TranslationService {
   }
 }
 
-export default TranslationService.getInstance();
+export default new Translation();

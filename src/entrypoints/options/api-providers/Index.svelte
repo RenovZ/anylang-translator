@@ -19,6 +19,7 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
+  import { logger } from '@/lib/logger';
   import { defaultAIFeatures, featureItems, featureKeys } from '@/lib/preset';
   import type { FeatureKey, FeatureValue, PaidProvider, Provider } from '@/lib/types';
   import AccordionItem from '@/components/AccordionItem.svelte';
@@ -124,7 +125,7 @@
             type="button"
             class="text-sm underline"
             onclick={() => {
-              console.log('TODO: this should be finished');
+              logger.log('TODO: this should be finished');
             }}>
             {i18n('click_to_test_this_provider', { defaultValue: 'Click to test this provider' })}
           </button>
@@ -313,7 +314,7 @@
                           ($config.customProviders[selectedIndex] as PaidProvider).providerOptions =
                             parsed;
                         } catch (err) {
-                          console.error(err);
+                          logger.error(err);
                         }
                       }}
                       class="h-32 w-full border-none bg-gray-50 font-mono text-sm shadow dark:bg-gray-600"

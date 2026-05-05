@@ -2,6 +2,8 @@ import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { logger } from './logger.mjs';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const workspaceRoot = path.resolve(__dirname, '..');
@@ -102,12 +104,12 @@ async function main() {
   await mkdir(path.dirname(outputFile), { recursive: true });
   await writeFile(outputFile, `${JSON.stringify(sorted, null, 2)}\n`, 'utf8');
 
-  console.log(
+  logger.success(
     `Extracted ${extracted.size} i18n entries to ${path.relative(workspaceRoot, outputFile)}`
   );
 }
 
 main().catch((error) => {
-  console.error(error);
+  logger.error(error);
   process.exitCode = 1;
 });

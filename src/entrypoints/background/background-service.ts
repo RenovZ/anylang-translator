@@ -1,5 +1,6 @@
 import { browser } from 'wxt/browser';
 
+import { logger } from '@/lib/logger';
 import { cmdToMsg } from '@/lib/preset';
 import shortcut from '@/lib/shortcut';
 import {
@@ -27,7 +28,7 @@ export class BackgroundService {
   }
 
   main(): void {
-    console.log('AnyLang background script started', { id: browser.runtime.id });
+    logger.info('AnyLang background script started', { id: browser.runtime.id });
 
     this.syncShortcuts();
     this.setupEventListeners();
@@ -49,16 +50,16 @@ export class BackgroundService {
   }
 
   private async handleCommand(command: string): Promise<void> {
-    console.log('Command received:', command);
+    logger.info('Command received:', command);
 
     const activeTab = await this.getActiveTab();
     if (!activeTab?.id) {
-      console.log('No active tab found');
+      logger.warn('No active tab found');
       return;
     }
 
     if (this.isInternalPage(activeTab.url)) {
-      console.log('Cannot inject into browser internal pages');
+      logger.warn('Cannot inject into browser internal pages');
       return;
     }
 
@@ -83,7 +84,7 @@ export class BackgroundService {
   private async sendCommandToTab(tabId: number, command: string): Promise<void> {
     const messageType = cmdToMsg[command as keyof typeof cmdToMsg];
     if (!messageType) {
-      console.error('Unknown command:', command);
+      logger.error('Unknown command:', command);
       return;
     }
 
@@ -110,7 +111,7 @@ export class BackgroundService {
       });
       await browser.tabs.sendMessage(tabId, message);
     } catch (error) {
-      console.error('Failed to inject content script:', error);
+      logger.error('Failed to inject content script:', error);
     }
   }
 
@@ -119,7 +120,7 @@ export class BackgroundService {
     sender: unknown,
     sendResponse: (response?: unknown) => void
   ): boolean {
-    console.log('Background received message:', message, 'from:', sender);
+    logger.info('Background received message:', message, 'from:', sender);
 
     this.processMessage(message)
       .then((response) => {
@@ -128,7 +129,7 @@ export class BackgroundService {
         }
       })
       .catch((error) => {
-        console.error('Error handling message:', error);
+        logger.error('Error handling message:', error);
         sendResponse({ error: error.message });
       });
 

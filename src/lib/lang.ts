@@ -12054,16 +12054,6 @@ class Lang {
   private uiLanguages = Object.keys(allLangNames);
   private targetLanguages = Object.keys(allLangNames['en']);
 
-  private static instance: Lang;
-  private constructor() {}
-
-  static getInstance(): Lang {
-    if (!Lang.instance) {
-      Lang.instance = new Lang();
-    }
-    return Lang.instance;
-  }
-
   /**
    * 获取当前界面语言下的本地化语言名称列表。
    */
@@ -12178,4 +12168,4 @@ class Lang {
   }
 }
 
-export default Lang.getInstance();
+export default new Lang();

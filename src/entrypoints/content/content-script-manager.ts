@@ -1,4 +1,5 @@
 import config, { type Config } from '@/lib/config';
+import { logger } from '@/lib/logger';
 import translationService from '@/lib/translate';
 import {
   MSG_CONTEXT_TRANSLATE,
@@ -30,7 +31,7 @@ export class ContentScriptManager {
   }
 
   main(): void {
-    console.log('AnyLang content script loaded');
+    logger.info('AnyLang content script loaded');
 
     this.setupConfigWatcher();
     this.setupMessageListener();
