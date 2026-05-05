@@ -1,16 +1,6 @@
-export class TranslatePopup {
-  private static instance: TranslatePopup;
+class TranslatePopup {
   private popup: HTMLElement | null = null;
   private clickHandler: ((e: MouseEvent) => void) | null = null;
-
-  private constructor() {}
-
-  static getInstance(): TranslatePopup {
-    if (!TranslatePopup.instance) {
-      TranslatePopup.instance = new TranslatePopup();
-    }
-    return TranslatePopup.instance;
-  }
 
   show(original: string, translation: string, isLoading = false, isError = false): void {
     this.remove();
@@ -219,4 +209,4 @@ export class TranslatePopup {
   }
 }
 
-export default TranslatePopup.getInstance();
+export default new TranslatePopup();

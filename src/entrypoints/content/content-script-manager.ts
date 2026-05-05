@@ -16,19 +16,9 @@ interface Message {
   action?: string;
 }
 
-export class ContentScriptManager {
-  private static instance: ContentScriptManager;
+class ContentScriptManager {
   private configCache: Config | null = null;
   private unwatch: (() => void) | null = null;
-
-  private constructor() {}
-
-  static getInstance(): ContentScriptManager {
-    if (!ContentScriptManager.instance) {
-      ContentScriptManager.instance = new ContentScriptManager();
-    }
-    return ContentScriptManager.instance;
-  }
 
   main(): void {
     logger.info('AnyLang content script loaded');
@@ -110,4 +100,4 @@ export class ContentScriptManager {
   }
 }
 
-export default ContentScriptManager.getInstance();
+export default new ContentScriptManager();

@@ -1,15 +1,4 @@
-export class NotificationManager {
-  private static instance: NotificationManager;
-
-  private constructor() {}
-
-  static getInstance(): NotificationManager {
-    if (!NotificationManager.instance) {
-      NotificationManager.instance = new NotificationManager();
-    }
-    return NotificationManager.instance;
-  }
-
+class NotificationManager {
   show(message: string, duration = 3000): void {
     const notification = this.createNotificationElement(message);
     document.body.appendChild(notification);
@@ -39,4 +28,4 @@ export class NotificationManager {
   }
 }
 
-export default NotificationManager.getInstance();
+export default new NotificationManager();

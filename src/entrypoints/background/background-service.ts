@@ -15,18 +15,7 @@ import {
   MSG_PING
 } from '@/lib/preset/constants';
 
-export class BackgroundService {
-  private static instance: BackgroundService;
-
-  private constructor() {}
-
-  static getInstance(): BackgroundService {
-    if (!BackgroundService.instance) {
-      BackgroundService.instance = new BackgroundService();
-    }
-    return BackgroundService.instance;
-  }
-
+class BackgroundService {
   main(): void {
     logger.info('AnyLang background script started', { id: browser.runtime.id });
 
@@ -154,4 +143,4 @@ export class BackgroundService {
   }
 }
 
-export default BackgroundService.getInstance();
+export default new BackgroundService();
