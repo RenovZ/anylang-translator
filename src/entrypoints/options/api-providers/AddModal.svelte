@@ -2,9 +2,9 @@
   import { Avatar, Heading } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
-  import type { Provider } from '@/lib/types';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import type { Provider } from '@/types/provider';
 
   let {
     open = $bindable(false),

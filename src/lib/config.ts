@@ -1,22 +1,22 @@
 import { get, writable, type Subscriber } from 'svelte/store';
 import { storage } from 'wxt/utils/storage';
 
-import {
-  bingTranslatorProvider,
-  examplePrompts,
-  googleTranslatorProvider,
-  goProviders,
-  translationDisplayStyles,
-  zenProviders
-} from './preset';
+import type { AIPrompt } from '@/types/ai';
+import type { FeatureConfig, Provider } from '@/types/provider';
 import type {
-  AIPrompt,
-  FeatureConfig,
-  Provider,
   SelectionTriggerValue,
   TranslationDisplayStyle,
   TranslationMode
-} from './types';
+} from '@/types/translate';
+
+import { examplePrompts } from './preset/ai-prompts';
+import { translationDisplayStyles } from './preset/general';
+import {
+  bingTranslatorProvider,
+  googleTranslatorProvider,
+  goProviders,
+  zenProviders
+} from './preset/providers';
 
 const defaultConfig = {
   installDateTime: null as number | null,
@@ -100,51 +100,84 @@ const defaultConfig = {
 
 export type Config = typeof defaultConfig;
 
-const configStorage = storage.defineItem<Config>('local:config_v1', {
-  fallback: defaultConfig
-});
+class ConfigStore {
+  private store = writable<Config>(defaultConfig);
+  private initialized = false;
+  private storage = storage.defineItem<Config>('local:config_v1', {
+    fallback: defaultConfig
+  });
 
-function createConfigStore() {
-  const store = writable<Config>(defaultConfig);
-  let initialized = false;
+  async init(): Promise<void> {
+    if (this.initialized) return;
+    this.initialized = true;
 
-  const initStore = async () => {
-    if (initialized) return;
-    initialized = true;
-    const initialValue = await configStorage.getValue();
-    store.set(initialValue);
-    configStorage.watch((newValue) => {
-      store.set(newValue);
+    const initialValue = await this.storage.getValue();
+    this.store.set(initialValue);
+    this.storage.watch((newValue) => {
+      this.store.set(newValue);
     });
-  };
+  }
 
-  return {
-    subscribe(run: Subscriber<Config>) {
-      initStore();
-      return store.subscribe(run);
-    },
-    get() {
-      return get(store);
-    },
-    set: async (value: Config) => {
-      await initStore();
-      store.set(value);
-      await configStorage.setValue(value);
-    },
-    update: async (fn: (value: Config) => Config) => {
-      await initStore();
-      store.update((current) => {
-        const newValue = fn(current);
-        configStorage.setValue(newValue);
-        return newValue;
-      });
-    },
-    reset: async () => {
-      await initStore();
-      store.set(defaultConfig);
-      await configStorage.removeValue();
+  subscribe(run: Subscriber<Config>): () => void {
+    this.init();
+    return this.store.subscribe(run);
+  }
+
+  get(): Config {
+    return get(this.store);
+  }
+
+  async set(value: Config): Promise<void> {
+    await this.init();
+    this.store.set(value);
+    await this.storage.setValue(value);
+  }
+
+  async update(fn: (value: Config) => Config): Promise<void> {
+    await this.init();
+    this.store.update((current) => {
+      const newValue = fn(current);
+      this.storage.setValue(newValue);
+      return newValue;
+    });
+  }
+
+  async reset(): Promise<void> {
+    await this.init();
+    this.store.set(defaultConfig);
+    await this.storage.removeValue();
+  }
+
+  isSitesAutoApplied(sites: string[], url: string | URL): boolean {
+    const hostname = typeof url === 'string' ? new URL(url).hostname : url.hostname;
+
+    if (!sites || sites.length === 0) return false;
+
+    return sites.some((pattern) => this.matchSitePattern(hostname, pattern));
+  }
+
+  /**
+   * 检查域名是否匹配规则（支持 * 通配符）
+   * @param hostname 当前域名，如 "www.medium.com"
+   * @param pattern 匹配规则，如 "*.medium.com"
+   */
+  private matchSitePattern(hostname: string, pattern: string): boolean {
+    // 精确匹配
+    if (pattern === hostname) return true;
+
+    // 处理通配符 *.example.com
+    if (pattern.startsWith('*.')) {
+      const suffix = pattern.slice(2); // 去掉 *. 得到 "medium.com"
+      // 检查 hostname 是否以 suffix 结尾，且前面有内容
+      if (hostname.endsWith(suffix)) {
+        const prefix = hostname.slice(0, -suffix.length);
+        // prefix 应该以 . 结尾（子域名）或者是空（但这样就和原域名一样了）
+        return prefix.endsWith('.') && prefix.length > 1;
+      }
     }
-  };
+
+    return false;
+  }
 }
 
-export default createConfigStore();
+export default new ConfigStore();

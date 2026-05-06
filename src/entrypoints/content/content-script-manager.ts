@@ -1,5 +1,5 @@
 import config, { type Config } from '@/lib/config';
-import { logger } from '@/lib/logger';
+import logger from '@/lib/logger';
 import translationService from '@/lib/translate';
 import {
   MSG_CONTEXT_TRANSLATE,
@@ -23,9 +23,11 @@ class ContentScriptManager {
   main(): void {
     logger.info('AnyLang content script loaded');
 
-    this.setupConfigWatcher();
-    this.setupMessageListener();
-    this.setupCleanupHandler();
+    // Quick-translate functionality has been moved to translate.content
+    // This content script is kept for potential future use but currently inactive
+    // this.setupConfigWatcher();
+    // this.setupMessageListener();
+    // this.setupCleanupHandler();
   }
 
   private setupConfigWatcher(): void {

@@ -23,9 +23,11 @@
   import { languageOptions } from '@/lib/data';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
-  import { logger } from '@/lib/logger';
+  import logger from '@/lib/logger';
+  import { sendMessage } from '@/lib/protocol';
+  import shortcut from '@/lib/shortcut';
+  import { promptPresets } from '@/lib/preset/ai-prompts';
   import {
-    aiProviders,
     CMD_QUICK_TRANSLATE,
     FEAT_BILINGUAL_SUBTITLES,
     FEAT_CONTEXT_TRANSLATE,
@@ -34,12 +36,12 @@
     FEAT_PANORAMA_READING,
     FEAT_QUICK_TRANSLATE,
     FEAT_WRITING_COPILOT,
-    MSG_QUICK_TRANSLATE,
-    promptPresets
-  } from '@/lib/preset';
-  import shortcut from '@/lib/shortcut';
-  import type { PaidProvider, SelectionTriggerValue } from '@/lib/types';
+    MSG_QUICK_TRANSLATE
+  } from '@/lib/preset/constants';
+  import { aiProviders } from '@/lib/preset/providers';
   import LocalIcon from '@/components/LocalIcon.svelte';
+  import type { PaidProvider } from '@/types/provider';
+  import type { SelectionTriggerValue } from '@/types/translate';
 
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
   import Feature from './Feature.svelte';
@@ -85,7 +87,9 @@
       // Close popup after triggering
       window.close();
     } catch (error) {
-      logger.error('Failed to trigger quick translate:', error);
+      logger.error('Failed to trigger quick translate', {
+        error: error instanceof Error ? error.message : String(error)
+      });
       // Try to inject content script first
       try {
         const tabs = await browser.tabs.query({ active: true, currentWindow: true });
@@ -102,7 +106,9 @@
           window.close();
         }
       } catch (injectError) {
-        logger.error('Failed to inject content script:', injectError);
+        logger.error('Failed to inject content script', {
+          error: injectError instanceof Error ? injectError.message : String(injectError)
+        });
       }
     } finally {
       isTranslating = false;
@@ -387,7 +393,7 @@
     <button
       type="button"
       class="flex items-center gap-1"
-      onclick={() => browser.runtime.openOptionsPage()}>
+      onclick={() => sendMessage('openOptionsPage')}>
       <CogOutline class="h-4 w-4 shrink-0" />
       <span>{i18n('settings', { defaultValue: 'Settings' })}</span>
     </button>

@@ -1,5 +1,7 @@
 import { browser } from 'wxt/browser';
 
+import type { FeatureConfig } from '@/types/provider';
+
 import config from './config';
 import i18n from './i18n';
 import {
@@ -18,7 +20,7 @@ import {
   FEAT_QUICK_TRANSLATE,
   FEAT_WRITING_COPILOT
 } from './preset/constants';
-import type { FeatureConfig, FeatureField } from './types';
+import type { FeatureField } from './preset/constants';
 
 /**
  * 快捷键管理器 - 统一处理快捷键的显示、解析和同步

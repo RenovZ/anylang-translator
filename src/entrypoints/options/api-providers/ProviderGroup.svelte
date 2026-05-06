@@ -3,9 +3,9 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { AiProviderType } from '@/lib/types';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import type { AiProviderType } from '@/types/provider';
 
   interface Props {
     title: string;

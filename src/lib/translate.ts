@@ -1,5 +1,7 @@
+import type { PaidProvider } from '@/types/provider';
+
+import type { Config } from './config';
 import { exampleQuickTranslatePrompt } from './preset/ai-prompts';
-import type { Config, PaidProvider } from './types';
 
 export interface TranslateOptions {
   text: string;

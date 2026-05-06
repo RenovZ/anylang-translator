@@ -1,6 +1,7 @@
 import i18n from '@/lib/i18n';
-
-import type { AiProviderType, FeatureItem, FeatureKey, FeatureValue, Provider } from '../types';
+import type { FeatureKey } from '@/lib/preset/constants';
+import type { FeatureItem, FeatureValue } from '@/types/feature';
+import type { AiProviderType, Provider } from '@/types/provider';
 
 // Ordered feature definitions for consistent UI rendering (array order = display order)
 export const featureItems: FeatureItem[] = [

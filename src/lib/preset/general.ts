@@ -1,6 +1,5 @@
 import i18n from '@/lib/i18n';
-
-import { type TranslationDisplayStyle } from '../types';
+import type { TranslationDisplayStyle } from '@/types/translate';
 
 export const translationDisplayStyles: TranslationDisplayStyle[] = [
   {

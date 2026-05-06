@@ -19,12 +19,14 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import { logger } from '@/lib/logger';
-  import { defaultAIFeatures, featureItems, featureKeys } from '@/lib/preset';
-  import type { FeatureKey, FeatureValue, PaidProvider, Provider } from '@/lib/types';
+  import logger from '@/lib/logger';
+  import type { FeatureKey } from '@/lib/preset/constants';
+  import { defaultAIFeatures, featureItems, featureKeys } from '@/lib/preset/providers';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ConfirmPopover from '@/components/ConfirmPopover.svelte';
   import IconWrapper from '@/components/IconWrapper.svelte';
+  import type { FeatureValue } from '@/types/feature';
+  import type { PaidProvider, Provider } from '@/types/provider';
 
   import { apiProvidersNav } from '../data';
   import Section from '../Section.svelte';
@@ -125,7 +127,7 @@
             type="button"
             class="text-sm underline"
             onclick={() => {
-              logger.log('TODO: this should be finished');
+              logger.info('TODO: this should be finished');
             }}>
             {i18n('click_to_test_this_provider', { defaultValue: 'Click to test this provider' })}
           </button>
@@ -314,7 +316,9 @@
                           ($config.customProviders[selectedIndex] as PaidProvider).providerOptions =
                             parsed;
                         } catch (err) {
-                          logger.error(err);
+                          logger.error('API request failed', {
+                            error: err instanceof Error ? err.message : String(err)
+                          });
                         }
                       }}
                       class="h-32 w-full border-none bg-gray-50 font-mono text-sm shadow dark:bg-gray-600"

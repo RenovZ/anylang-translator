@@ -11,6 +11,7 @@
   import IconListSearch from '~icons/tabler/list-search';
   import IconScanTraces from '~icons/tabler/scan-traces';
   import IconSubtitles from '~icons/tabler/subtitles';
+
   import type { Component } from 'svelte';
 
   export const icons: Record<string, Component> = {

@@ -4,7 +4,7 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import shortcut from '@/lib/shortcut';
-  import type { FeatureField } from '@/lib/types';
+  import type { FeatureField } from '@/lib/preset/constants';
 
   import SectionRow from './SectionRow.svelte';
   import type { ToastProp } from './ToastWrapper.svelte';

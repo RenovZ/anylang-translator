@@ -4,9 +4,9 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { AIPrompt, OutputSchema } from '@/lib/types';
   import ConfirmPopover from '@/components/ConfirmPopover.svelte';
   import IconWrapper from '@/components/IconWrapper.svelte';
+  import type { AIPrompt, OutputSchema } from '@/types/ai';
 
   import { aiPromptsNav } from '../data';
   import Section from '../Section.svelte';

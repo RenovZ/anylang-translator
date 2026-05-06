@@ -2,9 +2,9 @@
   import { Heading } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
-  import { examplePrompts } from '@/lib/preset';
-  import type { AIPrompt } from '@/lib/types';
+  import { examplePrompts } from '@/lib/preset/ai-prompts';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
+  import type { AIPrompt } from '@/types/ai';
 
   interface Prop {
     open: boolean;

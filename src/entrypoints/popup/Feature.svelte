@@ -3,7 +3,7 @@
 
   import config from '@/lib/config';
   import shortcut from '@/lib/shortcut';
-  import type { FeatureField } from '@/lib/types';
+  import type { FeatureField } from '@/lib/preset/constants';
   import LocalIcon from '@/components/LocalIcon.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';

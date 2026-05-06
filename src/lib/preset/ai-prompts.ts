@@ -1,6 +1,5 @@
 import i18n from '@/lib/i18n';
-
-import { type AIPrompt, type OutputSchema } from '../types';
+import type { AIPrompt, OutputSchema } from '@/types/ai';
 
 export const exampleQuickTranslatePrompt: AIPrompt = {
   feature: 'adaptiveTranslate',

@@ -10,7 +10,9 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { FeatureField, PaidProvider, Provider } from '@/lib/types';
+  import { sendMessage } from '@/lib/protocol';
+  import type { FeatureField } from '@/lib/preset/constants';
+  import type { PaidProvider, Provider } from '@/types/provider';
 
   import ProviderIcon from './ProviderIcon.svelte';
 
@@ -101,7 +103,9 @@
     <DropdownItem
       class="flex items-center gap-2"
       onclick={() =>
-        browser.tabs.create({ url: browser.runtime.getURL(`/options.html#${apiProvidersId}`) })}>
+        sendMessage('openPage', {
+          url: browser.runtime.getURL(`/options.html#${apiProvidersId}`)
+        })}>
       <PlusOutline class="h-4 w-4" />
       <span>{i18n('custom_providers', { defaultValue: 'Custom Providers' })}</span>
     </DropdownItem>

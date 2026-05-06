@@ -4,9 +4,9 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import { fontFamilyOptions, translationDisplayStyles } from '@/lib/preset';
-  import type { TranslationDisplayStyleCustom } from '@/lib/types';
+  import { fontFamilyOptions, translationDisplayStyles } from '@/lib/preset/general';
   import SectionRow from '@/components/SectionRow.svelte';
+  import type { TranslationDisplayStyleCustom } from '@/types/translate';
 
   const previewTextEn =
     'Night gathers, and now my watch begins. It shall not end until my death. I shall take no wife, hold no lands, father no children.';

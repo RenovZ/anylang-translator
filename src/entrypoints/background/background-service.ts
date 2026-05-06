@@ -1,7 +1,6 @@
 import { browser } from 'wxt/browser';
 
-import { logger } from '@/lib/logger';
-import { cmdToMsg } from '@/lib/preset';
+import logger from '@/lib/logger';
 import shortcut from '@/lib/shortcut';
 import {
   CMD_BILINGUAL_SUBTITLES,
@@ -11,13 +10,14 @@ import {
   CMD_PANORAMA_READING,
   CMD_QUICK_TRANSLATE,
   CMD_WRITING_COPILOT,
+  cmdToMsg,
   MSG_GET_SHORTCUTS,
   MSG_PING
 } from '@/lib/preset/constants';
 
 class BackgroundService {
   main(): void {
-    logger.info('AnyLang background script started', { id: browser.runtime.id });
+    logger.info('Welcome to anylang reader.', { id: browser.runtime.id });
 
     this.syncShortcuts();
     this.setupEventListeners();
@@ -39,7 +39,7 @@ class BackgroundService {
   }
 
   private async handleCommand(command: string): Promise<void> {
-    logger.info('Command received:', command);
+    logger.info('Command received', { command });
 
     const activeTab = await this.getActiveTab();
     if (!activeTab?.id) {
@@ -73,7 +73,7 @@ class BackgroundService {
   private async sendCommandToTab(tabId: number, command: string): Promise<void> {
     const messageType = cmdToMsg[command as keyof typeof cmdToMsg];
     if (!messageType) {
-      logger.error('Unknown command:', command);
+      logger.error('Unknown command', { command });
       return;
     }
 
@@ -100,7 +100,9 @@ class BackgroundService {
       });
       await browser.tabs.sendMessage(tabId, message);
     } catch (error) {
-      logger.error('Failed to inject content script:', error);
+      logger.error('Failed to inject content script', {
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   }
 
@@ -109,7 +111,7 @@ class BackgroundService {
     sender: unknown,
     sendResponse: (response?: unknown) => void
   ): boolean {
-    logger.info('Background received message:', message, 'from:', sender);
+    logger.info('Background received message', { message, sender });
 
     this.processMessage(message)
       .then((response) => {
@@ -118,7 +120,9 @@ class BackgroundService {
         }
       })
       .catch((error) => {
-        logger.error('Error handling message:', error);
+        logger.error('Error handling message', {
+          error: error instanceof Error ? error.message : String(error)
+        });
         sendResponse({ error: error.message });
       });
 
