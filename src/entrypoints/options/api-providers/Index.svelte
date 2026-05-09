@@ -82,7 +82,7 @@
   };
 </script>
 
-<Section limitHeight title={apiProvidersNav.title} description={apiProvidersNav.description}>
+<Section title={apiProvidersNav.title} description={apiProvidersNav.description}>
   <div class="grid h-full grid-cols-1 items-start gap-2 lg:grid-cols-[320px_1fr]">
     <!-- Left: Provider List -->
     <div class="max-h-full space-y-3 overflow-y-auto px-1 pb-4">

@@ -42,79 +42,73 @@
 <svelte:head>
   <link rel="stylesheet" href={hoverCssUrl} />
 </svelte:head>
-<main
-  class="min-h-screen bg-slate-100 text-sm text-slate-900 dark:bg-slate-950/80 dark:text-slate-50">
-  <!-- Header -->
-  <header
-    id="page-header"
-    class="sticky top-0 z-99 bg-white/80 shadow backdrop-blur-xs dark:bg-slate-900/80">
-    <div class="mx-auto flex items-center justify-between px-6 py-4">
-      <div class="flex items-center gap-3">
-        <div class="bg-primary-500 rounded-xl p-2 text-white shadow-md">
-          <WandMagicSparklesSolid class="h-5 w-5" />
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="text-lg font-semibold">
-            {i18n('options_title_extension_name', { defaultValue: 'Anylang Translator' })}
-          </span>
-          <span class="text-slate-400">v0.0.1</span>
-        </div>
-      </div>
-      <Button
-        color="alternative"
-        class="rounded-xl px-4 py-2 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700">
-        ⚒️ {i18n('options_button_toolbox', { defaultValue: 'Toolbox' })}
-      </Button>
+
+<!-- Header -->
+<header
+  class="sticky top-0 z-99 flex shrink-0 items-center justify-between bg-white/80 px-6 py-4 shadow backdrop-blur-xs dark:bg-slate-900/80">
+  <div class="flex items-center gap-3">
+    <div class="bg-primary-500 rounded-xl p-2 text-white shadow-md">
+      <WandMagicSparklesSolid class="h-5 w-5" />
     </div>
-  </header>
-
-  <!-- Main Content -->
-  <div id="page-main" class="mx-auto grid grid-cols-1 gap-8 px-6 py-8 sm:grid-cols-[240px_1fr]">
-    <!-- Sidebar -->
-    <aside
-      id="page-sidebar"
-      class="sticky top-24 z-10 flex h-[calc(100vh-8rem)] flex-col justify-between overflow-y-auto rounded-2xl bg-white/80 p-4 shadow-md dark:bg-slate-900/80">
-      <div>
-        {#each topNavItems as item (item.id)}
-          <a
-            href={`#${item.id}`}
-            onclick={() => goToSection(item.id)}
-            class={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition ${
-              activeNavId === item.id
-                ? twMerge(
-                    'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600',
-                    'textStyle' in item ? item.textStyle : ''
-                  )
-                : 'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700'
-            }`}>
-            <span>{item.title}</span>
-            {#if 'indicatorStyle' in item && item.indicatorStyle}
-              <Indicator class={item.indicatorStyle} />
-            {/if}
-          </a>
-        {/each}
-      </div>
-      <div class="space-y-1">
-        {#each bottomNavItems as item (item.id)}
-          <a
-            href={`#${item.id}`}
-            onclick={() => goToSection(item.id)}
-            class={`flex w-full items-center rounded-2xl px-4 py-3 text-left transition ${
-              activeNavId === item.id
-                ? 'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600'
-                : 'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700'
-            }`}>
-            {item.title}
-          </a>
-        {/each}
-      </div>
-    </aside>
-
-    <!-- Content Area - Dynamic component rendering -->
-    {#if activeNav}
-      <activeNav.component />
-    {:else}
-      <Empty />
-    {/if}
+    <div class="flex items-center gap-3">
+      <span class="text-lg font-semibold">
+        {i18n('options_title_extension_name', { defaultValue: 'Anylang Translator' })}
+      </span>
+      <span class="text-slate-400">v0.0.1</span>
+    </div>
   </div>
+  <Button
+    color="alternative"
+    class="rounded-xl px-4 py-2 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700">
+    ⚒️ {i18n('options_button_toolbox', { defaultValue: 'Toolbox' })}
+  </Button>
+</header>
+
+<!-- Main Content -->
+<main class="grid min-h-0 w-full flex-1 grid-cols-1 gap-8 px-6 py-8 sm:grid-cols-[240px_1fr]">
+  <!-- Sidebar -->
+  <aside
+    class="flex min-h-0 flex-col justify-between overflow-y-auto rounded-2xl bg-white/80 p-4 shadow-md dark:bg-slate-900/80">
+    <div>
+      {#each topNavItems as item (item.id)}
+        <a
+          href={`#${item.id}`}
+          onclick={() => goToSection(item.id)}
+          class={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition ${
+            activeNavId === item.id
+              ? twMerge(
+                  'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600',
+                  'textStyle' in item ? item.textStyle : ''
+                )
+              : 'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700'
+          }`}>
+          <span>{item.title}</span>
+          {#if 'indicatorStyle' in item && item.indicatorStyle}
+            <Indicator class={item.indicatorStyle} />
+          {/if}
+        </a>
+      {/each}
+    </div>
+    <div class="space-y-1">
+      {#each bottomNavItems as item (item.id)}
+        <a
+          href={`#${item.id}`}
+          onclick={() => goToSection(item.id)}
+          class={`flex w-full items-center rounded-2xl px-4 py-3 text-left transition ${
+            activeNavId === item.id
+              ? 'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600'
+              : 'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700'
+          }`}>
+          {item.title}
+        </a>
+      {/each}
+    </div>
+  </aside>
+
+  <!-- Content Area - Dynamic component rendering -->
+  {#if activeNav}
+    <activeNav.component />
+  {:else}
+    <Empty />
+  {/if}
 </main>

@@ -8,7 +8,6 @@
     class?: string;
     children: import('svelte').Snippet;
     headerActions?: import('svelte').Snippet;
-    limitHeight?: boolean;
   }
 
   const {
@@ -17,108 +16,19 @@
     description,
     class: className = '',
     children,
-    headerActions,
-    limitHeight = false
+    headerActions
   }: Props = $props();
-
-  let mainRef: HTMLElement | null = $state(null);
-  let headerRef: HTMLDivElement | null = $state(null);
-  let contentRef: HTMLDivElement | null = $state(null);
-  let contentHeight = $state('auto');
-
-  // Calculate content height based on viewport and external elements
-  const calculateHeight = () => {
-    // Get external page elements
-    const pageHeader = document.getElementById('page-header');
-    const pageMain = document.getElementById('page-main');
-
-    if (!pageHeader || !pageMain || !headerRef || !contentRef || !mainRef) return;
-
-    // Get external element dimensions
-    const pageHeaderHeight = pageHeader.getBoundingClientRect().height;
-    const pageMainStyle = window.getComputedStyle(pageMain);
-    const pageMainPaddingTop = parseFloat(pageMainStyle.paddingTop);
-    const pageMainPaddingBottom = parseFloat(pageMainStyle.paddingBottom);
-    const pageMainMarginTop = parseFloat(pageMainStyle.marginTop);
-    const pageMainMarginBottom = parseFloat(pageMainStyle.marginTop);
-
-    // Get internal header height
-    const headerHeight = headerRef.getBoundingClientRect().height;
-
-    const mainStyle = window.getComputedStyle(mainRef);
-    const mainPaddingTop = parseFloat(mainStyle.paddingTop);
-    const mainPaddingBottom = parseFloat(mainStyle.paddingBottom);
-    const mainMarginTop = parseFloat(mainStyle.marginTop);
-    const mainMarginBottom = parseFloat(mainStyle.marginBottom);
-
-    const contentStyle = window.getComputedStyle(contentRef);
-    const contentPaddingTop = parseFloat(contentStyle.paddingTop);
-    const contentPaddingBottom = parseFloat(contentStyle.paddingBottom);
-    const contentMarginTop = parseFloat(contentStyle.marginTop);
-    const contentMarginBottom = parseFloat(contentStyle.marginBottom);
-
-    const sectionPadding =
-      mainPaddingTop +
-      mainPaddingBottom +
-      mainMarginTop +
-      mainMarginBottom +
-      contentPaddingTop +
-      contentPaddingBottom +
-      contentMarginTop +
-      contentMarginBottom;
-
-    // Available height for the entire section
-    const availableHeight =
-      window.innerHeight -
-      pageHeaderHeight -
-      pageMainPaddingTop -
-      pageMainPaddingBottom -
-      pageMainMarginTop -
-      pageMainMarginBottom;
-
-    const calculatedContentHeight = availableHeight - headerHeight - sectionPadding;
-    contentHeight = `${calculatedContentHeight}px`;
-  };
-
-  $effect(() => {
-    if (limitHeight) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.removeProperty('overflow');
-    }
-  });
-
-  // Recalculate on mount and resize
-  $effect(() => {
-    if (!limitHeight || !contentRef) return;
-
-    calculateHeight();
-
-    const handleResize = () => calculateHeight();
-    window.addEventListener('resize', handleResize);
-
-    // Also observe header size changes
-    const resizeObserver = headerRef ? new ResizeObserver(() => calculateHeight()) : null;
-    if (headerRef && resizeObserver) {
-      resizeObserver.observe(headerRef);
-    }
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      resizeObserver?.disconnect();
-    };
-  });
 
   const classList = $derived(
     twMerge(
-      'rounded-2xl bg-white/80 p-8 shadow-md dark:bg-slate-900/80 flex flex-col max-w-7xl w-full mx-auto',
+      'rounded-2xl bg-white/80 p-8 shadow-md dark:bg-slate-900/80 flex flex-col h-full min-h-0 max-w-7xl w-full mx-auto',
       className
     )
   );
 </script>
 
-<section class={classList} bind:this={mainRef}>
-  <div bind:this={headerRef} class="flex shrink-0 flex-col items-start gap-2">
+<section class={classList}>
+  <div class="flex shrink-0 flex-col items-start gap-2">
     {#if title || subtitle || description}
       {#if title}
         {#if typeof title === 'string'}
@@ -147,11 +57,7 @@
     {@render headerActions?.()}
   </div>
 
-  <!-- Content area with calculated height -->
-  <div
-    bind:this={contentRef}
-    class="space-y-10 overflow-auto pt-10 pr-1"
-    style={`height: ${contentHeight};`}>
+  <div class="min-h-0 flex-1 space-y-10 overflow-y-auto py-10 pr-1">
     {@render children?.()}
   </div>
 </section>

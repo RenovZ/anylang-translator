@@ -108,7 +108,7 @@
   };
 </script>
 
-<Section limitHeight title={aiPromptsNav.title} description={aiPromptsNav.description}>
+<Section title={aiPromptsNav.title} description={aiPromptsNav.description}>
   <div class="grid h-full grid-cols-1 items-start gap-2 lg:grid-cols-[320px_1fr]">
     <!-- Left: AI Prompt List -->
     <div class="max-h-full space-y-1 overflow-y-auto px-1 pb-4">
