@@ -18,6 +18,7 @@
 
   import '@/assets/app.css';
 
+  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
   import avatar from '@/lib/avatar';
   import config from '@/lib/config';
   import { languageOptions } from '@/lib/data';
@@ -25,7 +26,6 @@
   import lang from '@/lib/lang';
   import { aiProviders, promptPresets } from '@/lib/preset';
   import type { PaidProvider, SelectionTriggerValue } from '@/lib/types';
-  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
 
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
 

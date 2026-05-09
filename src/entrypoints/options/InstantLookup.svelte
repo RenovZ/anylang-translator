@@ -1,14 +1,14 @@
 <script lang="ts">
   import { Button } from 'flowbite-svelte';
 
-  import config from '@/lib/config';
-  import i18n from '@/lib/i18n';
   import FeatureAutoAppliedLangs from '@/components/FeatureAutoAppliedLangs.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
+  import config from '@/lib/config';
+  import i18n from '@/lib/i18n';
   import { FEAT_INSTANT_LOOKUP } from '@/preset/constants';
 
   import { instantLookupNav as nav } from './data';

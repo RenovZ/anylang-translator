@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Heading } from 'flowbite-svelte';
 
-  import i18n from '@/lib/i18n';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import i18n from '@/lib/i18n';
   import { BUILTIN_PROVIDERS, COMPATIBLE_PROVIDERS } from '@/preset/provider';
   import type { PresetItem } from '@/types/provider';
 

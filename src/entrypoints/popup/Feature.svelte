@@ -1,11 +1,11 @@
 <script lang="ts">
   import { twMerge } from 'tailwind-merge';
 
-  import config from '@/lib/config';
-  import shortcut from '@/lib/shortcut';
   import LocalIcon from '@/components/LocalIcon.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
+  import config from '@/lib/config';
+  import shortcut from '@/lib/shortcut';
   import type { FeatureField } from '@/preset/constants';
   import { getProviderIcon } from '@/preset/provider';
 

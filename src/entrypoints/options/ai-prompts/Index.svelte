@@ -2,11 +2,11 @@
   import { Badge, Button, Input, Label, Select, Textarea, Toggle, Tooltip } from 'flowbite-svelte';
   import { PenOutline, PlusOutline, TrashBinOutline } from 'flowbite-svelte-icons';
 
+  import ConfirmPopover from '@/components/ConfirmPopover.svelte';
+  import IconWrapper from '@/components/IconWrapper.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { uniqueName } from '@/lib/naming';
-  import ConfirmPopover from '@/components/ConfirmPopover.svelte';
-  import IconWrapper from '@/components/IconWrapper.svelte';
   import type { Output, Prompt } from '@/types/prompt';
 
   import { aiPromptsNav } from '../data';

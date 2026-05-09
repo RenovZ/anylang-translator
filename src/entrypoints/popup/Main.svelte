@@ -18,6 +18,7 @@
 
   import '@/assets/app.css';
 
+  import LocalIcon from '@/components/LocalIcon.svelte';
   import avatar from '@/lib/avatar';
   import config from '@/lib/config';
   import { languageOptions } from '@/lib/data';
@@ -26,7 +27,6 @@
   import logger, { formatError } from '@/lib/logger';
   import { sendMessage } from '@/lib/protocol';
   import shortcut from '@/lib/shortcut';
-  import LocalIcon from '@/components/LocalIcon.svelte';
   import {
     CMD_QUICK_TRANSLATE,
     FEAT_BILINGUAL_SUBTITLES,

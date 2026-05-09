@@ -2,9 +2,9 @@
   import { Button, Dropdown, DropdownItem, Input, Label, Select } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
+  import SectionRow from '@/components/SectionRow.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import SectionRow from '@/components/SectionRow.svelte';
   import { displayStyles, fontFamilyOptions } from '@/preset/translate';
   import type { CustomDisplayStyle } from '@/types/translate';
 

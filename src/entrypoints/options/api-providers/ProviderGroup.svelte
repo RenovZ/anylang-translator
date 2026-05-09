@@ -1,10 +1,10 @@
 <script lang="ts">
   import { A, Toggle } from 'flowbite-svelte';
 
-  import config from '@/lib/config';
-  import i18n from '@/lib/i18n';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import config from '@/lib/config';
+  import i18n from '@/lib/i18n';
   import { getProviderIcon } from '@/preset/provider';
   import type { AIProviderType } from '@/types/provider';
 

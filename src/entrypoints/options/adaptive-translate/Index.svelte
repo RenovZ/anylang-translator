@@ -2,14 +2,14 @@
   import { A, Button, Dropdown, DropdownItem, Input, Toggle } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
-  import config from '@/lib/config';
-  import i18n from '@/lib/i18n';
   import FeatureAutoAppliedLangs from '@/components/FeatureAutoAppliedLangs.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
+  import config from '@/lib/config';
+  import i18n from '@/lib/i18n';
   import { FEAT_CONTEXT_TRANSLATE, FEAT_QUICK_TRANSLATE } from '@/preset/constants';
   import { translateModeSchema } from '@/types/config';
 

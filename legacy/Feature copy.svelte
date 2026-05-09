@@ -4,11 +4,11 @@
   import { twMerge } from 'tailwind-merge';
   import Icon from '@iconify/svelte';
 
+  import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
   import config from '@/lib/config';
   import shortcut from '@/lib/shortcut';
   import type { FeatureField } from '@/lib/types';
-  import ProviderIcon from '@/components/ProviderIcon.svelte';
-  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
 
   interface Prop {
     title: string;

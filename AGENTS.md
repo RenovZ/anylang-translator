@@ -11,15 +11,15 @@ npm run dev          # Start dev server
 npm run dev:firefox  # Dev with Firefox
 npm run build        # Production build (runs i18n extraction first)
 npm run build:firefox
-npm run dprint       # Format all files (dprint, not prettier)
+npm run format       # Format all files (prettier, not dprint)
 npm run check        # svelte-check for types
 npm run lint         # eslint + prettier --check
 ```
 
 ## Format & Lint
 
-- **Formatter**: `dprint fmt` (configured in `dprint.json`), NOT plain prettier
-- Single quotes, 4-space indent (per dprint.json `markup` config)
+- **Formatter**: `prettier` (configured in `.prettierrc`)
+- Single quotes, 4-space indent (per `.prettierrc` config)
 - Excludes: `src/api`, `swagger.yaml`, `node_modules`
 
 ## i18n

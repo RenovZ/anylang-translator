@@ -2,9 +2,9 @@
   import { A, Input } from 'flowbite-svelte';
   import { twMerge } from 'tailwind-merge';
 
+  import IconWrapper from '@/components/IconWrapper.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import IconWrapper from '@/components/IconWrapper.svelte';
   import type { FeatureField } from '@/preset/constants';
 
   import SectionRow from './SectionRow.svelte';

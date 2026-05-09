@@ -2,13 +2,13 @@
   import { Avatar, Badge, Button, Dropdown, DropdownItem, Radio, Toggle } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
+  import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
+  import SectionRow from '@/components/SectionRow.svelte';
   import avatar from '@/lib/avatar';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
-  import ProviderIcon from '@/components/ProviderIcon.svelte';
-  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
-  import SectionRow from '@/components/SectionRow.svelte';
   import { getProviderIcon } from '@/preset/provider';
 
   import { generalNav } from '../data';

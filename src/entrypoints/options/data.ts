@@ -1,5 +1,5 @@
-import i18n from '@/lib/i18n';
 import { apiProvidersId } from '@/components/ProvidersDropdown.svelte';
+import i18n from '@/lib/i18n';
 import type { OptionsNavItem } from '@/types/options';
 
 import About from './About.svelte';

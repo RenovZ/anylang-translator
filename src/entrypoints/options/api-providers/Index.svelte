@@ -17,14 +17,14 @@
     QuestionCircleOutline
   } from 'flowbite-svelte-icons';
 
-  import config from '@/lib/config';
-  import i18n from '@/lib/i18n';
-  import logger from '@/lib/logger';
-  import { uniqueName } from '@/lib/naming';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ConfirmPopover from '@/components/ConfirmPopover.svelte';
   import IconWrapper from '@/components/IconWrapper.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import config from '@/lib/config';
+  import i18n from '@/lib/i18n';
+  import logger from '@/lib/logger';
+  import { uniqueName } from '@/lib/naming';
   import type { FeatureKey } from '@/preset/constants';
   import {
     COMPATIBLE_PROVIDERS,

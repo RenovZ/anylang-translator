@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Heading } from 'flowbite-svelte';
 
-  import i18n from '@/lib/i18n';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
+  import i18n from '@/lib/i18n';
   import { PROMPT_LIST } from '@/preset/prompt';
   import type { Prompt } from '@/types/prompt';
 

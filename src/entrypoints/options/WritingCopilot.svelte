@@ -1,10 +1,10 @@
 <script lang="ts">
-  import i18n from '@/lib/i18n';
   import FeatureAutoAppliedLangs from '@/components/FeatureAutoAppliedLangs.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
+  import i18n from '@/lib/i18n';
   import { FEAT_WRITING_COPILOT } from '@/preset/constants';
 
   import { writingCopilotNav as nav } from './data';
