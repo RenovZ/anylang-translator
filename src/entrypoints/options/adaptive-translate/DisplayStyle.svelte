@@ -4,9 +4,9 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import { fontFamilyOptions, translationDisplayStyles } from '@/lib/preset/general';
   import SectionRow from '@/components/SectionRow.svelte';
-  import type { TranslationDisplayStyleCustom } from '@/types/translate';
+  import { displayStyles, fontFamilyOptions } from '@/preset/translate';
+  import type { CustomDisplayStyle } from '@/types/translate';
 
   const previewTextEn =
     'Night gathers, and now my watch begins. It shall not end until my death. I shall take no wife, hold no lands, father no children.';
@@ -15,9 +15,9 @@
 
   const previewStyles = (
     node: HTMLElement,
-    styles: Record<string, string> | TranslationDisplayStyleCustom
+    styles: Record<string, string> | CustomDisplayStyle
   ) => {
-    const apply = (s: Record<string, string> | TranslationDisplayStyleCustom) => {
+    const apply = (s: Record<string, string> | CustomDisplayStyle) => {
       const css: Record<string, string> = {};
       for (const [k, v] of Object.entries(s)) {
         let val = String(v);
@@ -28,14 +28,14 @@
     };
     if (styles) apply(styles);
     return {
-      update(newStyles: Record<string, string> | TranslationDisplayStyleCustom) {
+      update(newStyles: Record<string, string> | CustomDisplayStyle) {
         node.style.cssText = '';
         if (newStyles) apply(newStyles);
       }
     };
   };
 
-  const defaultCustomStyles: TranslationDisplayStyleCustom = {
+  const defaultCustomStyles: CustomDisplayStyle = {
     backgroundColor: '#f3f4f6',
     color: 'inherit',
     fontSize: '14px',
@@ -46,19 +46,19 @@
   };
 
   const customStyles = $derived(
-    $config.translationDisplayStyle.value === 'custom'
+    $config.quickTranslate.translate.displayStyle.value === 'custom'
       ? {
           ...defaultCustomStyles,
-          ...($config.translationDisplayStyle.styles as TranslationDisplayStyleCustom)
+          ...($config.quickTranslate.translate.displayStyle.styles as CustomDisplayStyle)
         }
       : null
   );
 
-  const setCustomStyle = (key: keyof TranslationDisplayStyleCustom, value: string | number) => {
-    const current = $config.translationDisplayStyle;
-    $config.translationDisplayStyle = {
+  const setCustomStyle = (key: keyof CustomDisplayStyle, value: string | number) => {
+    const current = $config.quickTranslate.translate.displayStyle;
+    $config.quickTranslate.translate.displayStyle = {
       ...current,
-      styles: { ...(current.styles as TranslationDisplayStyleCustom), [key]: value }
+      styles: { ...(current.styles as CustomDisplayStyle), [key]: value }
     };
   };
 
@@ -91,31 +91,35 @@
     <Button
       class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <span>
-        {translationDisplayStyles.find(
-          (item) => item.value === $config.translationDisplayStyle.value
-        )?.label ?? translationDisplayStyles[0].label}
+        {displayStyles.find(
+          (item) => item.value === $config.quickTranslate.translate.displayStyle.value
+        )?.label ?? displayStyles[0].label}
       </span>
       <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
     </Button>
     <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-      {#each translationDisplayStyles as item (item)}
+      {#each displayStyles as item (item)}
         <DropdownItem
           onclick={() => {
             if (item.value === 'custom') {
-              const currentStyles = $config.translationDisplayStyle.styles;
+              const currentStyles = $config.quickTranslate.translate.displayStyle.styles;
               const isCustom =
-                $config.translationDisplayStyle.value === 'custom' &&
+                $config.quickTranslate.translate.displayStyle.value === 'custom' &&
                 currentStyles &&
                 typeof currentStyles === 'object' &&
                 'fontSize' in currentStyles;
               const styles = isCustom
-                ? (currentStyles as TranslationDisplayStyleCustom)
+                ? (currentStyles as CustomDisplayStyle)
                 : { ...defaultCustomStyles };
-              $config.translationDisplayStyle = { value: 'custom', label: item.label, styles };
+              $config.quickTranslate.translate.displayStyle = {
+                value: 'custom',
+                label: item.label,
+                styles
+              };
               return;
             }
 
-            $config.translationDisplayStyle = { ...item };
+            $config.quickTranslate.translate.displayStyle = { ...item };
           }}>
           {item.label}
         </DropdownItem>
@@ -187,8 +191,8 @@
   <div class="mt-3 space-y-3 text-lg">
     <p>{previewTextEn}</p>
     <p
-      use:previewStyles={$config.translationDisplayStyle.styles}
-      use:previewAttributes={$config.translationDisplayStyle.attributes}>
+      use:previewStyles={$config.quickTranslate.translate.displayStyle.styles}
+      use:previewAttributes={$config.quickTranslate.translate.displayStyle.attributes}>
       {previewTextZh}
     </p>
   </div>

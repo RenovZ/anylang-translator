@@ -1,23 +1,9 @@
-import type { PaidProvider } from '@/types/provider';
-
-import type { Config } from './config';
-import { exampleQuickTranslatePrompt } from './preset/ai-prompts';
-
-export interface TranslateOptions {
-  text: string;
-  sourceLang?: string;
-  targetLang?: string;
-}
-
-export interface TranslateResult {
-  translation: string;
-  sourceLang?: string;
-  targetLang?: string;
-  error?: string;
-}
+import type { Config } from '@/types/config';
+import type { AIProvider } from '@/types/provider';
+import type * as Translate from '@/types/translate';
 
 class Translation {
-  async translate(options: TranslateOptions, config: Config): Promise<TranslateResult> {
+  async translate(options: Translate.Options, config: Config): Promise<Translate.Result> {
     const { text, sourceLang, targetLang } = options;
     const provider = config.quickTranslate.provider;
 
@@ -38,14 +24,14 @@ class Translation {
       return await this.bingTranslate(text, target, sourceLang);
     }
 
-    return await this.aiTranslate(text, target, provider as PaidProvider, sourceLang);
+    return await this.aiTranslate(text, target, provider as AIProvider, sourceLang);
   }
 
   private async bingTranslate(
     text: string,
     targetLang: string,
     sourceLang?: string
-  ): Promise<TranslateResult> {
+  ): Promise<Translate.Result> {
     try {
       const response = await fetch('https://api.bing.microsoft.com/v7.0/translate', {
         method: 'POST',
@@ -75,7 +61,7 @@ class Translation {
     text: string,
     targetLang: string,
     sourceLang?: string
-  ): Promise<TranslateResult> {
+  ): Promise<Translate.Result> {
     try {
       const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${
         sourceLang || 'auto'
@@ -106,46 +92,48 @@ class Translation {
     text: string,
     targetLang: string,
     sourceLang?: string
-  ): Promise<TranslateResult> {
+  ): Promise<Translate.Result> {
     return await this.googleTranslate(text, targetLang, sourceLang);
   }
 
   private async aiTranslate(
     text: string,
     targetLang: string,
-    provider: PaidProvider,
+    provider: AIProvider,
     sourceLang?: string
-  ): Promise<TranslateResult> {
-    try {
-      const prompt = exampleQuickTranslatePrompt.prompt
-        .replace(/\{\{selection\}\}/g, text)
-        .replace(/\{\{targetLanguage\}\}/g, targetLang);
-
-      const response = await fetch(provider.baseUrl || '', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${provider.apiKey || ''}`
-        },
-        body: JSON.stringify({
-          model: provider.model,
-          messages: [
-            { role: 'system', content: exampleQuickTranslatePrompt.systemPrompt },
-            { role: 'user', content: prompt }
-          ],
-          temperature: provider.temperature ?? 0.3
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`AI translation failed: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      const translation = data.choices?.[0]?.message?.content || text;
-
+  ): Promise<Translate.Result> {
+    if (provider.type !== 'custom') {
       return {
-        translation,
+        translation: '',
+        error: `Provider type '${provider.type}' not supported for direct AI translation`
+      };
+    }
+    try {
+      // const prompt = exampleQuickTranslatePrompt.prompt
+      //   .replace(/\{\{selection\}\}/g, text)
+      //   .replace(/\{\{targetLanguage\}\}/g, targetLang);
+      // const response = await fetch(provider.baseURL || '', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: `Bearer ${provider.apiKey || ''}`
+      //   },
+      //   body: JSON.stringify({
+      //     model: provider.model,
+      //     messages: [
+      //       { role: 'system', content: exampleQuickTranslatePrompt.system },
+      //       { role: 'user', content: prompt }
+      //     ],
+      //     temperature: provider.temperature ?? 0.3
+      //   })
+      // });
+      // if (!response.ok) {
+      //   throw new Error(`AI translation failed: ${response.statusText}`);
+      // }
+      // const data = await response.json();
+      // const translation = data.choices?.[0]?.message?.content || text;
+      return {
+        translation: 'TODO',
         sourceLang,
         targetLang
       };

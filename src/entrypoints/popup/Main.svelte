@@ -23,10 +23,10 @@
   import { languageOptions } from '@/lib/data';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
-  import logger from '@/lib/logger';
+  import logger, { formatError } from '@/lib/logger';
   import { sendMessage } from '@/lib/protocol';
   import shortcut from '@/lib/shortcut';
-  import { promptPresets } from '@/lib/preset/ai-prompts';
+  import LocalIcon from '@/components/LocalIcon.svelte';
   import {
     CMD_QUICK_TRANSLATE,
     FEAT_BILINGUAL_SUBTITLES,
@@ -35,13 +35,8 @@
     FEAT_INTELLIGENT_INPUT,
     FEAT_PANORAMA_READING,
     FEAT_QUICK_TRANSLATE,
-    FEAT_WRITING_COPILOT,
-    MSG_QUICK_TRANSLATE
-  } from '@/lib/preset/constants';
-  import { aiProviders } from '@/lib/preset/providers';
-  import LocalIcon from '@/components/LocalIcon.svelte';
-  import type { PaidProvider } from '@/types/provider';
-  import type { SelectionTriggerValue } from '@/types/translate';
+    FEAT_WRITING_COPILOT
+  } from '@/preset/constants';
 
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
   import Feature from './Feature.svelte';
@@ -56,64 +51,64 @@
     });
   });
 
-  // Trigger quick translate on active tab
-  async function triggerQuickTranslate() {
-    try {
-      isTranslating = true;
-      const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-      const activeTab = tabs[0];
+  // // Trigger quick translate on active tab
+  // async function triggerQuickTranslate() {
+  //   try {
+  //     isTranslating = true;
+  //     const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+  //     const activeTab = tabs[0];
 
-      if (!activeTab?.id) {
-        logger.error('No active tab found');
-        return;
-      }
+  //     if (!activeTab?.id) {
+  //       logger.error('No active tab found');
+  //       return;
+  //     }
 
-      // Check if we can inject into this tab
-      if (
-        activeTab.url?.startsWith('chrome://') ||
-        activeTab.url?.startsWith('edge://') ||
-        activeTab.url?.startsWith('about:') ||
-        activeTab.url?.startsWith('moz-extension://')
-      ) {
-        logger.error('Cannot translate browser internal pages');
-        return;
-      }
+  //     // Check if we can inject into this tab
+  //     if (
+  //       activeTab.url?.startsWith('chrome://') ||
+  //       activeTab.url?.startsWith('edge://') ||
+  //       activeTab.url?.startsWith('about:') ||
+  //       activeTab.url?.startsWith('moz-extension://')
+  //     ) {
+  //       logger.error('Cannot translate browser internal pages');
+  //       return;
+  //     }
 
-      await browser.tabs.sendMessage(activeTab.id, {
-        type: MSG_QUICK_TRANSLATE,
-        action: CMD_QUICK_TRANSLATE
-      });
+  //     await browser.tabs.sendMessage(activeTab.id, {
+  //       type: MSG_QUICK_TRANSLATE,
+  //       action: CMD_QUICK_TRANSLATE
+  //     });
 
-      // Close popup after triggering
-      window.close();
-    } catch (error) {
-      logger.error('Failed to trigger quick translate', {
-        error: error instanceof Error ? error.message : String(error)
-      });
-      // Try to inject content script first
-      try {
-        const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-        const activeTab = tabs[0];
-        if (activeTab?.id) {
-          await browser.scripting.executeScript({
-            target: { tabId: activeTab.id },
-            files: ['/content-scripts/content.js']
-          });
-          await browser.tabs.sendMessage(activeTab.id, {
-            type: MSG_QUICK_TRANSLATE,
-            action: CMD_QUICK_TRANSLATE
-          });
-          window.close();
-        }
-      } catch (injectError) {
-        logger.error('Failed to inject content script', {
-          error: injectError instanceof Error ? injectError.message : String(injectError)
-        });
-      }
-    } finally {
-      isTranslating = false;
-    }
-  }
+  //     // Close popup after triggering
+  //     window.close();
+  //   } catch (error) {
+  //     logger.error('Failed to trigger quick translate', {
+  //       error: formatError(error)
+  //     });
+  //     // Try to inject content script first
+  //     try {
+  //       const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+  //       const activeTab = tabs[0];
+  //       if (activeTab?.id) {
+  //         await browser.scripting.executeScript({
+  //           target: { tabId: activeTab.id },
+  //           files: ['/content-scripts/content.js']
+  //         });
+  //         await browser.tabs.sendMessage(activeTab.id, {
+  //           type: MSG_QUICK_TRANSLATE,
+  //           action: CMD_QUICK_TRANSLATE
+  //         });
+  //         window.close();
+  //       }
+  //     } catch (injectError) {
+  //       logger.error('Failed to inject content script', {
+  //         error: injectError instanceof Error ? injectError.message : String(injectError)
+  //       });
+  //     }
+  //   } finally {
+  //     isTranslating = false;
+  //   }
+  // }
 </script>
 
 <main class="min-w-80 bg-slate-100 text-sm dark:bg-slate-950/80">
@@ -142,7 +137,9 @@
         class="rounded-xl border-none bg-slate-100 p-1 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <div class="flex flex-col text-left">
           <span class="line-clamp-1 font-medium">
-            {lang.codeToLang(currentLang) ?? i18n('auto_detect', { defaultValue: 'Auto Detect' })}
+            {currentLang
+              ? lang.getLangName(currentLang)
+              : i18n('auto_detect', { defaultValue: 'Auto Detect' })}
           </span>
           <span class="line-clamp-1 text-xs text-slate-400">
             {languageOptions[position === 'source' ? 0 : 1]}
@@ -157,11 +154,16 @@
         placement={position === 'source' ? 'bottom-start' : 'bottom-end'}
         class="max-h-80 overflow-y-auto shadow-md">
         <DropdownItem
-          onclick={() =>
-            ($config[position === 'source' ? 'sourceLanguage' : 'targetLanguage'] = undefined)}>
+          onclick={() => {
+            if (position === 'source') {
+              $config.sourceLanguage = undefined;
+            } else {
+              $config.targetLanguage = 'en';
+            }
+          }}>
           {i18n('auto_detect', { defaultValue: 'Auto Detect' })}
         </DropdownItem>
-        {#each Object.entries(lang.all()) as [langCode, langName] (langCode)}
+        {#each Object.entries(lang.getUILangCodeMap()) as [langCode, langName] (langCode)}
           <DropdownItem
             onclick={() =>
               ($config[position === 'source' ? 'sourceLanguage' : 'targetLanguage'] = langCode)}>

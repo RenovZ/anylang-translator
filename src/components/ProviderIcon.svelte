@@ -5,30 +5,32 @@
   import avatar from '@/lib/avatar';
   import type { Provider } from '@/types/provider';
 
-  let {
-    provider,
+  const {
+    icon,
+    name,
     class: className
   }: {
-    provider: Provider | null;
+    icon?: string;
+    name: string;
     class?: string;
   } = $props();
 </script>
 
-{#if provider}
-  {#if provider.icon}
+{#if icon}
+  {#if icon}
     <picture>
       <source
         media="(prefers-color-scheme: dark)"
-        srcset={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/dark/${provider.icon}.webp`} />
+        srcset={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/dark/${icon}.webp`} />
       <img
-        alt={provider.name}
+        alt={name}
         class={twMerge('flex h-auto w-6 shrink-0', className)}
-        src={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/${provider.icon}.webp`} />
+        src={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/${icon}.webp`} />
     </picture>
   {:else}
     <Avatar
       class={twMerge('h-auto w-6 shrink-0', className)}
-      src={avatar.dicebear(provider.name, {
+      src={avatar.dicebear(name, {
         chars: 1,
         backgroundType: ['gradientLinear']
       })}

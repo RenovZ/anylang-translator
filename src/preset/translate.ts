@@ -1,15 +1,15 @@
 import i18n from '@/lib/i18n';
-import type { TranslationDisplayStyle } from '@/types/translate';
+import type { DisplayStyle } from '@/types/translate';
 
-export const translationDisplayStyles: TranslationDisplayStyle[] = [
+const DISPLAY_STYLES = [
   {
     value: 'none',
-    label: i18n('translation_display_style_none', { defaultValue: 'None' }),
+    label: i18n('display_style_none', { defaultValue: 'None' }),
     styles: {}
   },
   {
     value: 'dashed_underline',
-    label: i18n('translation_display_style_dashed_underline', { defaultValue: 'Dotted lines' }),
+    label: i18n('display_style_dashed_underline', { defaultValue: 'Dotted lines' }),
     styles: {
       textDecorationLine: 'underline',
       textDecorationStyle: 'dashed',
@@ -19,7 +19,7 @@ export const translationDisplayStyles: TranslationDisplayStyle[] = [
   },
   {
     value: 'solid_underline',
-    label: i18n('translation_display_style_solid_underline', { defaultValue: 'Straight line' }),
+    label: i18n('display_style_solid_underline', { defaultValue: 'Straight line' }),
     styles: {
       textDecorationLine: 'underline',
       textDecorationStyle: 'solid',
@@ -29,7 +29,7 @@ export const translationDisplayStyles: TranslationDisplayStyle[] = [
   },
   {
     value: 'wavy_lines',
-    label: i18n('translation_display_style_wavy_lines', { defaultValue: 'Wavy Lines' }),
+    label: i18n('display_style_wavy_lines', { defaultValue: 'Wavy Lines' }),
     styles: {
       textDecorationLine: 'underline',
       textDecorationStyle: 'wavy',
@@ -39,14 +39,14 @@ export const translationDisplayStyles: TranslationDisplayStyle[] = [
   },
   {
     value: 'weaken',
-    label: i18n('translation_display_style_weaken', { defaultValue: 'Weaken' }),
+    label: i18n('display_style_weaken', { defaultValue: 'Weaken' }),
     styles: {
       color: '#9ca3af'
     }
   },
   {
     value: 'shadow_effect',
-    label: i18n('translation_display_style_shadow_effect', {
+    label: i18n('display_style_shadow_effect', {
       defaultValue: 'Shadow effect'
     }),
     styles: {
@@ -59,7 +59,7 @@ export const translationDisplayStyles: TranslationDisplayStyle[] = [
   },
   {
     value: 'mark',
-    label: i18n('translation_display_style_mark', { defaultValue: 'Mark' }),
+    label: i18n('display_style_mark', { defaultValue: 'Mark' }),
     styles: {
       backgroundColor: '#fde047',
       padding: '0px 4px'
@@ -67,7 +67,7 @@ export const translationDisplayStyles: TranslationDisplayStyle[] = [
   },
   {
     value: 'quoted',
-    label: i18n('translation_display_style_quoted', { defaultValue: 'Quoted' }),
+    label: i18n('display_style_quoted', { defaultValue: 'Quoted' }),
     styles: {
       borderLeftWidth: '4px',
       borderLeftStyle: 'solid',
@@ -77,7 +77,7 @@ export const translationDisplayStyles: TranslationDisplayStyle[] = [
   },
   {
     value: 'blur',
-    label: i18n('translation_display_style_blur', {
+    label: i18n('display_style_blur', {
       defaultValue: 'Blur'
     }),
     styles: {
@@ -89,7 +89,7 @@ export const translationDisplayStyles: TranslationDisplayStyle[] = [
   },
   {
     value: 'transparent',
-    label: i18n('translation_display_style_transparent', { defaultValue: 'Transparent' }),
+    label: i18n('display_style_transparent', { defaultValue: 'Transparent' }),
     styles: {
       opacity: '0.15'
     },
@@ -99,7 +99,7 @@ export const translationDisplayStyles: TranslationDisplayStyle[] = [
   },
   {
     value: 'background',
-    label: i18n('translation_display_style_background', { defaultValue: 'Background' }),
+    label: i18n('display_style_background', { defaultValue: 'Background' }),
     styles: {
       backgroundColor: 'oklch(98% 0.016 73.684)',
       borderRadius: '4px',
@@ -108,10 +108,24 @@ export const translationDisplayStyles: TranslationDisplayStyle[] = [
   },
   {
     value: 'custom',
-    label: i18n('translation_display_style_custom', { defaultValue: 'Custom' }),
+    label: i18n('display_style_custom', { defaultValue: 'Custom' }),
     styles: {}
   }
-];
+] as const;
+
+export const attributeKeys = ['data-anylang-translator-hover-style'] as const;
+
+export const displayStyles = DISPLAY_STYLES.map(
+  (item) =>
+    ({
+      value: item.value,
+      label: item.label,
+      styles: item.styles,
+      ...('attributes' in item ? { attributes: item.attributes } : {})
+    }) satisfies DisplayStyle
+);
+
+export const displayStyleValues: string[] = displayStyles.map((s) => s.value);
 
 export const fontFamilyOptions = [
   { value: '', label: i18n('system_default', { defaultValue: 'System Default' }) },

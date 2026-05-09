@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 import Icons from 'unplugin-icons/vite';
 import { defineConfig } from 'wxt';
+import { loggerCallerPlugin } from './plugins/logger-caller';
 
 const configFile = fileURLToPath(import.meta.url);
 const workspaceRoot = path.dirname(configFile);
@@ -101,7 +102,7 @@ export default defineConfig({
     }
   },
   vite: () => ({
-    plugins: [i18nExtractionPlugin(), Icons({ compiler: 'svelte' })],
+    plugins: [i18nExtractionPlugin(), loggerCallerPlugin(), Icons({ compiler: 'svelte' })],
     server: {
       host: '0.0.0.0'
     },

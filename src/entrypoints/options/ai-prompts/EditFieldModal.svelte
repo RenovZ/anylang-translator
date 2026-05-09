@@ -3,7 +3,7 @@
 
   import i18n from '@/lib/i18n';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
-  import type { OutputSchema } from '@/types/ai';
+  import type { Output } from '@/types/prompt';
 
   import Variables from './Variables.svelte';
 
@@ -14,12 +14,12 @@
     onSave
   }: {
     open: boolean;
-    field: OutputSchema;
+    field: Output;
     mode?: 'add' | 'edit';
-    onSave: (field: OutputSchema) => void;
+    onSave: (field: Output) => void;
   } = $props();
 
-  let localField = $state<OutputSchema>({
+  let localField = $state<Output>({
     name: '',
     type: 'text',
     description: '',

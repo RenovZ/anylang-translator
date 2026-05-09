@@ -1,49 +1,36 @@
 import { get, writable, type Subscriber } from 'svelte/store';
 import { storage } from 'wxt/utils/storage';
 
-import type { AIPrompt } from '@/types/ai';
-import type { FeatureConfig, Provider } from '@/types/provider';
-import type {
-  SelectionTriggerValue,
-  TranslationDisplayStyle,
-  TranslationMode
-} from '@/types/translate';
+import { PROMPT_LIST } from '@/preset/prompt';
+import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
+import { displayStyles } from '@/preset/translate';
+import { configSchema, type Config } from '@/types/config';
 
-import { examplePrompts } from './preset/ai-prompts';
-import { translationDisplayStyles } from './preset/general';
-import {
-  bingTranslatorProvider,
-  googleTranslatorProvider,
-  goProviders,
-  zenProviders
-} from './preset/providers';
+import logger from './logger';
 
-const defaultConfig = {
-  installDateTime: null as number | null,
-  lastTimeShowingReleaseNotes: null as number | null,
-  originalUserAgent: null as string | null,
+const defaultConfig: Config = configSchema.parse({
+  installDateTime: null,
+  lastTimeShowingReleaseNotes: null,
+  originalUserAgent: null,
   uiLanguage: 'default',
-  sourceLanguage: undefined as string | undefined,
-  targetLanguage: undefined as string | undefined,
+  sourceLanguage: undefined,
+  targetLanguage: 'en',
 
-  selectionTriggerTranslate: 'directly' as SelectionTriggerValue,
-  selectionTranslateEnabled: false,
+  languageDetection: {
+    mode: 'basic',
+    provider: null
+  },
 
-  translationMode: 'bilingual' as TranslationMode,
-
-  translationDisplayStyle: translationDisplayStyles[0] as TranslationDisplayStyle,
-
-  customProviders: [
-    structuredClone(bingTranslatorProvider),
-    structuredClone(googleTranslatorProvider),
+  providers: [
+    ...structuredClone(freeProviders),
     ...structuredClone(goProviders),
     ...structuredClone(zenProviders)
-  ] as Provider[],
+  ],
 
   quickTranslate: {
     icon: 'ri:translate',
-    provider: structuredClone(bingTranslatorProvider),
-    shortcut: ['Alt', 'Q'], // Win/Linux: ['Alt', 'Q'], macOS: ['⌥', 'Q']
+    provider: structuredClone(freeProviders[0]),
+    shortcut: ['Alt', 'Q'],
     autoAppliedSites: [
       'twitter.com',
       'x.com',
@@ -53,57 +40,59 @@ const defaultConfig = {
       '*.medium.com',
       'news.ycombinator.com'
     ],
-    autoAppliedLang: undefined
-  } as FeatureConfig,
+    translate: {
+      mode: 'bilingual',
+      displayStyle: displayStyles[0],
+      pageRange: 'main'
+    }
+  },
 
   contextTranslate: {
     icon: 'ri:translate-ai',
-    provider: null as Provider | null,
-    shortcut: ['Alt', 'C'] // Win/Linux: ['Alt', 'C'], macOS: ['⌥', 'C']
-    // 使用quickTranslate配置的信息
-    // autoAppliedSites: undefined,
-    // autoAppliedLang: undefined
-  } as FeatureConfig,
+    provider: null,
+    shortcut: ['Alt', 'C']
+  },
 
   instantLookup: {
     icon: 'lucide:book-open-text',
-    provider: null as Provider | null,
-    shortcut: ['Alt', 'L'] // Win/Linux: ['Alt', 'L'], macOS: ['⌥', 'L']
-  } as FeatureConfig,
+    provider: null,
+    shortcut: ['Alt', 'L'],
+    selection: {
+      triggerTranslate: 'directly'
+    }
+  },
 
   intelligentInput: {
     icon: 'tabler:keyboard',
-    provider: null as Provider | null,
-    shortcut: ['Alt', 'I'] // Win/Linux: ['Alt', 'I'], macOS: ['⌥', 'I']
-  } as FeatureConfig,
+    provider: null,
+    shortcut: ['Alt', 'I']
+  },
 
   bilingualSubtitles: {
     icon: 'tabler:subtitles',
-    provider: structuredClone(bingTranslatorProvider) as Provider | null,
-    shortcut: [] // Win/Linux: ['Alt', 'S'], macOS: ['⌥', 'S']
-  } as FeatureConfig,
+    provider: structuredClone(freeProviders[0]),
+    shortcut: []
+  },
 
   panoramaReading: {
     icon: 'tabler:scan-traces',
-    provider: null as Provider | null,
-    shortcut: [] // Win/Linux: ['Alt', 'P'], macOS: ['⌥', 'P']
-  } as FeatureConfig,
+    provider: null,
+    shortcut: []
+  },
 
   writingCopilot: {
     icon: 'tabler:feather-filled',
-    provider: null as Provider | null,
-    shortcut: [] // Win/Linux: ['Alt', 'W'], macOS: ['⌥', 'W']
-  } as FeatureConfig,
+    provider: null,
+    shortcut: []
+  },
 
-  customAIPrompts: structuredClone(examplePrompts) as AIPrompt[]
-};
-
-export type Config = typeof defaultConfig;
+  customAIPrompts: structuredClone(PROMPT_LIST)
+});
 
 class ConfigStore {
   private store = writable<Config>(defaultConfig);
   private initialized = false;
-  private storage = storage.defineItem<Config>('local:config_v1', {
+  private storage = storage.defineItem<unknown>('local:config_v1', {
     fallback: defaultConfig
   });
 
@@ -111,10 +100,24 @@ class ConfigStore {
     if (this.initialized) return;
     this.initialized = true;
 
-    const initialValue = await this.storage.getValue();
-    this.store.set(initialValue);
+    const rawValue = await this.storage.getValue();
+    const parseResult = configSchema.safeParse(rawValue);
+
+    if (parseResult.success) {
+      this.store.set(parseResult.data);
+    } else {
+      logger.warn('Invalid config data, using default:', { error: parseResult.error });
+      this.store.set(defaultConfig);
+      await this.storage.setValue(defaultConfig);
+    }
+
     this.storage.watch((newValue) => {
-      this.store.set(newValue);
+      const parseResult = configSchema.safeParse(newValue);
+      if (parseResult.success) {
+        this.store.set(parseResult.data);
+      } else {
+        logger.warn('Invalid config update, ignoring:', { error: parseResult.error });
+      }
     });
   }
 
@@ -127,18 +130,30 @@ class ConfigStore {
     return get(this.store);
   }
 
-  async set(value: Config): Promise<void> {
+  async set(value: unknown): Promise<void> {
     await this.init();
-    this.store.set(value);
-    await this.storage.setValue(value);
+    const parseResult = configSchema.safeParse(value);
+    if (parseResult.success) {
+      this.store.set(parseResult.data);
+      await this.storage.setValue(parseResult.data);
+    } else {
+      logger.error('Invalid config value:', { error: parseResult.error });
+      throw new Error('Invalid config value');
+    }
   }
 
   async update(fn: (value: Config) => Config): Promise<void> {
     await this.init();
     this.store.update((current) => {
       const newValue = fn(current);
-      this.storage.setValue(newValue);
-      return newValue;
+      const parseResult = configSchema.safeParse(newValue);
+      if (parseResult.success) {
+        this.storage.setValue(parseResult.data);
+        return parseResult.data;
+      } else {
+        logger.error('Invalid config update:', { error: parseResult.error });
+        return current;
+      }
     });
   }
 
@@ -158,8 +173,6 @@ class ConfigStore {
 
   /**
    * 检查域名是否匹配规则（支持 * 通配符）
-   * @param hostname 当前域名，如 "www.medium.com"
-   * @param pattern 匹配规则，如 "*.medium.com"
    */
   private matchSitePattern(hostname: string, pattern: string): boolean {
     // 精确匹配

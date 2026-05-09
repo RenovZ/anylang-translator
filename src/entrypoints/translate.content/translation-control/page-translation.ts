@@ -1,0 +1,572 @@
+import config from '@/lib/config';
+import cryptoPolyfill from '@/lib/crypto-polyfill';
+import logger from '@/lib/logger';
+
+type SimpleIntersectionOptions = Omit<IntersectionObserverInit, 'threshold'> & {
+  threshold?: number;
+};
+
+interface IPageTranslationManager {
+  /**
+   * Indicates whether the page translation is currently active
+   */
+  readonly isActive: boolean;
+
+  /**
+   * Starts the automatic page translation functionality
+   * Registers observers, touch triggers and set storage
+   */
+  start: () => Promise<void>;
+
+  /**
+   * Stops the automatic page translation functionality
+   * Cleans up all observers and removes translated content and set storage
+   */
+  stop: () => void;
+
+  /**
+   * Registers page translation triggers
+   */
+  registerPageTranslationTriggers: () => () => void;
+}
+
+export class PageTranslationManager implements IPageTranslationManager {
+  private static readonly MAX_DURATION = 500;
+  private static readonly MOVE_THRESHOLD = 30 * 30;
+  private static readonly DEFAULT_INTERSECTION_OPTIONS: SimpleIntersectionOptions = {
+    root: null,
+    rootMargin: '600px',
+    threshold: 0.1
+  };
+
+  private isPageTranslating: boolean = false;
+  private intersectionObserver: IntersectionObserver | null = null;
+  private mutationObservers: MutationObserver[] = [];
+  private walkId: string | null = null;
+  private intersectionOptions: IntersectionObserverInit;
+  private dontWalkIntoElementsCache = new WeakSet<HTMLElement>();
+  private titleObserver: MutationObserver | null = null;
+  private lastSourceTitle: string | null = null;
+  private lastAppliedTranslatedTitle: string | null = null;
+  private titleRequestVersion = 0;
+
+  constructor(intersectionOptions: SimpleIntersectionOptions = {}) {
+    if (intersectionOptions.threshold !== undefined) {
+      if (intersectionOptions.threshold < 0 || intersectionOptions.threshold > 1) {
+        throw new Error('IntersectionObserver threshold must be between 0 and 1');
+      }
+    }
+
+    this.intersectionOptions = {
+      ...PageTranslationManager.DEFAULT_INTERSECTION_OPTIONS,
+      ...intersectionOptions
+    };
+  }
+
+  get isActive(): boolean {
+    return this.isPageTranslating;
+  }
+
+  async start(): Promise<void> {
+    if (this.isPageTranslating) {
+      logger.warn('PageTranslationManager is already active');
+      return;
+    }
+
+    // TODO:
+    // const trackedContext = window === window.top ? analyticsContext : undefined
+
+    const cfg = config.get();
+    if (!cfg) {
+      logger.warn('Config is not initialized');
+      // TODO:
+      // if (trackedContext) {
+      //   void trackFeatureUsed({
+      //     ...trackedContext,
+      //     outcome: "failure",
+      //   })
+      // }
+      return;
+    }
+
+    // const detectedCode = await getDetectedCodeFromStorage()
+
+    // if (!validateTranslationConfigAndToast({
+    //   providersConfig: config.providersConfig,
+    //   translate: config.translate,
+    //   language: config.language,
+    // }, detectedCode)) {
+    //   if (trackedContext) {
+    //     void trackFeatureUsed({
+    //       ...trackedContext,
+    //       outcome: "failure",
+    //     })
+    //   }
+    //   return
+    // }
+
+    try {
+      await browser.runtime.sendMessage({ type: 'PAGE_TRANSLATION_ENABLED', enabled: true });
+
+      this.isPageTranslating = true;
+      await this.primeDocumentTitleContext();
+      this.startDocumentTitleTracking();
+
+      // Listen to existing elements when they enter the viewpoint
+      const walkId = cryptoPolyfill.getUUID();
+      this.walkId = walkId;
+      this.intersectionObserver = new IntersectionObserver(async (entries, observer) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            if (this.isHTMLElement(entry.target)) {
+              logger.info('Element entered viewport', { target: entry.target });
+              // TODO:
+              // if (!entry.target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
+              //   const currentConfig = await getLocalConfig()
+              //   if (!currentConfig) {
+              //     logger.error("Global config is not initialized")
+              //     return
+              //   }
+              //   void translateWalkedElement(entry.target, walkId, currentConfig)
+              // }
+            }
+            observer.unobserve(entry.target);
+          }
+        }
+      }, this.intersectionOptions);
+
+      // Initialize walkability state for existing elements
+      this.addDontWalkIntoElements(document.body);
+      await this.observerTopLevelParagraphs(document.body);
+
+      // Start observing mutations from document.body and all shadow roots
+      this.observeMutations(document.body);
+
+      // if (trackedContext) {
+      //   void trackFeatureUsed({
+      //     ...trackedContext,
+      //     outcome: "success",
+      //   })
+      // }
+    } catch (error) {
+      logger.error('Failed to start page translation:', { error });
+      // TODO:
+      // if (trackedContext) {
+      //   void trackFeatureUsed({
+      //     ...trackedContext,
+      //     outcome: "failure",
+      //   })
+      // }
+      throw error;
+    }
+  }
+
+  stop(): void {
+    if (!this.isPageTranslating) {
+      logger.warn('PageTranslationManager is already inactive');
+      return;
+    }
+
+    // void browser.runtime.sendMessage({ type: 'PAGE_TRANSLATION_ENABLED', enabled: false });
+    // TODO:
+    // void sendMessage("setAndNotifyPageTranslationStateChangedByManager", {
+    //   enabled: false,
+    // })
+
+    this.isPageTranslating = false;
+    this.walkId = null;
+    this.dontWalkIntoElementsCache = new WeakSet();
+    this.stopDocumentTitleTracking();
+
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+      this.intersectionObserver = null;
+    }
+    this.mutationObservers.forEach((observer) => observer.disconnect());
+    this.mutationObservers = [];
+
+    // void removeAllTranslatedWrapperNodes();
+  }
+
+  registerPageTranslationTriggers(): () => void {
+    let startTime = 0;
+    let startTouches: TouchList | null = null;
+
+    const reset = () => {
+      startTime = 0;
+      startTouches = null;
+    };
+
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length === 4) {
+        startTime = performance.now();
+        startTouches = e.touches;
+      } else {
+        reset();
+      }
+    };
+
+    const onMove = (e: TouchEvent) => {
+      if (!startTouches) return;
+      if (e.touches.length !== 4) return reset();
+
+      for (let i = 0; i < 4; i++) {
+        const dx = e.touches[i].clientX - startTouches[i].clientX;
+        const dy = e.touches[i].clientY - startTouches[i].clientY;
+        if (dx * dx + dy * dy > PageTranslationManager.MOVE_THRESHOLD) return reset();
+      }
+    };
+
+    const onEnd = () => {
+      if (!startTouches) return;
+      if (performance.now() - startTime < PageTranslationManager.MAX_DURATION) {
+        if (this.isPageTranslating) {
+          this.stop();
+        } else {
+          void this.start();
+        }
+      }
+      reset();
+    };
+
+    document.addEventListener('touchstart', onStart, { passive: true });
+    document.addEventListener('touchmove', onMove, { passive: true });
+    document.addEventListener('touchend', onEnd, { passive: true });
+    document.addEventListener('touchcancel', reset, { passive: true });
+
+    return () => {
+      document.removeEventListener('touchstart', onStart);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onEnd);
+      document.removeEventListener('touchcancel', reset);
+    };
+  }
+
+  private shouldManageDocumentTitle(): boolean {
+    return window === window.top;
+  }
+
+  private async primeDocumentTitleContext(): Promise<void> {
+    if (!this.shouldManageDocumentTitle()) {
+      return;
+    }
+  }
+
+  private startDocumentTitleTracking(): void {
+    if (!this.shouldManageDocumentTitle()) {
+      return;
+    }
+
+    this.lastSourceTitle = document.title || '';
+    this.lastAppliedTranslatedTitle = null;
+    this.titleRequestVersion = 0;
+
+    this.observeDocumentTitle();
+    void this.syncDocumentTitle(this.lastSourceTitle);
+  }
+
+  private stopDocumentTitleTracking(): void {
+    if (!this.shouldManageDocumentTitle()) {
+      return;
+    }
+
+    const currentTitle = document.title || '';
+    if (currentTitle !== this.lastAppliedTranslatedTitle) {
+      this.lastSourceTitle = currentTitle;
+    }
+
+    if (this.titleObserver) {
+      this.titleObserver.disconnect();
+      this.titleObserver = null;
+    }
+
+    this.titleRequestVersion++;
+
+    if (this.lastSourceTitle !== null && document.title !== this.lastSourceTitle) {
+      document.title = this.lastSourceTitle;
+    }
+
+    this.lastSourceTitle = null;
+    this.lastAppliedTranslatedTitle = null;
+  }
+
+  private observeDocumentTitle(): void {
+    if (!document.head) {
+      return;
+    }
+
+    if (this.titleObserver) {
+      this.titleObserver.disconnect();
+    }
+
+    this.titleObserver = new MutationObserver(() => {
+      this.handleDocumentTitleMutation();
+    });
+
+    this.titleObserver.observe(document.head, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+  }
+
+  private handleDocumentTitleMutation(): void {
+    if (!this.isPageTranslating || !this.shouldManageDocumentTitle()) {
+      return;
+    }
+
+    const currentTitle = document.title || '';
+
+    if (currentTitle === this.lastSourceTitle) {
+      return;
+    }
+
+    if (currentTitle === this.lastAppliedTranslatedTitle) {
+      return;
+    }
+
+    this.lastSourceTitle = currentTitle;
+    void this.syncDocumentTitle(currentTitle);
+  }
+
+  private async syncDocumentTitle(sourceTitle: string): Promise<void> {
+    if (!sourceTitle.trim() || !this.isPageTranslating || !this.shouldManageDocumentTitle()) {
+      return;
+    }
+
+    const requestVersion = ++this.titleRequestVersion;
+
+    try {
+      logger.info('Would translate title:', sourceTitle);
+      if (!this.isPageTranslating || requestVersion !== this.titleRequestVersion) {
+        return;
+      }
+    } catch (error) {
+      if (requestVersion === this.titleRequestVersion) {
+        logger.warn('Failed to translate document title:', error);
+      }
+    }
+  }
+
+  private async observerTopLevelParagraphs(container: HTMLElement): Promise<void> {
+    const observer = this.intersectionObserver;
+    if (!this.walkId || !observer) return;
+
+    const config = await getConfig();
+    if (!config) {
+      logger.error('Global config is not initialized');
+      return;
+    }
+
+    if (this.hasNoWalkAncestor(container)) return;
+
+    this.walkAndLabelElement(container, this.walkId);
+
+    const containerWalked = container.getAttribute('data-walked');
+    if (container.hasAttribute('data-paragraph') && containerWalked === this.walkId) {
+      observer.observe(container);
+      return;
+    }
+
+    const paragraphs = this.collectParagraphElementsDeep(container, this.walkId);
+    const topLevelParagraphs = paragraphs.filter((el) => {
+      const ancestor = el.parentElement?.closest('[data-paragraph]');
+      return !ancestor || !container.contains(ancestor);
+    });
+    topLevelParagraphs.forEach((el) => observer.observe(el));
+  }
+
+  /**
+   * Recursively collect elements with paragraph attributes from shadow roots and iframes
+   */
+  private collectParagraphElementsDeep(container: HTMLElement, walkId: string): HTMLElement[] {
+    const result: HTMLElement[] = [];
+
+    const collectFromContainer = (root: HTMLElement | Document | ShadowRoot) => {
+      const elements = Array.from(
+        root.querySelectorAll<HTMLElement>(`[data-paragraph][data-walked="${CSS.escape(walkId)}"]`)
+      );
+      result.push(...elements);
+    };
+
+    const traverseElement = (element: HTMLElement) => {
+      if (element.shadowRoot) {
+        collectFromContainer(element.shadowRoot);
+        for (const child of Array.from(element.shadowRoot.children)) {
+          if (child instanceof HTMLElement) {
+            traverseElement(child);
+          }
+        }
+      }
+
+      for (const child of Array.from(element.children)) {
+        if (child instanceof HTMLElement) {
+          traverseElement(child);
+        }
+      }
+    };
+
+    collectFromContainer(container);
+    traverseElement(container);
+
+    return result;
+  }
+
+  /**
+   * Handle style/class attribute changes and only trigger observation
+   * when element transitions from "don't walk into" to "walkable"
+   */
+  private didChangeToWalkable(element: HTMLElement): boolean {
+    const wasDontWalkInto = this.dontWalkIntoElementsCache.has(element);
+    const isDontWalkIntoNow = this.isDontWalkIntoButTranslateAsChildElement(element);
+
+    if (isDontWalkIntoNow) {
+      this.dontWalkIntoElementsCache.add(element);
+    } else {
+      this.dontWalkIntoElementsCache.delete(element);
+    }
+
+    return wasDontWalkInto === true && isDontWalkIntoNow === false;
+  }
+
+  /**
+   * Initialize walkability state for an element and its descendants
+   */
+  private addDontWalkIntoElements(element: HTMLElement): void {
+    const dontWalkIntoElements = this.deepQueryTopLevelSelector(
+      element,
+      this.isDontWalkIntoButTranslateAsChildElement.bind(this)
+    );
+    dontWalkIntoElements.forEach((el) => this.dontWalkIntoElementsCache.add(el));
+  }
+
+  /**
+   * Start observing mutations for a container and all its shadow roots
+   */
+  private observeMutations(container: HTMLElement): void {
+    const mutationObserver = new MutationObserver((records) => {
+      for (const rec of records) {
+        if (rec.type === 'childList') {
+          rec.addedNodes.forEach((node) => {
+            if (this.isHTMLElement(node)) {
+              this.addDontWalkIntoElements(node);
+              void this.observerTopLevelParagraphs(node);
+              this.observeIsolatedDescendantsMutations(node);
+            }
+          });
+        } else if (
+          rec.type === 'attributes' &&
+          (rec.attributeName === 'style' || rec.attributeName === 'class')
+        ) {
+          const el = rec.target;
+          if (this.isHTMLElement(el) && this.didChangeToWalkable(el)) {
+            void this.observerTopLevelParagraphs(el);
+          }
+        }
+      }
+    });
+
+    mutationObserver.observe(container, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class']
+    });
+
+    this.mutationObservers.push(mutationObserver);
+    this.observeIsolatedDescendantsMutations(container);
+  }
+
+  private observeIsolatedDescendantsMutations(element: HTMLElement): void {
+    if (element.shadowRoot) {
+      for (const child of Array.from(element.shadowRoot.children)) {
+        if (this.isHTMLElement(child)) {
+          this.observeMutations(child);
+        }
+      }
+    }
+
+    for (const child of Array.from(element.children)) {
+      if (this.isHTMLElement(child)) {
+        this.observeIsolatedDescendantsMutations(child);
+      }
+    }
+  }
+  private isHTMLElement(node: unknown): node is HTMLElement {
+    return node instanceof HTMLElement;
+  }
+
+  private hasNoWalkAncestor(element: HTMLElement): boolean {
+    let current: HTMLElement | null = element;
+    while (current) {
+      if (this.isDontWalkIntoButTranslateAsChildElement(current)) {
+        return true;
+      }
+      current = current.parentElement;
+    }
+    return false;
+  }
+
+  private isDontWalkIntoButTranslateAsChildElement(element: HTMLElement): boolean {
+    const dontWalkSelectors = [
+      'script',
+      'style',
+      'noscript',
+      'iframe',
+      'canvas',
+      'svg',
+      '[data-notranslate]',
+      '[translate="no"]'
+    ];
+    return dontWalkSelectors.some((selector) => element.matches(selector));
+  }
+
+  private deepQueryTopLevelSelector(
+    container: HTMLElement,
+    predicate: (el: HTMLElement) => boolean
+  ): HTMLElement[] {
+    const results: HTMLElement[] = [];
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_ELEMENT, null);
+
+    let node: Node | null;
+    while ((node = walker.nextNode())) {
+      if (this.isHTMLElement(node) && predicate(node)) {
+        results.push(node);
+        walker.currentNode = node;
+      }
+    }
+
+    return results;
+  }
+
+  private walkAndLabelElement(element: HTMLElement, walkId: string): void {
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+
+    const textNodes: Text[] = [];
+    let node: Node | null;
+    while ((node = walker.nextNode())) {
+      if (node.textContent?.trim()) {
+        textNodes.push(node as Text);
+      }
+    }
+
+    // Group text nodes by parent element
+    const parentElements = new Map<HTMLElement, Text[]>();
+    for (const textNode of textNodes) {
+      const parent = textNode.parentElement;
+      if (parent && !this.isDontWalkIntoButTranslateAsChildElement(parent)) {
+        if (!parentElements.has(parent)) {
+          parentElements.set(parent, []);
+        }
+        parentElements.get(parent)!.push(textNode);
+      }
+    }
+
+    for (const [parent, nodes] of parentElements) {
+      if (nodes.length > 0 && parent.textContent && parent.textContent.trim().length > 20) {
+        parent.setAttribute('data-paragraph', 'true');
+        parent.setAttribute('data-walked', walkId);
+      }
+    }
+  }
+}

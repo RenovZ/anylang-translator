@@ -110,7 +110,10 @@
   });
 
   const classList = $derived(
-    twMerge('rounded-2xl bg-white/80 p-8 shadow-md dark:bg-slate-900/80 flex flex-col', className)
+    twMerge(
+      'rounded-2xl bg-white/80 p-8 shadow-md dark:bg-slate-900/80 flex flex-col max-w-7xl w-full mx-auto',
+      className
+    )
   );
 </script>
 

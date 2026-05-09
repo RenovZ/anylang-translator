@@ -1,10 +1,19 @@
 import i18n from '@/lib/i18n';
-import type { AIPrompt, OutputSchema } from '@/types/ai';
+import type { Output, Prompt } from '@/types/prompt';
 
-export const exampleQuickTranslatePrompt: AIPrompt = {
-  feature: 'adaptiveTranslate',
+import {
+  FEAT_KEY_ADAPTIVE_TRANSLATE,
+  FEAT_KEY_BILINGUAL_SUBTITLES,
+  FEAT_KEY_INSTANT_LOOKUP,
+  FEAT_KEY_INTELLIGENT_INPUT,
+  FEAT_KEY_PANORAMA_READING,
+  FEAT_KEY_WRITING_COPILOT
+} from './constants';
+
+const QUICK_TRANSLATE = {
+  feature: FEAT_KEY_ADAPTIVE_TRANSLATE,
   name: 'Quick Translate',
-  systemPrompt: `
+  system: `
 You are a fast and efficient translator.
 
 ## Goal
@@ -36,21 +45,21 @@ Output: ¿Dónde está la estación más cercana?
 Selection: {{selection}}
 Target language: {{targetLanguage}}
   `.trim(),
-  outputSchema: [
+  output: [
     {
       name: 'Translation',
       type: 'text',
       description: 'The quick translated text in {{targetLanguage}}.',
       enableSpeaking: false
     }
-  ] as OutputSchema[],
+  ] as Output[],
   description: 'Fast and lightweight translation for everyday use.'
 } as const;
 
-export const exampleContextTranslatePrompt: AIPrompt = {
-  feature: 'adaptiveTranslate',
+const CONTEXT_TRANSLATE = {
+  feature: FEAT_KEY_ADAPTIVE_TRANSLATE,
   name: 'Context Translate',
-  systemPrompt: `
+  system: `
 You are a professional translator for language learners.
 
 ## Goal
@@ -79,21 +88,21 @@ Selection: {{selection}}
 Paragraphs: {{paragraphs}}
 Target language: {{targetLanguage}}
   `.trim(),
-  outputSchema: [
+  output: [
     {
       name: 'Translation',
       type: 'text',
       description: 'The translated text in {{targetLanguage}}.',
       enableSpeaking: false
     }
-  ] as OutputSchema[],
+  ] as Output[],
   description: 'Translate selected text naturally into your target language.'
 } as const;
 
-export const exampleBilingualSubtitlesPrompt: AIPrompt = {
-  feature: 'bilingualSubtitles',
+const BILINGUAL_SUBTITLES = {
+  feature: FEAT_KEY_BILINGUAL_SUBTITLES,
   name: 'Bilingual Subtitles',
-  systemPrompt: `
+  system: `
 You are a bilingual subtitle assistant.
 
 ## Goal
@@ -122,21 +131,21 @@ Selection: {{selection}}
 Paragraphs: {{paragraphs}}
 Target language: {{targetLanguage}}
   `.trim(),
-  outputSchema: [
+  output: [
     {
       name: 'Bilingual Text',
       type: 'text',
       description: 'Bilingual subtitle text showing both original and translation.',
       enableSpeaking: false
     }
-  ] as OutputSchema[],
+  ] as Output[],
   description: 'Generate bilingual subtitles for videos.'
 } as const;
 
-export const exampleInstantLookupPrompt: AIPrompt = {
-  feature: 'instantLookup',
+const INSTANT_LOOKUP = {
+  feature: FEAT_KEY_INSTANT_LOOKUP,
   name: 'Instant Lookup',
-  systemPrompt: `
+  system: `
 You are a dictionary assistant for language learners.
 
 ## Goal
@@ -185,7 +194,7 @@ Selection: {{selection}}
 Paragraphs: {{paragraphs}}
 Target language: {{targetLanguage}}
   `.trim(),
-  outputSchema: [
+  output: [
     {
       name: 'Term',
       type: 'text',
@@ -229,14 +238,14 @@ Target language: {{targetLanguage}}
       description: 'The CEFR difficulty level of the term (A1, A2, B1, B2, C1, or C2).',
       enableSpeaking: false
     }
-  ] as OutputSchema[],
+  ] as Output[],
   description: 'Look up words with definitions, phonetics, and paragraph translates.'
 } as const;
 
-export const exampleIntelligentInputPrompt: AIPrompt = {
-  feature: 'intelligentInput',
+const INTELLIGENT_INPUT = {
+  feature: FEAT_KEY_INTELLIGENT_INPUT,
   name: 'Intelligent Input',
-  systemPrompt: `
+  system: `
 You are an intelligent writing assistant.
 
 ## Goal
@@ -265,21 +274,21 @@ Selection: {{selection}}
 Paragraphs: {{paragraphs}}
 Target language: {{targetLanguage}}
   `.trim(),
-  outputSchema: [
+  output: [
     {
       name: 'Completion',
       type: 'text',
       description: 'Suggested text completion or continuation.',
       enableSpeaking: false
     }
-  ] as OutputSchema[],
+  ] as Output[],
   description: 'Get intelligent suggestions to complete your writing.'
 } as const;
 
-export const exampleWritingCopilotPrompt: AIPrompt = {
-  feature: 'writingCopilot',
+const WRITING_COPILOT = {
+  feature: FEAT_KEY_WRITING_COPILOT,
   name: 'Writing Copilot',
-  systemPrompt: `
+  system: `
 You are a writing assistant for language learners.
 
 ## Goal
@@ -318,7 +327,7 @@ Selection: {{selection}}
 Paragraphs: {{paragraphs}}
 Target language: {{targetLanguage}}
   `.trim(),
-  outputSchema: [
+  output: [
     {
       name: 'Error Analysis',
       type: 'text',
@@ -332,14 +341,14 @@ Target language: {{targetLanguage}}
       description: 'Corrected and improved version of the selected text in its original language.',
       enableSpeaking: false
     }
-  ] as OutputSchema[],
+  ] as Output[],
   description: 'Analyze writing errors and suggest improvements.'
 } as const;
 
-export const examplePanoramaReadingPrompt: AIPrompt = {
-  feature: 'panoramaReading',
+const PANORAMA_READING = {
+  feature: FEAT_KEY_PANORAMA_READING,
   name: 'Panorama Reading',
-  systemPrompt: `
+  system: `
 You are a comprehensive reading assistant for language learners.
 
 ## Goal
@@ -376,23 +385,23 @@ Web Title: {{webTitle}}
 Web Content: {{webContent}}
 Target language: {{targetLanguage}}
   `.trim(),
-  outputSchema: [
+  output: [
     {
       name: 'Translated Content',
       type: 'text',
       description: 'Full translated content in {{targetLanguage}} preserving structure.',
       enableSpeaking: false
     }
-  ] as OutputSchema[],
+  ] as Output[],
   description: 'Translate entire web pages for immersive bilingual reading.'
 } as const;
 
-export const exampleBlankPrompt: AIPrompt = {
+const PROMPT_BLANK = {
   feature: 'blank',
   name: 'Blank',
-  systemPrompt: '',
+  system: '',
   prompt: '',
-  outputSchema: [
+  output: [
     {
       name: 'Result',
       type: 'text',
@@ -400,20 +409,27 @@ export const exampleBlankPrompt: AIPrompt = {
         'Explain grammar, spelling, punctuation, and word-choice issues in {{targetLanguage}}.',
       enableSpeaking: false
     }
-  ] as OutputSchema[],
+  ] as Output[],
   description: 'Start from scratch with an empty action.'
 } as const;
 
-export const examplePrompts: AIPrompt[] = [
-  exampleQuickTranslatePrompt,
-  exampleContextTranslatePrompt,
-  exampleBilingualSubtitlesPrompt,
-  exampleInstantLookupPrompt,
-  exampleIntelligentInputPrompt,
-  exampleWritingCopilotPrompt,
-  examplePanoramaReadingPrompt,
-  exampleBlankPrompt
-] as const;
+export const PROMPT_LIST = [
+  QUICK_TRANSLATE,
+  CONTEXT_TRANSLATE,
+  BILINGUAL_SUBTITLES,
+  INSTANT_LOOKUP,
+  INTELLIGENT_INPUT,
+  WRITING_COPILOT,
+  PANORAMA_READING,
+  PROMPT_BLANK
+].map(
+  (prompt) =>
+    ({
+      ...prompt,
+      enabled: true,
+      mutable: false
+    }) satisfies Prompt
+);
 
 export const promptPresets = [
   { value: 'general', label: i18n('prompt_preset_general', { defaultValue: 'General' }) },

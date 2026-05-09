@@ -20,13 +20,22 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import logger from '@/lib/logger';
-  import type { FeatureKey } from '@/lib/preset/constants';
-  import { defaultAIFeatures, featureItems, featureKeys } from '@/lib/preset/providers';
+  import { uniqueName } from '@/lib/naming';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ConfirmPopover from '@/components/ConfirmPopover.svelte';
   import IconWrapper from '@/components/IconWrapper.svelte';
+  import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import type { FeatureKey } from '@/preset/constants';
+  import {
+    COMPATIBLE_PROVIDERS,
+    defaultAIFeatures,
+    featureItems,
+    featureKeys,
+    getModelsForProvider,
+    getProviderIcon
+  } from '@/preset/provider';
   import type { FeatureValue } from '@/types/feature';
-  import type { PaidProvider, Provider } from '@/types/provider';
+  import type { AIProvider, CustomProvider, PresetItem, Provider } from '@/types/provider';
 
   import { apiProvidersNav } from '../data';
   import Section from '../Section.svelte';
@@ -39,34 +48,42 @@
   let showApiKey = $state(false);
   let selectedIndex = $state(0);
 
-  const handleAdd = (item: Provider) => {
+  const handleAdd = (preset: PresetItem) => {
+    const isCompatible = COMPATIBLE_PROVIDERS.some((p) => p.provider === preset.provider);
+
+    const DEFAULT_PROMPT = { system: '', prompt: '', output: [] as never[] };
     const newProvider: Provider = {
-      ...item,
       type: 'custom',
-      features: { ...defaultAIFeatures }
+      name: preset.name,
+      description: preset.company ? `by ${preset.company}` : undefined,
+      enabled: true,
+      features: { ...defaultAIFeatures },
+      provider: preset.provider,
+      model: preset.models[0],
+      ...(isCompatible ? { baseURL: '' } : {}),
+      prompt: { ...DEFAULT_PROMPT }
     };
 
-    const size = $config.customProviders.filter((p) => p.icon === newProvider.icon).length;
+    newProvider.name = uniqueName(
+      preset.name,
+      $config.providers.map((p) => p.name)
+    );
 
-    if (size > 0) {
-      newProvider.name = `${newProvider.name} ${size}`;
-    }
-
-    $config.customProviders = [...$config.customProviders, newProvider];
-    selectedIndex = $config.customProviders.length - 1;
+    $config.providers = [...$config.providers, newProvider];
+    selectedIndex = $config.providers.length - 1;
   };
 
   const handleDelete = () => {
     if (selectedIndex < 0) return;
 
-    $config.customProviders = $config.customProviders.filter((p, index) => index !== selectedIndex);
-    selectedIndex = Math.min(selectedIndex, $config.customProviders.length - 1);
+    $config.providers = $config.providers.filter((p, index) => index !== selectedIndex);
+    selectedIndex = Math.min(selectedIndex, $config.providers.length - 1);
     showPopover = false;
   };
 </script>
 
 <Section limitHeight title={apiProvidersNav.title} description={apiProvidersNav.description}>
-  <div class="grid h-full grid-cols-1 items-start gap-2 lg:grid-cols-[280px_1fr]">
+  <div class="grid h-full grid-cols-1 items-start gap-2 lg:grid-cols-[320px_1fr]">
     <!-- Left: Provider List -->
     <div class="max-h-full space-y-3 overflow-y-auto px-1 pb-4">
       <Accordion multiple class="rounded-none border-none">
@@ -106,17 +123,11 @@
       {#if selectedIndex >= 0}
         <div class="mb-6 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <picture>
-              <source
-                media="(prefers-color-scheme: dark)"
-                srcset={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/dark/${$config.customProviders[selectedIndex].icon}.webp`} />
-              <img
-                alt={$config.customProviders[selectedIndex].name}
-                class="flex h-6 w-6"
-                src={`https://registry.npmmirror.com/@lobehub/icons-static-webp/latest/files/light/${$config.customProviders[selectedIndex].icon}.webp`} />
-            </picture>
-            <span class="text-lg font-semibold">{$config.customProviders[selectedIndex].name}</span>
-            {#if $config.customProviders[selectedIndex].type === 'go' || $config.customProviders[selectedIndex].type === 'zen'}
+            <ProviderIcon
+              name={$config.providers[selectedIndex].name}
+              icon={getProviderIcon($config.providers[selectedIndex])} />
+            <span class="text-lg font-semibold">{$config.providers[selectedIndex].name}</span>
+            {#if $config.providers[selectedIndex].type === 'go' || $config.providers[selectedIndex].type === 'zen'}
               <!--
                 TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
                 -->
@@ -140,14 +151,24 @@
               {i18n('provider_name', { defaultValue: 'Name' })}
             </Label>
             <Input
-              disabled={$config.customProviders[selectedIndex].type !== 'custom'}
+              disabled={$config.providers[selectedIndex].type !== 'custom'}
               type="text"
               class="border-none bg-gray-50 shadow dark:bg-gray-600"
-              bind:value={$config.customProviders[selectedIndex].name} />
+              bind:value={$config.providers[selectedIndex].name} />
+          </div>
+
+          <!-- Description -->
+          <div class="space-y-2">
+            <Label class="block text-sm font-medium">
+              {i18n('provider_description', { defaultValue: 'Description' })}
+            </Label>
+            <Textarea
+              class="w-full border-none bg-gray-50 shadow dark:bg-gray-600"
+              bind:value={$config.providers[selectedIndex].description} />
           </div>
 
           <!-- API Key -->
-          {#if $config.customProviders[selectedIndex].type === 'custom'}
+          {#if $config.providers[selectedIndex].type === 'custom'}
             <div class="space-y-2">
               <div class="flex items-center justify-between">
                 <Label class="text-sm font-medium">
@@ -164,7 +185,7 @@
               <div class="relative">
                 <Input
                   type={showApiKey ? 'text' : 'password'}
-                  bind:value={($config.customProviders[selectedIndex] as PaidProvider).apiKey}
+                  bind:value={($config.providers[selectedIndex] as CustomProvider).apiKey}
                   class="border-none bg-gray-50 pr-10 shadow dark:bg-gray-600" />
                 <button
                   type="button"
@@ -181,20 +202,20 @@
           {/if}
 
           <!-- Base URL -->
-          {#if $config.customProviders[selectedIndex].type === 'custom'}
+          {#if $config.providers[selectedIndex].type === 'custom'}
             <div class="space-y-2">
-              <Label class="block text-sm font-medium">
+              <Label class="text-sm font-medium">
                 {i18n('base_url', { defaultValue: 'Base URL' })}
               </Label>
               <Input
                 type="text"
-                bind:value={($config.customProviders[selectedIndex] as PaidProvider).baseUrl}
+                bind:value={($config.providers[selectedIndex] as CustomProvider).baseURL}
                 class="border-none bg-gray-50 shadow dark:bg-gray-600" />
             </div>
           {/if}
 
-          <!-- Model -->
-          {#if $config.customProviders[selectedIndex].type !== 'free'}
+          <!-- Model (select list only for custom providers; go/zen have fixed models) -->
+          {#if $config.providers[selectedIndex].type === 'custom'}
             <div class="space-y-2">
               <div class="flex items-center justify-between">
                 <Label class="block text-sm font-medium">
@@ -212,9 +233,9 @@
                 </Button>
               </div>
               <Select
-                bind:value={($config.customProviders[selectedIndex] as PaidProvider).model}
+                bind:value={($config.providers[selectedIndex] as AIProvider).model}
                 classes={{ select: 'border-none shadow bg-gray-50 dark:bg-gray-600' }}>
-                {#each ($config.customProviders[selectedIndex] as PaidProvider).models as model (model)}
+                {#each getModelsForProvider($config.providers[selectedIndex]) as model (model)}
                   <option value={model}>{model}</option>
                 {/each}
                 <!-- <option value="">
@@ -234,18 +255,12 @@
               {/snippet}
               <div class="space-y-2">
                 {#each featureKeys
-                  .filter((key: FeatureKey) => key in $config.customProviders[selectedIndex].features)
-                  .map((key: FeatureKey) => [key, $config.customProviders[selectedIndex].features![key]] as [FeatureKey, FeatureValue]) as [featureKey, featureValue] (featureKey)}
+                  .filter((key: FeatureKey) => key in $config.providers[selectedIndex].features)
+                  .map((key: FeatureKey) => [key, $config.providers[selectedIndex].features![key]] as [FeatureKey, FeatureValue]) as [featureKey, featureValue] (featureKey)}
                   <Toggle
                     size="small"
                     disabled={featureValue.disabled}
-                    bind:checked={
-                      (
-                        $config.customProviders[selectedIndex].features as Partial<
-                          Record<FeatureKey, FeatureValue>
-                        >
-                      )[featureKey]!.state
-                    }>
+                    bind:checked={$config.providers[selectedIndex].features![featureKey]!.state}>
                     {featureItems.find((f) => f.key === featureKey)?.label}
                   </Toggle>
                 {/each}
@@ -254,7 +269,7 @@
           </Accordion>
 
           <!-- Advanced Options -->
-          {#if $config.customProviders[selectedIndex].type !== 'free'}
+          {#if $config.providers[selectedIndex].type !== 'free'}
             <Accordion class="space-y-2 rounded-none border-none">
               <AccordionItem buttonClass="w-fit p-0">
                 {#snippet title()}
@@ -278,59 +293,58 @@
                       step="0.01"
                       min="0"
                       class="border-none bg-gray-50 shadow dark:bg-gray-600"
-                      bind:value={
-                        ($config.customProviders[selectedIndex] as PaidProvider).temperature
-                      } />
+                      bind:value={($config.providers[selectedIndex] as AIProvider).temperature} />
                   </div>
 
                   <!-- Provider Options -->
-                  <div class="space-y-2">
-                    <div class="flex items-center justify-between">
-                      <Label class="flex items-center gap-1 text-sm font-medium">
-                        {i18n('provider_options', { defaultValue: 'Provider Options' })}
-                        <QuestionCircleOutline class="h-4 w-4 shrink-0 cursor-help" />
-                        <Tooltip class="max-w-80 text-xs font-normal">
-                          {i18n('provider_options_tooltip', {
-                            defaultValue:
-                              "Provider-specific options for non-standard API features like thinking/reasoning mode. See the Vercel AI SDK docs or your provider's official documentation for configuration details."
-                          })}
-                        </Tooltip>
-                      </Label>
-                      <A class="text-xs" href="https://ai-sdk.dev/providers/ai-sdk-providers">
-                        {i18n('view_provider_docs', { defaultValue: 'View Provider Docs' })}
-                      </A>
+                  {#if $config.providers[selectedIndex].type !== 'go' && $config.providers[selectedIndex].type !== 'zen'}
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between">
+                        <Label class="flex items-center gap-1 text-sm font-medium">
+                          {i18n('provider_options', { defaultValue: 'Provider Options' })}
+                          <QuestionCircleOutline class="h-4 w-4 shrink-0 cursor-help" />
+                          <Tooltip class="max-w-80 text-xs font-normal">
+                            {i18n('provider_options_tooltip', {
+                              defaultValue:
+                                "Provider-specific options for non-standard API features like thinking/reasoning mode. See the Vercel AI SDK docs or your provider's official documentation for configuration details."
+                            })}
+                          </Tooltip>
+                        </Label>
+                        <A class="text-xs" href="https://ai-sdk.dev/providers/ai-sdk-providers">
+                          {i18n('view_provider_docs', { defaultValue: 'View Provider Docs' })}
+                        </A>
+                      </div>
+                      <Textarea
+                        value={JSON.stringify(
+                          ($config.providers[selectedIndex] as CustomProvider).providerOptions ?? {
+                            field: 'value'
+                          },
+                          null,
+                          2
+                        )}
+                        onchange={(e) => {
+                          if ($config.providers[selectedIndex].type !== 'custom') return;
+                          try {
+                            const parsed = JSON.parse(e.currentTarget.value);
+                            ($config.providers[selectedIndex] as CustomProvider).providerOptions =
+                              parsed;
+                          } catch (err) {
+                            logger.error('API request failed', {
+                              error: err instanceof Error ? err.message : String(err)
+                            });
+                          }
+                        }}
+                        class="h-32 w-full border-none bg-gray-50 font-mono text-sm shadow dark:bg-gray-600"
+                        spellcheck="false"></Textarea>
                     </div>
-                    <Textarea
-                      value={JSON.stringify(
-                        ($config.customProviders[selectedIndex] as PaidProvider)
-                          .providerOptions ?? {
-                          field: 'value'
-                        },
-                        null,
-                        2
-                      )}
-                      onchange={(e) => {
-                        if ($config.customProviders[selectedIndex].type === 'free') return;
-                        try {
-                          const parsed = JSON.parse(e.currentTarget.value);
-                          ($config.customProviders[selectedIndex] as PaidProvider).providerOptions =
-                            parsed;
-                        } catch (err) {
-                          logger.error('API request failed', {
-                            error: err instanceof Error ? err.message : String(err)
-                          });
-                        }
-                      }}
-                      class="h-32 w-full border-none bg-gray-50 font-mono text-sm shadow dark:bg-gray-600"
-                      spellcheck="false"></Textarea>
-                  </div>
+                  {/if}
                 </div>
               </AccordionItem>
             </Accordion>
           {/if}
 
           <!-- Delete Button -->
-          {#if $config.customProviders[selectedIndex].type === 'custom'}
+          {#if $config.providers[selectedIndex].type === 'custom'}
             <div class="flex justify-end pt-4">
               <Button color="red">
                 {i18n('delete', { defaultValue: 'Delete' })}

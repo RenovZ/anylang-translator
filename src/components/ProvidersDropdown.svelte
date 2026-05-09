@@ -11,18 +11,24 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { sendMessage } from '@/lib/protocol';
-  import type { FeatureField } from '@/lib/preset/constants';
-  import type { PaidProvider, Provider } from '@/types/provider';
+  import type { FeatureField } from '@/preset/constants';
+  import { ICON_BY_NAME, ICON_BY_PROVIDER_ID } from '@/preset/provider';
 
   import ProviderIcon from './ProviderIcon.svelte';
 
   interface Prop {
     showFreeProviders?: boolean;
-    field: FeatureField;
+    field: FeatureField | 'languageDetection';
     class?: string;
   }
 
   let { showFreeProviders = true, field, class: className }: Prop = $props();
+
+  // ── Derived: filter providers by type once per config change ─────────────
+  const freeProvidersList = $derived($config.providers.filter((item) => item.type === 'free'));
+  const goProvidersList = $derived($config.providers.filter((item) => item.type === 'go'));
+  const zenProvidersList = $derived($config.providers.filter((item) => item.type === 'zen'));
+  const customProvidersList = $derived($config.providers.filter((item) => item.type === 'custom'));
 </script>
 
 <Dropdown simple placement="bottom-end" class={twMerge('max-h-72 overflow-y-auto', className)}>
@@ -31,11 +37,11 @@
       <DropdownHeader class="py-1 text-sm text-slate-400">
         {i18n('free_users', { defaultValue: 'Free Users' })}
       </DropdownHeader>
-      {#each $config.customProviders.filter((item) => item.type === 'free') as provider (provider)}
+      {#each freeProvidersList as provider (provider.name)}
         <DropdownItem
           class="flex items-center gap-2"
           onclick={() => ($config[field].provider = { ...provider })}>
-          <ProviderIcon {provider} class="w-4" />
+          <ProviderIcon name={provider.name} icon={ICON_BY_NAME[provider.name]} class="w-4" />
           <span>{provider.name}</span>
         </DropdownItem>
       {/each}
@@ -45,11 +51,11 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('go_users', { defaultValue: 'Go Users' })}
     </DropdownHeader>
-    {#each $config.customProviders.filter((item) => item.type === 'go') as PaidProvider[] as provider (provider)}
+    {#each goProvidersList as provider (provider.name)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config[field].provider = { ...provider })}>
-        <ProviderIcon {provider} class="w-4" />
+        <ProviderIcon name={provider.name} icon={ICON_BY_NAME[provider.name]} class="w-4" />
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <!--
           TODO: 判断用户是否需要升级, 否则就正常展示+去掉upgrade升级提示
@@ -66,11 +72,11 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('zen_users', { defaultValue: 'Zen Users' })}
     </DropdownHeader>
-    {#each $config.customProviders.filter((item) => item.type === 'zen') as PaidProvider[] as PaidProvider[] as provider (provider)}
+    {#each zenProvidersList as provider (provider.name)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config[field].provider = { ...provider })}>
-        <ProviderIcon {provider} class="w-4" />
+        <ProviderIcon name={provider.name} icon={ICON_BY_NAME[provider.name]} class="w-4" />
         <div class="flex w-full items-center justify-between text-sm font-medium">
           <!--
           TODO: 判断用户是否需要升级, 否则就正常展示+去掉upgrade升级提示
@@ -87,11 +93,14 @@
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('custom', { defaultValue: 'Custom' })}
     </DropdownHeader>
-    {#each $config.customProviders.filter((item) => item.type === 'custom') as PaidProvider[] as provider (provider)}
+    {#each customProvidersList as provider (provider.name)}
       <DropdownItem
         class="flex items-center gap-2"
         onclick={() => ($config[field].provider = { ...provider })}>
-        <ProviderIcon {provider} class="w-4" />
+        <ProviderIcon
+          name={provider.name}
+          icon={ICON_BY_PROVIDER_ID[provider.provider]}
+          class="w-4" />
         <span>
           {provider.name}
           {#if provider.model}

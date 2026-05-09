@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { A } from 'flowbite-svelte';
+  import { A, Toggle } from 'flowbite-svelte';
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import AccordionItem from '@/components/AccordionItem.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
-  import type { AiProviderType } from '@/types/provider';
+  import { getProviderIcon } from '@/preset/provider';
+  import type { AIProviderType } from '@/types/provider';
 
   interface Props {
     title: string;
-    currentType?: 'free' | AiProviderType;
+    currentType?: 'free' | AIProviderType;
     selectedIndex: number;
     open?: boolean;
   }
@@ -27,7 +28,7 @@
     <span>{title}</span>
   {/snippet}
 
-  {#each $config.customProviders as provider, index (provider)}
+  {#each $config.providers as provider, index (provider.name)}
     {#if provider.type === currentType}
       <button
         data-index={index}
@@ -38,9 +39,9 @@
         class:hover:bg-slate-50={selectedIndex !== index}
         class:dark:hover:bg-slate-700={selectedIndex !== index}
         onclick={() => (selectedIndex = index)}>
-        <ProviderIcon {provider} />
+        <ProviderIcon name={provider.name} icon={getProviderIcon(provider)} />
         {#if provider.type === 'free'}
-          <span class="line-clamp-1 text-sm font-medium">{provider.name}</span>
+          <span class="line-clamp-1 flex flex-1 text-sm font-medium">{provider.name}</span>
         {:else if provider.type === 'go'}
           <div class="flex w-full items-center justify-between text-sm font-medium">
             <span class="line-clamp-1 flex">{provider.model}</span>
@@ -58,17 +59,17 @@
             <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
           </div>
         {:else if provider.type === 'custom'}
-          <div class="line-clamp-1 text-sm font-medium">
+          <div class="line-clamp-1 w-full text-sm font-medium">
             <span>{provider.name}</span>
             {#if provider.model}
               <span>({provider.model})</span>
             {/if}
           </div>
-        {:else}
-          <span class="line-clamp-1 text-sm font-medium">
-            {i18n('unsupported_provider', { defaultValue: 'Unsupported Provider' })}
-          </span>
         {/if}
+        <Toggle
+          size="small"
+          bind:checked={$config.providers[index].enabled}
+          classes={{ span: 'm-0' }} />
       </button>
     {/if}
   {/each}

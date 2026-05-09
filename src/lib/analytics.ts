@@ -1,10 +1,10 @@
-import logger from '@/lib/logger';
+import logger, { formatError } from '@/lib/logger';
 import { sendMessage } from '@/lib/protocol';
 import type {
   AnalyticsSurface,
   FeatureUsageContext,
-  FeatureUsedEventInput,
-  FeatureUsedEventProperties
+  FeatureUsedEvent,
+  FeatureUsedEventInput
 } from '@/types/analytics';
 
 const ANALYTICS_FEATURE_USED_EVENT = 'feature_used';
@@ -36,7 +36,7 @@ class Analytics {
     finishedAt = Date.now(),
     action_id,
     action_name
-  }: FeatureUsedEventInput): FeatureUsedEventProperties {
+  }: FeatureUsedEventInput): FeatureUsedEvent {
     return {
       feature,
       surface,
@@ -52,7 +52,7 @@ class Analytics {
       await sendMessage('trackFeatureUsedEvent', this.buildFeatureUsedEventProperties(input));
     } catch (error) {
       logger.warn(`[Analytics] Failed to track ${ANALYTICS_FEATURE_USED_EVENT}`, {
-        error: error instanceof Error ? error.message : String(error)
+        error: formatError(error)
       });
     }
   }

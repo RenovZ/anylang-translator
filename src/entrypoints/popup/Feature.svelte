@@ -3,10 +3,11 @@
 
   import config from '@/lib/config';
   import shortcut from '@/lib/shortcut';
-  import type { FeatureField } from '@/lib/preset/constants';
   import LocalIcon from '@/components/LocalIcon.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
+  import type { FeatureField } from '@/preset/constants';
+  import { getProviderIcon } from '@/preset/provider';
 
   interface Prop {
     title: string | import('svelte').Snippet;
@@ -33,7 +34,10 @@
   {/if}
   <button type="button" class={twMerge('flex items-center', classes.button)}>
     <div class="flex flex-1 items-center gap-1">
-      <ProviderIcon provider={$config[field].provider} class="w-4" />
+      <ProviderIcon
+        name={$config[field].provider?.name ?? ''}
+        icon={getProviderIcon($config[field].provider)}
+        class="w-4" />
       {#if $config[field].provider}
         <span class="line-clamp-1 w-full text-left">
           {$config[field].provider.name}

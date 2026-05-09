@@ -2,19 +2,19 @@
   import { Heading } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
-  import { examplePrompts } from '@/lib/preset/ai-prompts';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
-  import type { AIPrompt } from '@/types/ai';
+  import { PROMPT_LIST } from '@/preset/prompt';
+  import type { Prompt } from '@/types/prompt';
 
   interface Prop {
     open: boolean;
-    onSelect: (item: AIPrompt) => void;
+    onSelect: (item: Prompt) => void;
   }
 
   let { open = $bindable(false), onSelect }: Prop = $props();
 
-  function handleSelect(template: AIPrompt) {
-    onSelect(structuredClone(template));
+  function handleSelect(prompt: Prompt) {
+    onSelect({ ...structuredClone(prompt), mutable: true });
     open = false;
   }
 </script>
@@ -33,7 +33,7 @@
       </p>
     </div>
 
-    {#each examplePrompts as prompt (prompt.name)}
+    {#each PROMPT_LIST as prompt (prompt.name)}
       <button
         type="button"
         class="flex items-center gap-4 rounded-xl p-4 shadow transition hover:bg-slate-100 dark:hover:bg-slate-700"

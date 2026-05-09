@@ -4,8 +4,8 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { FeatureField } from '@/lib/preset/constants';
   import IconWrapper from '@/components/IconWrapper.svelte';
+  import type { FeatureField } from '@/preset/constants';
 
   import SectionRow from './SectionRow.svelte';
 

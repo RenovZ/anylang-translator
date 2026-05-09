@@ -3,14 +3,14 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { FeatureField } from '@/lib/preset/constants';
+  import type { AutoAppliedSitesField } from '@/types/config';
 
   import SectionRow from './SectionRow.svelte';
 
   interface Props {
     title: string;
     description: string;
-    field: FeatureField;
+    field: AutoAppliedSitesField;
   }
 
   const { title, description, field }: Props = $props();
@@ -167,7 +167,7 @@
       {/each}
     {:else}
       <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-        {i18n('no_sites', { defaultValue: 'No sites' })}
+        {i18n('no_site_configured', { defaultValue: 'No site configured' })}
       </p>
     {/if}
   </div>

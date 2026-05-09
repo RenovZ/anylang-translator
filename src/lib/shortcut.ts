@@ -1,9 +1,5 @@
 import { browser } from 'wxt/browser';
 
-import type { FeatureConfig } from '@/types/provider';
-
-import config from './config';
-import i18n from './i18n';
 import {
   CMD_BILINGUAL_SUBTITLES,
   CMD_CONTEXT_TRANSLATE,
@@ -19,8 +15,12 @@ import {
   FEAT_PANORAMA_READING,
   FEAT_QUICK_TRANSLATE,
   FEAT_WRITING_COPILOT
-} from './preset/constants';
-import type { FeatureField } from './preset/constants';
+} from '@/preset/constants';
+import { featureConfigSchema, type FeatureConfig } from '@/types/config';
+
+import configStore from './config';
+import i18n from './i18n';
+import logger from './logger';
 
 /**
  * 快捷键管理器 - 统一处理快捷键的显示、解析和同步
@@ -184,23 +184,36 @@ class Shortcut {
    */
   async syncFromBrowser(): Promise<boolean> {
     const commands = await browser.commands.getAll();
-    const currentConfig = config.get();
-    if (!currentConfig) return false;
+    const config = configStore.get();
+    if (!config) return false;
 
     let updated = false;
-    const newConfig = { ...currentConfig };
+    const newConfig = { ...config };
 
     for (const cmd of commands) {
       if (!cmd.shortcut) continue;
 
-      const configKey = this.COMMAND_MAP[cmd.name as keyof typeof this.COMMAND_MAP];
-      if (!configKey) continue;
+      const featureKey = this.COMMAND_MAP[cmd.name as keyof typeof this.COMMAND_MAP];
+      if (!featureKey) continue;
 
       const shortcutKeys = this.parse(cmd.shortcut);
-      const current = currentConfig[configKey] as FeatureConfig;
+      const parseResult = featureConfigSchema.safeParse(config[featureKey]);
+      if (!parseResult.success) {
+        logger.warn(`Failed to parse shortcut for feature`, {
+          featureKey,
+          error: parseResult.error
+        });
+        continue;
+      }
+      const current = parseResult.data;
 
-      if (JSON.stringify(current.shortcut) !== JSON.stringify(shortcutKeys)) {
-        (newConfig as Record<FeatureField, FeatureConfig>)[configKey] = {
+      if (
+        shortcutKeys.length !== current.shortcut.length ||
+        !shortcutKeys.every((v, i) => v === current.shortcut[i])
+      ) {
+        // Type assertion needed: spreading a validated union member loses
+        // discriminant info, but we know the shape is preserved here
+        (newConfig as unknown as Record<string, FeatureConfig>)[featureKey] = {
           ...current,
           shortcut: shortcutKeys
         };
@@ -209,7 +222,7 @@ class Shortcut {
     }
 
     if (updated) {
-      await config.set(newConfig);
+      await configStore.set(newConfig);
     }
 
     return updated;

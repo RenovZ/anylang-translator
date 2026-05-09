@@ -1,6 +1,6 @@
 import { browser } from 'wxt/browser';
 
-import logger from '@/lib/logger';
+import logger, { formatError } from '@/lib/logger';
 import shortcut from '@/lib/shortcut';
 import {
   CMD_BILINGUAL_SUBTITLES,
@@ -13,7 +13,7 @@ import {
   cmdToMsg,
   MSG_GET_SHORTCUTS,
   MSG_PING
-} from '@/lib/preset/constants';
+} from '@/preset/constants';
 
 class BackgroundService {
   main(): void {
@@ -101,7 +101,7 @@ class BackgroundService {
       await browser.tabs.sendMessage(tabId, message);
     } catch (error) {
       logger.error('Failed to inject content script', {
-        error: error instanceof Error ? error.message : String(error)
+        error: formatError(error)
       });
     }
   }
@@ -121,7 +121,7 @@ class BackgroundService {
       })
       .catch((error) => {
         logger.error('Error handling message', {
-          error: error instanceof Error ? error.message : String(error)
+          error: formatError(error)
         });
         sendResponse({ error: error.message });
       });

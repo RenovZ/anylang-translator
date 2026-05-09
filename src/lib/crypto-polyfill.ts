@@ -7,7 +7,7 @@ class CryptoPolyfill {
   /**
    * Validates crypto.getRandomValues is available
    */
-  private getCryptoWithRandomValues(): Crypto {
+  private mustGetCrypto(): Crypto {
     if (typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function') {
       throw new TypeError(
         '[crypto-polyfill] crypto.getRandomValues is required but not available. ' +
@@ -20,9 +20,9 @@ class CryptoPolyfill {
 
   // UUIDv4 implementation using crypto.getRandomValues (works in non-secure context)
   generateUUIDv4(): string {
-    const cryptoWithRandomValues = this.getCryptoWithRandomValues();
+    const crypto = this.mustGetCrypto();
     const bytes = new Uint8Array(16);
-    cryptoWithRandomValues.getRandomValues(bytes);
+    crypto.getRandomValues(bytes);
     bytes[6] = (bytes[6]! & 0x0f) | 0x40; // Version 4: set bits 12-15 to 0100
     bytes[8] = (bytes[8]! & 0x3f) | 0x80; // Variant 1: set bits 6-7 to 10
 
@@ -38,7 +38,7 @@ class CryptoPolyfill {
     ].join('-');
   }
 
-  getRandomUUID(): string {
+  getUUID(): string {
     if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
       return crypto.randomUUID();
     }

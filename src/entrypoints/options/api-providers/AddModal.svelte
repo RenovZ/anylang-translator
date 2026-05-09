@@ -1,53 +1,19 @@
 <script lang="ts">
-  import { Avatar, Heading } from 'flowbite-svelte';
+  import { Heading } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
   import ModalWrapper from '@/components/ModalWrapper.svelte';
   import ProviderIcon from '@/components/ProviderIcon.svelte';
-  import type { Provider } from '@/types/provider';
+  import { BUILTIN_PROVIDERS, COMPATIBLE_PROVIDERS } from '@/preset/provider';
+  import type { PresetItem } from '@/types/provider';
 
   let {
     open = $bindable(false),
     onSelect
   }: {
     open: boolean;
-    onSelect: (item: Provider) => void;
+    onSelect: (item: PresetItem) => void;
   } = $props();
-
-  const allProviders = (
-    [
-      { type: 'custom', name: 'OpenAI', icon: 'openai' },
-      { type: 'custom', name: 'DeepSeek', icon: 'deepseek' },
-      { type: 'custom', name: 'Gemini', icon: 'gemini', company: 'Google' },
-      { type: 'custom', name: 'Anthropic', icon: 'anthropic' },
-      { type: 'custom', name: 'Grok', icon: 'grok' },
-      { type: 'custom', name: 'Groq', icon: 'groq' },
-      { type: 'custom', name: 'DeepInfra', icon: 'deepinfra' },
-      { type: 'custom', name: 'Mistral AI', icon: 'mistral' },
-      { type: 'custom', name: 'Together.ai', icon: 'together' },
-      { type: 'custom', name: 'Cohere', icon: 'cohere' },
-      { type: 'custom', name: 'Fireworks AI', icon: 'fireworks' },
-      { type: 'custom', name: 'Cerebras', icon: 'cerebras' },
-      { type: 'custom', name: 'Replicate', icon: 'replicate' },
-      { type: 'custom', name: 'Perplexity', icon: 'perplexity' },
-      { type: 'custom', name: 'Vercel', icon: 'vercel' },
-      { type: 'custom', name: 'Hugging Face', icon: 'huggingface' },
-      { type: 'custom', name: 'Ollama', icon: 'ollama' },
-      { type: 'custom', name: 'MiniMax', icon: 'minimax' },
-      { type: 'custom', name: 'Kimi', icon: 'kimi', company: 'Moonshot AI' },
-      { type: 'custom', name: 'Qwen', icon: 'qwen', company: 'Alibaba' },
-      { type: 'custom', name: 'Bedrock', icon: 'bedrock', company: 'Amazon' },
-      { type: 'custom', name: 'OpenRouter', icon: 'openrouter' },
-      { type: 'custom', name: 'Z.ai', icon: 'zai' }
-    ] as Provider[]
-  ).toSorted((a, b) => a.name.localeCompare(b.name));
-
-  const openaiCompatibleProviders = [
-    { type: 'custom', name: '302.AI', icon: 'ai302' },
-    { type: 'custom', name: 'SiliconCloud', icon: 'siliconcloud' },
-    { type: 'custom', name: 'Volcengine', icon: 'volcengine', company: 'ByteDance' },
-    { type: 'custom', name: 'Custom Provider' }
-  ] as Provider[];
 
   const sections = [
     {
@@ -56,7 +22,7 @@
       hintKey: 'built_in_llm_providers_hint',
       hintDefault:
         'Built-in large language model providers, no need to fill in most configurations like Base URL',
-      providers: allProviders
+      providers: BUILTIN_PROVIDERS
     },
     {
       titleKey: 'openai_compatible_custom_providers',
@@ -64,26 +30,26 @@
       hintKey: 'openai_compatible_custom_providers_hint',
       hintDefault:
         "If you can't find your desired AI provider, select Custom Provider to configure any OpenAI-compatible provider, such as Zhipu AI",
-      providers: openaiCompatibleProviders
+      providers: COMPATIBLE_PROVIDERS
     }
   ];
 
-  function handleSelect(item: Provider) {
+  function handleSelect(item: PresetItem) {
     onSelect(item);
     open = false;
   }
 </script>
 
-{#snippet providerGrid(providers: Provider[])}
+{#snippet providerGrid(providers: readonly PresetItem[])}
   <div class="mt-4 grid grid-cols-4 gap-4 sm:grid-cols-6 md:grid-cols-8">
-    {#each providers as provider (provider)}
+    {#each providers as item (item.provider)}
       <button
         type="button"
         class="flex flex-col items-center gap-2 rounded-xl p-2 transition hover:bg-slate-100 dark:hover:bg-slate-600"
-        onclick={() => handleSelect(provider)}>
-        <ProviderIcon {provider} class="w-10" />
+        onclick={() => handleSelect(item)}>
+        <ProviderIcon name={item.name} icon={item.icon} class="w-10" />
         <span class="text-center text-xs text-gray-700 dark:text-gray-300">
-          {provider.name}
+          {item.name}
         </span>
       </button>
     {/each}

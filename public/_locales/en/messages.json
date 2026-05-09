@@ -44,10 +44,10 @@
   "ai_prompts_description": {
     "message": "Configure prompts for custom API providers. Customize model instructions to shape responses and behavior across providers."
   },
-  "always_apply_bilingual_subtitles_lang": {
-    "message": "Always apply bilingual subtitles language"
+  "always_apply_bilingual_subtitles_langs": {
+    "message": "Always apply bilingual subtitles languages"
   },
-  "always_apply_bilingual_subtitles_lang_description": {
+  "always_apply_bilingual_subtitles_langs_description": {
     "message": "When page language is one of these languages, content will automatically apply bilingual subtitles to target language. Site rules still take priority on conflicts."
   },
   "always_apply_bilingual_subtitles_sites": {
@@ -56,49 +56,13 @@
   "always_apply_bilingual_subtitles_sites_description": {
     "message": "When current site matches these domains, content will automatically apply bilingual subtitles to target language. This rule has higher priority than language rules."
   },
-  "always_apply_intelligent_input_lang": {
-    "message": "Always apply intelligent input language"
-  },
-  "always_apply_intelligent_input_sites": {
-    "message": "Always apply intelligent input sites"
-  },
-  "always_apply_intelligent_input_sites_description": {
-    "message": "When current site matches these domains, content will automatically apply intelligent input to target language. This rule has higher priority than language rules."
-  },
-  "always_apply_panorama_reading_lang": {
-    "message": "Always apply panorama reading language"
-  },
-  "always_apply_panorama_reading_lang_description": {
-    "message": "When page language is one of these languages, content will automatically apply panorama reading to target language. Site rules still take priority on conflicts."
-  },
-  "always_apply_panorama_reading_sites": {
-    "message": "Always apply panorama reading sites"
-  },
-  "always_apply_panorama_reading_sites_description": {
-    "message": "When current site matches these domains, content will automatically apply panorama reading to target language. This rule has higher priority than language rules."
-  },
-  "always_apply_writing_copilot_lang": {
-    "message": "Always apply writing copilot language"
-  },
-  "always_apply_writing_copilot_lang_description": {
-    "message": "When page language is one of these languages, content will automatically apply writing copilot to target language. Site rules still take priority on conflicts."
-  },
-  "always_apply_writing_copilot_sites": {
-    "message": "Always apply writing copilot sites"
-  },
-  "always_apply_writing_copilot_sites_description": {
-    "message": "When current site matches these domains, content will automatically apply writing copilot to target language. This rule has higher priority than language rules."
-  },
-  "always_auto_intelligent_input_lang_description": {
-    "message": "When page language is one of these languages, content will automatically apply intelligent input to target language. Site rules still take priority on conflicts."
-  },
   "always_auto_translate_this_site": {
     "message": "Always auto-translate this site"
   },
-  "always_auto_translated_lang": {
-    "message": "Always auto-translate language"
+  "always_auto_translated_langs": {
+    "message": "Always auto-translate languages"
   },
-  "always_auto_translated_lang_description": {
+  "always_auto_translated_langs_description": {
     "message": "When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts."
   },
   "always_auto_translated_sites": {
@@ -119,11 +83,65 @@
   "auto_detect": {
     "message": "Auto Detect"
   },
+  "available_instant_lookup_langs": {
+    "message": "Available instant lookup languages"
+  },
+  "available_instant_lookup_langs_description": {
+    "message": "When page language is one of these languages, instant lookup feature could be used. Site rules still take priority on conflicts."
+  },
+  "available_instant_lookup_sites": {
+    "message": "Available instant lookup sites"
+  },
+  "available_instant_lookup_sites_description": {
+    "message": "When current site matches these domains, instant lookup feature could be used. This rule has higher priority than language rules."
+  },
+  "available_intelligent_input_langs": {
+    "message": "Available intelligent input languages"
+  },
+  "available_intelligent_input_langs_description": {
+    "message": "When page language is one of these languages, intelligent input feature could be used. Site rules still take priority on conflicts."
+  },
+  "available_intelligent_input_sites": {
+    "message": "Available intelligent input sites"
+  },
+  "available_intelligent_input_sites_description": {
+    "message": "When current site matches these domains, intelligent input feature could be used. This rule has higher priority than language rules."
+  },
+  "available_panorama_reading_langs": {
+    "message": "Available panorama reading languages"
+  },
+  "available_panorama_reading_langs_description": {
+    "message": "When page language is one of these languages, panorama reading feature could be used. Site rules still take priority on conflicts."
+  },
+  "available_panorama_reading_sites": {
+    "message": "Available panorama reading sites"
+  },
+  "available_panorama_reading_sites_description": {
+    "message": "When current site matches these domains, panorama reading feature could be used. This rule has higher priority than language rules."
+  },
+  "available_writing_copilot_langs": {
+    "message": "Available writing copilot languages"
+  },
+  "available_writing_copilot_langs_description": {
+    "message": "When page language is one of these languages, writing copilot feature could be used. Site rules still take priority on conflicts."
+  },
+  "available_writing_copilot_sites": {
+    "message": "Available writing copilot sites"
+  },
+  "available_writing_copilot_sites_description": {
+    "message": "When current site matches these domains, writing copilot feature could be used. This rule has higher priority than language rules."
+  },
   "background_color": {
     "message": "Background color"
   },
   "base_url": {
     "message": "Base URL"
+  },
+  "basic": {
+    "message": "Basic"
+  },
+  "basic_detection_desc": {
+    "message": "Fast heuristic detection"
   },
   "batch_ops": {
     "message": "Batch operations"
@@ -226,6 +244,42 @@
   },
   "display_mode_translation_only": {
     "message": "Translation only"
+  },
+  "display_style_background": {
+    "message": "Background"
+  },
+  "display_style_blur": {
+    "message": "Blur"
+  },
+  "display_style_custom": {
+    "message": "Custom"
+  },
+  "display_style_dashed_underline": {
+    "message": "Dotted lines"
+  },
+  "display_style_mark": {
+    "message": "Mark"
+  },
+  "display_style_none": {
+    "message": "None"
+  },
+  "display_style_quoted": {
+    "message": "Quoted"
+  },
+  "display_style_shadow_effect": {
+    "message": "Shadow effect"
+  },
+  "display_style_solid_underline": {
+    "message": "Straight line"
+  },
+  "display_style_transparent": {
+    "message": "Transparent"
+  },
+  "display_style_wavy_lines": {
+    "message": "Wavy Lines"
+  },
+  "display_style_weaken": {
+    "message": "Weaken"
   },
   "display_styles": {
     "message": "Display styles"
@@ -350,6 +404,18 @@
   "intelligent_input_subtitle": {
     "message": "Think less. Express more."
   },
+  "language_detection": {
+    "message": "Language detection"
+  },
+  "language_detection_description": {
+    "message": "Global language detection setting applied to all features"
+  },
+  "llm": {
+    "message": "LLM"
+  },
+  "llm_detection_desc": {
+    "message": "Higher accuracy AI detection"
+  },
   "login": {
     "message": "Login"
   },
@@ -419,20 +485,17 @@
   "more_item_user_guide": {
     "message": "User guide"
   },
-  "msg_unknown_language": {
-    "message": "Unknown language"
-  },
   "name": {
     "message": "Name"
   },
   "no": {
     "message": "No"
   },
-  "no_sites": {
-    "message": "No sites"
+  "no_language_configured": {
+    "message": "No language configured"
   },
-  "not_selected": {
-    "message": "Not Selected"
+  "no_site_configured": {
+    "message": "No site configured"
   },
   "options_about_check_update": {
     "message": "Check for updates"
@@ -617,6 +680,9 @@
   "prompt_preset_web3": {
     "message": "Web3 translation master"
   },
+  "provider_description": {
+    "message": "Description"
+  },
   "provider_name": {
     "message": "Name"
   },
@@ -625,9 +691,6 @@
   },
   "provider_options_tooltip": {
     "message": "Provider-specific options for non-standard API features like thinking/reasoning mode. See the Vercel AI SDK docs or your provider's official documentation for configuration details."
-  },
-  "provider_test": {
-    "message": "Test this provider"
   },
   "quick_action_doc_translate": {
     "message": "Document Translate"
@@ -656,6 +719,9 @@
   "quick_translate_shortcut": {
     "message": "Quick translate shortcut"
   },
+  "recommended": {
+    "message": "Recommended"
+  },
   "reset_settings": {
     "message": "Reset settings"
   },
@@ -667,6 +733,9 @@
   },
   "select_ai_prompt_to_configure": {
     "message": "Select an AI Prompt to configure"
+  },
+  "select_languages": {
+    "message": "Select languages"
   },
   "select_provider_to_configure": {
     "message": "Select a provider to configure"
@@ -740,50 +809,14 @@
   "translating": {
     "message": "Translating..."
   },
-  "translation_display_style_background": {
-    "message": "Background"
-  },
-  "translation_display_style_blur": {
-    "message": "Blur"
-  },
-  "translation_display_style_custom": {
-    "message": "Custom"
-  },
-  "translation_display_style_dashed_underline": {
-    "message": "Dotted lines"
-  },
-  "translation_display_style_mark": {
-    "message": "Mark"
-  },
-  "translation_display_style_none": {
-    "message": "None"
-  },
-  "translation_display_style_quoted": {
-    "message": "Quoted"
-  },
-  "translation_display_style_shadow_effect": {
-    "message": "Shadow effect"
-  },
-  "translation_display_style_solid_underline": {
-    "message": "Straight line"
-  },
-  "translation_display_style_transparent": {
-    "message": "Transparent"
-  },
-  "translation_display_style_wavy_lines": {
-    "message": "Wavy Lines"
-  },
-  "translation_display_style_weaken": {
-    "message": "Weaken"
-  },
   "ui_language": {
     "message": "UI language"
   },
   "ui_language_hint": {
     "message": "UI language affects panel display language and does not change translation target language"
   },
-  "unsupported_provider": {
-    "message": "Unsupported Provider"
+  "unknown_language": {
+    "message": "Unknown language"
   },
   "upgrade": {
     "message": "Upgrade"

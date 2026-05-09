@@ -37,7 +37,7 @@ export interface FeatureUsageContext {
   action_name?: string;
 }
 
-export interface FeatureUsedEventProperties {
+export interface FeatureUsedEvent {
   feature: AnalyticsFeature;
   surface: AnalyticsSurface;
   outcome: AnalyticsOutcome;

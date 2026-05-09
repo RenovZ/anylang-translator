@@ -1,12 +1,15 @@
 <script lang="ts">
-  import { Avatar, Button, Dropdown, DropdownItem, Toggle } from 'flowbite-svelte';
+  import { Avatar, Badge, Button, Dropdown, DropdownItem, Radio, Toggle } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
   import avatar from '@/lib/avatar';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
+  import ProviderIcon from '@/components/ProviderIcon.svelte';
+  import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
+  import { getProviderIcon } from '@/preset/provider';
 
   import { generalNav } from '../data';
   import Section from '../Section.svelte';
@@ -54,13 +57,13 @@
       <Button
         class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <span>
-          {lang.codeToLang($config.targetLanguage) ??
+          {lang.getLangName($config.targetLanguage) ??
             i18n('auto_detect', { defaultValue: 'Auto Detect' })}
         </span>
         <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
       </Button>
       <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-        {#each Object.entries(lang.all()) as [langCode, langName] (langCode)}
+        {#each Object.entries(lang.getUILangCodeMap()) as [langCode, langName] (langCode)}
           <DropdownItem onclick={() => ($config.targetLanguage = langCode)}>
             {langName}
           </DropdownItem>
@@ -80,18 +83,78 @@
       <Button
         class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <span>
-          {lang.codeToLang($config.uiLanguage) ??
+          {lang.getLangName($config.uiLanguage) ??
             i18n('default_language', { defaultValue: 'Default Language' })}
         </span>
         <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
       </Button>
       <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-        {#each Object.entries(lang.all()) as [langCode, langName] (langCode)}
+        {#each Object.entries(lang.getUILangCodeMap()) as [langCode, langName] (langCode)}
           <DropdownItem onclick={() => ($config.uiLanguage = langCode)}>
             {langName}
           </DropdownItem>
         {/each}
       </Dropdown>
+    </div>
+  </SectionRow>
+
+  <!-- language detection -->
+  <SectionRow
+    title={i18n('language_detection', { defaultValue: 'Language detection' })}
+    description={i18n('language_detection_description', {
+      defaultValue: 'Global language detection setting applied to all features'
+    })}>
+    <div slot="controls" class="flex w-full flex-col items-end space-y-3">
+      <div class="flex flex-col gap-3">
+        <Radio bind:group={$config.languageDetection.mode} value="basic">
+          <div class="flex flex-col">
+            <span class="font-medium">{i18n('basic', { defaultValue: 'Basic' })}</span>
+            <span class="text-xs text-slate-500">
+              {i18n('basic_detection_desc', { defaultValue: 'Fast heuristic detection' })}
+            </span>
+          </div>
+        </Radio>
+        <Radio bind:group={$config.languageDetection.mode} value="llm">
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <span class="font-medium">{i18n('llm', { defaultValue: 'LLM' })}</span>
+              <Badge size="small">
+                {i18n('recommended', { defaultValue: 'Recommended' })}
+              </Badge>
+            </div>
+            <span class="text-xs text-slate-500">
+              {i18n('llm_detection_desc', { defaultValue: 'Higher accuracy AI detection' })}
+            </span>
+          </div>
+        </Radio>
+      </div>
+      {#if $config.languageDetection.mode === 'llm'}
+        <div class="flex w-full flex-col items-end space-y-1">
+          <Button
+            class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
+            <div class="flex items-center gap-2">
+              <ProviderIcon
+                name={$config.languageDetection.provider?.name ?? ''}
+                icon={getProviderIcon($config.languageDetection.provider)}
+                class="w-4" />
+              {#if $config.languageDetection.provider}
+                <span>
+                  {$config.languageDetection.provider.name}
+                  {#if $config.languageDetection.provider.model}
+                    ({$config.languageDetection.provider.model})
+                  {/if}
+                </span>
+              {:else}
+                <span class="line-clamp-1 text-slate-300 dark:text-slate-500">
+                  {'-'.repeat(6)}
+                </span>
+              {/if}
+            </div>
+            <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
+          </Button>
+          <ProvidersDropdown field="languageDetection" showFreeProviders={false} />
+        </div>
+      {/if}
     </div>
   </SectionRow>
 </Section>

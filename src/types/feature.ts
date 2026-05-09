@@ -1,12 +1,21 @@
-import type { FeatureKey } from '@/lib/preset/constants';
+import { z } from 'zod';
 
-export type FeatureValue = {
-  disabled?: boolean;
-  state?: boolean;
-};
+import type { FeatureKey } from '@/preset/constants';
+
+// FeatureValue type
+export const featureValueSchema = z.object({
+  disabled: z.boolean().optional(),
+  state: z.boolean().optional()
+});
+export type FeatureValue = z.infer<typeof featureValueSchema>;
 
 // Ordered feature definition for consistent UI rendering
-export type FeatureItem = {
-  key: FeatureKey;
-  label: string;
-};
+export const featureItemSchema = z.object({
+  key: z.string() as z.ZodType<FeatureKey>,
+  label: z.string()
+});
+export type FeatureItem = z.infer<typeof featureItemSchema>;
+
+export const featuresSchema = z.record(z.string(), featureValueSchema) as z.ZodType<
+  Partial<Record<FeatureKey, FeatureValue>>
+>;

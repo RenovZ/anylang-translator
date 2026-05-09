@@ -69,7 +69,7 @@
   </header>
 
   <!-- Main Content -->
-  <div id="page-main" class="mx-auto grid max-w-7xl grid-cols-[240px_1fr] gap-8 px-6 py-8">
+  <div id="page-main" class="mx-auto grid grid-cols-1 gap-8 px-6 py-8 sm:grid-cols-[240px_1fr]">
     <!-- Sidebar -->
     <aside
       id="page-sidebar"

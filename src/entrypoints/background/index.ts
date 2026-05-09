@@ -3,6 +3,8 @@ import logger from '@/lib/logger';
 import { onMessage } from '@/lib/protocol';
 import shortcut from '@/lib/shortcut';
 
+import { onGenerateText } from './generate-text';
+
 export default defineBackground({
   type: 'module',
   main: () => {
@@ -35,5 +37,7 @@ export default defineBackground({
       logger.info('openOptionsPage');
       await browser.runtime.openOptionsPage();
     });
+
+    onGenerateText();
   }
 });

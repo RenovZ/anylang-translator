@@ -2,13 +2,13 @@
   import { Alert, Button } from 'flowbite-svelte';
 
   import i18n from '@/lib/i18n';
-  import { FEAT_PANORAMA_READING } from '@/lib/preset/constants';
-  import FeatureAutoAppliedLang from '@/components/FeatureAutoAppliedLang.svelte';
+  import FeatureAutoAppliedLangs from '@/components/FeatureAutoAppliedLangs.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
+  import { FEAT_PANORAMA_READING } from '@/preset/constants';
 
   import { panoramaReadingNav as nav } from './data';
   import Section from './Section.svelte';
@@ -39,22 +39,22 @@
   <!-- always apply panorama reading sites -->
   <FeatureAutoAppliedSites
     {field}
-    title={i18n('always_apply_panorama_reading_sites', {
-      defaultValue: 'Always apply panorama reading sites'
+    title={i18n('available_panorama_reading_sites', {
+      defaultValue: 'Available panorama reading sites'
     })}
-    description={i18n('always_apply_panorama_reading_sites_description', {
+    description={i18n('available_panorama_reading_sites_description', {
       defaultValue:
-        'When current site matches these domains, content will automatically apply panorama reading to target language. This rule has higher priority than language rules.'
+        'When current site matches these domains, panorama reading feature could be used. This rule has higher priority than language rules.'
     })} />
 
   <!-- always apply panorama reading language -->
-  <FeatureAutoAppliedLang
+  <FeatureAutoAppliedLangs
     {field}
-    title={i18n('always_apply_panorama_reading_lang', {
-      defaultValue: 'Always apply panorama reading language'
+    title={i18n('available_panorama_reading_langs', {
+      defaultValue: 'Available panorama reading languages'
     })}
-    description={i18n('always_apply_panorama_reading_lang_description', {
+    description={i18n('available_panorama_reading_langs_description', {
       defaultValue:
-        'When page language is one of these languages, content will automatically apply panorama reading to target language. Site rules still take priority on conflicts.'
+        'When page language is one of these languages, panorama reading feature could be used. Site rules still take priority on conflicts.'
     })} />
 </Section>

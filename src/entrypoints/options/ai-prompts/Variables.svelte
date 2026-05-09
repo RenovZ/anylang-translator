@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button, Tooltip } from 'flowbite-svelte';
 
-  import { promptVariables } from '@/lib/preset/ai-prompts';
+  import { promptVariables } from '@/preset/prompt';
 
   interface Props {
     handleInsert?: (variable: string) => void;

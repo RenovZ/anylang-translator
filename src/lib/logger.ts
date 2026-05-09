@@ -1,9 +1,3 @@
-/**
- * 智能日志系统 - 自动捕获模块路径并缩写
- * 支持浏览器和 Node 环境
- * 例如: background/foo/a.ts → [b/f/a], options/api-providers/Index → [o/a/Index]
- */
-
 const isDev = import.meta.env?.DEV ?? true;
 
 const LEVELS = { trace: 0, debug: 1, info: 3, warn: 4, error: 5 } as const;
@@ -11,7 +5,20 @@ type Level = keyof typeof LEVELS;
 
 type Fields = Record<string, unknown>;
 
-// 检测环境
+interface CallerInfo {
+  file: string;
+  line: number;
+  module: string;
+  fn: string;
+}
+
+/**
+ * Format unknown error to string message
+ */
+export function formatError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 const isNode = typeof window === 'undefined' && typeof process !== 'undefined';
 
 // ANSI 颜色码（Node 终端）
@@ -93,26 +100,66 @@ class Logger {
     return isDev && LEVELS[level] >= LEVELS[this.minLevel];
   }
 
-  private output(level: Level, message: string, fields?: Fields): void {
+  private isCallerInfo(x: unknown): x is CallerInfo {
+    return typeof x === 'object' && x !== null && 'file' in x && 'line' in x;
+  }
+
+  private normalizeArgs(
+    arg1?: string | Fields | CallerInfo,
+    arg2?: Fields | CallerInfo,
+    arg3?: CallerInfo
+  ): { message?: string; fields?: Fields; caller?: CallerInfo } {
+    let message: string | undefined;
+    let fields: Fields | undefined;
+    let caller: CallerInfo | undefined;
+
+    if (arg1 === undefined) {
+      // no args — keep defaults
+    } else if (typeof arg1 === 'string') {
+      message = arg1;
+      if (arg2 !== undefined) {
+        if (this.isCallerInfo(arg2)) {
+          caller = arg2;
+        } else {
+          fields = arg2;
+          caller = arg3;
+        }
+      }
+    } else if (this.isCallerInfo(arg1)) {
+      caller = arg1;
+    } else {
+      fields = arg1;
+      if (arg2 !== undefined && this.isCallerInfo(arg2)) {
+        caller = arg2;
+      }
+    }
+
+    return { message, fields, caller };
+  }
+
+  private output(level: Level, message?: string, fields?: Fields, caller?: CallerInfo): void {
     if (!this.isEnabled(level)) return;
 
-    const filename = getFilenameFromStack();
-    const moduleName = abbreviateModuleName(filename);
+    const filename = caller?.file ?? getFilenameFromStack();
+    const moduleName = caller?.module ?? abbreviateModuleName(filename);
     const levelStr = level.toUpperCase();
+    const callerTag = caller ? `${caller.fn}:${caller.line}` : '';
 
     if (isNode) {
-      // Node 环境: ANSI 颜色
       const color = ansi[level];
-      const prefix = `${color}[${levelStr}]${ansiReset} [${moduleName}]`;
+      const prefix = callerTag
+        ? `${color}[${levelStr}]${ansiReset} [${moduleName}] [${callerTag}]`
+        : `${color}[${levelStr}]${ansiReset} [${moduleName}]`;
       if (fields && Object.keys(fields).length > 0) {
         console[level](prefix, message, JSON.stringify(fields));
       } else {
         console[level](prefix, message);
       }
     } else {
-      // 浏览器环境: CSS 样式
       const style = css[level];
-      const prefix = `[${levelStr}] [${moduleName}]`;
+      const prefix = callerTag
+        ? `[${levelStr}] [${moduleName}] [${callerTag}]`
+        : `[${levelStr}] [${moduleName}]`;
       if (fields && Object.keys(fields).length > 0) {
         console[level](`%c${prefix}`, style, message, fields);
       } else {
@@ -121,24 +168,54 @@ class Logger {
     }
   }
 
-  trace(message: string, fields?: Fields): void {
-    this.output('trace', message, fields);
+  trace(): void;
+  trace(caller: CallerInfo): void;
+  trace(message: string, caller?: CallerInfo): void;
+  trace(message: string, fields: Fields, caller?: CallerInfo): void;
+  trace(fields: Fields, caller?: CallerInfo): void;
+  trace(arg1?: string | Fields | CallerInfo, arg2?: Fields | CallerInfo, arg3?: CallerInfo): void {
+    const { message, fields, caller } = this.normalizeArgs(arg1, arg2, arg3);
+    this.output('trace', message, fields, caller);
   }
 
-  debug(message: string, fields?: Fields): void {
-    this.output('debug', message, fields);
+  debug(): void;
+  debug(caller: CallerInfo): void;
+  debug(message: string, caller?: CallerInfo): void;
+  debug(message: string, fields: Fields, caller?: CallerInfo): void;
+  debug(fields: Fields, caller?: CallerInfo): void;
+  debug(arg1?: string | Fields | CallerInfo, arg2?: Fields | CallerInfo, arg3?: CallerInfo): void {
+    const { message, fields, caller } = this.normalizeArgs(arg1, arg2, arg3);
+    this.output('debug', message, fields, caller);
   }
 
-  info(message: string, fields?: Fields): void {
-    this.output('info', message, fields);
+  info(): void;
+  info(caller: CallerInfo): void;
+  info(message: string, caller?: CallerInfo): void;
+  info(message: string, fields: Fields, caller?: CallerInfo): void;
+  info(fields: Fields, caller?: CallerInfo): void;
+  info(arg1?: string | Fields | CallerInfo, arg2?: Fields | CallerInfo, arg3?: CallerInfo): void {
+    const { message, fields, caller } = this.normalizeArgs(arg1, arg2, arg3);
+    this.output('info', message, fields, caller);
   }
 
-  warn(message: string, fields?: Fields): void {
-    this.output('warn', message, fields);
+  warn(): void;
+  warn(caller: CallerInfo): void;
+  warn(message: string, caller?: CallerInfo): void;
+  warn(message: string, fields: Fields, caller?: CallerInfo): void;
+  warn(fields: Fields, caller?: CallerInfo): void;
+  warn(arg1?: string | Fields | CallerInfo, arg2?: Fields | CallerInfo, arg3?: CallerInfo): void {
+    const { message, fields, caller } = this.normalizeArgs(arg1, arg2, arg3);
+    this.output('warn', message, fields, caller);
   }
 
-  error(message: string, fields?: Fields): void {
-    this.output('error', message, fields);
+  error(): void;
+  error(caller: CallerInfo): void;
+  error(message: string, caller?: CallerInfo): void;
+  error(message: string, fields: Fields, caller?: CallerInfo): void;
+  error(fields: Fields, caller?: CallerInfo): void;
+  error(arg1?: string | Fields | CallerInfo, arg2?: Fields | CallerInfo, arg3?: CallerInfo): void {
+    const { message, fields, caller } = this.normalizeArgs(arg1, arg2, arg3);
+    this.output('error', message, fields, caller);
   }
 }
 
