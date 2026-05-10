@@ -57,14 +57,14 @@
       <Button
         class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <span>
-          {lang.getLangName($config.targetLanguage) ??
+          {lang.getLangName($config.targetLangCode) ??
             i18n('auto_detect', { defaultValue: 'Auto Detect' })}
         </span>
         <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
       </Button>
       <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-        {#each Object.entries(lang.getUILangCodeMap()) as [langCode, langName] (langCode)}
-          <DropdownItem onclick={() => ($config.targetLanguage = langCode)}>
+        {#each Object.entries(lang.getLangCodeMap()) as [langCode, langName] (langCode)}
+          <DropdownItem onclick={() => ($config.targetLangCode = langCode)}>
             {langName}
           </DropdownItem>
         {/each}
@@ -83,14 +83,14 @@
       <Button
         class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
         <span>
-          {lang.getLangName($config.uiLanguage) ??
+          {lang.getLangName($config.uiLangCode) ??
             i18n('default_language', { defaultValue: 'Default Language' })}
         </span>
         <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
       </Button>
       <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-        {#each Object.entries(lang.getUILangCodeMap()) as [langCode, langName] (langCode)}
-          <DropdownItem onclick={() => ($config.uiLanguage = langCode)}>
+        {#each Object.entries(lang.getLangCodeMap()) as [langCode, langName] (langCode)}
+          <DropdownItem onclick={() => ($config.uiLangCode = langCode)}>
             {langName}
           </DropdownItem>
         {/each}
@@ -106,7 +106,7 @@
     })}>
     <div slot="controls" class="flex w-full flex-col items-end space-y-3">
       <div class="flex flex-col gap-3">
-        <Radio bind:group={$config.languageDetection.mode} value="basic">
+        <Radio bind:group={$config.langDetection.mode} value="basic">
           <div class="flex flex-col">
             <span class="font-medium">{i18n('basic', { defaultValue: 'Basic' })}</span>
             <span class="text-xs text-slate-500">
@@ -114,7 +114,7 @@
             </span>
           </div>
         </Radio>
-        <Radio bind:group={$config.languageDetection.mode} value="llm">
+        <Radio bind:group={$config.langDetection.mode} value="llm">
           <div class="flex flex-col">
             <div class="flex items-center gap-2">
               <span class="font-medium">{i18n('llm', { defaultValue: 'LLM' })}</span>
@@ -128,20 +128,20 @@
           </div>
         </Radio>
       </div>
-      {#if $config.languageDetection.mode === 'llm'}
+      {#if $config.langDetection.mode === 'llm'}
         <div class="flex w-full flex-col items-end space-y-1">
           <Button
             class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
             <div class="flex items-center gap-2">
               <ProviderIcon
-                name={$config.languageDetection.provider?.name ?? ''}
-                icon={getProviderIcon($config.languageDetection.provider)}
+                name={$config.langDetection.provider?.name ?? ''}
+                icon={getProviderIcon($config.langDetection.provider)}
                 class="w-4" />
-              {#if $config.languageDetection.provider}
+              {#if $config.langDetection.provider}
                 <span>
-                  {$config.languageDetection.provider.name}
-                  {#if $config.languageDetection.provider.model}
-                    ({$config.languageDetection.provider.model})
+                  {$config.langDetection.provider.name}
+                  {#if $config.langDetection.provider.model}
+                    ({$config.langDetection.provider.model})
                   {/if}
                 </span>
               {:else}

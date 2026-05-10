@@ -2,12 +2,6 @@ import { z } from 'zod';
 
 import { attributeKeys, displayStyleValues } from '@/preset/translate';
 
-export const selectionTriggerSchema = z.enum(['directly', 'show icons']).nullable();
-export type SelectionTrigger = z.infer<typeof selectionTriggerSchema>;
-
-export const modeSchema = z.enum(['bilingual', 'translation_only']);
-export type Mode = z.infer<typeof modeSchema>;
-
 const customDisplaySchema = z.object({
   backgroundColor: z.string(),
   color: z.string(),
@@ -45,3 +39,42 @@ export interface Result {
   targetLang?: string;
   error?: string;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Translation node style
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const TRANSLATION_NODE_STYLE = [
+  'default',
+  'blur',
+  'blockquote',
+  'weakened',
+  'dashedLine',
+  'border',
+  'textColor',
+  'background'
+] as const;
+
+export const translationNodeStylePresetSchema = z.enum(TRANSLATION_NODE_STYLE);
+export type TranslationNodeStylePreset = z.infer<typeof translationNodeStylePresetSchema>;
+
+export const MAX_CUSTOM_CSS_LENGTH = 8192;
+
+export const translationNodeStyleConfigSchema = z.object({
+  preset: translationNodeStylePresetSchema,
+  isCustom: z.boolean(),
+  customCSS: z.string().max(MAX_CUSTOM_CSS_LENGTH, 'Custom CSS cannot exceed 8KB').nullable()
+});
+
+export type TranslationNodeStyleConfig = z.infer<typeof translationNodeStyleConfigSchema>;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Input translation
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Specifies the source/target language for input translation.
+ * Can be 'sourceCode' / 'targetCode' to resolve from global config,
+ * or a literal LangCode for explicit language.
+ */
+export type InputTranslationLang = 'sourceCode' | 'targetCode' | string;

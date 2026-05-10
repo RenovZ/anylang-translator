@@ -3,8 +3,15 @@ import { storage } from 'wxt/utils/storage';
 
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
-import { displayStyles } from '@/preset/translate';
-import { configSchema, type Config } from '@/types/config';
+import { displayStyles, HOTKEYS } from '@/preset/translate';
+import {
+  configSchema,
+  pageRangeSchema,
+  selectionTriggerSchema,
+  translateModeSchema,
+  type Config
+} from '@/types/config';
+import { displayStyleSchema } from '@/types/translate';
 
 import logger from './logger';
 
@@ -18,7 +25,8 @@ const defaultConfig: Config = configSchema.parse({
 
   languageDetection: {
     mode: 'basic',
-    provider: null
+    provider: null,
+    langCode: 'en'
   },
 
   providers: [
@@ -41,9 +49,10 @@ const defaultConfig: Config = configSchema.parse({
       'news.ycombinator.com'
     ],
     translate: {
-      mode: 'bilingual',
-      displayStyle: displayStyles[0],
-      pageRange: 'main'
+      mode: translateModeSchema.parse('bilingual'),
+      displayStyle: displayStyleSchema.parse(displayStyles[0]),
+      pageRange: pageRangeSchema.parse('main'),
+      triggerOnHover: HOTKEYS[0]
     }
   },
 
@@ -58,7 +67,7 @@ const defaultConfig: Config = configSchema.parse({
     provider: null,
     shortcut: ['Alt', 'L'],
     selection: {
-      triggerTranslate: 'directly'
+      triggerTranslate: selectionTriggerSchema.parse('directly')
     }
   },
 
@@ -101,22 +110,21 @@ class ConfigStore {
     this.initialized = true;
 
     const rawValue = await this.storage.getValue();
-    const parseResult = configSchema.safeParse(rawValue);
-
-    if (parseResult.success) {
-      this.store.set(parseResult.data);
+    const { success, data, error } = configSchema.safeParse(rawValue);
+    if (success) {
+      this.store.set(data);
     } else {
-      logger.warn('Invalid config data, using default:', { error: parseResult.error });
+      logger.warn('Invalid config data, using default:', { error });
       this.store.set(defaultConfig);
       await this.storage.setValue(defaultConfig);
     }
 
     this.storage.watch((newValue) => {
-      const parseResult = configSchema.safeParse(newValue);
-      if (parseResult.success) {
-        this.store.set(parseResult.data);
+      const { success, data, error } = configSchema.safeParse(newValue);
+      if (success) {
+        this.store.set(data);
       } else {
-        logger.warn('Invalid config update, ignoring:', { error: parseResult.error });
+        logger.warn('Invalid config update, ignoring:', { error });
       }
     });
   }
@@ -132,12 +140,12 @@ class ConfigStore {
 
   async set(value: unknown): Promise<void> {
     await this.init();
-    const parseResult = configSchema.safeParse(value);
-    if (parseResult.success) {
-      this.store.set(parseResult.data);
-      await this.storage.setValue(parseResult.data);
+    const { success, data, error } = configSchema.safeParse(value);
+    if (success) {
+      this.store.set(data);
+      await this.storage.setValue(data);
     } else {
-      logger.error('Invalid config value:', { error: parseResult.error });
+      logger.error('Invalid config value:', { error });
       throw new Error('Invalid config value');
     }
   }
@@ -146,12 +154,12 @@ class ConfigStore {
     await this.init();
     this.store.update((current) => {
       const newValue = fn(current);
-      const parseResult = configSchema.safeParse(newValue);
-      if (parseResult.success) {
-        this.storage.setValue(parseResult.data);
-        return parseResult.data;
+      const { success, data, error } = configSchema.safeParse(newValue);
+      if (success) {
+        this.storage.setValue(data);
+        return data;
       } else {
-        logger.error('Invalid config update:', { error: parseResult.error });
+        logger.error('Invalid config update:', { error });
         return current;
       }
     });

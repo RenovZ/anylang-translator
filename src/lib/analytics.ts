@@ -9,7 +9,7 @@ import type {
 
 const ANALYTICS_FEATURE_USED_EVENT = 'feature_used';
 
-class Analytics {
+class AnalyticsManager {
   createFeatureUsageContext(
     feature: FeatureUsageContext['feature'],
     surface: AnalyticsSurface,
@@ -75,4 +75,4 @@ class Analytics {
   }
 }
 
-export default new Analytics();
+export default new AnalyticsManager();

@@ -1,276 +1,248 @@
-import config from '@/lib/config';
-import type { Config } from '@/lib/config';
-import logger from '@/lib/logger';
+import configStore from '@/lib/config';
+import domFilter from '@/lib/dom/filter';
+import translateVariants from '@/lib/translate/translate-variants';
+import { HOTKEY_EVENT_KEYS } from '@/preset/translate';
+import type { Config } from '@/types/config';
+import type { Point } from '@/types/dom';
 
-type Point = { x: number; y: number };
+const HOLD_DELAY_MS = 1000;
+const HOLD_MOVE_TOLERANCE = 6;
+const MOVE_THROTTLE_MS = 300;
+const MOVE_MIN_DIST = 3;
 
-const CLICK_AND_HOLD_TRIGGER_MS = 1000;
-const CLICK_AND_HOLD_MOVE_TOLERANCE = 6;
-const MOUSEMOVE_THROTTLE_MS = 300;
-const MOUSEMOVE_DISTANCE_THRESHOLD = 3;
+class NodeTranslation {
+  private ac: AbortController | null = null;
 
-const HOTKEY_EVENT_KEYS: Record<string, string> = {
-  alt: 'Alt',
-  ctrl: 'Control',
-  shift: 'Shift',
-  meta: 'Meta'
-};
+  // Shared mouse position, updated on throttled mousemove
+  private pos: Point = { x: 0, y: 0 };
 
-function isEditable(element: HTMLElement): boolean {
-  const tagName = element.tagName.toLowerCase();
-  const editableElements = ['input', 'textarea', 'select'];
-  if (editableElements.includes(tagName)) {
-    return true;
+  // --- Mousemove throttle ---
+  private lastX = 0;
+  private lastY = 0;
+  private moveTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // --- Click-and-hold ---
+  private pressed = false;
+  private holdFired = false;
+  private pressPos: Point | null = null;
+  private holdTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // --- Hotkey-hold ---
+  private keyDown = false;
+  private pureSession = true;
+  private keyTimer: ReturnType<typeof setTimeout> | null = null;
+  private keyTriggered = false;
+  private activeKey: string | null = null;
+
+  /**
+   * Registers node translation triggers based on the current config.
+   * Returns a teardown function to remove all listeners.
+   *
+   * Config is read on demand when the interaction fires so long-lived content
+   * scripts don't drift if the page was frozen and missed storage events.
+   */
+  register(): () => void {
+    this.ac = new AbortController();
+    const opts = { signal: this.ac.signal } as const;
+
+    document.addEventListener('mousemove', this.onMouseMove, opts);
+    document.addEventListener('mousedown', this.onMouseDown, opts);
+    document.addEventListener('mouseup', this.onMouseUp, opts);
+    document.addEventListener('keydown', this.onKeyDown, opts);
+    document.addEventListener('keyup', this.onKeyUp, opts);
+
+    // Teardown: abort all listeners + cancel pending timers
+    return () => this.destroy();
   }
-  if (element.isContentEditable) {
-    return true;
-  }
-  return false;
-}
 
-/**
- * Registers node translation triggers based on the current config.
- * Returns a teardown function to remove all listeners.
- *
- * Config is read on demand when the interaction fires so long-lived content
- * scripts don't drift if the page was frozen and missed storage events.
- */
-export function registerNodeTranslationTriggers(): () => void {
-  const ac = new AbortController();
-  const { signal } = ac;
-
-  const mousePosition: Point = { x: 0, y: 0 };
-
-  // --- Mousemove: throttled + distance threshold ---
-  let lastMoveX = 0;
-  let lastMoveY = 0;
-  let moveThrottleTimer: ReturnType<typeof setTimeout> | null = null;
-
-  // --- Click-and-hold state ---
-  let isMousePressed = false;
-  let clickAndHoldTriggered = false;
-  let mousePressPosition: Point | null = null;
-  let clickAndHoldTimerId: ReturnType<typeof setTimeout> | null = null;
-
-  const clearClickAndHoldTimer = () => {
-    if (clickAndHoldTimerId) {
-      clearTimeout(clickAndHoldTimerId);
-      clickAndHoldTimerId = null;
+  private destroy(): void {
+    this.ac?.abort();
+    this.ac = null;
+    this.resetKey();
+    if (this.moveTimer) {
+      clearTimeout(this.moveTimer);
+      this.moveTimer = null;
     }
-  };
+    this.clearHoldTimer();
+  }
 
-  const getCurrentConfig = async (): Promise<Config | null> => {
-    const cfg = config.get();
-    if (signal.aborted) return null;
-    return cfg;
-  };
+  // ── helpers ───────────────────────────────────────────────────────────────
 
-  // Mousemove handler with throttle + distance threshold
-  document.addEventListener(
-    'mousemove',
-    (event) => {
-      // Distance threshold: ignore tiny movements (trackpad tremor, mouse jitter)
+  private cfg(): Config | null {
+    if (this.ac?.signal.aborted) return null;
+    return configStore.get();
+  }
+
+  private inTriggerMode(config: Config): boolean {
+    return (
+      !!config.quickTranslate.provider &&
+      config.quickTranslate.translate.triggerOnHover === 'clickAndHold'
+    );
+  }
+
+  private trigger(pos: Point): void {
+    void translateVariants.removeOrShowNodeTranslation(pos);
+  }
+
+  private clearHoldTimer(): void {
+    if (this.holdTimer) {
+      clearTimeout(this.holdTimer);
+      this.holdTimer = null;
+    }
+  }
+
+  private resetKey(): void {
+    if (this.keyTimer) {
+      clearTimeout(this.keyTimer);
+      this.keyTimer = null;
+    }
+    this.keyDown = false;
+    this.pureSession = true;
+    this.keyTriggered = false;
+    this.activeKey = null;
+  }
+
+  // ── event handlers (arrow functions keep `this` bound) ────────────────────
+
+  private onMouseMove = (e: MouseEvent): void => {
+    // Distance threshold: ignore tiny movements (trackpad tremor, mouse jitter)
+    if (Math.abs(e.clientX - this.lastX) + Math.abs(e.clientY - this.lastY) <= MOVE_MIN_DIST) {
+      return;
+    }
+
+    // Click-and-hold move cancellation (always immediate, no throttle)
+    if (this.pressed && this.pressPos) {
       if (
-        Math.abs(event.clientX - lastMoveX) + Math.abs(event.clientY - lastMoveY) <=
-        MOUSEMOVE_DISTANCE_THRESHOLD
+        Math.hypot(e.clientX - this.pressPos.x, e.clientY - this.pressPos.y) > HOLD_MOVE_TOLERANCE
       ) {
-        return;
+        this.pressed = false;
+        this.pressPos = null;
+        this.clearHoldTimer();
       }
-
-      // Click-and-hold move cancellation (always immediate, no throttle)
-      if (isMousePressed && mousePressPosition) {
-        const deltaX = event.clientX - mousePressPosition.x;
-        const deltaY = event.clientY - mousePressPosition.y;
-        if (Math.hypot(deltaX, deltaY) > CLICK_AND_HOLD_MOVE_TOLERANCE) {
-          isMousePressed = false;
-          mousePressPosition = null;
-          clearClickAndHoldTimer();
-        }
-      }
-
-      // Throttled position update
-      if (moveThrottleTimer) return;
-
-      moveThrottleTimer = setTimeout(() => {
-        moveThrottleTimer = null;
-      }, MOUSEMOVE_THROTTLE_MS);
-
-      mousePosition.x = event.clientX;
-      mousePosition.y = event.clientY;
-      lastMoveX = event.clientX;
-      lastMoveY = event.clientY;
-    },
-    { signal }
-  );
-
-  let isHotkeyPressed = false;
-  let isHotkeySessionPure = true;
-  let timerId: ReturnType<typeof setTimeout> | null = null;
-  let actionTriggered = false;
-  let activeHotkeyEventKey: string | null = null;
-
-  const resetHotkeySession = () => {
-    if (timerId) {
-      clearTimeout(timerId);
-      timerId = null;
     }
-    isHotkeyPressed = false;
-    isHotkeySessionPure = true;
-    actionTriggered = false;
-    activeHotkeyEventKey = null;
+
+    // Throttled position update
+    if (this.moveTimer) return;
+    this.moveTimer = setTimeout(() => {
+      this.moveTimer = null;
+    }, MOVE_THROTTLE_MS);
+
+    this.pos.x = e.clientX;
+    this.pos.y = e.clientY;
+    this.lastX = e.clientX;
+    this.lastY = e.clientY;
   };
 
-  document.addEventListener(
-    'mousedown',
-    (event) => {
-      void (async () => {
-        if (event.button !== 0) return;
-        if (event.target instanceof HTMLElement && isEditable(event.target)) return;
+  private onMouseDown = (e: MouseEvent): void => {
+    if (e.button !== 0) return;
+    if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
-        const config = await getCurrentConfig();
-        if (!config || !config.selectionTranslateEnabled) return;
+    const config = this.cfg();
+    if (!config || !this.inTriggerMode(config)) return;
 
-        isMousePressed = true;
-        clickAndHoldTriggered = false;
-        mousePressPosition = { x: event.clientX, y: event.clientY };
+    this.pressed = true;
+    this.holdFired = false;
+    this.pressPos = { x: e.clientX, y: e.clientY };
 
-        clearClickAndHoldTimer();
-        clickAndHoldTimerId = setTimeout(() => {
-          void (async () => {
-            if (!isMousePressed || !mousePressPosition || clickAndHoldTriggered) return;
+    this.clearHoldTimer();
+    this.holdTimer = setTimeout(() => {
+      if (!this.pressed || !this.pressPos || this.holdFired) return;
 
-            const currentConfig = await getCurrentConfig();
-            if (!currentConfig || !currentConfig.selectionTranslateEnabled) return;
+      const current = this.cfg();
+      if (!current || !this.inTriggerMode(current)) return;
 
-            void removeOrShowNodeTranslation(mousePressPosition, currentConfig);
-            clickAndHoldTriggered = true;
-          })();
-        }, CLICK_AND_HOLD_TRIGGER_MS);
-      })();
-    },
-    { signal }
-  );
+      this.trigger(this.pressPos);
+      this.holdFired = true;
+    }, HOLD_DELAY_MS);
+  };
 
-  document.addEventListener(
-    'mouseup',
-    (event) => {
-      if (event.button !== 0) return;
-      if (!isMousePressed && !clickAndHoldTimerId) return;
+  private onMouseUp = (e: MouseEvent): void => {
+    if (e.button !== 0) return;
+    if (!this.pressed && !this.holdTimer) return;
 
-      isMousePressed = false;
-      clickAndHoldTriggered = false;
-      mousePressPosition = null;
-      clearClickAndHoldTimer();
-    },
-    { signal }
-  );
+    this.pressed = false;
+    this.holdFired = false;
+    this.pressPos = null;
+    this.clearHoldTimer();
+  };
 
-  document.addEventListener(
-    'keydown',
-    (event) => {
-      void (async () => {
-        if (event.target instanceof HTMLElement && isEditable(event.target)) return;
+  private onKeyDown = (e: KeyboardEvent): void => {
+    if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
-        const config = await getCurrentConfig();
-        if (!config || !config.selectionTranslateEnabled) {
-          resetHotkeySession();
+    const config = this.cfg();
+    if (!config || !this.inTriggerMode(config)) {
+      this.resetKey();
+      return;
+    }
+
+    const hotkey = HOTKEY_EVENT_KEYS[config.quickTranslate.translate.triggerOnHover];
+
+    if (e.key === hotkey) {
+      if (this.keyDown) return; // already tracking this key
+
+      this.keyDown = true;
+      this.activeKey = hotkey;
+      this.keyTimer = setTimeout(() => {
+        if (!this.pureSession || !this.keyDown) {
+          this.keyTimer = null;
           return;
         }
 
-        const hotkeyEventKey = HOTKEY_EVENT_KEYS.alt;
-
-        if (event.key === hotkeyEventKey) {
-          if (!isHotkeyPressed) {
-            isHotkeyPressed = true;
-            activeHotkeyEventKey = hotkeyEventKey;
-            timerId = setTimeout(() => {
-              void (async () => {
-                if (!isHotkeySessionPure || !isHotkeyPressed) {
-                  timerId = null;
-                  return;
-                }
-
-                const currentConfig = await getCurrentConfig();
-                if (!currentConfig || !currentConfig.selectionTranslateEnabled) {
-                  timerId = null;
-                  return;
-                }
-
-                void removeOrShowNodeTranslation(mousePosition, currentConfig);
-                actionTriggered = true;
-                timerId = null;
-              })();
-            }, 1000);
-
-            if (!isHotkeySessionPure && timerId) {
-              clearTimeout(timerId);
-              timerId = null;
-            }
-          }
-        } else {
-          isHotkeySessionPure = false;
-          if (isHotkeyPressed && timerId) {
-            clearTimeout(timerId);
-            timerId = null;
-          }
+        const current = this.cfg();
+        if (!current || !this.inTriggerMode(current)) {
+          this.keyTimer = null;
+          return;
         }
-      })();
-    },
-    { signal }
-  );
-
-  document.addEventListener(
-    'keyup',
-    (event) => {
-      void (async () => {
-        if (event.target instanceof HTMLElement && isEditable(event.target)) return;
-
-        const config = await getCurrentConfig();
-        if (!config || !config.selectionTranslateEnabled) {
-          if (event.key === activeHotkeyEventKey) resetHotkeySession();
+        if (HOTKEY_EVENT_KEYS[current.quickTranslate.translate.triggerOnHover] !== this.activeKey) {
+          this.keyTimer = null;
           return;
         }
 
-        const hotkeyEventKey = HOTKEY_EVENT_KEYS.alt;
+        this.trigger(this.pos);
+        this.keyTriggered = true;
+        this.keyTimer = null;
+      }, HOLD_DELAY_MS);
 
-        if (event.key === hotkeyEventKey || event.key === activeHotkeyEventKey) {
-          if (isHotkeyPressed && isHotkeySessionPure) {
-            if (timerId) {
-              clearTimeout(timerId);
-              timerId = null;
-            }
-            if (!actionTriggered) {
-              const currentConfig = await getCurrentConfig();
-              if (!currentConfig || !currentConfig.selectionTranslateEnabled) return;
-
-              void removeOrShowNodeTranslation(mousePosition, currentConfig);
-            }
-          }
-          resetHotkeySession();
-        }
-      })();
-    },
-    { signal }
-  );
-
-  // Teardown: abort all listeners + cancel pending timers
-  return () => {
-    ac.abort();
-    resetHotkeySession();
-    if (moveThrottleTimer) {
-      clearTimeout(moveThrottleTimer);
-      moveThrottleTimer = null;
+      // Session already impure (another key was pressed first) — cancel immediately
+      if (!this.pureSession && this.keyTimer) {
+        clearTimeout(this.keyTimer);
+        this.keyTimer = null;
+      }
+    } else {
+      this.pureSession = false;
+      if (this.keyDown && this.keyTimer) {
+        clearTimeout(this.keyTimer);
+        this.keyTimer = null;
+      }
     }
-    clearClickAndHoldTimer();
+  };
+
+  private onKeyUp = (e: KeyboardEvent): void => {
+    if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
+
+    const config = this.cfg();
+    if (!config || !this.inTriggerMode(config)) {
+      if (e.key === this.activeKey) this.resetKey();
+      return;
+    }
+
+    const hotkey = HOTKEY_EVENT_KEYS[config.quickTranslate.translate.triggerOnHover];
+
+    if (e.key === hotkey || e.key === this.activeKey) {
+      if (this.keyDown && this.pureSession) {
+        if (this.keyTimer) {
+          clearTimeout(this.keyTimer);
+          this.keyTimer = null;
+        }
+        if (!this.keyTriggered) {
+          const current = this.cfg();
+          if (!current || !this.inTriggerMode(current)) return;
+          this.trigger(this.pos);
+        }
+      }
+      this.resetKey();
+    }
   };
 }
 
-async function removeOrShowNodeTranslation(position: Point, config: Config): Promise<void> {
-  const element = document.elementFromPoint(position.x, position.y);
-  if (!element) {
-    return;
-  }
-
-  logger.info('Node translation triggered at', { position, element });
-  // TODO: implement actual node translation logic
-}
+export default new NodeTranslation();

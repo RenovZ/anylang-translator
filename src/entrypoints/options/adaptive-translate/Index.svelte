@@ -1,22 +1,19 @@
 <script lang="ts">
-  import { A, Button, Dropdown, DropdownItem, Input, Toggle } from 'flowbite-svelte';
-  import { ChevronDownOutline } from 'flowbite-svelte-icons';
-
   import FeatureAutoAppliedLangs from '@/components/FeatureAutoAppliedLangs.svelte';
   import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
-  import SectionRow from '@/components/SectionRow.svelte';
-  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { FEAT_CONTEXT_TRANSLATE, FEAT_QUICK_TRANSLATE } from '@/preset/constants';
-  import { translateModeSchema } from '@/types/config';
 
   import { adaptiveTranslateNav as nav } from '../data';
   import Section from '../Section.svelte';
 
+  import DisplayMode from './DisplayMode.svelte';
   import DisplayStyle from './DisplayStyle.svelte';
+  import PageRange from './PageRange.svelte';
+  import TriggerOnHover from './TriggerOnHover.svelte';
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
@@ -96,37 +93,14 @@
         'When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts.'
     })} />
 
-  <!-- display mode -->
-  <SectionRow
-    title={i18n('display_mode', {
-      defaultValue: 'Display mode'
-    })}
-    description={i18n('display_mode_description', {
-      defaultValue: 'Choose display mode after translation'
-    })}>
-    <div slot="controls">
-      <Button
-        class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
-        <span>{$config.quickTranslate.translate.mode}</span>
-        <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
-      </Button>
-      <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-        <DropdownItem
-          onclick={() =>
-            ($config.quickTranslate.translate.mode = translateModeSchema.parse('bilingual'))}>
-          {i18n('display_mode_bilingual_mode', { defaultValue: 'Bilingual Mode' })}
-        </DropdownItem>
-        <DropdownItem
-          onclick={() =>
-            ($config.quickTranslate.translate.mode =
-              translateModeSchema.parse('translation_only'))}>
-          {i18n('display_mode_translation_only', {
-            defaultValue: 'Translation only'
-          })}
-        </DropdownItem>
-      </Dropdown>
-    </div>
-  </SectionRow>
+  <!-- translate page range -->
+  <PageRange />
+
+  <!-- translate selection trigger -->
+  <TriggerOnHover />
+
+  <!-- translate display mode -->
+  <DisplayMode />
 
   <!-- translation display style -->
   <DisplayStyle />

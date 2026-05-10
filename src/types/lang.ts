@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { LANG_CODE_MAP } from '@/preset/lang';
+import { DEFAULT_LANG_CODES, LANG_CODE_MAP } from '@/preset/lang';
 
-export const langCodeSchema = z.enum(Object.keys(LANG_CODE_MAP['en'])).or(z.literal('und'));
+export const langCodeSchema = z.enum(DEFAULT_LANG_CODES);
 export type LangCode = z.infer<typeof langCodeSchema>;
 
 export const uiLangCodeSchema = z.custom<keyof typeof LANG_CODE_MAP>(

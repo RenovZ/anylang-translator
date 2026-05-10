@@ -1,15 +1,27 @@
-import config from '@/lib/config';
+import configStore from '@/lib/config';
 
 import type { PageTranslationManager } from './page-translation';
+
+function isEditable(element: HTMLElement): boolean {
+  const tagName = element.tagName.toLowerCase();
+  const editableElements = ['input', 'textarea', 'select'];
+  if (editableElements.includes(tagName)) {
+    return true;
+  }
+  if (element.isContentEditable) {
+    return true;
+  }
+  return false;
+}
 
 /**
  * Binds page translation shortcut key from the given config.
  * Uses sync cached config inside the hotkey callback to avoid async overhead.
  */
-export async function bindTranslationShortcutKey(
+export function bindTranslationShortcutKey(
   pageTranslationManager: PageTranslationManager
-): Promise<() => void> {
-  const cfg = config.get();
+): () => void {
+  const cfg = configStore.get();
   if (!cfg) {
     return () => {};
   }
@@ -22,6 +34,8 @@ export async function bindTranslationShortcutKey(
   const keyCombo = shortcut.join('+');
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.target instanceof HTMLElement && isEditable(event.target)) return;
+
     const keys: string[] = [];
     if (event.altKey) keys.push('Alt');
     if (event.ctrlKey) keys.push('Control');

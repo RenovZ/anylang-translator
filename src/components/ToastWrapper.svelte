@@ -1,7 +1,7 @@
 <script module lang="ts">
   export interface ToastProp {
     show: boolean;
-    type: 'success' | 'error';
+    type: 'success' | 'error' | 'info' | 'debug';
     message?: string | import('svelte').Snippet;
     title?: string | import('svelte').Snippet;
     titleClass?: string;
@@ -12,6 +12,13 @@
   import { Toast } from 'flowbite-svelte';
   import { CheckCircleSolid, ExclamationCircleSolid } from 'flowbite-svelte-icons';
   import { twMerge } from 'tailwind-merge';
+
+  const TYPED_COLOR = {
+    success: 'green',
+    error: 'red',
+    info: 'blue',
+    debug: 'gray'
+  } as const;
 
   let {
     show = $bindable(false),
@@ -26,7 +33,7 @@
   <Toast
     align={!title}
     class="fixed top-25 left-5 z-9999"
-    color={type === 'success' ? 'green' : 'red'}
+    color={TYPED_COLOR[type]}
     onclose={() => (show = false)}>
     {#snippet icon()}
       {#if type === 'success'}

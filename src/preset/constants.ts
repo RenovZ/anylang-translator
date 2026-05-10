@@ -95,5 +95,3 @@ export const cmdToFeat: Record<CommandName, FeatureField> = {
 //   [CMD_PANORAMA_READING]: MSG_PANORAMA_READING,
 //   [CMD_WRITING_COPILOT]: MSG_WRITING_COPILOT
 // } as const;
-
-export const CLASS_NOTRANSLATE = 'anylang-notranslate' as const;

@@ -10,7 +10,7 @@ class CryptoPolyfill {
   private mustGetCrypto(): Crypto {
     if (typeof crypto === 'undefined' || typeof crypto.getRandomValues !== 'function') {
       throw new TypeError(
-        '[crypto-polyfill] crypto.getRandomValues is required but not available. ' +
+        'crypto.getRandomValues is required but not available. ' +
           'This polyfill only works in browser environments.'
       );
     }

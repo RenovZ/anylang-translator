@@ -1,9 +1,10 @@
 import { z } from 'zod';
 
 import type { FeatureField } from '@/preset/constants';
+import { DEFAULT_LANG_CODES } from '@/preset/lang';
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
-import { displayStyles } from '@/preset/translate';
+import { displayStyles, HOTKEYS } from '@/preset/translate';
 import { aiProviderSchema, providerSchema, type Provider } from '@/types/provider';
 
 import { promptSchema, type Prompt } from './prompt';
@@ -11,17 +12,19 @@ import { displayStyleSchema } from './translate';
 
 export const selectionTriggerSchema = z.enum(['directly', 'show icons', 'noop']);
 export const translateModeSchema = z.enum(['translation_only', 'bilingual']);
-export const translatePageRangeSchema = z.enum(['main', 'all']);
-export type TranslatePageRange = z.infer<typeof translatePageRangeSchema>;
+export type TranslateMode = z.infer<typeof translateModeSchema>;
+export const pageRangeSchema = z.enum(['main', 'all']);
+export type TranslatePageRange = z.infer<typeof pageRangeSchema>;
 
 export const detectionModeSchema = z.enum(['basic', 'llm']);
 export type DetectionMode = z.infer<typeof detectionModeSchema>;
 
-export const languageDetectionSchema = z.object({
+export const langDetectionSchema = z.object({
   mode: detectionModeSchema,
-  provider: aiProviderSchema.nullable()
+  provider: aiProviderSchema.nullable(),
+  langCode: z.enum(DEFAULT_LANG_CODES).default('en')
 });
-export type LanguageDetection = z.infer<typeof languageDetectionSchema>;
+export type LangDetection = z.infer<typeof langDetectionSchema>;
 
 const featureContextTranslateSchema = z.object({
   icon: z.string(),
@@ -33,13 +36,19 @@ const featureConfigBaseSchema = featureContextTranslateSchema.extend({
   autoAppliedLangs: z.array(z.string()).optional()
 });
 const featureQuickTranslateSchema = featureConfigBaseSchema.extend({
+  provider: providerSchema,
   translate: z.object({
     mode: translateModeSchema.default('bilingual'),
     displayStyle: displayStyleSchema.default(displayStyles[0]),
-    pageRange: translatePageRangeSchema.default('main')
+    pageRange: pageRangeSchema.default('main'),
+    triggerOnHover: z.enum(HOTKEYS),
+    minCharactersPerNode: z.number().default(0),
+    minWordsPerNode: z.number().default(0),
+    skipLanguages: z.array(z.enum(DEFAULT_LANG_CODES)).default([])
   })
 });
 const featureInstantLookupSchema = featureConfigBaseSchema.extend({
+  provider: providerSchema,
   selection: z.object({
     triggerTranslate: selectionTriggerSchema.default('directly')
   })
@@ -57,11 +66,11 @@ export const configSchema = z.object({
   lastTimeShowingReleaseNotes: z.number().nullable().default(null),
   originalUserAgent: z.string().nullable().default(null),
 
-  uiLanguage: z.string().default('default'),
-  sourceLanguage: z.string().optional(),
-  targetLanguage: z.string().default('en'),
+  uiLangCode: z.string().default('default'),
+  sourceLangCode: z.enum(DEFAULT_LANG_CODES).optional(),
+  targetLangCode: z.enum(DEFAULT_LANG_CODES).default('en'),
 
-  languageDetection: languageDetectionSchema,
+  langDetection: langDetectionSchema,
 
   providers: z
     .array(providerSchema)

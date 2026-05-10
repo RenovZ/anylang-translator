@@ -233,14 +233,8 @@
   "description_placeholder": {
     "message": "Describe what this field should contain..."
   },
-  "display_mode": {
-    "message": "Display mode"
-  },
   "display_mode_bilingual_mode": {
     "message": "Bilingual Mode"
-  },
-  "display_mode_description": {
-    "message": "Choose display mode after translation"
   },
   "display_mode_translation_only": {
     "message": "Translation only"
@@ -280,12 +274,6 @@
   },
   "display_style_weaken": {
     "message": "Weaken"
-  },
-  "display_styles": {
-    "message": "Display styles"
-  },
-  "display_styles_description": {
-    "message": "Distinguish translated text styles; see examples below"
   },
   "docs": {
     "message": "Documentation"
@@ -575,6 +563,12 @@
   "output_schema": {
     "message": "Output Schema"
   },
+  "page_range_all": {
+    "message": "All Content"
+  },
+  "page_range_main": {
+    "message": "Main Content"
+  },
   "page_translate": {
     "message": "Translate page"
   },
@@ -803,8 +797,38 @@
   "text_color": {
     "message": "Text color"
   },
+  "toast_llm_language_detection_fallback": {
+    "message": "LLM language detection failed, using franc instead"
+  },
+  "toast_translation_same_langauge": {
+    "message": "Source and target languages are the same"
+  },
   "translate": {
     "message": "Translate"
+  },
+  "translate_display_mode": {
+    "message": "Translate Display Mode"
+  },
+  "translate_display_mode_description": {
+    "message": "Choose how the translated text is displayed: bilingual or translation only."
+  },
+  "translate_display_styles": {
+    "message": "Translate Display Style"
+  },
+  "translate_display_styles_description": {
+    "message": "Set any style you want to distinguish translation results from original text"
+  },
+  "translate_page_range": {
+    "message": "Translate page range"
+  },
+  "translate_page_range_description": {
+    "message": "Select whether to translate only the main content or all content on the page."
+  },
+  "translate_selection_trigger": {
+    "message": "Hover or Long-Press Translation Shortcut"
+  },
+  "translate_selection_trigger_description": {
+    "message": "Customize the hover modifier key or use long press to translate paragraphs"
   },
   "translating": {
     "message": "Translating..."
@@ -815,8 +839,11 @@
   "ui_language_hint": {
     "message": "UI language affects panel display language and does not change translation target language"
   },
-  "unknown_language": {
-    "message": "Unknown language"
+  "unsupported_content": {
+    "message": "Unsupported Content"
+  },
+  "unsupported_trigger": {
+    "message": "Unsupported Trigger"
   },
   "upgrade": {
     "message": "Upgrade"

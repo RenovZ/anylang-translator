@@ -6,34 +6,26 @@ import { LanguageDirection } from '@/types/content';
 import { langCodeSchema, uiLangCodeSchema, type LangCode } from '@/types/lang';
 
 import configStore from './config';
-import i18n from './i18n';
 import logger from './logger';
 
 const PUNCTUATION_AND_WHITESPACE_PATTERN = /['"`,.\s]/g;
 
 class LangManager {
-  getUILangCodeMap(): Record<LangCode, string> {
+  getLangCodeMap(): Record<LangCode, string> {
     const config = configStore.get();
 
     const rawValue =
-      config.uiLanguage !== 'default' ? config.uiLanguage : browser.i18n.getUILanguage();
-    const parseResult = uiLangCodeSchema.safeParse(rawValue);
-    if (parseResult.success) {
-      return LANG_CODE_MAP[parseResult.data];
-    }
+      config.uiLangCode !== 'default' ? config.uiLangCode : browser.i18n.getUILanguage();
+    const { success, data, error } = uiLangCodeSchema.safeParse(rawValue);
+    if (success) return LANG_CODE_MAP[data];
 
-    logger.warn('Invalid ui langCode data, using default:', { rawValue, error: parseResult.error });
+    logger.warn('Invalid ui langCode data, using default:', { rawValue, error });
     return LANG_CODE_MAP['en'];
   }
 
-  getLangName(langCode: LangCode): string {
-    if (langCode === 'und') {
-      return i18n('unknown_language', {
-        defaultValue: 'Unknown language'
-      });
-    }
-
-    return this.getUILangCodeMap()[langCode] ?? langCode;
+  getLangName(rawLangCode: string): string {
+    const langCode = langCodeSchema.parse(rawLangCode);
+    return this.getLangCodeMap()[langCode];
   }
 
   // formatUICode(langCode: string) {
@@ -90,6 +82,12 @@ class LangManager {
 
   //   return langCode;
   // }
+
+  async setLangDetection(langCode: LangCode | 'und'): Promise<void> {
+    const config = configStore.get();
+    config.langDetection.langCode = langCode;
+    await configStore.set(config);
+  }
 
   getLangDirection(langCode: LangCode): LanguageDirection {
     return new Locale(langCode).getTextInfo().direction as LanguageDirection;

@@ -197,15 +197,15 @@ class Shortcut {
       if (!featureKey) continue;
 
       const shortcutKeys = this.parse(cmd.shortcut);
-      const parseResult = featureConfigSchema.safeParse(config[featureKey]);
-      if (!parseResult.success) {
+      const { success, data, error } = featureConfigSchema.safeParse(config[featureKey]);
+      if (!success) {
         logger.warn(`Failed to parse shortcut for feature`, {
           featureKey,
-          error: parseResult.error
+          error
         });
         continue;
       }
-      const current = parseResult.data;
+      const current = data;
 
       if (
         shortcutKeys.length !== current.shortcut.length ||

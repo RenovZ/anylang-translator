@@ -2,6 +2,8 @@ import { generateText } from 'ai';
 import { franc } from 'franc';
 import { Readability } from '@mozilla/readability';
 
+import { toast } from '@/components/isolated-toast';
+import domPrune from '@/lib/dom/prune';
 import { GenerateTextParams } from '@/types/background';
 import type {
   DetectLanguageOptions,
@@ -14,7 +16,7 @@ import { langCodeSchema, type LangCode } from '@/types/lang';
 import { AIProvider } from '@/types/provider';
 
 import configStore from './config';
-import domManager from './dom';
+import i18n from './i18n';
 import langManager from './lang';
 import logger, { formatError } from './logger';
 import promptManager from './prompt';
@@ -53,7 +55,7 @@ class ContentManager {
   }): Promise<DocumentInfo> {
     const documentClone = document.cloneNode(true);
     const cfg = configStore.get();
-    domManager.prune(documentClone as Document, cfg.quickTranslate.translate.pageRange);
+    domPrune.prune(documentClone as Document, cfg.quickTranslate.translate.pageRange);
     const article = new Readability(documentClone as Document, {
       serializer: (el) => el
     }).parse();
@@ -72,7 +74,7 @@ class ContentManager {
     const hasAutoAppliedSiteOrLang =
       (featureConfig?.autoAppliedSites?.length ?? 0) > 0 ||
       (featureConfig?.autoAppliedLangs?.length ?? 0) > 0;
-    const enableLLM = cfg.languageDetection.mode === 'llm' && hasAutoAppliedSiteOrLang;
+    const enableLLM = cfg.langDetection.mode === 'llm' && hasAutoAppliedSiteOrLang;
     const { code: detectedCodeOrUnd, source: detectionSource } =
       await this.detectLanguageWithSource(textForDetection, {
         enableLLM,
@@ -270,11 +272,11 @@ class ContentManager {
   getLanguageDirectionAndLang(targetCode: string): LanguageDirectionAndLang {
     const dir = langManager.getLangDirection(targetCode);
 
-    const parseResult = langCodeSchema.safeParse(targetCode);
-    if (parseResult.success) return { dir, lang: parseResult.data };
+    const { success, data, error } = langCodeSchema.safeParse(targetCode);
+    if (success) return { dir, langCode: data };
 
-    logger.warn('Unsupported language code', { targetCode, error: parseResult.error });
-    return { dir, lang: undefined };
+    logger.warn('Unsupported language code', { targetCode, error });
+    return { dir, langCode: undefined };
   }
 
   /**
@@ -305,9 +307,11 @@ class ContentManager {
         logger.warn('falling back to franc', {
           error: formatError(error)
         });
-        // TODO: 这里怎么用flowbite-svelte/Toast封装toast
-        // Replaced sonner toast with logger
-        logger.warn('LLM language detection failed, using franc instead');
+        toast.warn(
+          i18n('toast_llm_language_detection_fallback', {
+            defaultValue: 'LLM language detection failed, using franc instead'
+          })
+        );
       }
     }
 
@@ -322,7 +326,7 @@ class ContentManager {
   /**
    * Detect language of text using franc, with optional LLM enhancement.
    */
-  async detectLanguage(text: string, options?: DetectLanguageOptions): Promise<string | null> {
+  async detectLanguage(text: string, options?: DetectLanguageOptions): Promise<LangCode | null> {
     const result = await this.detectLanguageWithSource(text, options);
     return result.code === 'und' ? null : result.code;
   }
@@ -338,7 +342,7 @@ class ContentManager {
 
     // Get provider config - use passed or fall back to global
     const config = configStore.get();
-    const providerConfig = config.languageDetection.provider;
+    const providerConfig = config.langDetection.provider;
     if (!providerConfig) {
       logger.warn('No provider configured');
       return null;

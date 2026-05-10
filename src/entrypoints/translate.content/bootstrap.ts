@@ -1,25 +1,23 @@
 import type { ContentScriptContext } from '#imports';
 
+import { toast } from '@/components/isolated-toast';
+import contentManager from '@/lib/content';
+import langManager from '@/lib/lang';
 import logger from '@/lib/logger';
-import { sendMessage } from '@/lib/protocol';
+import { onMessage, sendMessage } from '@/lib/protocol';
+import styleInjector from '@/lib/translate/ui/style-injector';
 
 import { EVENT_EXTENSION_URL_CHANGE, setupUrlChangeListener } from './listen';
-import { mountTranslationToast } from './mount-toast';
 import { bindTranslationShortcutKey } from './translation-control/bind-translation-shortcut';
-import { registerNodeTranslationTriggers } from './translation-control/node-translation';
+import nodeTranslation from './translation-control/node-translation';
 import { PageTranslationManager } from './translation-control/page-translation';
 
 export async function bootstrap(ctx: ContentScriptContext) {
-  // TODO:
-  // ensurePresetStyles(document)
-
-  // const cfg = config.get();
+  styleInjector.ensurePresetStyles(document);
 
   const cleanupUrlListener = setupUrlChangeListener();
 
-  const removeTranslationToast = window === window.top ? mountTranslationToast() : () => {};
-
-  const teardownNodeTranslation = registerNodeTranslationTriggers();
+  const teardownNodeTranslation = nodeTranslation.register();
 
   const manager = new PageTranslationManager({
     root: null,
@@ -29,7 +27,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
 
   const cleanupPageTranslationTriggers = manager.registerPageTranslationTriggers();
 
-  const cleanupTranslationShortcut = await bindTranslationShortcutKey(manager);
+  const cleanupTranslationShortcut = bindTranslationShortcutKey(manager);
 
   // For late-loading iframes: check if translation is already enabled for this tab
   let translationEnabled = false;
@@ -52,13 +50,11 @@ export async function bootstrap(ctx: ContentScriptContext) {
 
       // Only the top frame should detect and set language to avoid race conditions from iframes
       if (window === window.top) {
-        // TODO:
-        // const { detectedCodeOrUnd } = await getDocumentInfo();
-        // const detectedCode: LangCodeISO6393 =
-        //   detectedCodeOrUnd === 'und' ? 'eng' : detectedCodeOrUnd;
-        // await storage.setItem<LangCodeISO6393>(`local:${DETECTED_CODE_STORAGE_KEY}`, detectedCode);
-        // // Notify background script that URL has changed, let it decide whether to automatically enable translation
-        // void sendMessage('checkAndAskAutoPageTranslation', { url: to, detectedCodeOrUnd });
+        const { detectedCodeOrUnd } = await contentManager.getDocumentInfo();
+        await langManager.setLangDetection(detectedCodeOrUnd);
+
+        // Notify background script that URL has changed, let it decide whether to automatically enable translation
+        void sendMessage('checkAndAskAutoPageTranslation', { url: to, detectedCodeOrUnd });
       }
     }
   };
@@ -70,34 +66,37 @@ export async function bootstrap(ctx: ContentScriptContext) {
   };
   window.addEventListener(EVENT_EXTENSION_URL_CHANGE, handleExtensionUrlChange);
 
-  // TODO:
-  // // Listen for translation state changes from background
-  // const cleanupTranslationStateListener = onMessage("askManagerToTogglePageTranslation", (msg) => {
-  //   const { enabled, analyticsContext } = msg.data
-  //   if (enabled === manager.isActive)
-  //     return
-  //   enabled ? void manager.start(window === window.top ? analyticsContext : undefined) : manager.stop()
-  // })
+  // Listen for translation state changes from background
+  const cleanupTranslationStateListener = onMessage('askManagerToTogglePageTranslation', (msg) => {
+    const { enabled, analyticsContext } = msg.data;
+    if (enabled === manager.isActive) return;
+    if (enabled) {
+      void manager.start(window === window.top ? analyticsContext : undefined);
+    } else {
+      manager.stop();
+    }
+  });
 
   ctx.onInvalidated(() => {
-    removeTranslationToast();
+    toast.destroy();
     cleanupUrlListener();
     teardownNodeTranslation();
     cleanupPageTranslationTriggers();
     cleanupTranslationShortcut();
-    // cleanupTranslationStateListener()
+    cleanupTranslationStateListener();
     window.removeEventListener(EVENT_EXTENSION_URL_CHANGE, handleExtensionUrlChange);
     window.__ANYLANG_ADAPTIVE_TRANSLATE_INJECTED__ = false;
-    // clearEffectiveSiteControlUrl()
   });
 
   // Only the top frame should detect and set language to avoid race conditions from iframes
   if (window === window.top) {
-    // TODO:
-    // const { detectedCodeOrUnd } = await getDocumentInfo()
-    // const initialDetectedCode: LangCodeISO6393 = detectedCodeOrUnd === "und" ? "eng" : detectedCodeOrUnd
-    // await storage.setItem<LangCodeISO6393>(`local:${DETECTED_CODE_STORAGE_KEY}`, initialDetectedCode)
-    // // Check if auto-translation should be enabled for initial page load
-    // void sendMessage("checkAndAskAutoPageTranslation", { url: window.location.href, detectedCodeOrUnd })
+    const { detectedCodeOrUnd } = await contentManager.getDocumentInfo();
+    await langManager.setLangDetection(detectedCodeOrUnd);
+
+    // Check if auto-translation should be enabled for initial page load
+    void sendMessage('checkAndAskAutoPageTranslation', {
+      url: window.location.href,
+      detectedCodeOrUnd
+    });
   }
 }

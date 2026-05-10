@@ -16,7 +16,7 @@
 
   const { title, description, field }: Props = $props();
 
-  const languageOptions = Object.entries(lang.getUILangCodeMap()).map(([langCode, langName]) => ({
+  const languageOptions = Object.entries(lang.getLangCodeMap()).map(([langCode, langName]) => ({
     value: langCode,
     name: langName
   }));

@@ -1,6 +1,15 @@
-import config from '@/lib/config';
+import analyticsManager from '@/lib/analytics';
 import cryptoPolyfill from '@/lib/crypto-polyfill';
+import domFilter from '@/lib/dom/filter';
+import domFind from '@/lib/dom/find';
+import domTraversal from '@/lib/dom/traversal';
 import logger from '@/lib/logger';
+import { sendMessage } from '@/lib/protocol';
+import translateWalker from '@/lib/translate/core/translate-walker';
+import translateVariants from '@/lib/translate/translate-variants';
+import webpageContext from '@/lib/translate/webpage-context';
+import { CONTENT_WRAPPER_CLASS } from '@/preset/dom';
+import { FeatureUsageContext } from '@/types/analytics';
 
 type SimpleIntersectionOptions = Omit<IntersectionObserverInit, 'threshold'> & {
   threshold?: number;
@@ -16,7 +25,7 @@ interface IPageTranslationManager {
    * Starts the automatic page translation functionality
    * Registers observers, touch triggers and set storage
    */
-  start: () => Promise<void>;
+  start: (analyticsContext?: FeatureUsageContext) => Promise<void>;
 
   /**
    * Stops the automatic page translation functionality
@@ -67,46 +76,28 @@ export class PageTranslationManager implements IPageTranslationManager {
     return this.isPageTranslating;
   }
 
-  async start(): Promise<void> {
+  async start(analyticsContext?: FeatureUsageContext): Promise<void> {
     if (this.isPageTranslating) {
       logger.warn('PageTranslationManager is already active');
       return;
     }
 
-    // TODO:
-    // const trackedContext = window === window.top ? analyticsContext : undefined
+    const trackedContext = window === window.top ? analyticsContext : undefined;
 
-    const cfg = config.get();
-    if (!cfg) {
-      logger.warn('Config is not initialized');
-      // TODO:
-      // if (trackedContext) {
-      //   void trackFeatureUsed({
-      //     ...trackedContext,
-      //     outcome: "failure",
-      //   })
-      // }
+    if (!translateVariants.validateConfig()) {
+      if (trackedContext) {
+        void analyticsManager.trackFeatureUsed({
+          ...trackedContext,
+          outcome: 'failure'
+        });
+      }
       return;
     }
 
-    // const detectedCode = await getDetectedCodeFromStorage()
-
-    // if (!validateTranslationConfigAndToast({
-    //   providersConfig: config.providersConfig,
-    //   translate: config.translate,
-    //   language: config.language,
-    // }, detectedCode)) {
-    //   if (trackedContext) {
-    //     void trackFeatureUsed({
-    //       ...trackedContext,
-    //       outcome: "failure",
-    //     })
-    //   }
-    //   return
-    // }
-
     try {
-      await browser.runtime.sendMessage({ type: 'PAGE_TRANSLATION_ENABLED', enabled: true });
+      await sendMessage('setAndNotifyPageTranslationStateChangedByManager', {
+        enabled: true
+      });
 
       this.isPageTranslating = true;
       await this.primeDocumentTitleContext();
@@ -117,18 +108,13 @@ export class PageTranslationManager implements IPageTranslationManager {
       this.walkId = walkId;
       this.intersectionObserver = new IntersectionObserver(async (entries, observer) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            if (this.isHTMLElement(entry.target)) {
-              logger.info('Element entered viewport', { target: entry.target });
-              // TODO:
-              // if (!entry.target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
-              //   const currentConfig = await getLocalConfig()
-              //   if (!currentConfig) {
-              //     logger.error("Global config is not initialized")
-              //     return
-              //   }
-              //   void translateWalkedElement(entry.target, walkId, currentConfig)
-              // }
+          const { target, isIntersecting } = entry;
+          if (isIntersecting) {
+            if (domFilter.isHTMLElement(target)) {
+              logger.info('Element entered viewport', { target });
+              if (!target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
+                void translateWalker.run(target, walkId);
+              }
             }
             observer.unobserve(entry.target);
           }
@@ -142,21 +128,20 @@ export class PageTranslationManager implements IPageTranslationManager {
       // Start observing mutations from document.body and all shadow roots
       this.observeMutations(document.body);
 
-      // if (trackedContext) {
-      //   void trackFeatureUsed({
-      //     ...trackedContext,
-      //     outcome: "success",
-      //   })
-      // }
+      if (trackedContext) {
+        void analyticsManager.trackFeatureUsed({
+          ...trackedContext,
+          outcome: 'success'
+        });
+      }
     } catch (error) {
       logger.error('Failed to start page translation:', { error });
-      // TODO:
-      // if (trackedContext) {
-      //   void trackFeatureUsed({
-      //     ...trackedContext,
-      //     outcome: "failure",
-      //   })
-      // }
+      if (trackedContext) {
+        void analyticsManager.trackFeatureUsed({
+          ...trackedContext,
+          outcome: 'failure'
+        });
+      }
       throw error;
     }
   }
@@ -167,11 +152,9 @@ export class PageTranslationManager implements IPageTranslationManager {
       return;
     }
 
-    // void browser.runtime.sendMessage({ type: 'PAGE_TRANSLATION_ENABLED', enabled: false });
-    // TODO:
-    // void sendMessage("setAndNotifyPageTranslationStateChangedByManager", {
-    //   enabled: false,
-    // })
+    void sendMessage('setAndNotifyPageTranslationStateChangedByManager', {
+      enabled: false
+    });
 
     this.isPageTranslating = false;
     this.walkId = null;
@@ -185,7 +168,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     this.mutationObservers.forEach((observer) => observer.disconnect());
     this.mutationObservers = [];
 
-    // void removeAllTranslatedWrapperNodes();
+    // void removeAllWrappers();
   }
 
   registerPageTranslationTriggers(): () => void {
@@ -249,6 +232,12 @@ export class PageTranslationManager implements IPageTranslationManager {
   private async primeDocumentTitleContext(): Promise<void> {
     if (!this.shouldManageDocumentTitle()) {
       return;
+    }
+
+    try {
+      await webpageContext.getContext();
+    } catch (error) {
+      logger.warn('Failed to prime webpage context before translating document title', { error });
     }
   }
 
@@ -337,13 +326,13 @@ export class PageTranslationManager implements IPageTranslationManager {
     const requestVersion = ++this.titleRequestVersion;
 
     try {
-      logger.info('Would translate title:', sourceTitle);
+      logger.info('Would translate title:', { sourceTitle });
       if (!this.isPageTranslating || requestVersion !== this.titleRequestVersion) {
         return;
       }
     } catch (error) {
       if (requestVersion === this.titleRequestVersion) {
-        logger.warn('Failed to translate document title:', error);
+        logger.warn('Failed to translate document title:', { error });
       }
     }
   }
@@ -352,15 +341,9 @@ export class PageTranslationManager implements IPageTranslationManager {
     const observer = this.intersectionObserver;
     if (!this.walkId || !observer) return;
 
-    const config = await getConfig();
-    if (!config) {
-      logger.error('Global config is not initialized');
-      return;
-    }
+    if (domFilter.hasNoWalkAncestor(container)) return;
 
-    if (this.hasNoWalkAncestor(container)) return;
-
-    this.walkAndLabelElement(container, this.walkId);
+    domTraversal.walkAndLabelElement(container, this.walkId);
 
     const containerWalked = container.getAttribute('data-walked');
     if (container.hasAttribute('data-paragraph') && containerWalked === this.walkId) {
@@ -418,7 +401,7 @@ export class PageTranslationManager implements IPageTranslationManager {
    */
   private didChangeToWalkable(element: HTMLElement): boolean {
     const wasDontWalkInto = this.dontWalkIntoElementsCache.has(element);
-    const isDontWalkIntoNow = this.isDontWalkIntoButTranslateAsChildElement(element);
+    const isDontWalkIntoNow = domFilter.isOpaque(element);
 
     if (isDontWalkIntoNow) {
       this.dontWalkIntoElementsCache.add(element);
@@ -433,9 +416,9 @@ export class PageTranslationManager implements IPageTranslationManager {
    * Initialize walkability state for an element and its descendants
    */
   private addDontWalkIntoElements(element: HTMLElement): void {
-    const dontWalkIntoElements = this.deepQueryTopLevelSelector(
+    const dontWalkIntoElements = domFind.deepQueryTopLevelSelector(
       element,
-      this.isDontWalkIntoButTranslateAsChildElement.bind(this)
+      domFilter.isOpaque.bind(this)
     );
     dontWalkIntoElements.forEach((el) => this.dontWalkIntoElementsCache.add(el));
   }
@@ -448,7 +431,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       for (const rec of records) {
         if (rec.type === 'childList') {
           rec.addedNodes.forEach((node) => {
-            if (this.isHTMLElement(node)) {
+            if (domFilter.isHTMLElement(node)) {
               this.addDontWalkIntoElements(node);
               void this.observerTopLevelParagraphs(node);
               this.observeIsolatedDescendantsMutations(node);
@@ -459,7 +442,7 @@ export class PageTranslationManager implements IPageTranslationManager {
           (rec.attributeName === 'style' || rec.attributeName === 'class')
         ) {
           const el = rec.target;
-          if (this.isHTMLElement(el) && this.didChangeToWalkable(el)) {
+          if (domFilter.isHTMLElement(el) && this.didChangeToWalkable(el)) {
             void this.observerTopLevelParagraphs(el);
           }
         }
@@ -480,92 +463,15 @@ export class PageTranslationManager implements IPageTranslationManager {
   private observeIsolatedDescendantsMutations(element: HTMLElement): void {
     if (element.shadowRoot) {
       for (const child of Array.from(element.shadowRoot.children)) {
-        if (this.isHTMLElement(child)) {
+        if (domFilter.isHTMLElement(child)) {
           this.observeMutations(child);
         }
       }
     }
 
     for (const child of Array.from(element.children)) {
-      if (this.isHTMLElement(child)) {
+      if (domFilter.isHTMLElement(child)) {
         this.observeIsolatedDescendantsMutations(child);
-      }
-    }
-  }
-  private isHTMLElement(node: unknown): node is HTMLElement {
-    return node instanceof HTMLElement;
-  }
-
-  private hasNoWalkAncestor(element: HTMLElement): boolean {
-    let current: HTMLElement | null = element;
-    while (current) {
-      if (this.isDontWalkIntoButTranslateAsChildElement(current)) {
-        return true;
-      }
-      current = current.parentElement;
-    }
-    return false;
-  }
-
-  private isDontWalkIntoButTranslateAsChildElement(element: HTMLElement): boolean {
-    const dontWalkSelectors = [
-      'script',
-      'style',
-      'noscript',
-      'iframe',
-      'canvas',
-      'svg',
-      '[data-notranslate]',
-      '[translate="no"]'
-    ];
-    return dontWalkSelectors.some((selector) => element.matches(selector));
-  }
-
-  private deepQueryTopLevelSelector(
-    container: HTMLElement,
-    predicate: (el: HTMLElement) => boolean
-  ): HTMLElement[] {
-    const results: HTMLElement[] = [];
-    const walker = document.createTreeWalker(container, NodeFilter.SHOW_ELEMENT, null);
-
-    let node: Node | null;
-    while ((node = walker.nextNode())) {
-      if (this.isHTMLElement(node) && predicate(node)) {
-        results.push(node);
-        walker.currentNode = node;
-      }
-    }
-
-    return results;
-  }
-
-  private walkAndLabelElement(element: HTMLElement, walkId: string): void {
-    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
-
-    const textNodes: Text[] = [];
-    let node: Node | null;
-    while ((node = walker.nextNode())) {
-      if (node.textContent?.trim()) {
-        textNodes.push(node as Text);
-      }
-    }
-
-    // Group text nodes by parent element
-    const parentElements = new Map<HTMLElement, Text[]>();
-    for (const textNode of textNodes) {
-      const parent = textNode.parentElement;
-      if (parent && !this.isDontWalkIntoButTranslateAsChildElement(parent)) {
-        if (!parentElements.has(parent)) {
-          parentElements.set(parent, []);
-        }
-        parentElements.get(parent)!.push(textNode);
-      }
-    }
-
-    for (const [parent, nodes] of parentElements) {
-      if (nodes.length > 0 && parent.textContent && parent.textContent.trim().length > 20) {
-        parent.setAttribute('data-paragraph', 'true');
-        parent.setAttribute('data-walked', walkId);
       }
     }
   }

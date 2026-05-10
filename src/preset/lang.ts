@@ -11655,7 +11655,8 @@ export const LANG_CODE_MAP = {
 } as const;
 
 // export const SUPPORTED_UI_LANG_CODES = Object.keys(LANG_CODE_MAP);
-// export const DEFAULT_LANG_CODES = Object.keys(LANG_CODE_MAP['en']);
+
+export const DEFAULT_LANG_CODES = Object.keys(LANG_CODE_MAP['en']);
 
 export const supportedLangs = {
   google: [

@@ -19,7 +19,7 @@ export interface DetectLanguageOptions {
  * Language detection result
  */
 export interface DetectLanguageResult {
-  code: string | 'und';
+  code: LangCode | 'und';
   source: DetectionSource;
 }
 
@@ -30,7 +30,7 @@ export type LanguageDirection = 'ltr' | 'rtl';
  */
 export interface LanguageDirectionAndLang {
   dir: LanguageDirection;
-  lang?: LangCode;
+  langCode?: LangCode;
 }
 
 /**
@@ -60,6 +60,30 @@ export interface DocumentInfo {
     publishedTime?: string | null;
   } | null;
   paragraphs: string[];
-  detectedCodeOrUnd: string | 'und';
+  detectedCodeOrUnd: LangCode | 'und';
   detectionSource: DetectionSource;
+}
+
+/**
+ * Minimal webpage context used as context for AI translation prompts
+ */
+export interface WebPageContext {
+  webTitle: string;
+}
+
+/**
+ * Cached webpage context keyed by URL
+ */
+export interface CachedWebPageContext extends WebPageContext {
+  url: string;
+  webContent: string;
+}
+
+/**
+ * Prompt context passed to LLM translation for better quality
+ */
+export interface WebPagePromptContext {
+  webTitle?: string | null;
+  webContent?: string | null;
+  webSummary?: string | null;
 }

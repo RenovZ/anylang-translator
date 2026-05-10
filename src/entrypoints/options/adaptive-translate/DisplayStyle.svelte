@@ -81,11 +81,11 @@
 </script>
 
 <SectionRow
-  title={i18n('display_styles', {
-    defaultValue: 'Display styles'
+  title={i18n('translate_display_styles', {
+    defaultValue: 'Translate Display Style'
   })}
-  description={i18n('display_styles_description', {
-    defaultValue: 'Distinguish translated text styles; see examples below'
+  description={i18n('translate_display_styles_description', {
+    defaultValue: 'Set any style you want to distinguish translation results from original text'
   })}>
   <div slot="controls">
     <Button
