@@ -194,24 +194,24 @@ class DomFilter {
   // ────────────────────────────────────────────────────────────────────────────
 
   isOpaque(element: HTMLElement): boolean {
-    const dontWalkClass = element.classList.contains(NOTRANSLATE_CLASS);
+    const notranslate = element.classList.contains(NOTRANSLATE_CLASS);
 
-    const dontWalkTag = OPAQUE_TAGS.has(element.tagName);
+    const opaqueTag = OPAQUE_TAGS.has(element.tagName);
 
     // issue: https://github.com/mengxi-ream/read-frog/issues/459
     // const dontWalkAttr = element.getAttribute('translate') === 'no'
 
-    return dontWalkClass || dontWalkTag;
+    return notranslate || opaqueTag;
   }
 
   isSiteSkipped(element: HTMLElement): boolean {
-    const dontWalkIntoElementSelectorList = SITE_SKIP_SELECTOR_MAP[window.location.hostname] ?? [];
+    const skipSelectorList = SITE_SKIP_SELECTOR_MAP[window.location.hostname] ?? [];
 
-    const dontWalkSelector = dontWalkIntoElementSelectorList.join(',');
+    const skipSelector = skipSelectorList.join(',');
 
-    if (!dontWalkSelector) return false;
+    if (!skipSelector) return false;
 
-    return element.matches(dontWalkSelector);
+    return element.matches(skipSelector);
   }
 
   // ────────────────────────────────────────────────────────────────────────────
@@ -236,30 +236,30 @@ class DomFilter {
   }
 
   isSkipped(element: HTMLElement): boolean {
-    const dontWalkCustomElement = this.isSiteSkipped(element);
+    const customSkip = this.isSiteSkipped(element);
     const config = configStore.get();
-    const dontWalkContent =
+    const skipContent =
       config.quickTranslate.translate.pageRange !== 'all' &&
       NOISE_TAGS.has(element.tagName) &&
       !this.inMainContent(element);
-    const dontWalkInvalidTag = SKIP_TAGS.has(element.tagName);
-    const dontWalkCSS =
+    const invalidTag = SKIP_TAGS.has(element.tagName);
+    const hiddenByCSS =
       window.getComputedStyle(element).display === 'none' ||
       window.getComputedStyle(element).visibility === 'hidden';
-    const dontWalkHidden = element.hidden;
-    const dontWalkAriaHidden = element.getAttribute('aria-hidden') === 'true';
-    const dontWalkVisuallyHidden = ['sr-only', 'visually-hidden'].some((cls) =>
+    const hiddenAttr = element.hidden;
+    const ariaHidden = element.getAttribute('aria-hidden') === 'true';
+    const visuallyHidden = ['sr-only', 'visually-hidden'].some((cls) =>
       element.classList.contains(cls)
     );
 
     if (
-      dontWalkCustomElement ||
-      dontWalkContent ||
-      dontWalkInvalidTag ||
-      dontWalkCSS ||
-      dontWalkHidden ||
-      dontWalkAriaHidden ||
-      dontWalkVisuallyHidden
+      customSkip ||
+      skipContent ||
+      invalidTag ||
+      hiddenByCSS ||
+      hiddenAttr ||
+      ariaHidden ||
+      visuallyHidden
     ) {
       return true;
     }
@@ -268,13 +268,13 @@ class DomFilter {
   }
 
   isSiteForceBlock(element: HTMLElement): boolean {
-    const forceBlockSelectorList = SITE_FORCE_BLOCK_SELECTOR_MAP[window.location.hostname] ?? [];
+    const forceBlockList = SITE_FORCE_BLOCK_SELECTOR_MAP[window.location.hostname] ?? [];
 
-    const forceBlockSelector = forceBlockSelectorList.join(',');
+    const forceBlockSel = forceBlockList.join(',');
 
-    if (!forceBlockSelector) return false;
+    if (!forceBlockSel) return false;
 
-    return element.matches(forceBlockSelector);
+    return element.matches(forceBlockSel);
   }
 
   /**

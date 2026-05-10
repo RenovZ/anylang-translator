@@ -14,9 +14,9 @@ interface Protocol {
 
   // features
   quickTranslate: (data: { text: string }) => void;
-  getEnablePageTranslationFromContentScript: () => Promise<boolean>;
-  setAndNotifyPageTranslationStateChangedByManager: (data: { enabled: boolean }) => void;
-  askManagerToTogglePageTranslation: (data: {
+  getPageTranslationActive: () => Promise<boolean>;
+  reportPageTranslationState: (data: { enabled: boolean }) => void;
+  togglePageTranslation: (data: {
     enabled: boolean;
     analyticsContext?: FeatureUsageContext;
   }) => void;
@@ -25,10 +25,7 @@ interface Protocol {
   instantLookup: () => void;
 
   // for auto start page translation
-  checkAndAskAutoPageTranslation: (data: {
-    url: string;
-    detectedCodeOrUnd: LangCode | 'und';
-  }) => void;
+  checkAutoPageTranslation: (data: { url: string; detectedCodeOrUnd: LangCode | 'und' }) => void;
 
   // analytics
   trackFeatureUsedEvent: (data: FeatureUsedEvent) => void;

@@ -170,14 +170,14 @@ class TranslateVariants {
   async translateTextForPage(text: string): Promise<string> {
     const config = configStore.get();
     const providerConfig = config.quickTranslate.provider;
-    const webPageCtx = await this.getPageContext(
+    const webPageContext = await this.getPageContext(
       providerConfig,
       false /* enableAIContentAware — TODO wire up when config field exists */,
       true
     );
 
     return this.doTranslatePage(text, {
-      webPageContext: webPageCtx
+      webPageContext
     });
   }
 
@@ -188,18 +188,21 @@ class TranslateVariants {
   async translateTextForPageTitle(text: string): Promise<string> {
     const config = configStore.get();
     const providerConfig = config.quickTranslate.provider;
-    const webPageCtx = await this.getPageContext(
-      providerConfig,
-      false /* enableAIContentAware */,
-      false
-    );
+
+    // prettier-ignore
+    const { webContent, webSummary } =
+      (await this.getPageContext(
+        providerConfig,
+        false /* enableAIContentAware */,
+        false
+      )) ?? {};
 
     return this.doTranslatePage(text, {
       extraHashTags: ['pageTitleTranslation'],
       webPageContext: {
         webTitle: text,
-        webContent: webPageCtx?.webContent,
-        webSummary: webPageCtx?.webSummary
+        webContent,
+        webSummary
       }
     });
   }
@@ -238,7 +241,7 @@ class TranslateVariants {
       return '';
     }
 
-    const webPageCtx = await this.getPageContext(
+    const webPageContext = await this.getPageContext(
       providerConfig,
       false /* enableAIContentAware */,
       true
@@ -250,7 +253,7 @@ class TranslateVariants {
       targetLangCode: resolvedToLang,
       providerConfig,
       extraHashTags: [`inputTranslation:${fromLang}->${toLang}`],
-      webPageContext: webPageCtx
+      webPageContext
     });
   }
 }

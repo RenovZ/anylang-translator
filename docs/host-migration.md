@@ -51,6 +51,39 @@
 
 ### 配套新增（web 项目特有）
 
+## Entrypoints / 翻页控制迁移
+
+| read-frog 源文件                                                       | web 目标文件                                                                | 类名                     | 备注                                                                                       |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------ |
+| `src/entrypoints/host.content/translation-control/page-translation.ts` | `src/entrypoints/translate.content/translation-control/page-translation.ts` | `PageTranslationManager` | 管理自动/手动页面翻译：IntersectionObserver、MutationObserver、文档标题追踪、四指触发开/关 |
+
+### PageTranslation 内部重命名对照
+
+为了可维护性，部分过长或冗余的私有字段/方法在迁移时被重命名。下表列出 read-frog 源代码中的旧名与 web 项目中的新名对照：
+
+| 旧名（read-frog）                     | 新名（web）                    | 说明                                                                                |
+| ------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------- |
+| `dontWalkIntoElementsCache`           | `dontWalkCache`                | 存储被标记为“不走入”的元素的 WeakSet                                                |
+| `addDontWalkIntoElements`             | `cacheDontWalkElements`        | 初始化并缓存不可走入元素集合（会遍历 shadow roots）                                 |
+| `didChangeToWalkable`                 | `becameWalkable`               | 用于检测元素是否从“不走入”状态变为可走入（通常由 class/style 变化触发）             |
+| `observerTopLevelParagraphs`          | `observeTopLevelParagraphs`    | 观察并注册顶层段落元素进入视口的 IntersectionObserver                               |
+| `collectParagraphElementsDeep`        | `collectParagraphsDeep`        | 递归收集带有段落标记（`data-paragraph`）并已打上 walkId 的元素（包含 shadow roots） |
+| `observeIsolatedDescendantsMutations` | `observeDescendantMutations`   | 递归为影子 DOM 及后代添加 MutationObserver                                          |
+| `deepQueryTopLevelSelector`           | `deepQueryTopLevel`            | DomFind 中用于递归在 ShadowRoot/Document 内按 predicate 搜索元素                    |
+| (translate) `isTargetLang`            | (translate) `isAlreadyTarget`  | 语言检测帮助方法，判断文本是否已为目标语言                                          |
+| (translate) `getPageContext`          | (translate) `fetchPageContext` | 获取页面上下文辅助方法（包含 summary 控制）                                         |
+
+说明：这些重命名仅是内部实现层面的可读性改进，外部行为、数据属性（如 `data-paragraph`、`data-walked`）和功能契约未改变。
+
+### 行为/架构差异要点
+
+- 页面翻译由 content 脚本通过 IntersectionObserver / MutationObserver 驱动，遇到可见段落时会调用翻译 walker（`translate/core/translate-walker.ts` 中的 `run`）。
+- 文档标题翻译在顶层窗口（`window === window.top`）由 manager 管理，包含：预热页面上下文、监听 head 的 mutation 以及防止反复翻译的版本控制逻辑。
+- 四指触发（四点触摸且在短时间和小位移内）用于在移动端快速开/关页面翻译，此逻辑位于 `registerPageTranslationTriggers()`。
+- 迁移过程中对原有长命名函数进行了裁剪/重命名以提升可维护性，若向后兼容性或外部引用有需求（例如 tests 或其他模块引用旧名），请在迁移时添加适配层或导出旧名的别名。
+
+---
+
 | 文件                     | 类名       | 说明                                                                                                    |
 | ------------------------ | ---------- | ------------------------------------------------------------------------------------------------------- |
 | `src/lib/url.ts`         | `UrlUtils` | `matchDomainPattern`                                                                                    |

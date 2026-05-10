@@ -36,7 +36,7 @@ interface IPageTranslationManager {
   /**
    * Registers page translation triggers
    */
-  registerPageTranslationTriggers: () => () => void;
+  registerTriggers: () => () => void;
 }
 
 export class PageTranslationManager implements IPageTranslationManager {
@@ -48,12 +48,12 @@ export class PageTranslationManager implements IPageTranslationManager {
     threshold: 0.1
   };
 
-  private isPageTranslating: boolean = false;
+  private active: boolean = false;
   private intersectionObserver: IntersectionObserver | null = null;
   private mutationObservers: MutationObserver[] = [];
   private walkId: string | null = null;
   private intersectionOptions: IntersectionObserverInit;
-  private dontWalkIntoElementsCache = new WeakSet<HTMLElement>();
+  private dontWalkCache = new WeakSet<HTMLElement>();
   private titleObserver: MutationObserver | null = null;
   private lastSourceTitle: string | null = null;
   private lastAppliedTranslatedTitle: string | null = null;
@@ -73,11 +73,11 @@ export class PageTranslationManager implements IPageTranslationManager {
   }
 
   get isActive(): boolean {
-    return this.isPageTranslating;
+    return this.active;
   }
 
   async start(analyticsContext?: FeatureUsageContext): Promise<void> {
-    if (this.isPageTranslating) {
+    if (this.active) {
       logger.warn('PageTranslationManager is already active');
       return;
     }
@@ -95,13 +95,13 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
 
     try {
-      await sendMessage('setAndNotifyPageTranslationStateChangedByManager', {
+      await sendMessage('reportPageTranslationState', {
         enabled: true
       });
 
-      this.isPageTranslating = true;
-      await this.primeDocumentTitleContext();
-      this.startDocumentTitleTracking();
+      this.active = true;
+      await this.primeTitle();
+      this.startTitleTracking();
 
       // Listen to existing elements when they enter the viewpoint
       const walkId = cryptoPolyfill.getUUID();
@@ -122,8 +122,8 @@ export class PageTranslationManager implements IPageTranslationManager {
       }, this.intersectionOptions);
 
       // Initialize walkability state for existing elements
-      this.addDontWalkIntoElements(document.body);
-      await this.observerTopLevelParagraphs(document.body);
+      this.cacheOpaque(document.body);
+      await this.observeParagraphs(document.body);
 
       // Start observing mutations from document.body and all shadow roots
       this.observeMutations(document.body);
@@ -147,19 +147,19 @@ export class PageTranslationManager implements IPageTranslationManager {
   }
 
   stop(): void {
-    if (!this.isPageTranslating) {
+    if (!this.active) {
       logger.warn('PageTranslationManager is already inactive');
       return;
     }
 
-    void sendMessage('setAndNotifyPageTranslationStateChangedByManager', {
+    void sendMessage('reportPageTranslationState', {
       enabled: false
     });
 
-    this.isPageTranslating = false;
+    this.active = false;
     this.walkId = null;
-    this.dontWalkIntoElementsCache = new WeakSet();
-    this.stopDocumentTitleTracking();
+    this.dontWalkCache = new WeakSet();
+    this.stopTitleTracking();
 
     if (this.intersectionObserver) {
       this.intersectionObserver.disconnect();
@@ -171,7 +171,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     // void removeAllWrappers();
   }
 
-  registerPageTranslationTriggers(): () => void {
+  registerTriggers(): () => void {
     let startTime = 0;
     let startTouches: TouchList | null = null;
 
@@ -203,7 +203,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     const onEnd = () => {
       if (!startTouches) return;
       if (performance.now() - startTime < PageTranslationManager.MAX_DURATION) {
-        if (this.isPageTranslating) {
+        if (this.active) {
           this.stop();
         } else {
           void this.start();
@@ -225,12 +225,12 @@ export class PageTranslationManager implements IPageTranslationManager {
     };
   }
 
-  private shouldManageDocumentTitle(): boolean {
+  private isTopFrame(): boolean {
     return window === window.top;
   }
 
-  private async primeDocumentTitleContext(): Promise<void> {
-    if (!this.shouldManageDocumentTitle()) {
+  private async primeTitle(): Promise<void> {
+    if (!this.isTopFrame()) {
       return;
     }
 
@@ -241,8 +241,8 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
   }
 
-  private startDocumentTitleTracking(): void {
-    if (!this.shouldManageDocumentTitle()) {
+  private startTitleTracking(): void {
+    if (!this.isTopFrame()) {
       return;
     }
 
@@ -250,12 +250,12 @@ export class PageTranslationManager implements IPageTranslationManager {
     this.lastAppliedTranslatedTitle = null;
     this.titleRequestVersion = 0;
 
-    this.observeDocumentTitle();
-    void this.syncDocumentTitle(this.lastSourceTitle);
+    this.observeTitle();
+    void this.syncTitle(this.lastSourceTitle);
   }
 
-  private stopDocumentTitleTracking(): void {
-    if (!this.shouldManageDocumentTitle()) {
+  private stopTitleTracking(): void {
+    if (!this.isTopFrame()) {
       return;
     }
 
@@ -279,7 +279,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     this.lastAppliedTranslatedTitle = null;
   }
 
-  private observeDocumentTitle(): void {
+  private observeTitle(): void {
     if (!document.head) {
       return;
     }
@@ -289,7 +289,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
 
     this.titleObserver = new MutationObserver(() => {
-      this.handleDocumentTitleMutation();
+      this.onTitleMutation();
     });
 
     this.titleObserver.observe(document.head, {
@@ -299,8 +299,8 @@ export class PageTranslationManager implements IPageTranslationManager {
     });
   }
 
-  private handleDocumentTitleMutation(): void {
-    if (!this.isPageTranslating || !this.shouldManageDocumentTitle()) {
+  private onTitleMutation(): void {
+    if (!this.active || !this.isTopFrame()) {
       return;
     }
 
@@ -315,11 +315,11 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
 
     this.lastSourceTitle = currentTitle;
-    void this.syncDocumentTitle(currentTitle);
+    void this.syncTitle(currentTitle);
   }
 
-  private async syncDocumentTitle(sourceTitle: string): Promise<void> {
-    if (!sourceTitle.trim() || !this.isPageTranslating || !this.shouldManageDocumentTitle()) {
+  private async syncTitle(sourceTitle: string): Promise<void> {
+    if (!sourceTitle.trim() || !this.active || !this.isTopFrame()) {
       return;
     }
 
@@ -327,7 +327,7 @@ export class PageTranslationManager implements IPageTranslationManager {
 
     try {
       logger.info('Would translate title:', { sourceTitle });
-      if (!this.isPageTranslating || requestVersion !== this.titleRequestVersion) {
+      if (!this.active || requestVersion !== this.titleRequestVersion) {
         return;
       }
     } catch (error) {
@@ -337,7 +337,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
   }
 
-  private async observerTopLevelParagraphs(container: HTMLElement): Promise<void> {
+  private async observeParagraphs(container: HTMLElement): Promise<void> {
     const observer = this.intersectionObserver;
     if (!this.walkId || !observer) return;
 
@@ -351,7 +351,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       return;
     }
 
-    const paragraphs = this.collectParagraphElementsDeep(container, this.walkId);
+    const paragraphs = this.collectParagraphsDeep(container, this.walkId);
     const topLevelParagraphs = paragraphs.filter((el) => {
       const ancestor = el.parentElement?.closest('[data-paragraph]');
       return !ancestor || !container.contains(ancestor);
@@ -362,7 +362,7 @@ export class PageTranslationManager implements IPageTranslationManager {
   /**
    * Recursively collect elements with paragraph attributes from shadow roots and iframes
    */
-  private collectParagraphElementsDeep(container: HTMLElement, walkId: string): HTMLElement[] {
+  private collectParagraphsDeep(container: HTMLElement, walkId: string): HTMLElement[] {
     const result: HTMLElement[] = [];
 
     const collectFromContainer = (root: HTMLElement | Document | ShadowRoot) => {
@@ -399,14 +399,14 @@ export class PageTranslationManager implements IPageTranslationManager {
    * Handle style/class attribute changes and only trigger observation
    * when element transitions from "don't walk into" to "walkable"
    */
-  private didChangeToWalkable(element: HTMLElement): boolean {
-    const wasDontWalkInto = this.dontWalkIntoElementsCache.has(element);
+  private becameWalkable(element: HTMLElement): boolean {
+    const wasDontWalkInto = this.dontWalkCache.has(element);
     const isDontWalkIntoNow = domFilter.isOpaque(element);
 
     if (isDontWalkIntoNow) {
-      this.dontWalkIntoElementsCache.add(element);
+      this.dontWalkCache.add(element);
     } else {
-      this.dontWalkIntoElementsCache.delete(element);
+      this.dontWalkCache.delete(element);
     }
 
     return wasDontWalkInto === true && isDontWalkIntoNow === false;
@@ -415,12 +415,9 @@ export class PageTranslationManager implements IPageTranslationManager {
   /**
    * Initialize walkability state for an element and its descendants
    */
-  private addDontWalkIntoElements(element: HTMLElement): void {
-    const dontWalkIntoElements = domFind.deepQueryTopLevelSelector(
-      element,
-      domFilter.isOpaque.bind(this)
-    );
-    dontWalkIntoElements.forEach((el) => this.dontWalkIntoElementsCache.add(el));
+  private cacheOpaque(element: HTMLElement): void {
+    const dontWalkIntoElements = domFind.deepQueryTopLevel(element, domFilter.isOpaque.bind(this));
+    dontWalkIntoElements.forEach((el) => this.dontWalkCache.add(el));
   }
 
   /**
@@ -432,9 +429,9 @@ export class PageTranslationManager implements IPageTranslationManager {
         if (rec.type === 'childList') {
           rec.addedNodes.forEach((node) => {
             if (domFilter.isHTMLElement(node)) {
-              this.addDontWalkIntoElements(node);
-              void this.observerTopLevelParagraphs(node);
-              this.observeIsolatedDescendantsMutations(node);
+              this.cacheOpaque(node);
+              void this.observeParagraphs(node);
+              this.observeShadows(node);
             }
           });
         } else if (
@@ -442,8 +439,8 @@ export class PageTranslationManager implements IPageTranslationManager {
           (rec.attributeName === 'style' || rec.attributeName === 'class')
         ) {
           const el = rec.target;
-          if (domFilter.isHTMLElement(el) && this.didChangeToWalkable(el)) {
-            void this.observerTopLevelParagraphs(el);
+          if (domFilter.isHTMLElement(el) && this.becameWalkable(el)) {
+            void this.observeParagraphs(el);
           }
         }
       }
@@ -457,10 +454,10 @@ export class PageTranslationManager implements IPageTranslationManager {
     });
 
     this.mutationObservers.push(mutationObserver);
-    this.observeIsolatedDescendantsMutations(container);
+    this.observeShadows(container);
   }
 
-  private observeIsolatedDescendantsMutations(element: HTMLElement): void {
+  private observeShadows(element: HTMLElement): void {
     if (element.shadowRoot) {
       for (const child of Array.from(element.shadowRoot.children)) {
         if (domFilter.isHTMLElement(child)) {
@@ -471,7 +468,7 @@ export class PageTranslationManager implements IPageTranslationManager {
 
     for (const child of Array.from(element.children)) {
       if (domFilter.isHTMLElement(child)) {
-        this.observeIsolatedDescendantsMutations(child);
+        this.observeShadows(child);
       }
     }
   }

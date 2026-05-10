@@ -25,14 +25,14 @@ export async function bootstrap(ctx: ContentScriptContext) {
     threshold: 0.1
   });
 
-  const cleanupPageTranslationTriggers = manager.registerPageTranslationTriggers();
+  const cleanupTriggers = manager.registerTriggers();
 
   const cleanupTranslationShortcut = bindTranslationShortcutKey(manager);
 
   // For late-loading iframes: check if translation is already enabled for this tab
   let translationEnabled = false;
   try {
-    translationEnabled = await sendMessage('getEnablePageTranslationFromContentScript');
+    translationEnabled = await sendMessage('getPageTranslationActive');
   } catch (error) {
     // Extension context may be invalidated during update, proceed without auto-start
     logger.error('Failed to check translation state:', { error });
@@ -54,7 +54,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
         await langManager.setLangDetection(detectedCodeOrUnd);
 
         // Notify background script that URL has changed, let it decide whether to automatically enable translation
-        void sendMessage('checkAndAskAutoPageTranslation', { url: to, detectedCodeOrUnd });
+        void sendMessage('checkAutoPageTranslation', { url: to, detectedCodeOrUnd });
       }
     }
   };
@@ -67,7 +67,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
   window.addEventListener(EVENT_EXTENSION_URL_CHANGE, handleExtensionUrlChange);
 
   // Listen for translation state changes from background
-  const cleanupTranslationStateListener = onMessage('askManagerToTogglePageTranslation', (msg) => {
+  const cleanupTranslationStateListener = onMessage('togglePageTranslation', (msg) => {
     const { enabled, analyticsContext } = msg.data;
     if (enabled === manager.isActive) return;
     if (enabled) {
@@ -81,7 +81,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
     toast.destroy();
     cleanupUrlListener();
     teardownNodeTranslation();
-    cleanupPageTranslationTriggers();
+    cleanupTriggers();
     cleanupTranslationShortcut();
     cleanupTranslationStateListener();
     window.removeEventListener(EVENT_EXTENSION_URL_CHANGE, handleExtensionUrlChange);
@@ -94,7 +94,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
     await langManager.setLangDetection(detectedCodeOrUnd);
 
     // Check if auto-translation should be enabled for initial page load
-    void sendMessage('checkAndAskAutoPageTranslation', {
+    void sendMessage('checkAutoPageTranslation', {
       url: window.location.href,
       detectedCodeOrUnd
     });

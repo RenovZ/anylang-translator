@@ -112,19 +112,19 @@ class DomFind {
     return currentElement;
   }
 
-  deepQueryTopLevelSelector(
+  deepQueryTopLevel(
     element: HTMLElement | ShadowRoot | Document,
     selectorFn: (element: HTMLElement) => boolean
   ): HTMLElement[] {
     if (element instanceof Document) {
-      return this.deepQueryTopLevelSelector(element.body, selectorFn);
+      return this.deepQueryTopLevel(element.body, selectorFn);
     }
 
     const result: HTMLElement[] = [];
     if (element instanceof ShadowRoot) {
       for (const child of Array.from(element.children)) {
         if (domFilter.isHTMLElement(child)) {
-          result.push(...this.deepQueryTopLevelSelector(child, selectorFn));
+          result.push(...this.deepQueryTopLevel(child, selectorFn));
         }
       }
       return result;
@@ -137,14 +137,14 @@ class DomFind {
     if (element.shadowRoot) {
       for (const child of Array.from(element.shadowRoot.children)) {
         if (domFilter.isHTMLElement(child)) {
-          result.push(...this.deepQueryTopLevelSelector(child, selectorFn));
+          result.push(...this.deepQueryTopLevel(child, selectorFn));
         }
       }
     }
 
     for (const child of Array.from(element.children)) {
       if (domFilter.isHTMLElement(child)) {
-        result.push(...this.deepQueryTopLevelSelector(child, selectorFn));
+        result.push(...this.deepQueryTopLevel(child, selectorFn));
       }
     }
 
