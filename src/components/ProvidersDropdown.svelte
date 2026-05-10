@@ -18,7 +18,7 @@
 
   interface Prop {
     showFreeProviders?: boolean;
-    field: FeatureField | 'languageDetection';
+    field: FeatureField | 'langDetection';
     class?: string;
   }
 

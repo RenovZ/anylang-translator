@@ -152,7 +152,7 @@
             </div>
             <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
           </Button>
-          <ProvidersDropdown field="languageDetection" showFreeProviders={false} />
+          <ProvidersDropdown field="langDetection" showFreeProviders={false} />
         </div>
       {/if}
     </div>

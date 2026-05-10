@@ -1,5 +1,18 @@
 export const EVENT_EXTENSION_URL_CHANGE = 'extension:URLChange';
 
+interface NavigateEvent extends Event {
+  readonly destination: { readonly url: string } | undefined;
+}
+
+type NavigationApi = {
+  addEventListener(
+    type: 'navigate',
+    handler: (e: NavigateEvent) => void,
+    options?: AddEventListenerOptions
+  ): void;
+  removeEventListener(type: 'navigate', handler: (e: NavigateEvent) => void): void;
+};
+
 /**
  * Sets up URL change detection via multiple strategies.
  * Returns a cleanup function to remove all listeners and stop polling.
@@ -32,7 +45,7 @@ export function setupUrlChangeListener(signal?: AbortSignal): () => void {
     const orig = history[fn];
     originals[fn] = orig;
     history[fn] = function (...args) {
-      orig.apply(this, args as any);
+      orig.apply(this, args as Parameters<typeof history.pushState>);
       const now = location.href;
       fire(prev, now, fn);
       prev = now;
@@ -57,14 +70,15 @@ export function setupUrlChangeListener(signal?: AbortSignal): () => void {
   /* ---------- 3. Modern Navigation API (only Chrome/Edge) ---------- */
   let removeNavigateListener: (() => void) | null = null;
   if ('navigation' in window) {
-    const onNavigate = (e: any) => {
+    const nav = (window as Window & { navigation: NavigationApi }).navigation;
+    const onNavigate = (e: NavigateEvent) => {
       const now = e.destination?.url ?? location.href;
       fire(prev, now, 'navigate');
       prev = now;
     };
-    (window as any).navigation.addEventListener('navigate', onNavigate, { signal });
+    nav.addEventListener('navigate', onNavigate, { signal });
     removeNavigateListener = () => {
-      (window as any).navigation.removeEventListener('navigate', onNavigate);
+      nav.removeEventListener('navigate', onNavigate);
     };
   }
 
