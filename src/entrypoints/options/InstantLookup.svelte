@@ -40,22 +40,22 @@
   <!-- always apply instant lookup sites -->
   <FeatureAutoAppliedSites
     {field}
-    title={i18n('available_instant_lookup_sites', {
-      defaultValue: 'Available instant lookup sites'
+    title={i18n('instant_lookup_auto_apply_sites', {
+      defaultValue: 'Automatically apply on sites'
     })}
-    description={i18n('available_instant_lookup_sites_description', {
+    description={i18n('instant_lookup_auto_apply_sites_description', {
       defaultValue:
-        'When current site matches these domains, instant lookup feature could be used. This rule has higher priority than language rules.'
+        'When visiting these sites, instant lookup will be automatically applied. Site rules take priority over language rules.'
     })} />
 
   <!-- always apply instant lookup language -->
   <FeatureAutoAppliedLangs
     {field}
-    title={i18n('available_instant_lookup_langs', {
-      defaultValue: 'Available instant lookup languages'
+    title={i18n('instant_lookup_auto_apply_langs', {
+      defaultValue: 'Automatically apply for languages'
     })}
-    description={i18n('available_instant_lookup_langs_description', {
+    description={i18n('instant_lookup_auto_apply_langs_description', {
       defaultValue:
-        'When page language is one of these languages, instant lookup feature could be used. Site rules still take priority on conflicts.'
+        'When the page language matches one of these, instant lookup will be automatically applied. Site rules take priority on conflicts.'
     })} />
 </Section>

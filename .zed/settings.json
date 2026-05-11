@@ -8,5 +8,6 @@
   },
   "inlay_hints": {
     "enabled": false
-  }
+  },
+  "file_scan_exclusions": ["legacy"]
 }

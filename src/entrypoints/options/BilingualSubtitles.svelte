@@ -41,21 +41,21 @@
   <FeatureAutoAppliedSites
     {field}
     title={i18n('always_apply_bilingual_subtitles_sites', {
-      defaultValue: 'Always apply bilingual subtitles sites'
+      defaultValue: 'Automatically apply on sites'
     })}
     description={i18n('always_apply_bilingual_subtitles_sites_description', {
       defaultValue:
-        'When current site matches these domains, content will automatically apply bilingual subtitles to target language. This rule has higher priority than language rules.'
+        'When visiting these sites, bilingual subtitles will be automatically applied. Site rules take priority over language rules.'
     })} />
 
   <!-- always apply bilingual subtitles language -->
   <FeatureAutoAppliedLangs
     {field}
     title={i18n('always_apply_bilingual_subtitles_langs', {
-      defaultValue: 'Always apply bilingual subtitles languages'
+      defaultValue: 'Automatically apply for languages'
     })}
     description={i18n('always_apply_bilingual_subtitles_langs_description', {
       defaultValue:
-        'When page language is one of these languages, content will automatically apply bilingual subtitles to target language. Site rules still take priority on conflicts.'
+        'When the page language matches one of these, bilingual subtitles will be automatically applied. Site rules take priority on conflicts.'
     })} />
 </Section>

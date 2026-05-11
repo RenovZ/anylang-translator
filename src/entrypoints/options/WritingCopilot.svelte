@@ -36,22 +36,22 @@
   <!-- always apply writing copilot sites -->
   <FeatureAutoAppliedSites
     {field}
-    title={i18n('available_writing_copilot_sites', {
-      defaultValue: 'Available writing copilot sites'
+    title={i18n('writing_copilot_auto_apply_sites', {
+      defaultValue: 'Automatically apply on sites'
     })}
-    description={i18n('available_writing_copilot_sites_description', {
+    description={i18n('writing_copilot_auto_apply_sites_description', {
       defaultValue:
-        'When current site matches these domains, writing copilot feature could be used. This rule has higher priority than language rules.'
+        'When visiting these sites, writing copilot will be automatically applied. Site rules take priority over language rules.'
     })} />
 
   <!-- always apply writing copilot languages -->
   <FeatureAutoAppliedLangs
     {field}
-    title={i18n('available_writing_copilot_langs', {
-      defaultValue: 'Available writing copilot languages'
+    title={i18n('writing_copilot_auto_apply_langs', {
+      defaultValue: 'Automatically apply for languages'
     })}
-    description={i18n('available_writing_copilot_langs_description', {
+    description={i18n('writing_copilot_auto_apply_langs_description', {
       defaultValue:
-        'When page language is one of these languages, writing copilot feature could be used. Site rules still take priority on conflicts.'
+        'When the page language matches one of these, writing copilot will be automatically applied. Site rules take priority on conflicts.'
     })} />
 </Section>

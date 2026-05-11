@@ -39,22 +39,22 @@
   <!-- always apply panorama reading sites -->
   <FeatureAutoAppliedSites
     {field}
-    title={i18n('available_panorama_reading_sites', {
-      defaultValue: 'Available panorama reading sites'
+    title={i18n('panorama_reading_auto_apply_sites', {
+      defaultValue: 'Automatically apply on sites'
     })}
-    description={i18n('available_panorama_reading_sites_description', {
+    description={i18n('panorama_reading_auto_apply_sites_description', {
       defaultValue:
-        'When current site matches these domains, panorama reading feature could be used. This rule has higher priority than language rules.'
+        'When visiting these sites, panorama reading will be automatically applied. Site rules take priority over language rules.'
     })} />
 
   <!-- always apply panorama reading language -->
   <FeatureAutoAppliedLangs
     {field}
-    title={i18n('available_panorama_reading_langs', {
-      defaultValue: 'Available panorama reading languages'
+    title={i18n('panorama_reading_auto_apply_langs', {
+      defaultValue: 'Automatically apply for languages'
     })}
-    description={i18n('available_panorama_reading_langs_description', {
+    description={i18n('panorama_reading_auto_apply_langs_description', {
       defaultValue:
-        'When page language is one of these languages, panorama reading feature could be used. Site rules still take priority on conflicts.'
+        'When the page language matches one of these, panorama reading will be automatically applied. Site rules take priority on conflicts.'
     })} />
 </Section>

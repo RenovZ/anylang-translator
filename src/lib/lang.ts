@@ -11,18 +11,6 @@ import logger from './logger';
 const PUNCTUATION_AND_WHITESPACE_PATTERN = /['"`,.\s]/g;
 
 class LangManager {
-  getLangCodeMap(): Record<LangCode, string> {
-    const config = configStore.get();
-
-    const rawValue =
-      config.uiLangCode !== 'default' ? config.uiLangCode : browser.i18n.getUILanguage();
-    const { success, data, error } = uiLangCodeSchema.safeParse(rawValue);
-    if (success) return LANG_CODE_MAP[data];
-
-    logger.warn('Invalid langCode data, using default:', { rawValue, error });
-    return LANG_CODE_MAP['en'];
-  }
-
   getUILangCodeMap(): Map<UILangCode, string> {
     const config = configStore.get();
 
@@ -42,6 +30,18 @@ class LangManager {
       }
       return acc;
     }, new Map<UILangCode, string>());
+  }
+
+  getLangCodeMap(): Record<LangCode, string> {
+    const config = configStore.get();
+
+    const rawValue =
+      config.uiLangCode !== 'default' ? config.uiLangCode : browser.i18n.getUILanguage();
+    const { success, data, error } = uiLangCodeSchema.safeParse(rawValue);
+    if (success) return LANG_CODE_MAP[data];
+
+    logger.warn('Invalid langCode data, using default:', { rawValue, error });
+    return LANG_CODE_MAP['en'];
   }
 
   getLangName(rawLangCode: string): string | undefined {

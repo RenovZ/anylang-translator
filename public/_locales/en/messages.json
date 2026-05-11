@@ -45,16 +45,16 @@
     "message": "Configure prompts for custom API providers. Customize model instructions to shape responses and behavior across providers."
   },
   "always_apply_bilingual_subtitles_langs": {
-    "message": "Always apply bilingual subtitles languages"
+    "message": "Automatically apply for languages"
   },
   "always_apply_bilingual_subtitles_langs_description": {
-    "message": "When page language is one of these languages, content will automatically apply bilingual subtitles to target language. Site rules still take priority on conflicts."
+    "message": "When the page language matches one of these, bilingual subtitles will be automatically applied. Site rules take priority on conflicts."
   },
   "always_apply_bilingual_subtitles_sites": {
-    "message": "Always apply bilingual subtitles sites"
+    "message": "Automatically apply on sites"
   },
   "always_apply_bilingual_subtitles_sites_description": {
-    "message": "When current site matches these domains, content will automatically apply bilingual subtitles to target language. This rule has higher priority than language rules."
+    "message": "When visiting these sites, bilingual subtitles will be automatically applied. Site rules take priority over language rules."
   },
   "always_auto_translate_this_site": {
     "message": "Always auto-translate this site"
@@ -82,54 +82,6 @@
   },
   "auto_detect": {
     "message": "Auto Detect"
-  },
-  "available_instant_lookup_langs": {
-    "message": "Available instant lookup languages"
-  },
-  "available_instant_lookup_langs_description": {
-    "message": "When page language is one of these languages, instant lookup feature could be used. Site rules still take priority on conflicts."
-  },
-  "available_instant_lookup_sites": {
-    "message": "Available instant lookup sites"
-  },
-  "available_instant_lookup_sites_description": {
-    "message": "When current site matches these domains, instant lookup feature could be used. This rule has higher priority than language rules."
-  },
-  "available_intelligent_input_langs": {
-    "message": "Available intelligent input languages"
-  },
-  "available_intelligent_input_langs_description": {
-    "message": "When page language is one of these languages, intelligent input feature could be used. Site rules still take priority on conflicts."
-  },
-  "available_intelligent_input_sites": {
-    "message": "Available intelligent input sites"
-  },
-  "available_intelligent_input_sites_description": {
-    "message": "When current site matches these domains, intelligent input feature could be used. This rule has higher priority than language rules."
-  },
-  "available_panorama_reading_langs": {
-    "message": "Available panorama reading languages"
-  },
-  "available_panorama_reading_langs_description": {
-    "message": "When page language is one of these languages, panorama reading feature could be used. Site rules still take priority on conflicts."
-  },
-  "available_panorama_reading_sites": {
-    "message": "Available panorama reading sites"
-  },
-  "available_panorama_reading_sites_description": {
-    "message": "When current site matches these domains, panorama reading feature could be used. This rule has higher priority than language rules."
-  },
-  "available_writing_copilot_langs": {
-    "message": "Available writing copilot languages"
-  },
-  "available_writing_copilot_langs_description": {
-    "message": "When page language is one of these languages, writing copilot feature could be used. Site rules still take priority on conflicts."
-  },
-  "available_writing_copilot_sites": {
-    "message": "Available writing copilot sites"
-  },
-  "available_writing_copilot_sites_description": {
-    "message": "When current site matches these domains, writing copilot feature could be used. This rule has higher priority than language rules."
   },
   "background_color": {
     "message": "Background color"
@@ -353,6 +305,18 @@
   "instant_lookup": {
     "message": "Instant Lookup"
   },
+  "instant_lookup_auto_apply_langs": {
+    "message": "Automatically apply for languages"
+  },
+  "instant_lookup_auto_apply_langs_description": {
+    "message": "When the page language matches one of these, instant lookup will be automatically applied. Site rules take priority on conflicts."
+  },
+  "instant_lookup_auto_apply_sites": {
+    "message": "Automatically apply on sites"
+  },
+  "instant_lookup_auto_apply_sites_description": {
+    "message": "When visiting these sites, instant lookup will be automatically applied. Site rules take priority over language rules."
+  },
   "instant_lookup_description": {
     "message": "Understand words, idioms, and concepts instantly with AI-powered explanations and multilingual insight."
   },
@@ -373,6 +337,18 @@
   },
   "intelligent_input": {
     "message": "Intelligent Input"
+  },
+  "intelligent_input_auto_apply_langs": {
+    "message": "Automatically apply for languages"
+  },
+  "intelligent_input_auto_apply_langs_description": {
+    "message": "When the page language matches one of these, intelligent input will be automatically applied. Site rules take priority on conflicts."
+  },
+  "intelligent_input_auto_apply_sites": {
+    "message": "Automatically apply on sites"
+  },
+  "intelligent_input_auto_apply_sites_description": {
+    "message": "When visiting these sites, intelligent input will be automatically applied. Site rules take priority over language rules."
   },
   "intelligent_input_description": {
     "message": "Generate polished multilingual text directly where you type — from quick replies to forms and everyday writing."
@@ -574,6 +550,18 @@
   },
   "panorama_reading": {
     "message": "Panorama Reading"
+  },
+  "panorama_reading_auto_apply_langs": {
+    "message": "Automatically apply for languages"
+  },
+  "panorama_reading_auto_apply_langs_description": {
+    "message": "When the page language matches one of these, panorama reading will be automatically applied. Site rules take priority on conflicts."
+  },
+  "panorama_reading_auto_apply_sites": {
+    "message": "Automatically apply on sites"
+  },
+  "panorama_reading_auto_apply_sites_description": {
+    "message": "When visiting these sites, panorama reading will be automatically applied. Site rules take priority over language rules."
   },
   "panorama_reading_description": {
     "message": "Extract key ideas, surface critical details, and grasp context faster with AI-enhanced reading intelligence."
@@ -859,6 +847,18 @@
   },
   "writing_copilot": {
     "message": "Writing Copilot"
+  },
+  "writing_copilot_auto_apply_langs": {
+    "message": "Automatically apply for languages"
+  },
+  "writing_copilot_auto_apply_langs_description": {
+    "message": "When the page language matches one of these, writing copilot will be automatically applied. Site rules take priority on conflicts."
+  },
+  "writing_copilot_auto_apply_sites": {
+    "message": "Automatically apply on sites"
+  },
+  "writing_copilot_auto_apply_sites_description": {
+    "message": "When visiting these sites, writing copilot will be automatically applied. Site rules take priority over language rules."
   },
   "writing_copilot_description": {
     "message": "Draft, refine, and elevate your writing with context-aware assistance for clarity, tone, and precision."
