@@ -13,15 +13,29 @@ interface Protocol {
   openOptionsPage: () => void;
 
   // features
-  quickTranslate: (data: { text: string }) => void;
+  adaptiveTranslate: (data: {
+    tabId: number;
+    enabled: boolean;
+    analyticsContext?: FeatureUsageContext;
+  }) => void;
   getPageTranslationActive: () => Promise<boolean>;
-  reportPageTranslationState: (data: { enabled: boolean }) => void;
+  reportPageTranslateState: (data: { enabled: boolean }) => void;
   togglePageTranslation: (data: {
     enabled: boolean;
     analyticsContext?: FeatureUsageContext;
   }) => void;
 
-  contextTranslate: () => void;
+  // popup / floating button → background → content script
+  trySetPageTranslationByTabId: (data: {
+    tabId: number;
+    enabled: boolean;
+    analyticsContext?: FeatureUsageContext;
+  }) => void;
+  trySetPageTranslationFromContentScript: (data: {
+    enabled: boolean;
+    analyticsContext?: FeatureUsageContext;
+  }) => void;
+
   instantLookup: () => void;
 
   // for auto start page translation

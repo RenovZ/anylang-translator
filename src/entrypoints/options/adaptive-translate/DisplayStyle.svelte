@@ -46,17 +46,17 @@
   };
 
   const customStyles = $derived(
-    $config.quickTranslate.translate.displayStyle.value === 'custom'
+    $config.adaptiveTranslate.translate.displayStyle.value === 'custom'
       ? {
           ...defaultCustomStyles,
-          ...($config.quickTranslate.translate.displayStyle.styles as CustomDisplayStyle)
+          ...($config.adaptiveTranslate.translate.displayStyle.styles as CustomDisplayStyle)
         }
       : null
   );
 
   const setCustomStyle = (key: keyof CustomDisplayStyle, value: string | number) => {
-    const current = $config.quickTranslate.translate.displayStyle;
-    $config.quickTranslate.translate.displayStyle = {
+    const current = $config.adaptiveTranslate.translate.displayStyle;
+    $config.adaptiveTranslate.translate.displayStyle = {
       ...current,
       styles: { ...(current.styles as CustomDisplayStyle), [key]: value }
     };
@@ -92,7 +92,7 @@
       class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <span>
         {displayStyles.find(
-          (item) => item.value === $config.quickTranslate.translate.displayStyle.value
+          (item) => item.value === $config.adaptiveTranslate.translate.displayStyle.value
         )?.label ?? displayStyles[0].label}
       </span>
       <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
@@ -102,16 +102,16 @@
         <DropdownItem
           onclick={() => {
             if (item.value === 'custom') {
-              const currentStyles = $config.quickTranslate.translate.displayStyle.styles;
+              const currentStyles = $config.adaptiveTranslate.translate.displayStyle.styles;
               const isCustom =
-                $config.quickTranslate.translate.displayStyle.value === 'custom' &&
+                $config.adaptiveTranslate.translate.displayStyle.value === 'custom' &&
                 currentStyles &&
                 typeof currentStyles === 'object' &&
                 'fontSize' in currentStyles;
               const styles = isCustom
                 ? (currentStyles as CustomDisplayStyle)
                 : { ...defaultCustomStyles };
-              $config.quickTranslate.translate.displayStyle = {
+              $config.adaptiveTranslate.translate.displayStyle = {
                 value: 'custom',
                 label: item.label,
                 styles
@@ -119,7 +119,7 @@
               return;
             }
 
-            $config.quickTranslate.translate.displayStyle = { ...item };
+            $config.adaptiveTranslate.translate.displayStyle = { ...item };
           }}>
           {item.label}
         </DropdownItem>
@@ -191,8 +191,8 @@
   <div class="mt-3 space-y-3 text-lg">
     <p>{previewTextEn}</p>
     <p
-      use:previewStyles={$config.quickTranslate.translate.displayStyle.styles}
-      use:previewAttributes={$config.quickTranslate.translate.displayStyle.attributes}>
+      use:previewStyles={$config.adaptiveTranslate.translate.displayStyle.styles}
+      use:previewAttributes={$config.adaptiveTranslate.translate.displayStyle.attributes}>
       {previewTextZh}
     </p>
   </div>

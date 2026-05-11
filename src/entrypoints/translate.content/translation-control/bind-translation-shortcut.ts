@@ -26,7 +26,7 @@ export function bindTranslationShortcutKey(
     return () => {};
   }
 
-  const shortcut = cfg.quickTranslate.shortcut;
+  const shortcut = cfg.adaptiveTranslate.shortcut;
   if (!shortcut || shortcut.length === 0) {
     return () => {};
   }

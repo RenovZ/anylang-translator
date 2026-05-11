@@ -17,7 +17,7 @@ export async function runGenerateText(params: GenerateTextParams): Promise<Gener
   return { text };
 }
 
-export function onGenerateText() {
+export function registerGenerateText() {
   onMessage('generateText', async (message) => {
     try {
       return await runGenerateText(message.data);

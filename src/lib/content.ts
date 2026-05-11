@@ -55,7 +55,7 @@ class ContentManager {
   }): Promise<DocumentInfo> {
     const documentClone = document.cloneNode(true);
     const cfg = configStore.get();
-    domPrune.prune(documentClone as Document, cfg.quickTranslate.translate.pageRange);
+    domPrune.prune(documentClone as Document, cfg.adaptiveTranslate.translate.pageRange);
     const article = new Readability(documentClone as Document, {
       serializer: (el) => el
     }).parse();

@@ -1,9 +1,11 @@
 import config from '@/lib/config';
 import logger from '@/lib/logger';
 import { onMessage } from '@/lib/protocol';
+import { translateState } from '@/lib/session';
 import shortcut from '@/lib/shortcut';
 
-import { onGenerateText } from './generate-text';
+import { registerGenerateText } from './generate-text';
+import { registerTranslate } from './translate-signal';
 
 export default defineBackground({
   type: 'module',
@@ -27,6 +29,11 @@ export default defineBackground({
 
     shortcut.syncFromBrowser();
 
+    registerGenerateText();
+
+    void translateState.init();
+    registerTranslate();
+
     onMessage('openPage', async (message) => {
       const { url, active } = message.data;
       logger.info('openPage', { url, active });
@@ -37,7 +44,5 @@ export default defineBackground({
       logger.info('openOptionsPage');
       await browser.runtime.openOptionsPage();
     });
-
-    onGenerateText();
   }
 });

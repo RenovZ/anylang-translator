@@ -33,7 +33,7 @@ class TranslateModeManager {
     forceBlockTranslation: boolean = false
   ): Promise<void> {
     const config = configStore.get();
-    const translationMode = config.quickTranslate.translate.mode;
+    const translationMode = config.adaptiveTranslate.translate.mode;
     if (translationMode === 'translation_only') {
       await this.translationOnly(nodes, walkId, toggle);
     } else if (translationMode === 'bilingual') {

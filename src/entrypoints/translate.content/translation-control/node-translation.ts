@@ -75,8 +75,8 @@ class NodeTranslation {
 
   private inTriggerMode(config: Config): boolean {
     return (
-      !!config.quickTranslate.provider &&
-      config.quickTranslate.translate.triggerOnHover === 'clickAndHold'
+      !!config.adaptiveTranslate.provider &&
+      config.adaptiveTranslate.translate.triggerOnHover === 'clickAndHold'
     );
   }
 
@@ -175,7 +175,7 @@ class NodeTranslation {
       return;
     }
 
-    const hotkey = HOTKEY_EVENT_KEYS[config.quickTranslate.translate.triggerOnHover];
+    const hotkey = HOTKEY_EVENT_KEYS[config.adaptiveTranslate.translate.triggerOnHover];
 
     if (e.key === hotkey) {
       if (this.keyDown) return; // already tracking this key
@@ -193,7 +193,9 @@ class NodeTranslation {
           this.keyTimer = null;
           return;
         }
-        if (HOTKEY_EVENT_KEYS[current.quickTranslate.translate.triggerOnHover] !== this.activeKey) {
+        if (
+          HOTKEY_EVENT_KEYS[current.adaptiveTranslate.translate.triggerOnHover] !== this.activeKey
+        ) {
           this.keyTimer = null;
           return;
         }
@@ -226,7 +228,7 @@ class NodeTranslation {
       return;
     }
 
-    const hotkey = HOTKEY_EVENT_KEYS[config.quickTranslate.translate.triggerOnHover];
+    const hotkey = HOTKEY_EVENT_KEYS[config.adaptiveTranslate.translate.triggerOnHover];
 
     if (e.key === hotkey || e.key === this.activeKey) {
       if (this.keyDown && this.pureSession) {

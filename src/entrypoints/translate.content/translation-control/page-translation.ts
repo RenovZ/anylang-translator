@@ -95,7 +95,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
 
     try {
-      await sendMessage('reportPageTranslationState', {
+      await sendMessage('reportPageTranslateState', {
         enabled: true
       });
 
@@ -152,7 +152,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       return;
     }
 
-    void sendMessage('reportPageTranslationState', {
+    void sendMessage('reportPageTranslateState', {
       enabled: false
     });
 

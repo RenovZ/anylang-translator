@@ -5,8 +5,8 @@ import type { LangCode } from '@/types/lang';
 class AutoTranslation {
   async run(url: string, detectedCodeOrUnd: LangCode | 'und'): Promise<boolean> {
     const config = configStore.get();
-    const autoAppliedSites = config.quickTranslate.autoAppliedSites ?? [];
-    const autoAppliedLangs = config.quickTranslate.autoAppliedLangs ?? [];
+    const autoAppliedSites = config.adaptiveTranslate.autoAppliedSites ?? [];
+    const autoAppliedLangs = config.adaptiveTranslate.autoAppliedLangs ?? [];
 
     const doesMatchPattern =
       autoAppliedSites.some((pattern) => urlUtils.matchDomainPattern(url, pattern)) ?? false;

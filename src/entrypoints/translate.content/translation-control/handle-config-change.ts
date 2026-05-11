@@ -14,7 +14,7 @@ export function handleTranslationModeChange(
   const modeChanged =
     newConfig &&
     oldConfig &&
-    newConfig.quickTranslate.translate.mode !== oldConfig.quickTranslate.translate.mode;
+    newConfig.adaptiveTranslate.translate.mode !== oldConfig.adaptiveTranslate.translate.mode;
 
   if (modeChanged && manager.isActive) {
     manager.stop();

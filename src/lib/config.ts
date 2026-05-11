@@ -38,10 +38,10 @@ const defaultConfig: Config = configSchema.parse({
     ...structuredClone(zenProviders)
   ],
 
-  quickTranslate: {
-    icon: 'ri:translate',
+  adaptiveTranslate: {
+    icon: 'ri:translate-ai',
     provider: structuredClone(freeProviders[0]),
-    shortcut: ['Alt', 'Q'],
+    shortcut: ['Alt', 'A'],
     autoAppliedSites: [
       'twitter.com',
       'x.com',
@@ -59,16 +59,10 @@ const defaultConfig: Config = configSchema.parse({
     }
   },
 
-  contextTranslate: {
-    icon: 'ri:translate-ai',
-    provider: null,
-    shortcut: ['Alt', 'C']
-  },
-
   instantLookup: {
     icon: 'lucide:book-open-text',
     provider: structuredClone(freeProviders[0]),
-    shortcut: ['Alt', 'L'],
+    shortcut: ['Alt', 'Q'],
     selection: {
       triggerTranslate: selectionTriggerSchema.parse('directly')
     }
@@ -77,13 +71,13 @@ const defaultConfig: Config = configSchema.parse({
   intelligentInput: {
     icon: 'tabler:keyboard',
     provider: null,
-    shortcut: ['Alt', 'I']
+    shortcut: ['Alt', 'E']
   },
 
   bilingualSubtitles: {
     icon: 'tabler:subtitles',
     provider: structuredClone(freeProviders[0]),
-    shortcut: []
+    shortcut: ['Alt', 'S']
   },
 
   panoramaReading: {
@@ -161,10 +155,10 @@ class ConfigStore {
       if (success) {
         this.storage.setValue(data);
         return data;
-      } else {
-        logger.error('Invalid config update:', { error });
-        return current;
       }
+
+      logger.error('Invalid config update:', { error });
+      return current;
     });
   }
 

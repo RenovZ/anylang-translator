@@ -65,33 +65,30 @@ export default defineConfig({
   },
   manifest: {
     default_locale: 'en',
-    permissions: ['storage', 'scripting', 'activeTab'],
+    permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'webNavigation'],
     commands: {
-      'quick-translate': {
+      'adaptive-translate': {
         suggested_key: {
-          default: 'Alt+Q'
+          default: 'Alt+A'
         },
-        description: 'Quick Translate'
-      },
-      'context-translate': {
-        suggested_key: {
-          default: 'Alt+C'
-        },
-        description: 'Context Translate'
+        description: 'Adaptive Translate'
       },
       'instant-lookup': {
         suggested_key: {
-          default: 'Alt+L'
+          default: 'Alt+Q'
         },
         description: 'Instant Lookup'
       },
       'intelligent-input': {
         suggested_key: {
-          default: 'Alt+I'
+          default: 'Alt+E'
         },
         description: 'Intelligent Input'
       },
       'bilingual-subtitles': {
+        suggested_key: {
+          default: 'Alt+S'
+        },
         description: 'Bilingual Subtitles'
       },
       'panorama-reading': {

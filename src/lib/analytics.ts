@@ -51,7 +51,7 @@ class AnalyticsManager {
     try {
       await sendMessage('trackFeatureUsedEvent', this.buildFeatureUsedEventProperties(input));
     } catch (error) {
-      logger.warn(`[Analytics] Failed to track ${ANALYTICS_FEATURE_USED_EVENT}`, {
+      logger.warn(`Failed to track ${ANALYTICS_FEATURE_USED_EVENT}`, {
         error: formatError(error)
       });
     }

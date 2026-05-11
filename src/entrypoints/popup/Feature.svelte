@@ -13,17 +13,24 @@
     title: string | import('svelte').Snippet;
     field: FeatureField;
     showFreeProviders?: boolean;
+    showShortcut?: boolean;
     classes?: { main?: string; button?: string };
   }
 
-  const { title, field, showFreeProviders = false, classes = {} }: Prop = $props();
+  const {
+    title,
+    field,
+    showFreeProviders = false,
+    showShortcut = true,
+    classes = {}
+  }: Prop = $props();
 </script>
 
 <div class={twMerge('grid grid-cols-[144px_1fr] items-center gap-2', classes.main)}>
   {#if typeof title === 'string'}
     <div class="flex items-center gap-2 text-xs font-medium">
       <span>{title}</span>
-      {#if $config[field].shortcut?.length}
+      {#if showShortcut && $config[field].shortcut?.length}
         <span>
           ({shortcut.formatForDisplay($config[field].shortcut).join('')})
         </span>

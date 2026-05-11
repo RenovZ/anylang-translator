@@ -126,7 +126,7 @@ class TranslateVariants {
       return '';
     }
 
-    const providerConfig = config.quickTranslate.provider;
+    const providerConfig = config.adaptiveTranslate.provider;
     const targetLangCode = config.targetLangCode as LangCode;
     const sourceLangCode = (config.sourceLangCode ?? 'auto') as LangCode | 'auto';
 
@@ -170,7 +170,7 @@ class TranslateVariants {
    */
   async translateTextForPage(text: string): Promise<string> {
     const config = configStore.get();
-    const providerConfig = config.quickTranslate.provider;
+    const providerConfig = config.adaptiveTranslate.provider;
     const webPageContext = await this.getPageContext(
       providerConfig,
       false /* enableAIContentAware — TODO wire up when config field exists */,
@@ -188,7 +188,7 @@ class TranslateVariants {
    */
   async translateTextForPageTitle(text: string): Promise<string> {
     const config = configStore.get();
-    const providerConfig = config.quickTranslate.provider;
+    const providerConfig = config.adaptiveTranslate.provider;
 
     // prettier-ignore
     const { webContent, webSummary } =
@@ -231,7 +231,7 @@ class TranslateVariants {
     toLang: InputTranslationLang
   ): Promise<string> {
     const config = configStore.get();
-    const providerConfig = config.quickTranslate.provider;
+    const providerConfig = config.adaptiveTranslate.provider;
     const targetLangCode = config.targetLangCode as LangCode;
     const sourceLangCode = config.sourceLangCode as LangCode | undefined;
 

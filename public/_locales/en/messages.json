@@ -11,6 +11,18 @@
   "adaptive_translate_description": {
     "message": "Adaptive translation that combines lightweight instant translation with context-aware AI understanding, balancing speed, nuance, and quality across different scenarios."
   },
+  "adaptive_translate_icon": {
+    "message": "Adaptive translate icon"
+  },
+  "adaptive_translate_provider": {
+    "message": "Adaptive translate provider"
+  },
+  "adaptive_translate_provider_description": {
+    "message": "Choose from a variety of API providers to power your adaptive translate experience."
+  },
+  "adaptive_translate_shortcut": {
+    "message": "Adaptive translate shortcut"
+  },
   "adaptive_translate_subtitle": {
     "message": "Fast when you need speed. Deep when meaning matters."
   },
@@ -74,6 +86,9 @@
   "api_key": {
     "message": "API Key"
   },
+  "api_provider": {
+    "message": "API Provider"
+  },
   "api_providers": {
     "message": "API Providers"
   },
@@ -133,21 +148,6 @@
   },
   "click_to_test_this_provider": {
     "message": "Click to test this provider"
-  },
-  "context_translate": {
-    "message": "Context Translate"
-  },
-  "context_translate_icon": {
-    "message": "Context translate icon"
-  },
-  "context_translate_provider": {
-    "message": "Context translate provider"
-  },
-  "context_translate_provider_description": {
-    "message": "Go beyond literal conversion with AI-powered translation shaped by context, nuance, and intent."
-  },
-  "context_translate_shortcut": {
-    "message": "Context translate shortcut"
   },
   "custom": {
     "message": "Custom"
@@ -545,9 +545,6 @@
   "page_range_main": {
     "message": "Main Content"
   },
-  "page_translate": {
-    "message": "Translate page"
-  },
   "panorama_reading": {
     "message": "Panorama Reading"
   },
@@ -686,21 +683,6 @@
   "quick_action_toolbox": {
     "message": "Toolbox"
   },
-  "quick_translate": {
-    "message": "Quick Translate"
-  },
-  "quick_translate_icon": {
-    "message": "Quick translate icon"
-  },
-  "quick_translate_provider": {
-    "message": "Quick translate provider"
-  },
-  "quick_translate_provider_description": {
-    "message": "Fast and lightweight translation for everyday use. Prioritizes speed over deep contextual understanding, so nuance and precision may be limited in complex content."
-  },
-  "quick_translate_shortcut": {
-    "message": "Quick translate shortcut"
-  },
   "recommended": {
     "message": "Recommended"
   },
@@ -755,6 +737,9 @@
   "shortcuts_settings_safari": {
     "message": "Safari extension shortcuts need to be configured in System Settings > Keyboard > Shortcuts"
   },
+  "show_original": {
+    "message": "Show Original"
+  },
   "source_language": {
     "message": "Source language"
   },
@@ -791,9 +776,6 @@
   "toast_translation_same_langauge": {
     "message": "Source and target languages are the same"
   },
-  "translate": {
-    "message": "Translate"
-  },
   "translate_display_mode": {
     "message": "Translate Display Mode"
   },
@@ -817,9 +799,6 @@
   },
   "translate_selection_trigger_description": {
     "message": "Customize the hover modifier key or use long press to translate paragraphs"
-  },
-  "translating": {
-    "message": "Translating..."
   },
   "ui_language": {
     "message": "UI language"

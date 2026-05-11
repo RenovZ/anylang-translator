@@ -5,7 +5,7 @@
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import i18n from '@/lib/i18n';
-  import { FEAT_CONTEXT_TRANSLATE, FEAT_QUICK_TRANSLATE } from '@/preset/constants';
+  import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/constants';
 
   import { adaptiveTranslateNav as nav } from '../data';
   import Section from '../Section.svelte';
@@ -17,46 +17,26 @@
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
-  <!-- quick translate icon -->
+  <!-- adaptive translate icon -->
   <FeatureIcon
-    title={i18n('quick_translate_icon', {
-      defaultValue: 'Quick translate icon'
+    title={i18n('adaptive_translate_icon', {
+      defaultValue: 'Adaptive translate icon'
     })}
-    field={FEAT_QUICK_TRANSLATE} />
+    field={FEAT_ADAPTIVE_TRANSLATE} />
 
   <FeatureShortcut
-    title={i18n('quick_translate_shortcut', { defaultValue: 'Quick translate shortcut' })}
-    field={FEAT_QUICK_TRANSLATE} />
+    title={i18n('adaptive_translate_shortcut', { defaultValue: 'Adaptive translate shortcut' })}
+    field={FEAT_ADAPTIVE_TRANSLATE} />
 
-  <!-- quick translate api provider -->
+  <!-- adaptive translate api provider -->
   <FeatureProvider
-    field={FEAT_QUICK_TRANSLATE}
-    title={i18n('quick_translate_provider', { defaultValue: 'Quick translate provider' })}
-    description={i18n('quick_translate_provider_description', {
+    field={FEAT_ADAPTIVE_TRANSLATE}
+    title={i18n('adaptive_translate_provider', { defaultValue: 'Adaptive translate provider' })}
+    description={i18n('adaptive_translate_provider_description', {
       defaultValue:
-        'Fast and lightweight translation for everyday use. Prioritizes speed over deep contextual understanding, so nuance and precision may be limited in complex content.'
+        'Choose from a variety of API providers to power your adaptive translate experience.'
     })}
     showFreeProviders={true} />
-
-  <!-- context translate icon -->
-  <FeatureIcon
-    title={i18n('context_translate_icon', {
-      defaultValue: 'Context translate icon'
-    })}
-    field={FEAT_CONTEXT_TRANSLATE} />
-
-  <FeatureShortcut
-    title={i18n('context_translate_shortcut', { defaultValue: 'Context translate shortcut' })}
-    field={FEAT_CONTEXT_TRANSLATE} />
-
-  <!-- context translate api provider -->
-  <FeatureProvider
-    field={FEAT_CONTEXT_TRANSLATE}
-    title={i18n('context_translate_provider', { defaultValue: 'Context translate provider' })}
-    description={i18n('context_translate_provider_description', {
-      defaultValue:
-        'Go beyond literal conversion with AI-powered translation shaped by context, nuance, and intent.'
-    })} />
 
   <!-- enable auto-translate -->
   <!-- <SectionRow
@@ -75,7 +55,7 @@
 
   <!-- always auto-translated sites -->
   <FeatureAutoAppliedSites
-    field={FEAT_QUICK_TRANSLATE}
+    field={FEAT_ADAPTIVE_TRANSLATE}
     title={i18n('always_auto_translated_sites', { defaultValue: 'Always auto-translated sites' })}
     description={i18n('always_auto_translated_sites_description', {
       defaultValue:
@@ -84,7 +64,7 @@
 
   <!-- always auto-translated language -->
   <FeatureAutoAppliedLangs
-    field={FEAT_QUICK_TRANSLATE}
+    field={FEAT_ADAPTIVE_TRANSLATE}
     title={i18n('always_auto_translated_langs', {
       defaultValue: 'Always auto-translate languages'
     })}

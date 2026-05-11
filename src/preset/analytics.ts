@@ -1,11 +1,10 @@
 export const ANALYTICS_FEATURE = {
-  PAGE_TRANSLATION: 'page_translation',
-  SELECTION_TRANSLATION: 'selection_translation',
-  CUSTOM_AI_ACTION: 'custom_ai_action',
-  INPUT_TRANSLATION: 'input_translation',
-  TRANSLATION_HUB: 'translation_hub',
-  VIDEO_SUBTITLES: 'video_subtitles',
-  TEXT_TO_SPEECH: 'text_to_speech'
+  ADAPTIVE_TRANSLATE: 'adaptive_translate',
+  INSTANT_LOOKUP: 'instant_lookup',
+  INTELLIGENT_INPUT: 'intelligent_input',
+  BILINGUAL_SUBTITLES: 'bilingual_subtitles',
+  PANORAMA_READING: 'panorama_reading',
+  WRITING_COPILOT: 'writing_copilot'
 } as const;
 
 export const ANALYTICS_SURFACE = {
@@ -19,6 +18,5 @@ export const ANALYTICS_SURFACE = {
   INPUT_TRANSLATION: 'input_translation',
   TRANSLATION_HUB: 'translation_hub',
   VIDEO_SUBTITLES: 'video_subtitles',
-  VIDEO_SUBTITLES_AUTO: 'video_subtitles_auto',
-  TTS_SETTINGS: 'tts_settings'
+  VIDEO_SUBTITLES_AUTO: 'video_subtitles_auto'
 } as const;

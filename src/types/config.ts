@@ -26,12 +26,10 @@ export const langDetectionSchema = z.object({
 });
 export type LangDetection = z.infer<typeof langDetectionSchema>;
 
-const featureContextTranslateSchema = z.object({
+const featureConfigBaseSchema = z.object({
   icon: z.string(),
   provider: providerSchema.nullable(),
-  shortcut: z.array(z.string())
-});
-const featureConfigBaseSchema = featureContextTranslateSchema.extend({
+  shortcut: z.array(z.string()),
   autoAppliedSites: z.array(z.string()).optional(),
   autoAppliedLangs: z.array(z.string()).optional()
 });
@@ -55,7 +53,6 @@ const featureInstantLookupSchema = featureConfigBaseSchema.extend({
   })
 });
 export const featureConfigSchema = z.union([
-  featureContextTranslateSchema,
   featureConfigBaseSchema,
   featureQuickTranslateSchema,
   featureInstantLookupSchema
@@ -90,8 +87,7 @@ export const configSchema = z.object({
     })
     .default([...freeProviders, ...goProviders, ...zenProviders]),
 
-  quickTranslate: featureQuickTranslateSchema,
-  contextTranslate: featureContextTranslateSchema,
+  adaptiveTranslate: featureQuickTranslateSchema,
   instantLookup: featureInstantLookupSchema,
   intelligentInput: featureConfigBaseSchema,
   bilingualSubtitles: featureConfigBaseSchema,

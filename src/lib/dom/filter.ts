@@ -239,7 +239,7 @@ class DomFilter {
     const customSkip = this.isSiteSkipped(element);
     const config = configStore.get();
     const skipContent =
-      config.quickTranslate.translate.pageRange !== 'all' &&
+      config.adaptiveTranslate.translate.pageRange !== 'all' &&
       NOISE_TAGS.has(element.tagName) &&
       !this.inMainContent(element);
     const invalidTag = SKIP_TAGS.has(element.tagName);
