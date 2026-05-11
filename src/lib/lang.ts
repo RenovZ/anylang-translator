@@ -1,9 +1,9 @@
 import Locale from 'intl-locale-textinfo-polyfill';
 import { browser } from 'wxt/browser';
 
-import { LANG_CODE_MAP } from '@/preset/lang';
-import { LanguageDirection } from '@/types/content';
-import { langCodeSchema, uiLangCodeSchema, type LangCode } from '@/types/lang';
+import { LANG_CODE_MAP, UI_LANG_CODES } from '@/preset/lang';
+import { LangDir } from '@/types/content';
+import { langCodeSchema, UILangCode, uiLangCodeSchema, type LangCode } from '@/types/lang';
 
 import configStore from './config';
 import logger from './logger';
@@ -19,82 +19,45 @@ class LangManager {
     const { success, data, error } = uiLangCodeSchema.safeParse(rawValue);
     if (success) return LANG_CODE_MAP[data];
 
-    logger.warn('Invalid ui langCode data, using default:', { rawValue, error });
+    logger.warn('Invalid langCode data, using default:', { rawValue, error });
     return LANG_CODE_MAP['en'];
   }
 
-  getLangName(rawLangCode: string): string {
-    const langCode = langCodeSchema.parse(rawLangCode);
-    return this.getLangCodeMap()[langCode];
-  }
-
-  // formatUICode(langCode: string) {
-  //   if (typeof langCode !== 'string') return;
-
-  //   const getReplacer = (langCode: string) => {
-  //     switch (langCode) {
-  //       case 'pt':
-  //         return 'pt-BR';
-  //       case 'zh':
-  //         return 'zh-CN';
-  //       default:
-  //         return;
-  //     }
-  //   };
-
-  //   if (SUPPORTED_UI_LANG_CODES.indexOf(langCode) === -1) {
-  //     if (langCode.indexOf('-') === -1) {
-  //       return getReplacer(langCode);
-  //     }
-
-  //     langCode = langCode.split('-')[0];
-  //     if (SUPPORTED_UI_LANG_CODES.indexOf(langCode) === -1) {
-  //       return getReplacer(langCode);
-  //     }
-  //   }
-
-  //   return langCode;
-  // }
-
-  // format(langCode: string) {
-  //   if (typeof langCode !== 'string') return;
-
-  //   if (langCode === 'zh') {
-  //     return 'zh-CN';
-  //   } else if (langCode === 'zh-Hant') {
-  //     return 'zh-TW';
-  //   } else if (langCode === 'iw') {
-  //     return 'he';
-  //   } else if (langCode === 'jw') {
-  //     return 'jv';
-  //   }
-
-  //   if (DEFAULT_LANG_CODES.indexOf(langCode) === -1) {
-  //     if (langCode.indexOf('-') === -1) {
-  //       return;
-  //     }
-
-  //     langCode = langCode.split('-')[0];
-  //     if (DEFAULT_LANG_CODES.indexOf(langCode) === -1) {
-  //       return;
-  //     }
-  //   }
-
-  //   return langCode;
-  // }
-
-  async setLangDetection(langCode: LangCode | 'und'): Promise<void> {
+  getUILangCodeMap(): Map<UILangCode, string> {
     const config = configStore.get();
-    config.langDetection.langCode = langCode;
-    await configStore.set(config);
+
+    let uiLangCode: UILangCode = 'en';
+    const rawValue =
+      config.uiLangCode !== 'default' ? config.uiLangCode : browser.i18n.getUILanguage();
+    const { success, data, error } = uiLangCodeSchema.safeParse(rawValue);
+    if (success) {
+      uiLangCode = data;
+    } else {
+      logger.warn('Invalid langCode data, using default:', { rawValue, error });
+    }
+
+    return Object.entries(LANG_CODE_MAP[uiLangCode]).reduce((acc, [langCode, langName]) => {
+      if (UI_LANG_CODES.includes(langCode)) {
+        acc.set(uiLangCodeSchema.parse(langCode), langName);
+      }
+      return acc;
+    }, new Map<UILangCode, string>());
   }
 
-  getLangDirection(langCode: LangCode): LanguageDirection {
-    return new Locale(langCode).getTextInfo().direction as LanguageDirection;
+  getLangName(rawLangCode: string): string | undefined {
+    const { success, data, error } = langCodeSchema.safeParse(rawLangCode);
+    if (success) return this.getLangCodeMap()[data];
+
+    logger.warn('Invalid langCode data', { rawLangCode, error });
+    return undefined;
+  }
+
+  getLangDir(langCode: LangCode): LangDir {
+    return new Locale(langCode).getTextInfo().direction as LangDir;
   }
 
   isRtlLang(langCode: LangCode): boolean {
-    return this.getLangDirection(langCode) === 'rtl';
+    return this.getLangDir(langCode) === 'rtl';
   }
 
   parseLangCode(rawOutput: string): LangCode | null {

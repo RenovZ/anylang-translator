@@ -86,7 +86,7 @@ class TranslateModeManager {
         'bilingual' satisfies TranslateMode
       );
       translatedWrapperNode.setAttribute(WALKED_ATTRIBUTE, walkId);
-      translateDir.setTranslationDirAndLang(translatedWrapperNode);
+      translateDir.setDirAndLang(translatedWrapperNode);
       const spinner = translateSpinner.createSpinnerInside(translatedWrapperNode);
 
       // Batch DOM insertion to reduce layout thrashing
@@ -246,7 +246,7 @@ class TranslateModeManager {
       );
       translatedWrapperNode.setAttribute(WALKED_ATTRIBUTE, walkId);
       translatedWrapperNode.style.display = 'contents';
-      translateDir.setTranslationDirAndLang(translatedWrapperNode);
+      translateDir.setDirAndLang(translatedWrapperNode);
       const spinner = translateSpinner.createSpinnerInside(translatedWrapperNode);
 
       // Batch DOM insertion to reduce layout thrashing

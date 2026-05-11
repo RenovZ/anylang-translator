@@ -1,12 +1,12 @@
 import { LangCode } from './lang';
 
 // Detection source type
-export type DetectionSource = 'llm' | 'franc' | 'fallback';
+export type DetectMethod = 'llm' | 'franc' | 'fallback';
 
 /**
  * Language detection options
  */
-export interface DetectLanguageOptions {
+export interface DetectLangOptions {
   /** Minimum text length to attempt detection (default: 10) */
   minLength?: number;
   /** Enable LLM detection */
@@ -18,19 +18,19 @@ export interface DetectLanguageOptions {
 /**
  * Language detection result
  */
-export interface DetectLanguageResult {
-  code: LangCode | 'und';
-  source: DetectionSource;
+export interface DetectLangResult {
+  langCode: LangCode | 'und';
+  detectMethod: DetectMethod;
 }
 
-export type LanguageDirection = 'ltr' | 'rtl';
+export type LangDir = 'ltr' | 'rtl';
 
 /**
  * Language direction and lang info
  */
-export interface LanguageDirectionAndLang {
-  dir: LanguageDirection;
-  langCode?: LangCode;
+export interface LangDirection {
+  dir: LangDir;
+  lang?: LangCode;
 }
 
 /**
@@ -61,7 +61,7 @@ export interface DocumentInfo {
   } | null;
   paragraphs: string[];
   detectedCodeOrUnd: LangCode | 'und';
-  detectionSource: DetectionSource;
+  detectSource: DetectMethod;
 }
 
 /**

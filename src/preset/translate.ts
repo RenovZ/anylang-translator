@@ -121,7 +121,7 @@ export const displayStyles = DISPLAY_STYLES.map(
       value: item.value,
       label: item.label,
       styles: item.styles,
-      ...('attributes' in item ? { attributes: item.attributes } : {})
+      ...('attributes' in item && item.attributes ? { attributes: item.attributes } : {})
     }) satisfies DisplayStyle
 );
 

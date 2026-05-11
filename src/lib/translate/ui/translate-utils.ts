@@ -24,10 +24,7 @@ class TranslateUtils {
   isForceInline(targetNode: TransNode): boolean {
     if (domFilter.isHTMLElement(targetNode)) {
       const computedStyle = window.getComputedStyle(targetNode);
-      return (
-        FORCE_INLINE_TAGS.has(targetNode.tagName) ||
-        computedStyle.display.includes('flex')
-      );
+      return FORCE_INLINE_TAGS.has(targetNode.tagName) || computedStyle.display.includes('flex');
     }
     return false;
   }

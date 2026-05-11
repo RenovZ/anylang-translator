@@ -13,7 +13,7 @@ import type { LangCode } from '@/types/lang';
 import type { Provider } from '@/types/provider';
 import type { InputTranslationLang } from '@/types/translate';
 
-import translateText, { MIN_SKIP_LEN } from './core/translate-text';
+import translateText from './core/translate-text';
 import translationWalker from './core/translate-walker';
 import webpageContext from './webpage-context';
 import webpageSummary from './webpage-summary';
@@ -83,7 +83,7 @@ class TranslateVariants {
 
   private async isTargetLang(text: string, targetCode: LangCode): Promise<boolean> {
     if (text.length < MIN_LANG_DETECT_LEN) return false;
-    const detected = await contentManager.detectLanguage(text, { enableLLM: false });
+    const detected = await contentManager.detectLangCode(text, { enableLLM: false });
     return detected === targetCode;
   }
 
@@ -137,21 +137,22 @@ class TranslateVariants {
       return '';
     }
 
-    // Skip translation if text is in skipLanguages list (page translation only)
-    const { skipLanguages } = config.quickTranslate.translate;
-    if (skipLanguages.length > 0 && preparedText.length >= MIN_SKIP_LEN) {
-      const shouldSkip = await translateText.shouldSkipLang(
-        preparedText,
-        skipLanguages as LangCode[],
-        config.langDetection.mode === 'llm'
-      );
-      if (shouldSkip) {
-        logger.info(
-          `translateTextForPage: skipping translation because text is in skip language list. text: ${preparedText}`
-        );
-        return '';
-      }
-    }
+    // NOTE: we dont need this check anymore
+    // // Skip translation if text is in skipLanguages list (page translation only)
+    // const { skipLanguages } = config.quickTranslate.translate;
+    // if (skipLanguages.length > 0 && preparedText.length >= MIN_SKIP_LEN) {
+    //   const shouldSkip = await translateText.shouldSkipLang(
+    //     preparedText,
+    //     skipLanguages as LangCode[],
+    //     config.langDetection.mode === 'llm'
+    //   );
+    //   if (shouldSkip) {
+    //     logger.info(
+    //       `translateTextForPage: skipping translation because text is in skip language list. text: ${preparedText}`
+    //     );
+    //     return '';
+    //   }
+    // }
 
     return translateText.translateTextCore({
       text: preparedText,

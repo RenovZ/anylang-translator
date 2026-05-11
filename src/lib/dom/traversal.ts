@@ -53,10 +53,7 @@ class DomTraversal {
     element: HTMLElement,
     walkId: string
   ): { forceBlock: boolean; isInlineNode: boolean } {
-    if (
-      domFilter.isOpaque(element) ||
-      domFilter.isSkipped(element)
-    ) {
+    if (domFilter.isOpaque(element) || domFilter.isSkipped(element)) {
       return {
         forceBlock: false,
         isInlineNode: false
@@ -79,10 +76,7 @@ class DomTraversal {
     const validChildNodes = Array.from(element.childNodes).filter((child: ChildNode) => {
       if (child.nodeType === Node.TEXT_NODE) return true;
       if (domFilter.isHTMLElement(child)) {
-        return !(
-          domFilter.isOpaque(child) ||
-          domFilter.isSkipped(child)
-        );
+        return !(domFilter.isOpaque(child) || domFilter.isSkipped(child));
       }
       return false;
     });
@@ -122,11 +116,7 @@ class DomTraversal {
 
     const isInlineNode = domFilter.isInlineEl(element);
 
-    if (
-      domFilter.isBlockEl(element) ||
-      forceBlock ||
-      domFilter.isSiteForceBlock(element)
-    ) {
+    if (domFilter.isBlockEl(element) || forceBlock || domFilter.isSiteForceBlock(element)) {
       element.setAttribute(BLOCK_ATTRIBUTE, '');
     } else if (isInlineNode) {
       element.setAttribute(INLINE_ATTRIBUTE, '');

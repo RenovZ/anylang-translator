@@ -9,13 +9,7 @@
 </script>
 
 <script lang="ts">
-  let {
-    show = $bindable(false),
-    type,
-    title,
-    message,
-    onclose
-  }: IsolatedToastProp = $props();
+  let { show = $bindable(false), type, title, message, onclose }: IsolatedToastProp = $props();
 
   function close() {
     show = false;
@@ -74,11 +68,7 @@
         <p class="anylang-toast__message">{message}</p>
       {/if}
     </div>
-    <button
-      class="anylang-toast__close"
-      type="button"
-      onclick={close}
-      aria-label="Close">
+    <button class="anylang-toast__close" type="button" onclick={close} aria-label="Close">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"

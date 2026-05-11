@@ -5,7 +5,7 @@ const supportedLanguageList = Object.entries(LANG_CODE_MAP['en'])
   .join('\n');
 
 class PromptManager {
-  getLanguageDetection(): string {
+  getLangDetection(): string {
     return `You are a language detection assistant. Your task is to identify the language of text and return ONLY the language code.
 
 Rules:

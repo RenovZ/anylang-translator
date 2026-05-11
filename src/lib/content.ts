@@ -6,11 +6,11 @@ import { toast } from '@/components/isolated-toast';
 import domPrune from '@/lib/dom/prune';
 import { GenerateTextParams } from '@/types/background';
 import type {
-  DetectLanguageOptions,
-  DetectLanguageResult,
+  DetectLangOptions,
+  DetectLangResult,
   DocumentInfo,
   FaviconCandidate,
-  LanguageDirectionAndLang
+  LangDirection
 } from '@/types/content';
 import { langCodeSchema, type LangCode } from '@/types/lang';
 import { AIProvider } from '@/types/provider';
@@ -75,8 +75,8 @@ class ContentManager {
       (featureConfig?.autoAppliedSites?.length ?? 0) > 0 ||
       (featureConfig?.autoAppliedLangs?.length ?? 0) > 0;
     const enableLLM = cfg.langDetection.mode === 'llm' && hasAutoAppliedSiteOrLang;
-    const { code: detectedCodeOrUnd, source: detectionSource } =
-      await this.detectLanguageWithSource(textForDetection, {
+    const { langCode: detectedCodeOrUnd, detectMethod: detectionSource } =
+      await this.detectLangWithMethod(textForDetection, {
         enableLLM,
         maxLengthForLLM: 1500
       });
@@ -87,7 +87,7 @@ class ContentManager {
       article,
       paragraphs,
       detectedCodeOrUnd,
-      detectionSource
+      detectSource: detectionSource
     };
   }
 
@@ -269,29 +269,29 @@ class ContentManager {
   /**
    * Get language direction (LTR/RTL) and language code
    */
-  getLanguageDirectionAndLang(targetCode: string): LanguageDirectionAndLang {
-    const dir = langManager.getLangDirection(targetCode);
+  getLangDirection(targetCode: string): LangDirection {
+    const dir = langManager.getLangDir(targetCode);
 
     const { success, data, error } = langCodeSchema.safeParse(targetCode);
-    if (success) return { dir, langCode: data };
+    if (success) return { dir, lang: data };
 
     logger.warn('Unsupported language code', { targetCode, error });
-    return { dir, langCode: undefined };
+    return { dir, lang: undefined };
   }
 
   /**
    * Detect language of text using franc, with optional LLM enhancement.
    * Returns both the detected code and the detection source.
    */
-  async detectLanguageWithSource(
+  private async detectLangWithMethod(
     text: string,
-    options?: DetectLanguageOptions
-  ): Promise<DetectLanguageResult> {
+    options?: DetectLangOptions
+  ): Promise<DetectLangResult> {
     const trimmedText = text.trim();
     const minLength = options?.minLength ?? DEFAULT_MIN_LENGTH;
 
     if (trimmedText.length < minLength) {
-      return { code: 'und', source: 'fallback' };
+      return { langCode: 'und', detectMethod: 'fallback' };
     }
 
     // Try LLM detection first if enabled
@@ -299,9 +299,9 @@ class ContentManager {
       try {
         const maxLength = options.maxLengthForLLM ?? DEFAULT_MAX_LENGTH_FOR_LLM;
         const textForLLM = this.cleanText(trimmedText, maxLength);
-        const llmResult = await this.detectLanguageWithLLM(textForLLM);
+        const llmResult = await this.detectLangCodeByLLM(textForLLM);
         if (llmResult && llmResult !== 'und') {
-          return { code: llmResult, source: 'llm' };
+          return { langCode: llmResult, detectMethod: 'llm' };
         }
       } catch (error) {
         logger.warn('falling back to franc', {
@@ -318,23 +318,23 @@ class ContentManager {
     // Fallback to franc
     const francResult = franc(trimmedText);
     if (francResult === 'und') {
-      return { code: 'und', source: 'fallback' };
+      return { langCode: 'und', detectMethod: 'fallback' };
     }
-    return { code: francResult, source: 'franc' };
+    return { langCode: francResult, detectMethod: 'franc' };
   }
 
   /**
    * Detect language of text using franc, with optional LLM enhancement.
    */
-  async detectLanguage(text: string, options?: DetectLanguageOptions): Promise<LangCode | null> {
-    const result = await this.detectLanguageWithSource(text, options);
-    return result.code === 'und' ? null : result.code;
+  async detectLangCode(text: string, options?: DetectLangOptions): Promise<LangCode | null> {
+    const result = await this.detectLangWithMethod(text, options);
+    return result.langCode === 'und' ? null : result.langCode;
   }
 
   /**
    * Detect language using LLM with retry logic
    */
-  private async detectLanguageWithLLM(text: string): Promise<LangCode | null> {
+  private async detectLangCodeByLLM(text: string): Promise<LangCode | null> {
     if (!text.trim()) {
       logger.warn('No text provided');
       return null;
@@ -360,7 +360,7 @@ class ContentManager {
     try {
       const { model, provider, providerOptions: userOptions, temperature } = providerConfig;
       const providerOptions = providerManager.overrideOptions(model, provider, userOptions);
-      const system = promptManager.getLanguageDetection();
+      const system = promptManager.getLangDetection();
       const params: GenerateTextParams = {
         model,
         system,

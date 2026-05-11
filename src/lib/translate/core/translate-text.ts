@@ -26,7 +26,7 @@ class TranslateText {
     skipLanguages: LangCode[],
     enableLLM: boolean
   ): Promise<boolean> {
-    const detectedLang = await contentManager.detectLanguage(text, {
+    const detectedLang = await contentManager.detectLangCode(text, {
       minLength: MIN_SKIP_LEN,
       enableLLM
     });
@@ -45,9 +45,7 @@ class TranslateText {
     return value.trim() === '' ? null : value;
   }
 
-  normalizeCtx(
-    webPageContext?: WebPagePromptContext
-  ): WebPagePromptContext | undefined {
+  normalizeCtx(webPageContext?: WebPagePromptContext): WebPagePromptContext | undefined {
     if (!webPageContext) {
       return undefined;
     }

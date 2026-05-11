@@ -1,10 +1,6 @@
 import type { TranslatePageRange } from '@/types/config';
 
-import {
-  SITE_SKIP_SELECTOR_MAP,
-  SKIP_TAGS,
-  NOISE_TAGS
-} from './constants';
+import { NOISE_TAGS, SITE_SKIP_SELECTOR_MAP, SKIP_TAGS } from './constants';
 import domFilter from './filter';
 
 // Lazily cached joined selector string for the current hostname.

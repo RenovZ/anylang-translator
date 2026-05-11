@@ -9,7 +9,9 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
+  import logger from '@/lib/logger';
   import { getProviderIcon } from '@/preset/provider';
+  import { uiLangCodeSchema } from '@/types/lang';
 
   import { generalNav } from '../data';
   import Section from '../Section.svelte';
@@ -89,7 +91,7 @@
         <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
       </Button>
       <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-        {#each Object.entries(lang.getLangCodeMap()) as [langCode, langName] (langCode)}
+        {#each lang.getUILangCodeMap() as [langCode, langName] (langCode)}
           <DropdownItem onclick={() => ($config.uiLangCode = langCode)}>
             {langName}
           </DropdownItem>

@@ -2,11 +2,9 @@ import configStore from '@/lib/config';
 import contentManager from '@/lib/content';
 
 class TranslateDir {
-  setTranslationDirAndLang(element: HTMLElement): void {
+  setDirAndLang(element: HTMLElement): void {
     const config = configStore.get();
-    const { dir, langCode: lang } = contentManager.getLanguageDirectionAndLang(
-      config.targetLangCode
-    );
+    const { dir, lang } = contentManager.getLangDirection(config.targetLangCode);
     element.setAttribute('dir', dir);
     if (lang) {
       element.setAttribute('lang', lang);

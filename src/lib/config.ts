@@ -6,11 +6,13 @@ import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
 import { displayStyles, HOTKEYS } from '@/preset/translate';
 import {
   configSchema,
+  langDetectionModeSchema,
   pageRangeSchema,
   selectionTriggerSchema,
   translateModeSchema,
   type Config
 } from '@/types/config';
+import { LangCode, langCodeSchema } from '@/types/lang';
 import { displayStyleSchema } from '@/types/translate';
 
 import logger from './logger';
@@ -19,14 +21,15 @@ const defaultConfig: Config = configSchema.parse({
   installDateTime: null,
   lastTimeShowingReleaseNotes: null,
   originalUserAgent: null,
-  uiLanguage: 'default',
-  sourceLanguage: undefined,
-  targetLanguage: 'en',
 
-  languageDetection: {
-    mode: 'basic',
+  uiLangCode: 'default',
+  sourceLangCode: undefined,
+  targetLangCode: langCodeSchema.parse('en'),
+
+  langDetection: {
+    mode: langDetectionModeSchema.parse('basic'),
     provider: null,
-    langCode: 'en'
+    langCode: langCodeSchema.parse('en')
   },
 
   providers: [
@@ -64,7 +67,7 @@ const defaultConfig: Config = configSchema.parse({
 
   instantLookup: {
     icon: 'lucide:book-open-text',
-    provider: null,
+    provider: structuredClone(freeProviders[0]),
     shortcut: ['Alt', 'L'],
     selection: {
       triggerTranslate: selectionTriggerSchema.parse('directly')
@@ -169,6 +172,12 @@ class ConfigStore {
     await this.init();
     this.store.set(defaultConfig);
     await this.storage.removeValue();
+  }
+
+  async setDetectedLangCode(langCode: LangCode | 'und'): Promise<void> {
+    const config = this.get();
+    config.langDetection.langCode = langCode;
+    await this.set(config);
   }
 
   isSitesAutoApplied(sites: string[], url: string | URL): boolean {

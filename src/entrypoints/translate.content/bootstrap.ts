@@ -1,8 +1,8 @@
 import type { ContentScriptContext } from '#imports';
 
 import { toast } from '@/components/isolated-toast';
+import configStore from '@/lib/config';
 import contentManager from '@/lib/content';
-import langManager from '@/lib/lang';
 import logger from '@/lib/logger';
 import { onMessage, sendMessage } from '@/lib/protocol';
 import styleInjector from '@/lib/translate/ui/style-injector';
@@ -51,7 +51,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
       // Only the top frame should detect and set language to avoid race conditions from iframes
       if (window === window.top) {
         const { detectedCodeOrUnd } = await contentManager.getDocumentInfo();
-        await langManager.setLangDetection(detectedCodeOrUnd);
+        await configStore.setDetectedLangCode(detectedCodeOrUnd);
 
         // Notify background script that URL has changed, let it decide whether to automatically enable translation
         void sendMessage('checkAutoPageTranslation', { url: to, detectedCodeOrUnd });
@@ -91,7 +91,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
   // Only the top frame should detect and set language to avoid race conditions from iframes
   if (window === window.top) {
     const { detectedCodeOrUnd } = await contentManager.getDocumentInfo();
-    await langManager.setLangDetection(detectedCodeOrUnd);
+    await configStore.setDetectedLangCode(detectedCodeOrUnd);
 
     // Check if auto-translation should be enabled for initial page load
     void sendMessage('checkAutoPageTranslation', {

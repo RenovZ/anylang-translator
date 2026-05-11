@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
 import type { FeatureField } from '@/preset/constants';
-import { DEFAULT_LANG_CODES } from '@/preset/lang';
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
 import { displayStyles, HOTKEYS } from '@/preset/translate';
 import { aiProviderSchema, providerSchema, type Provider } from '@/types/provider';
 
+import { langCodeSchema, uiLangCodeSchema } from './lang';
 import { promptSchema, type Prompt } from './prompt';
 import { displayStyleSchema } from './translate';
 
@@ -16,13 +16,13 @@ export type TranslateMode = z.infer<typeof translateModeSchema>;
 export const pageRangeSchema = z.enum(['main', 'all']);
 export type TranslatePageRange = z.infer<typeof pageRangeSchema>;
 
-export const detectionModeSchema = z.enum(['basic', 'llm']);
-export type DetectionMode = z.infer<typeof detectionModeSchema>;
+export const langDetectionModeSchema = z.enum(['basic', 'llm']);
+export type LangDetectionMode = z.infer<typeof langDetectionModeSchema>;
 
 export const langDetectionSchema = z.object({
-  mode: detectionModeSchema,
+  mode: langDetectionModeSchema,
   provider: aiProviderSchema.nullable(),
-  langCode: z.enum(DEFAULT_LANG_CODES).default('en')
+  langCode: langCodeSchema
 });
 export type LangDetection = z.infer<typeof langDetectionSchema>;
 
@@ -41,10 +41,11 @@ const featureQuickTranslateSchema = featureConfigBaseSchema.extend({
     mode: translateModeSchema.default('bilingual'),
     displayStyle: displayStyleSchema.default(displayStyles[0]),
     pageRange: pageRangeSchema.default('main'),
-    triggerOnHover: z.enum(HOTKEYS),
-    minCharactersPerNode: z.number().default(0),
-    minWordsPerNode: z.number().default(0),
-    skipLanguages: z.array(z.enum(DEFAULT_LANG_CODES)).default([])
+    triggerOnHover: z.enum(HOTKEYS)
+    // NOTE: we dont need these options
+    // minCharactersPerNode: z.number().default(0),
+    // minWordsPerNode: z.number().default(0),
+    // skipLanguages: z.array(z.enum(DEFAULT_LANG_CODES)).default([])
   })
 });
 const featureInstantLookupSchema = featureConfigBaseSchema.extend({
@@ -66,9 +67,9 @@ export const configSchema = z.object({
   lastTimeShowingReleaseNotes: z.number().nullable().default(null),
   originalUserAgent: z.string().nullable().default(null),
 
-  uiLangCode: z.string().default('default'),
-  sourceLangCode: z.enum(DEFAULT_LANG_CODES).optional(),
-  targetLangCode: z.enum(DEFAULT_LANG_CODES).default('en'),
+  uiLangCode: uiLangCodeSchema.or(z.literal('default')),
+  sourceLangCode: langCodeSchema.optional(),
+  targetLangCode: langCodeSchema,
 
   langDetection: langDetectionSchema,
 

@@ -6,7 +6,7 @@ import js from '@eslint/js';
 
 export default tseslint.config(
   {
-    ignores: ['.git/**', '.output/**', '.wxt/**', 'node_modules/**']
+    ignores: ['.git/**', '.output/**', '.wxt/**', 'node_modules/**', 'legacy/**']
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -35,6 +35,16 @@ export default tseslint.config(
   {
     files: ['**/*.js', '**/*.cjs', '**/*.mjs', '**/*.ts', '**/*.cts', '**/*.mts'],
     rules: {
+      // 'no-restricted-syntax': [
+      //   'error',
+      //   {
+      //     selector: 'BinaryExpression[operator="in"]',
+      //     message:
+      //       'Avoid the `in` operator: it checks property keys, not array values. ' +
+      //       'Use `.includes()` for arrays and `Object.hasOwn()` for objects. ' +
+      //       'If you intentionally need `in` (e.g. feature detection), disable this rule inline with a comment.'
+      //   }
+      // ],
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
