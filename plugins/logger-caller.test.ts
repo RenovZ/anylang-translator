@@ -1,15 +1,22 @@
 import assert from 'node:assert';
-import { describe, it } from 'node:test';
+
+import { describe, it } from 'vitest';
 
 import { loggerCallerPlugin } from './logger-caller.ts';
 
 const MOCK_ID = '/Users/cgxxv/anylang/web/src/lib/content.ts';
 
-function transform(code: string, id = MOCK_ID) {
+type TransformResult = { code: string; map: string } | null;
+
+function transform(code: string, id = MOCK_ID): TransformResult {
   const plugin = loggerCallerPlugin();
-  return plugin.transform!(code, id);
+  const hook = plugin.transform;
+  const fn = typeof hook === 'function' ? hook : hook?.handler;
+  if (!fn) return null;
+  return fn.call({} as never, code, id, undefined) as TransformResult;
 }
 
+// node --test plugins/logger-caller.test.ts
 describe('logger-caller plugin', () => {
   it('should skip non-target files', () => {
     const result = transform('logger.info("test")', '/Users/cgxxv/anylang/web/node_modules/foo.ts');
@@ -18,6 +25,19 @@ describe('logger-caller plugin', () => {
 
   it('should skip files without logger calls', () => {
     const result = transform('console.log("hello")');
+    assert.strictEqual(result, null);
+  });
+
+  it('should handle TypeScript syntax', () => {
+    const code =
+      'declare global { interface Window { x: boolean; } } function test() { logger.info("ok"); }';
+    const result = transform(code);
+    assert.ok(result);
+    assert.match(result!.code!, /fn:"test"/);
+  });
+
+  it('should skip .svelte files', () => {
+    const result = transform('logger.info("test")', '/Users/cgxxv/anylang/web/src/App.svelte');
     assert.strictEqual(result, null);
   });
 

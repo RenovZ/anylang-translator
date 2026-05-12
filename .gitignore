@@ -31,3 +31,5 @@ bun.lock
 # AI Agents
 migrate.md
 AGENTS.md
+
+tests
