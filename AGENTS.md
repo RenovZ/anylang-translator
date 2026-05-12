@@ -7,13 +7,12 @@ Refer to `~/commit.md`
 ## Dev Commands
 
 ```bash
-npm run dev          # Start dev server
-npm run dev:firefox  # Dev with Firefox
-npm run build        # Production build (runs i18n extraction first)
-npm run build:firefox
-npm run format       # Format all files (prettier, not dprint)
-npm run check        # svelte-check for types
-npm run lint         # eslint + prettier --check
+pnpm run dev          # Start dev server
+pnpm run build        # Production build (runs i18n extraction first)
+pnpm run format       # Format all files (prettier, not dprint)
+pnpm run check        # svelte-check for types
+pnpm run lint         # eslint + prettier --check
+pnpm run test         # Run tests
 ```
 
 ## Format & Lint

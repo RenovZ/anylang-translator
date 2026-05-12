@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-import { logger } from './logger.mjs';
+import logger from './logger.mjs';
 
 // All browsers supported by WXT
 // prettier-ignore

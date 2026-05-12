@@ -16,7 +16,7 @@ function createLogger(color) {
   };
 }
 
-export const logger = {
+export default {
   log: createLogger(ansi.gray),
   info: createLogger(ansi.blue),
   warn: createLogger(ansi.yellow),

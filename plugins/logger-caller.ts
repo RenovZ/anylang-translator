@@ -1,12 +1,13 @@
 import path from 'node:path';
 
-import { babelParse, walkAST } from 'ast-kit';
+import { babelParse, getLang, walkAST } from 'ast-kit';
 import MagicString from 'magic-string';
 import type { Plugin } from 'vite';
+import * as t from '@babel/types';
 
 const LOG_METHODS = new Set(['trace', 'debug', 'info', 'warn', 'error']);
 
-function getFunctionName(node: any, parent: any): string | null {
+function getFunctionName(node: t.Node, parent?: t.Node | null): string | null {
   if (node.type === 'FunctionDeclaration' && node.id) {
     return node.id.name;
   }
@@ -38,12 +39,14 @@ function getFunctionName(node: any, parent: any): string | null {
 export function loggerCallerPlugin(): Plugin {
   return {
     name: 'logger-caller',
+    enforce: 'pre',
     transform(code, id) {
-      if (!/\.([jt]sx?|svelte)$/.test(id) || /node_modules|\.wxt\/|scripts\//.test(id)) {
+      // if (!/\.([jt]sx?|svelte)$/.test(id) || /node_modules|\.wxt\/|scripts\//.test(id)) {
+      if (!/\.[jt]sx?$/.test(id) || /node_modules|\.wxt\/|scripts\//.test(id)) {
         return null;
       }
 
-      const ast = babelParse(code, { sourceType: 'module' } as const);
+      const ast = babelParse(code, getLang(id));
       const s = new MagicString(code);
       let modified = false;
 
@@ -52,7 +55,7 @@ export function loggerCallerPlugin(): Plugin {
       const scopeStack: { name: string; start: number; end: number }[] = [];
 
       walkAST(ast, {
-        enter(node: any, parent: any) {
+        enter(node, parent) {
           const fnName = getFunctionName(node, parent);
           if (fnName) {
             scopeStack.push({ name: fnName, start: node.start!, end: node.end! });
@@ -71,7 +74,7 @@ export function loggerCallerPlugin(): Plugin {
             fnNameMap.set(node.start!, enclosing?.name ?? '<module>');
           }
         },
-        leave(node: any) {
+        leave(node) {
           const fnName = getFunctionName(node, null);
           if (fnName && scopeStack.length > 0) {
             const top = scopeStack[scopeStack.length - 1];
@@ -84,7 +87,7 @@ export function loggerCallerPlugin(): Plugin {
 
       // Second pass: transform logger calls
       walkAST(ast, {
-        enter(node: any) {
+        enter(node) {
           if (
             node.type === 'CallExpression' &&
             node.callee.type === 'MemberExpression' &&

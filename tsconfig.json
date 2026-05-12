@@ -12,5 +12,5 @@
     "useDefineForClassFields": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", ".wxt/wxt.d.ts", ".wxt/types/*.d.ts"],
-  "exclude": ["legacy", ".output", "node_modules"]
+  "exclude": ["legacy", ".output", "node_modules", "plugins"]
 }

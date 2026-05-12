@@ -67,14 +67,9 @@ function getFilenameFromStack(): string {
 // options/api-providers/Index → o/a/Index
 function abbreviateModuleName(filename: string): string {
   // 移除后缀和 chunk hash
-  const clean = filename.replace(/\.(js|ts|svelte)$/, '').replace(/-[a-zA-Z0-9]{8,}$/, '');
+  const clean = filename.replace(/\.(js|ts|svelte)$/, '').replace(/-[a-zA-Z0-9_-]{8}$/i, '');
 
   const parts = clean.split('/');
-
-  // 跳过 entrypoints 前缀
-  if (parts[0] === 'entrypoints') {
-    parts.shift();
-  }
 
   if (parts.length === 0) return 'app';
   if (parts.length === 1) return parts[0];
@@ -141,7 +136,9 @@ class Logger {
     if (!this.isEnabled(level)) return;
 
     const filename = caller?.file ?? getFilenameFromStack();
-    const moduleName = caller?.module ?? abbreviateModuleName(filename);
+    const moduleName = caller?.module
+      ? abbreviateModuleName(caller.module)
+      : abbreviateModuleName(filename);
     const levelStr = level.toUpperCase();
     const callerTag = caller ? `${caller.fn}:${caller.line}` : '';
 
@@ -150,21 +147,23 @@ class Logger {
       const prefix = callerTag
         ? `${color}[${levelStr}]${ansiReset} [${moduleName}] [${callerTag}]`
         : `${color}[${levelStr}]${ansiReset} [${moduleName}]`;
+      const args = [prefix];
+      if (message) args.push(message);
       if (fields && Object.keys(fields).length > 0) {
-        console[level](prefix, message, JSON.stringify(fields));
-      } else {
-        console[level](prefix, message);
+        args.push(JSON.stringify(fields));
       }
+      console[level](...args);
     } else {
       const style = css[level];
       const prefix = callerTag
         ? `[${levelStr}] [${moduleName}] [${callerTag}]`
         : `[${levelStr}] [${moduleName}]`;
+      const args: unknown[] = [`%c${prefix}`, style];
+      if (message) args.push(message);
       if (fields && Object.keys(fields).length > 0) {
-        console[level](`%c${prefix}`, style, message, fields);
-      } else {
-        console[level](`%c${prefix}`, style, message);
+        args.push(fields);
       }
+      console[level](...args);
     }
   }
 

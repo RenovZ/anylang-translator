@@ -4,6 +4,7 @@ import { Readability } from '@mozilla/readability';
 
 import { toast } from '@/components/isolated-toast';
 import domPrune from '@/lib/dom/prune';
+import { FRANC_TO_LANG_CODE } from '@/preset/franc-map';
 import { GenerateTextParams } from '@/types/background';
 import type {
   DetectLangOptions,
@@ -59,9 +60,10 @@ class ContentManager {
     const article = new Readability(documentClone as Document, {
       serializer: (el) => el
     }).parse();
-    const paragraphs = article?.content ? this.flattenToParagraphs(article.content) : [];
+    logger.debug({ article });
 
-    logger.info({ article });
+    const paragraphs = article?.content ? this.flattenToParagraphs(article.content) : [];
+    logger.debug({ paragraphs });
 
     // Combine title and content for detection
     const title = article?.title || '';
@@ -75,19 +77,18 @@ class ContentManager {
       (featureConfig?.autoAppliedSites?.length ?? 0) > 0 ||
       (featureConfig?.autoAppliedLangs?.length ?? 0) > 0;
     const enableLLM = cfg.langDetection.mode === 'llm' && hasAutoAppliedSiteOrLang;
-    const { langCode: detectedCodeOrUnd, detectMethod: detectionSource } =
+    const { langCode: detectedCodeOrUnd, detectMethod: detectSource } =
       await this.detectLangWithMethod(textForDetection, {
         enableLLM,
         maxLengthForLLM: 1500
       });
-
-    logger.info({ detectionSource, detectedCodeOrUnd });
+    logger.debug({ detectSource, detectedCodeOrUnd });
 
     return {
       article,
       paragraphs,
       detectedCodeOrUnd,
-      detectSource: detectionSource
+      detectSource
     };
   }
 
@@ -320,7 +321,14 @@ class ContentManager {
     if (francResult === 'und') {
       return { langCode: 'und', detectMethod: 'fallback' };
     }
-    return { langCode: francResult, detectMethod: 'franc' };
+
+    const mappedCode = FRANC_TO_LANG_CODE[francResult] ?? francResult;
+    const { success, data: langCode, error } = langCodeSchema.safeParse(mappedCode);
+    if (!success) {
+      logger.trace({ francResult, mappedCode, error });
+      return { langCode: 'und', detectMethod: 'fallback' };
+    }
+    return { langCode, detectMethod: 'franc' };
   }
 
   /**

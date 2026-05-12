@@ -219,7 +219,11 @@ class Shortcut {
     }
 
     if (updated) {
-      await configStore.set(newConfig);
+      try {
+        await configStore.set(newConfig);
+      } catch (error) {
+        logger.error('Failed to sync shortcut from browser', { error });
+      }
     }
 
     return updated;

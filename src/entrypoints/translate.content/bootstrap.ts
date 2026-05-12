@@ -51,6 +51,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
       // Only the top frame should detect and set language to avoid race conditions from iframes
       if (window === window.top) {
         const { detectedCodeOrUnd } = await contentManager.getDocumentInfo();
+        logger.trace({ detectedCodeOrUnd });
         await configStore.setDetectedLangCode(detectedCodeOrUnd);
 
         // Notify background script that URL has changed, let it decide whether to automatically enable translation
@@ -91,6 +92,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
   // Only the top frame should detect and set language to avoid race conditions from iframes
   if (window === window.top) {
     const { detectedCodeOrUnd } = await contentManager.getDocumentInfo();
+    logger.trace({ detectedCodeOrUnd });
     await configStore.setDetectedLangCode(detectedCodeOrUnd);
 
     // Check if auto-translation should be enabled for initial page load

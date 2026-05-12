@@ -171,7 +171,11 @@ class ConfigStore {
   async setDetectedLangCode(langCode: LangCode | 'und'): Promise<void> {
     const config = this.get();
     config.langDetection.langCode = langCode;
-    await this.set(config);
+    try {
+      await this.set(config);
+    } catch (error) {
+      logger.error('Failed to sync detected lang code from browser', { error });
+    }
   }
 
   isSitesAutoApplied(sites: string[], url: string | URL): boolean {
