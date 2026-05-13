@@ -197,6 +197,9 @@
   "display_style_blur": {
     "message": "Blur"
   },
+  "display_style_css": {
+    "message": "CSS"
+  },
   "display_style_custom": {
     "message": "Custom"
   },

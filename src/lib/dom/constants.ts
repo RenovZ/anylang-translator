@@ -1,14 +1,9 @@
-/**
- * DOM filtering utilities migrated from read-frog.
- *
- * Centralises the logic that determines which DOM elements should be excluded
- * during content extraction — hidden elements, non-content tags, and
- * site-specific noise.
- */
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Tags that should never be walked into or translated
-// ─────────────────────────────────────────────────────────────────────────────
+import {
+  STATE_MESSAGE_CLASS,
+  SUBTITLES_VIEW_CLASS,
+  TRANSLATE_BUTTON_CLASS,
+  YOUTUBE_NATIVE_SUBTITLES_CLASS
+} from '@/preset/subtitles';
 
 export const FORCE_BLOCK_TAGS = new Set([
   'BODY',
@@ -73,7 +68,8 @@ export const MATH_TAGS = new Set([
   'semantics'
 ]);
 
-export const SKIP_TAGS = new Set([
+// Don't walk into these tags
+export const DONT_WALK_AND_TRANSLATE_TAGS = new Set([
   'HEAD',
   'TITLE',
   'HR',
@@ -97,24 +93,14 @@ export const SKIP_TAGS = new Set([
   ...MATH_TAGS
 ]);
 
-export const OPAQUE_TAGS = new Set(['CODE', 'TIME']);
+export const DONT_WALK_BUT_TRANSLATE_TAGS = new Set(['CODE', 'TIME']);
 
 // force translation style as inline node, but not force the node as inline node
-export const FORCE_INLINE_TAGS = new Set(['A', 'BUTTON', 'SELECT', 'OPTION', 'SPAN']);
+export const FORCE_INLINE_TRANSLATION_TAGS = new Set(['A', 'BUTTON', 'SELECT', 'OPTION', 'SPAN']);
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Tags that are ignorable when they sit *outside* the main content container
-// (e.g. <header>, <footer>, <nav> outside <article>/<main>)
-// ─────────────────────────────────────────────────────────────────────────────
+export const MAIN_CONTENT_IGNORE_TAGS = new Set(['HEADER', 'FOOTER', 'NAV', 'NOSCRIPT']);
 
-export const NOISE_TAGS = new Set(['HEADER', 'FOOTER', 'NAV', 'NOSCRIPT']);
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Site-specific CSS selectors for elements that should never be walked into.
-// Keyed by hostname (includes subdomain prefix).
-// ─────────────────────────────────────────────────────────────────────────────
-
-export const SITE_SKIP_SELECTOR_MAP: Record<string, string[]> = {
+export const CUSTOM_DONT_WALK_INTO_ELEMENT_SELECTOR_MAP: Record<string, string[]> = {
   'chatgpt.com': ['.ProseMirror'],
   'arxiv.org': ['.ltx_listing'],
   'www.reddit.com': [
@@ -128,6 +114,7 @@ export const SITE_SKIP_SELECTOR_MAP: Record<string, string[]> = {
     '#guide-inner-content *',
     '#metadata *',
     '#channel-name',
+    '.translate-button',
     '.yt-lockup-metadata-view-model__metadata',
     '.yt-spec-avatar-shape__badge-text',
     '.shortsLockupViewModelHostOutsideMetadataSubhead',
@@ -137,7 +124,11 @@ export const SITE_SKIP_SELECTOR_MAP: Record<string, string[]> = {
     '#reply-button-end',
     '#more-replies',
     '#info',
-    '#badges *'
+    '#badges *',
+    `${YOUTUBE_NATIVE_SUBTITLES_CLASS}`,
+    `.${SUBTITLES_VIEW_CLASS}`,
+    `.${STATE_MESSAGE_CLASS}`,
+    `.${TRANSLATE_BUTTON_CLASS}`
   ],
   'discord.com': [
     '[id^="message-username"]',
@@ -152,11 +143,11 @@ export const SITE_SKIP_SELECTOR_MAP: Record<string, string[]> = {
     'header *',
     '#repository-container-header *',
     '[class*="OverviewContent-module__Box_1--"] *',
-    'table.diff-table'
+    'table.diff-table' // https://github.com/mengxi-ream/read-frog/issues/1174
   ]
 };
 
-export const SITE_FORCE_BLOCK_SELECTOR_MAP: Record<string, string[]> = {
+export const CUSTOM_FORCE_BLOCK_TRANSLATION_SELECTOR_MAP: Record<string, string[]> = {
   'github.com': [
     'task-lists' // https://github.com/mengxi-ream/read-frog/issues/867
   ],

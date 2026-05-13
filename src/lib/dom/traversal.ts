@@ -4,13 +4,14 @@ import {
   PARAGRAPH_ATTRIBUTE,
   WALKED_ATTRIBUTE
 } from '@/preset/dom';
+import { TranslatePageRange } from '@/types/config';
 import type { TransNode } from '@/types/dom';
 
 import { FORCE_BLOCK_TAGS } from './constants';
 import domFilter from './filter';
 
 class DomTraversal {
-  extractTextContent(node: TransNode): string {
+  extractTextContent(node: TransNode, pageRange: TranslatePageRange): string {
     if (domFilter.isTextNode(node)) {
       const text = node.textContent ?? '';
       const trimmed = text.trim();
@@ -31,19 +32,18 @@ class DomTraversal {
     // for the parent element we already walk and label, if we have a notranslate element inside this parent element,
     // we should extract the text content of the parent.
     // see this issue: https://github.com/mengxi-ream/read-frog/issues/249
-    // if (isOpaque(node)) {
+    // if (isDontWalkIntoButTranslateAsChildElement(node)) {
     //   return ''
     // }
 
-    if (domFilter.isSkipped(node)) {
+    if (domFilter.isDontWalkIntoAndDontTranslateAsChildElement(node, pageRange)) {
       return '';
     }
 
-    const childNodes = Array.from(node.childNodes);
-    return childNodes.reduce((text: string, child: Node): string => {
+    return Array.from(node.childNodes).reduce((text: string, child: Node): string => {
       // TODO: support SVGElement in the future
       if (domFilter.isTextNode(child) || domFilter.isHTMLElement(child)) {
-        return text + this.extractTextContent(child);
+        return text + this.extractTextContent(child, pageRange);
       }
       return text;
     }, '');
@@ -51,9 +51,13 @@ class DomTraversal {
 
   walkAndLabelElement(
     element: HTMLElement,
-    walkId: string
+    walkId: string,
+    pageRange: TranslatePageRange
   ): { forceBlock: boolean; isInlineNode: boolean } {
-    if (domFilter.isOpaque(element) || domFilter.isSkipped(element)) {
+    if (
+      domFilter.isDontWalkIntoButTranslateAsChildElement(element) ||
+      domFilter.isDontWalkIntoAndDontTranslateAsChildElement(element, pageRange)
+    ) {
       return {
         forceBlock: false,
         isInlineNode: false
@@ -63,9 +67,10 @@ class DomTraversal {
     element.setAttribute(WALKED_ATTRIBUTE, walkId);
 
     if (element.shadowRoot) {
-      for (const child of Array.from(element.shadowRoot.children)) {
+      const children = Array.from(element.shadowRoot.children);
+      for (const child of children) {
         if (domFilter.isHTMLElement(child)) {
-          this.walkAndLabelElement(child, walkId);
+          this.walkAndLabelElement(child, walkId, pageRange);
         }
       }
     }
@@ -76,7 +81,10 @@ class DomTraversal {
     const validChildNodes = Array.from(element.childNodes).filter((child: ChildNode) => {
       if (child.nodeType === Node.TEXT_NODE) return true;
       if (domFilter.isHTMLElement(child)) {
-        return !(domFilter.isOpaque(child) || domFilter.isSkipped(child));
+        return !(
+          domFilter.isDontWalkIntoButTranslateAsChildElement(child) ||
+          domFilter.isDontWalkIntoAndDontTranslateAsChildElement(child, pageRange)
+        );
       }
       return false;
     });
@@ -90,7 +98,7 @@ class DomTraversal {
       }
 
       if (domFilter.isHTMLElement(child)) {
-        const result = this.walkAndLabelElement(child, walkId);
+        const result = this.walkAndLabelElement(child, walkId, pageRange);
 
         forceBlock = forceBlock || result.forceBlock;
 
@@ -114,9 +122,13 @@ class DomTraversal {
       };
     }
 
-    const isInlineNode = domFilter.isInlineEl(element);
+    const isInlineNode = domFilter.isShallowInlineHTMLElement(element);
 
-    if (domFilter.isBlockEl(element) || forceBlock || domFilter.isSiteForceBlock(element)) {
+    if (
+      domFilter.isShallowBlockHTMLElement(element) ||
+      forceBlock ||
+      domFilter.isCustomForceBlockTranslation(element)
+    ) {
       element.setAttribute(BLOCK_ATTRIBUTE, '');
     } else if (isInlineNode) {
       element.setAttribute(INLINE_ATTRIBUTE, '');

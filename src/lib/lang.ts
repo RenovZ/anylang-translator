@@ -68,6 +68,13 @@ class LangManager {
     const result = langCodeSchema.safeParse(cleanedCode);
     return result.success ? result.data : null;
   }
+
+  getFinalLangCode(
+    sourceCode: LangCode | 'default' | 'auto',
+    detectedCodeOrUnd: LangCode | 'und'
+  ): LangCode {
+    return sourceCode === 'auto' || sourceCode === 'default' ? detectedCodeOrUnd : sourceCode;
+  }
 }
 
 export default new LangManager();

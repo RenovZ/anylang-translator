@@ -20,45 +20,6 @@ class DomBatcher {
   }
 
   /**
-   * Queue a DOM operation to be executed in a batched manner.
-   * This helps reduce layout thrashing by grouping DOM writes together.
-   *
-   * @example
-   * // Instead of:
-   * element.appendChild(child1)
-   * element.appendChild(child2)
-   *
-   * // Use:
-   * domBatcher.batchDOMOperation(() => element.appendChild(child1))
-   * domBatcher.batchDOMOperation(() => element.appendChild(child2))
-   */
-  batchDOMOperation(operation: DOMOperation): void {
-    this.queue(operation);
-  }
-
-  /**
-   * Force flush all pending batched operations immediately.
-   * Useful for testing or when you need operations to complete synchronously.
-   */
-  flushBatchedOperations(): void {
-    this.flushImmediate();
-  }
-
-  /**
-   * Create a DocumentFragment for batch appending multiple nodes.
-   * This is useful when you need to insert multiple nodes at once.
-   *
-   * @example
-   * const fragment = domBatcher.createFragment()
-   * fragment.appendChild(child1)
-   * fragment.appendChild(child2)
-   * domBatcher.batchDOMOperation(() => parent.appendChild(fragment))
-   */
-  createFragment(ownerDocument: Document = document): DocumentFragment {
-    return ownerDocument.createDocumentFragment();
-  }
-
-  /**
    * Schedule a flush using requestAnimationFrame
    */
   private scheduleFlush(): void {
@@ -99,7 +60,7 @@ class DomBatcher {
   /**
    * Force flush all pending operations immediately
    */
-  private flushImmediate(): void {
+  flushImmediate(): void {
     if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
@@ -111,4 +72,46 @@ class DomBatcher {
   }
 }
 
-export default new DomBatcher();
+// Singleton instance for the entire application
+const domBatcher = new DomBatcher();
+
+/**
+ * Queue a DOM operation to be executed in a batched manner
+ * This helps reduce layout thrashing by grouping DOM writes together
+ *
+ * @example
+ * // Instead of:
+ * element.appendChild(child1)
+ * element.appendChild(child2)
+ * element.appendChild(child3)
+ *
+ * // Use:
+ * batchDOMOperation(() => element.appendChild(child1))
+ * batchDOMOperation(() => element.appendChild(child2))
+ * batchDOMOperation(() => element.appendChild(child3))
+ */
+export function batchDOMOperation(operation: DOMOperation): void {
+  domBatcher.queue(operation);
+}
+
+/**
+ * Force flush all pending batched operations immediately
+ * Useful for testing or when you need operations to complete synchronously
+ */
+export function flushBatchedOperations(): void {
+  domBatcher.flushImmediate();
+}
+
+/**
+ * Create a DocumentFragment for batch appending multiple nodes
+ * This is useful when you need to insert multiple nodes at once
+ *
+ * @example
+ * const fragment = createFragment()
+ * fragment.appendChild(child1)
+ * fragment.appendChild(child2)
+ * batchDOMOperation(() => parent.appendChild(fragment))
+ */
+export function createFragment(ownerDocument: Document = document): DocumentFragment {
+  return ownerDocument.createDocumentFragment();
+}

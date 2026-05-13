@@ -1,24 +1,44 @@
-import domBatcher from '@/lib/dom/batch-dom';
+import * as domBatcher from '@/lib/dom/batcher';
 import domFilter from '@/lib/dom/filter';
-import domFind from '@/lib/dom/find';
+import domFinder from '@/lib/dom/finder';
 import {
+  BLOCK_CONTENT_CLASS,
   CONTENT_WRAPPER_CLASS,
+  FLOAT_WRAP_ATTRIBUTE,
+  INLINE_CONTENT_CLASS,
+  NOTRANSLATE_CLASS,
+  PARAGRAPH_ATTRIBUTE,
   SHADOW_HOST_CLASS,
   TRANSLATION_MODE_ATTRIBUTE,
   WALKED_ATTRIBUTE
 } from '@/preset/dom';
+import { TransNode } from '@/types/dom';
+import type { DisplayStyle } from '@/types/translate';
 
-import { translateState } from './core';
+import { getOwnerDocument } from '../dom';
+
+import { translateState, translateUtils } from './core';
+import { decorateTranslationNode } from './ui';
 
 export function removeShadowHostInTranslatedWrapper(wrapper: HTMLElement): void {
   // Remove React shadow hosts (for error components)
   const translationShadowHost = wrapper.querySelector(`.${SHADOW_HOST_CLASS}`);
   if (translationShadowHost && domFilter.isHTMLElement(translationShadowHost)) {
+    // function removeReactShadowHost(shadowHost: HTMLElement) {
+    //   if (!(shadowHost as any).__reactShadowContainerCleaned) {
+    //     (shadowHost as any).__reactShadowContainerCleanup?.();
+    //     (shadowHost as any).__reactShadowContainerCleaned = true;
+    //   }
+    //   shadowHost.remove();
+    // }
+    // removeReactShadowHost(translationShadowHost)
+
+    // TODO: Is this good enough?
     translationShadowHost.remove();
   }
 
   // Remove lightweight spinners
-  const spinner = wrapper.querySelector('.anylang-spinner');
+  const spinner = wrapper.querySelector('.read-frog-spinner');
   if (spinner) {
     domBatcher.batchDOMOperation(() => spinner.remove());
   }
@@ -33,7 +53,7 @@ export function removeTranslatedWrapperWithRestore(wrapper: HTMLElement): void {
 
   const translationMode = wrapper.getAttribute(TRANSLATION_MODE_ATTRIBUTE);
 
-  if (translationMode === 'translation_only') {
+  if (translationMode === 'translationOnly') {
     // For translation-only mode, find nearest ancestor in originalContentMap and restore
     let currentNode = wrapper.parentNode;
 
@@ -56,27 +76,10 @@ export function removeTranslatedWrapperWithRestore(wrapper: HTMLElement): void {
 }
 
 export function removeAllTranslatedWrapperNodes(root: Document | ShadowRoot = document): void {
-  // const allWrappers: HTMLElement[] = [];
-
-  // function collect(r: Document | ShadowRoot | HTMLElement): void {
-  //   const elements =
-  //     r instanceof HTMLElement
-  //       ? Array.from(r.querySelectorAll('*'))
-  //       : Array.from((r as Document | ShadowRoot).querySelectorAll('*'));
-
-  //   for (const el of elements) {
-  //     if (domFilter.isHTMLElement(el) && domFilter.isWrapper(el)) {
-  //       allWrappers.push(el);
-  //     }
-  //   }
-  // }
-
-  // collect(root);
-  // for (const wrapper of allWrappers) {
-  //   this.restoreWrapper(wrapper);
-  // }
-
-  const translatedNodes = domFind.deepQueryTopLevel(root, domFilter.isTransContent);
+  const translatedNodes = domFinder.deepQueryTopLevelSelector(
+    root,
+    domFilter.isTranslatedWrapperNode
+  );
   translatedNodes.forEach((contentWrapperNode) => {
     removeTranslatedWrapperWithRestore(contentWrapperNode);
   });
@@ -98,4 +101,115 @@ export function findPreviousTranslatedWrapperInside(
     return node.querySelector(`.${CONTENT_WRAPPER_CLASS}:not([${WALKED_ATTRIBUTE}="${walkId}"])`);
   }
   return null;
+}
+
+function isFloatedElement(element: HTMLElement): boolean {
+  const floatValue = window.getComputedStyle(element).float;
+  return floatValue === 'left' || floatValue === 'right';
+}
+
+function hasVisibleLayoutBox(element: HTMLElement): boolean {
+  const rect = element.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0;
+}
+
+function findActiveFloatSibling(paragraphElement: HTMLElement): HTMLElement | null {
+  const flowContainer = paragraphElement.parentElement;
+  if (!flowContainer) return null;
+
+  const paragraphRect = paragraphElement.getBoundingClientRect();
+
+  const children = Array.from(flowContainer.children);
+  for (const sibling of children) {
+    if (!domFilter.isHTMLElement(sibling)) continue;
+    if (sibling === paragraphElement || sibling.contains(paragraphElement)) continue;
+
+    const siblings = Array.from(sibling.querySelectorAll<HTMLElement>('*'));
+    const floatCandidates = [sibling, ...siblings];
+    for (const candidate of floatCandidates) {
+      if (!isFloatedElement(candidate) || !hasVisibleLayoutBox(candidate)) continue;
+
+      const floatRect = candidate.getBoundingClientRect();
+      const verticallyAffectsParagraph =
+        paragraphRect.top < floatRect.bottom - 1 && paragraphRect.bottom > floatRect.top + 1;
+      if (verticallyAffectsParagraph) return candidate;
+    }
+  }
+
+  return null;
+}
+
+function shouldWrapInsideFloatFlow(targetNode: TransNode): boolean {
+  const paragraphElement = domFilter.isHTMLElement(targetNode)
+    ? targetNode.hasAttribute(PARAGRAPH_ATTRIBUTE)
+      ? targetNode
+      : targetNode.closest<HTMLElement>(`[${PARAGRAPH_ATTRIBUTE}]`)
+    : targetNode.parentElement?.closest<HTMLElement>(`[${PARAGRAPH_ATTRIBUTE}]`);
+  if (!paragraphElement) return false;
+
+  const activeFloat = findActiveFloatSibling(paragraphElement);
+  return !!activeFloat;
+}
+
+export function addInlineTranslation(
+  ownerDoc: Document,
+  translatedWrapperNode: HTMLElement,
+  translatedNode: HTMLElement
+): void {
+  const spaceNode = ownerDoc.createElement('span');
+  spaceNode.textContent = '  ';
+  translatedWrapperNode.appendChild(spaceNode);
+  translatedNode.className = `${NOTRANSLATE_CLASS} ${INLINE_CONTENT_CLASS}`;
+}
+
+export function addBlockTranslation(
+  ownerDoc: Document,
+  translatedWrapperNode: HTMLElement,
+  translatedNode: HTMLElement
+): void {
+  const brNode = ownerDoc.createElement('br');
+  translatedWrapperNode.appendChild(brNode);
+  translatedNode.className = `${NOTRANSLATE_CLASS} ${BLOCK_CONTENT_CLASS}`;
+}
+
+export async function insertTranslatedNodeIntoWrapper(
+  translatedWrapperNode: HTMLElement,
+  targetNode: TransNode,
+  translatedText: string,
+  displayStyle: DisplayStyle,
+  forceBlockTranslation: boolean = false
+): Promise<void> {
+  // Use the wrapper's owner document
+  const ownerDoc = getOwnerDocument(translatedWrapperNode);
+  const translatedNode = ownerDoc.createElement('span');
+  const forceInlineTranslation = translateUtils.isForceInlineTranslation(targetNode);
+  const customForceBlock =
+    domFilter.isHTMLElement(targetNode) && domFilter.isCustomForceBlockTranslation(targetNode);
+
+  // priority: customForceBlock > forceInlineTranslation > forceBlockTranslation > isInlineTransNode > isBlockTransNode
+  if (customForceBlock) {
+    addBlockTranslation(ownerDoc, translatedWrapperNode, translatedNode);
+  } else if (forceInlineTranslation) {
+    addInlineTranslation(ownerDoc, translatedWrapperNode, translatedNode);
+  } else if (forceBlockTranslation) {
+    addBlockTranslation(ownerDoc, translatedWrapperNode, translatedNode);
+  } else if (domFilter.isInlineTransNode(targetNode)) {
+    addInlineTranslation(ownerDoc, translatedWrapperNode, translatedNode);
+  } else if (domFilter.isBlockTransNode(targetNode)) {
+    addBlockTranslation(ownerDoc, translatedWrapperNode, translatedNode);
+  } else {
+    // not inline or block, maybe notranslate
+    return;
+  }
+
+  translatedNode.textContent = translatedText;
+  translatedWrapperNode.appendChild(translatedNode);
+  await decorateTranslationNode(translatedNode, displayStyle);
+
+  if (
+    translatedNode.classList.contains(BLOCK_CONTENT_CLASS) &&
+    shouldWrapInsideFloatFlow(targetNode)
+  ) {
+    translatedNode.setAttribute(FLOAT_WRAP_ATTRIBUTE, 'true');
+  }
 }

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { attributeKeys, displayStyleValues } from '@/preset/translate';
+import { attributeKeys, displayStyleValues, MAX_CUSTOM_CSS_LENGTH } from '@/preset/translate';
 
 import { LangCode } from './lang';
 import { ProviderConfig } from './provider';
@@ -26,7 +26,8 @@ export const displayStyleSchema = z.object({
   value: z.enum(displayStyleValues),
   label: z.string(),
   styles: stylesSchema,
-  attributes: attributesSchema.optional()
+  attributes: attributesSchema.optional(),
+  customCSS: z.string().max(MAX_CUSTOM_CSS_LENGTH, 'Custom CSS cannot exceed 8KB').nullable()
 });
 export type DisplayStyle = z.infer<typeof displayStyleSchema>;
 
@@ -44,43 +45,15 @@ export interface Result {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Translation node style
-// ─────────────────────────────────────────────────────────────────────────────
-
-export const TRANSLATION_NODE_STYLE = [
-  'default',
-  'blur',
-  'blockquote',
-  'weakened',
-  'dashedLine',
-  'border',
-  'textColor',
-  'background'
-] as const;
-
-export const translationNodeStylePresetSchema = z.enum(TRANSLATION_NODE_STYLE);
-export type TranslationNodeStylePreset = z.infer<typeof translationNodeStylePresetSchema>;
-
-export const MAX_CUSTOM_CSS_LENGTH = 8192;
-
-export const translationNodeStyleConfigSchema = z.object({
-  preset: translationNodeStylePresetSchema,
-  isCustom: z.boolean(),
-  customCSS: z.string().max(MAX_CUSTOM_CSS_LENGTH, 'Custom CSS cannot exceed 8KB').nullable()
-});
-
-export type TranslationNodeStyleConfig = z.infer<typeof translationNodeStyleConfigSchema>;
-
-// ─────────────────────────────────────────────────────────────────────────────
 // Input translation
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Specifies the source/target language for input translation.
- * Can be 'sourceCode' / 'targetCode' to resolve from global config,
- * or a literal LangCode for explicit language.
- */
-export type InputTranslationLang = 'sourceCode' | 'targetCode' | string;
+// /**
+//  * Specifies the source/target language for input translation.
+//  * Can be 'sourceCode' / 'targetCode' to resolve from global config,
+//  * or a literal LangCode for explicit language.
+//  */
+// export type InputTranslationLang = 'sourceCode' | 'targetCode' | string;
 
 export interface TranslateBatchData<TContext = unknown> {
   text: string;

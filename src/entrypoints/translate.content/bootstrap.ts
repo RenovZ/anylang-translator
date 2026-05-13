@@ -11,6 +11,15 @@ import { bindTranslationShortcutKey, nodeTranslation, PageTranslateManager } fro
 import { EVENT_EXTENSION_URL_CHANGE, setupUrlChangeListener } from './listen';
 
 export async function bootstrap(ctx: ContentScriptContext) {
+  const {
+    langDetection: { mode: langDetectionMode },
+    adaptiveTranslate: {
+      autoAppliedSites,
+      autoAppliedLangs,
+      translate: { pageRange }
+    }
+  } = configStore.get();
+
   styleInjector.ensurePresetStyles(document);
 
   const cleanupUrlListener = setupUrlChangeListener();
@@ -50,7 +59,12 @@ export async function bootstrap(ctx: ContentScriptContext) {
 
       // Only the top frame should detect and set language to avoid race conditions from iframes
       if (window === window.top) {
-        const { detectedCodeOrUnd } = await contentManager.getDocumentInfo();
+        const { detectedCodeOrUnd } = await contentManager.getDocumentInfo({
+          autoAppliedSites,
+          autoAppliedLangs,
+          pageRange,
+          langDetectionMode
+        });
         logger.trace({ detectedCodeOrUnd });
         await configStore.setDetectedLangCode(detectedCodeOrUnd);
 
@@ -93,7 +107,12 @@ export async function bootstrap(ctx: ContentScriptContext) {
 
   // Only the top frame should detect and set language to avoid race conditions from iframes
   if (window === window.top) {
-    const { detectedCodeOrUnd } = await contentManager.getDocumentInfo();
+    const { detectedCodeOrUnd } = await contentManager.getDocumentInfo({
+      autoAppliedSites,
+      autoAppliedLangs,
+      pageRange,
+      langDetectionMode
+    });
     logger.trace({ detectedCodeOrUnd });
     await configStore.setDetectedLangCode(detectedCodeOrUnd);
 

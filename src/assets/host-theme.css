@@ -1,0 +1,13 @@
+:root {
+  --anylang-primary: oklch(76.5% 0.177 163.223);
+  --anylang-muted: oklch(0.97 0 0);
+  --anylang-muted-foreground: oklch(0.556 0 0);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --anylang-primary: oklch(59.6% 0.145 163.225);
+    --anylang-muted: oklch(0.269 0 0);
+    --anylang-muted-foreground: oklch(0.708 0 0);
+  }
+}

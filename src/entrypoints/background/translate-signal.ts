@@ -1,8 +1,9 @@
 import analyticsManager from '@/lib/analytics';
+import configStore from '@/lib/config';
 import logger from '@/lib/logger';
 import { onMessage, sendMessage } from '@/lib/protocol';
 import { translateState } from '@/lib/session';
-import autoTranslation from '@/lib/translate/auto';
+import { shouldEnableAutoTranslation } from '@/lib/translate';
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
 
 export function registerTranslate() {
@@ -22,7 +23,18 @@ export function registerTranslate() {
     const tabId = msg.sender?.tab?.id;
     const { url, detectedCodeOrUnd } = msg.data;
     if (typeof tabId === 'number') {
-      const shouldEnable = await autoTranslation.run(url, detectedCodeOrUnd);
+      const config = configStore.get();
+      const {
+        sourceLangCode,
+        adaptiveTranslate: { autoAppliedSites, autoAppliedLangs }
+      } = config;
+      const shouldEnable = await shouldEnableAutoTranslation(
+        url,
+        detectedCodeOrUnd,
+        sourceLangCode ?? 'auto',
+        autoAppliedSites,
+        autoAppliedLangs
+      );
       if (shouldEnable) {
         logger.debug('togglePageTranslation', { shouldEnable, url, detectedCodeOrUnd });
         void sendMessage(

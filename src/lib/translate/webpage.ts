@@ -1,10 +1,12 @@
 import { Readability } from '@mozilla/readability';
 
-import domPrune from '@/lib/dom/prune';
 import logger, { formatError } from '@/lib/logger';
 import { sendMessage } from '@/lib/protocol';
+import type { TranslatePageRange } from '@/types/config';
 import type { CachedWebPageContext } from '@/types/content';
 import type { ProviderConfig } from '@/types/provider';
+
+import { removeDummyNodes } from '../dom';
 
 class Util {
   readonly CONTENT_LIMIT = 2000;
@@ -19,11 +21,11 @@ const util = new Util();
 class Context {
   cachedWebPageContext: CachedWebPageContext | null = null;
 
-  private async extractWebpageContent(): Promise<string> {
+  private async extractWebpageContent(pageRange: TranslatePageRange): Promise<string> {
     try {
       const documentClone = document.cloneNode(true) as Document;
       // Use domPrune to remove noise nodes before Readability parsing
-      domPrune.prune(documentClone);
+      removeDummyNodes(documentClone, pageRange);
       const article = new Readability(documentClone, { serializer: (el) => el }).parse();
       if (article?.textContent) return article.textContent;
     } catch (error) {
@@ -34,7 +36,7 @@ class Context {
     return document.body?.textContent || '';
   }
 
-  async get(): Promise<CachedWebPageContext | null> {
+  async get(pageRange: TranslatePageRange): Promise<CachedWebPageContext | null> {
     if (typeof window === 'undefined' || typeof document === 'undefined') return null;
 
     const currentUrl = window.location.href;
@@ -45,7 +47,7 @@ class Context {
     this.cachedWebPageContext = {
       url: currentUrl,
       webTitle: document.title || '',
-      webContent: util.truncate(await this.extractWebpageContent())
+      webContent: util.truncate(await this.extractWebpageContent(pageRange))
     };
     return this.cachedWebPageContext;
   }

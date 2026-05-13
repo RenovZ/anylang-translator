@@ -2,11 +2,11 @@ import analyticsManager from '@/lib/analytics';
 import configStore from '@/lib/config';
 import cryptoPolyfill from '@/lib/crypto-polyfill';
 import domFilter from '@/lib/dom/filter';
-import domFind from '@/lib/dom/find';
+import domFinder from '@/lib/dom/finder';
 import domTraversal from '@/lib/dom/traversal';
 import logger from '@/lib/logger';
 import { sendMessage } from '@/lib/protocol';
-import { removeOrShowNodeTranslation, validateConfig } from '@/lib/translate';
+import { removeOrShowNodeTranslation, validateTranslationConfigAndToast } from '@/lib/translate';
 import { translateWalkedElement } from '@/lib/translate/core';
 import { removeAllTranslatedWrapperNodes } from '@/lib/translate/dom';
 import * as webpage from '@/lib/translate/webpage';
@@ -92,7 +92,15 @@ class NodeTranslation {
   }
 
   private trigger(pos: Point): void {
-    void removeOrShowNodeTranslation(pos);
+    const config = this.cfg();
+    if (!config) return;
+    const {
+      targetLangCode,
+      adaptiveTranslate: {
+        translate: { mode: translateMode, pageRange, displayStyle }
+      }
+    } = config;
+    void removeOrShowNodeTranslation(pos, translateMode, pageRange, targetLangCode, displayStyle);
   }
 
   private clearHoldTimer(): void {
@@ -264,31 +272,7 @@ type SimpleIntersectionOptions = Omit<IntersectionObserverInit, 'threshold'> & {
   threshold?: number;
 };
 
-interface IPageTranslateManager {
-  /**
-   * Indicates whether the page translation is currently active
-   */
-  readonly isTranslating: boolean;
-
-  /**
-   * Starts the automatic page translation functionality
-   * Registers observers, touch triggers and set storage
-   */
-  start: (analyticsContext?: FeatureUsageContext) => Promise<void>;
-
-  /**
-   * Stops the automatic page translation functionality
-   * Cleans up all observers and removes translated content and set storage
-   */
-  stop: () => void;
-
-  /**
-   * Registers page translation triggers
-   */
-  registerTriggers: () => () => void;
-}
-
-export class PageTranslateManager implements IPageTranslateManager {
+export class PageTranslateManager {
   private readonly MAX_DURATION = 500;
   private readonly MOVE_THRESHOLD = 30 * 30;
   private readonly DEFAULT_INTERSECTION_OPTIONS: SimpleIntersectionOptions = {
@@ -321,10 +305,17 @@ export class PageTranslateManager implements IPageTranslateManager {
     };
   }
 
+  /**
+   * Indicates whether the page translation is currently active
+   */
   get isTranslating(): boolean {
     return this.active;
   }
 
+  /**
+   * Starts the automatic page translation functionality
+   * Registers observers, touch triggers and set storage
+   */
   async start(analyticsContext?: FeatureUsageContext): Promise<void> {
     if (this.active) {
       logger.warn('PageTranslateManager is already active');
@@ -334,7 +325,7 @@ export class PageTranslateManager implements IPageTranslateManager {
 
     const trackedContext = window === window.top ? analyticsContext : undefined;
 
-    if (!validateConfig()) {
+    if (!validateTranslationConfigAndToast()) {
       if (trackedContext) {
         void analyticsManager.trackFeatureUsed({
           ...trackedContext,
@@ -365,7 +356,20 @@ export class PageTranslateManager implements IPageTranslateManager {
             if (domFilter.isHTMLElement(target)) {
               logger.info('Element entered viewport', { target });
               if (!target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
-                void translateWalkedElement(target, walkId);
+                const {
+                  targetLangCode,
+                  adaptiveTranslate: {
+                    translate: { mode: translateMode, pageRange, displayStyle }
+                  }
+                } = configStore.get();
+                void translateWalkedElement(
+                  target,
+                  walkId,
+                  translateMode,
+                  pageRange,
+                  targetLangCode,
+                  displayStyle
+                );
               }
             }
             observer.unobserve(entry.target);
@@ -374,7 +378,7 @@ export class PageTranslateManager implements IPageTranslateManager {
       }, this.intersectionOptions);
 
       // Initialize walkability state for existing elements
-      this.cacheOpaque(document.body);
+      this.addDontWalkIntoElements(document.body);
       await this.observeParagraphs(document.body);
 
       // Start observing mutations from document.body and all shadow roots
@@ -399,6 +403,10 @@ export class PageTranslateManager implements IPageTranslateManager {
     logger.info('Started PageTranslateManager');
   }
 
+  /**
+   * Stops the automatic page translation functionality
+   * Cleans up all observers and removes translated content and set storage
+   */
   stop(): void {
     if (!this.active) {
       logger.warn('PageTranslationManager is already inactive');
@@ -427,6 +435,9 @@ export class PageTranslateManager implements IPageTranslateManager {
     logger.info('Stopped PageTranslateManager');
   }
 
+  /**
+   * Registers page translation triggers
+   */
   registerTriggers(): () => void {
     let startTime = 0;
     let startTouches: TouchList | null = null;
@@ -491,7 +502,12 @@ export class PageTranslateManager implements IPageTranslateManager {
     }
 
     try {
-      await webpage.context.get();
+      const {
+        adaptiveTranslate: {
+          translate: { pageRange }
+        }
+      } = configStore.get();
+      await webpage.context.get(pageRange);
     } catch (error) {
       logger.warn('Failed to prime webpage context before translating document title', { error });
     }
@@ -597,9 +613,14 @@ export class PageTranslateManager implements IPageTranslateManager {
     const observer = this.intersectionObserver;
     if (!this.walkId || !observer) return;
 
-    if (domFilter.hasNoWalkAncestor(container)) return;
+    const {
+      adaptiveTranslate: {
+        translate: { pageRange }
+      }
+    } = configStore.get();
+    if (domFilter.hasNoWalkAncestor(container, pageRange)) return;
 
-    domTraversal.walkAndLabelElement(container, this.walkId);
+    domTraversal.walkAndLabelElement(container, this.walkId, pageRange);
 
     const containerWalked = container.getAttribute('data-walked');
     if (container.hasAttribute('data-paragraph') && containerWalked === this.walkId) {
@@ -655,9 +676,9 @@ export class PageTranslateManager implements IPageTranslateManager {
    * Handle style/class attribute changes and only trigger observation
    * when element transitions from "don't walk into" to "walkable"
    */
-  private becameWalkable(element: HTMLElement): boolean {
+  private didChangeToWalkable(element: HTMLElement): boolean {
     const wasDontWalkInto = this.dontWalkCache.has(element);
-    const isDontWalkIntoNow = domFilter.isOpaque(element);
+    const isDontWalkIntoNow = domFilter.isDontWalkIntoButTranslateAsChildElement(element);
 
     if (isDontWalkIntoNow) {
       this.dontWalkCache.add(element);
@@ -671,8 +692,11 @@ export class PageTranslateManager implements IPageTranslateManager {
   /**
    * Initialize walkability state for an element and its descendants
    */
-  private cacheOpaque(element: HTMLElement): void {
-    const dontWalkIntoElements = domFind.deepQueryTopLevel(element, domFilter.isOpaque.bind(this));
+  private addDontWalkIntoElements(element: HTMLElement): void {
+    const dontWalkIntoElements = domFinder.deepQueryTopLevelSelector(
+      element,
+      domFilter.isDontWalkIntoButTranslateAsChildElement.bind(this)
+    );
     dontWalkIntoElements.forEach((el) => this.dontWalkCache.add(el));
   }
 
@@ -685,7 +709,7 @@ export class PageTranslateManager implements IPageTranslateManager {
         if (rec.type === 'childList') {
           rec.addedNodes.forEach((node) => {
             if (domFilter.isHTMLElement(node)) {
-              this.cacheOpaque(node);
+              this.addDontWalkIntoElements(node);
               void this.observeParagraphs(node);
               this.observeShadows(node);
             }
@@ -695,7 +719,7 @@ export class PageTranslateManager implements IPageTranslateManager {
           (rec.attributeName === 'style' || rec.attributeName === 'class')
         ) {
           const el = rec.target;
-          if (domFilter.isHTMLElement(el) && this.becameWalkable(el)) {
+          if (domFilter.isHTMLElement(el) && this.didChangeToWalkable(el)) {
             void this.observeParagraphs(el);
           }
         }

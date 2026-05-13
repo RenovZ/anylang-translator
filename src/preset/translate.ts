@@ -110,6 +110,11 @@ const DISPLAY_STYLES = [
     value: 'custom',
     label: i18n('display_style_custom', { defaultValue: 'Custom' }),
     styles: {}
+  },
+  {
+    value: 'css',
+    label: i18n('display_style_css', { defaultValue: 'CSS' }),
+    styles: {}
   }
 ] as const;
 
@@ -121,9 +126,12 @@ export const displayStyles = DISPLAY_STYLES.map(
       value: item.value,
       label: item.label,
       styles: item.styles,
-      ...('attributes' in item && item.attributes ? { attributes: item.attributes } : {})
+      ...('attributes' in item && item.attributes ? { attributes: item.attributes } : {}),
+      customCSS: ''
     }) satisfies DisplayStyle
 );
+
+export const MAX_CUSTOM_CSS_LENGTH = 8192;
 
 export const displayStyleValues: string[] = displayStyles.map((s) => s.value);
 

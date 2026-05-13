@@ -7,7 +7,7 @@ import { onMessage } from '@/lib/protocol';
 import { BatchQueue } from '@/lib/request/batch-queue';
 import { RequestQueue } from '@/lib/request/request-queue';
 import { translate } from '@/lib/translate';
-import { normalizeValue } from '@/lib/translate/core';
+import { normalizePromptContextValue } from '@/lib/translate/core';
 import { putBatchRequestRecord } from '@/lib/utils/batch-request-record';
 import { BATCH_SEPARATOR } from '@/preset/prompt';
 import { DEFAULT_BATCH_QUEUE_CONFIG, DEFAULT_REQUEST_QUEUE_CONFIG } from '@/preset/translate';
@@ -183,9 +183,9 @@ export async function setUpWebPageTranslationQueue() {
 
     let result = '';
     const context: WebPagePromptContext = {
-      webTitle: normalizeValue(webTitle),
-      webContent: normalizeValue(webContent),
-      webSummary: normalizeValue(webSummary)
+      webTitle: normalizePromptContextValue(webTitle),
+      webContent: normalizePromptContextValue(webContent),
+      webSummary: normalizePromptContextValue(webSummary)
     };
 
     if (shouldUseBatchQueue(providerConfig)) {
@@ -314,8 +314,8 @@ export async function setUpSubtitlesTranslationQueue() {
 
     let result = '';
     const context: SubtitlePromptContext = {
-      videoTitle: normalizeValue(videoTitle),
-      videoSummary: normalizeValue(summary)
+      videoTitle: normalizePromptContextValue(videoTitle),
+      videoSummary: normalizePromptContextValue(summary)
     };
 
     if (shouldUseBatchQueue(providerConfig)) {

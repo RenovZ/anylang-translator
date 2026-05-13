@@ -6,7 +6,7 @@ import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
 import { displayStyles, HOTKEYS } from '@/preset/translate';
 import { aiProviderSchema, providerSchema, type ProviderConfig } from '@/types/provider';
 
-import { langCodeSchema, uiLangCodeSchema } from './lang';
+import { LangCode, langCodeSchema, uiLangCodeSchema } from './lang';
 import { promptSchema, type Prompt } from './prompt';
 import { displayStyleSchema } from './translate';
 
@@ -31,7 +31,7 @@ const featureConfigBaseSchema = z.object({
   provider: providerSchema.nullable(),
   shortcut: z.array(z.string()),
   autoAppliedSites: z.array(z.string()).optional(),
-  autoAppliedLangs: z.array(z.string()).optional()
+  autoAppliedLangs: langCodeSchema.optional()
 });
 const featureAdaptiveTranslateSchema = featureConfigBaseSchema.extend({
   provider: providerSchema,
@@ -115,7 +115,7 @@ export const configSchema = z.object({
 export type Config = z.infer<typeof configSchema>;
 
 export type AutoAppliedLangsField = {
-  [K in FeatureField]: Config[K] extends { autoAppliedLangs?: string[] } ? K : never;
+  [K in FeatureField]: Config[K] extends { autoAppliedLangs?: LangCode[] } ? K : never;
 }[FeatureField];
 
 export type AutoAppliedSitesField = {

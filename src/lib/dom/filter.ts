@@ -1,4 +1,3 @@
-import configStore from '@/lib/config';
 import {
   BLOCK_ATTRIBUTE,
   BLOCK_CONTENT_CLASS,
@@ -7,38 +6,213 @@ import {
   INLINE_CONTENT_CLASS,
   NOTRANSLATE_CLASS
 } from '@/preset/dom';
+import { TranslatePageRange } from '@/types/config';
 import type { TransNode } from '@/types/dom';
 
 import {
+  CUSTOM_DONT_WALK_INTO_ELEMENT_SELECTOR_MAP,
+  CUSTOM_FORCE_BLOCK_TRANSLATION_SELECTOR_MAP,
+  DONT_WALK_AND_TRANSLATE_TAGS,
+  DONT_WALK_BUT_TRANSLATE_TAGS,
   FORCE_BLOCK_TAGS,
-  FORCE_INLINE_TAGS,
-  NOISE_TAGS,
-  OPAQUE_TAGS,
-  SITE_FORCE_BLOCK_SELECTOR_MAP,
-  SITE_SKIP_SELECTOR_MAP,
-  SKIP_TAGS
+  MAIN_CONTENT_IGNORE_TAGS
 } from './constants';
 
 class DomFilter {
-  // ────────────────────────────────────────────────────────────────────────────
-  // General node helpers
-  // ────────────────────────────────────────────────────────────────────────────
-
   isEditable(element: HTMLElement): boolean {
-    const tagName = element.tagName.toLowerCase();
-    const editableElements = ['input', 'textarea'];
-    if (editableElements.includes(tagName)) {
+    const tag = element.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return true;
+    if (element.isContentEditable) return true;
+    return false;
+  }
+
+  // shallow means only check the node itself, not the children
+  // if a shallow inline node has children are block node, then it's block node rather than inline node
+  isShallowInlineTransNode(node: Node): boolean {
+    if (this.isTextNode(node) && node.textContent?.trim()) {
       return true;
-    }
-    if (element.isContentEditable) {
-      return true;
+    } else if (this.isHTMLElement(node)) {
+      return this.isShallowInlineHTMLElement(node);
     }
     return false;
   }
 
+  // treat large floating letter on some news websites as inline node
+  // for example: https://www.economist.com/business/2025/08/21/china-is-quietly-upstaging-america-with-its-open-models
+  private isLargeInitialFloatingLetter(element: HTMLElement): boolean {
+    const computedStyle = window.getComputedStyle(element);
+    return (
+      computedStyle.float === 'left' &&
+      !!element.nextSibling &&
+      this.isShallowInlineTransNode(element.nextSibling)
+    );
+  }
+
+  private isInlineDisplay(display: string): boolean {
+    const normalizedDisplay = display.trim().toLowerCase();
+
+    if (!normalizedDisplay) {
+      return false;
+    }
+
+    if (normalizedDisplay === 'contents') {
+      return true;
+    }
+
+    if (normalizedDisplay.startsWith('inline')) {
+      return true;
+    }
+
+    return [
+      'ruby',
+      'ruby-base',
+      'ruby-text',
+      'ruby-base-container',
+      'ruby-text-container'
+    ].includes(normalizedDisplay);
+  }
+
+  isShallowInlineHTMLElement(element: HTMLElement): boolean {
+    // to prevent too many inline nodes that make <body> as a paragraph node
+    if (!element.textContent?.trim()) {
+      return false;
+    }
+
+    if (FORCE_BLOCK_TAGS.has(element.tagName)) {
+      return false;
+    }
+
+    const computedStyle = window.getComputedStyle(element);
+
+    if (this.isLargeInitialFloatingLetter(element)) {
+      return true;
+    }
+
+    return this.isInlineDisplay(computedStyle.display);
+  }
+
+  // Note: !(inline node) != block node because of `notranslate` class and all cases not in the if else block
+  isShallowBlockTransNode(node: Node): boolean {
+    if (this.isTextNode(node)) {
+      return false;
+    } else if (this.isHTMLElement(node)) {
+      return this.isShallowBlockHTMLElement(node);
+    }
+    return false;
+  }
+
+  isShallowBlockHTMLElement(element: HTMLElement): boolean {
+    const computedStyle = window.getComputedStyle(element);
+
+    if (FORCE_BLOCK_TAGS.has(element.tagName)) {
+      return true;
+    }
+
+    if (this.isLargeInitialFloatingLetter(element)) {
+      return false;
+    }
+
+    return !this.isInlineDisplay(computedStyle.display);
+  }
+
+  isCustomDontWalkIntoElement(element: HTMLElement): boolean {
+    const dontWalkIntoElementSelectorList =
+      CUSTOM_DONT_WALK_INTO_ELEMENT_SELECTOR_MAP[window.location.hostname] ?? [];
+
+    const dontWalkSelector = dontWalkIntoElementSelectorList.join(',');
+
+    if (!dontWalkSelector) return false;
+
+    return element.matches(dontWalkSelector);
+  }
+
+  isCustomForceBlockTranslation(element: HTMLElement): boolean {
+    const forceBlockSelectorList =
+      CUSTOM_FORCE_BLOCK_TRANSLATION_SELECTOR_MAP[window.location.hostname] ?? [];
+
+    const forceBlockSelector = forceBlockSelectorList.join(',');
+
+    if (!forceBlockSelector) return false;
+
+    return element.matches(forceBlockSelector);
+  }
+
+  isDontWalkIntoButTranslateAsChildElement(element: HTMLElement): boolean {
+    const dontWalkClass = element.classList.contains(NOTRANSLATE_CLASS);
+
+    const dontWalkTag = DONT_WALK_BUT_TRANSLATE_TAGS.has(element.tagName);
+
+    // issue: https://github.com/mengxi-ream/read-frog/issues/459
+    // const dontWalkAttr = element.getAttribute('translate') === 'no'
+
+    return dontWalkClass || dontWalkTag;
+  }
+
+  // https://github.com/mengxi-ream/read-frog/issues/940
+  private isInsideContentContainer(element: HTMLElement): boolean {
+    let current: HTMLElement | null = element.parentElement;
+    while (current) {
+      if (current.tagName === 'ARTICLE' || current.tagName === 'MAIN') {
+        return true;
+      }
+      current = current.parentElement;
+    }
+    return false;
+  }
+
+  isDontWalkIntoAndDontTranslateAsChildElement(
+    element: HTMLElement,
+    pageRange: TranslatePageRange
+  ): boolean {
+    const dontWalkCustomElement = this.isCustomDontWalkIntoElement(element);
+    const dontWalkContent =
+      pageRange !== 'all' &&
+      MAIN_CONTENT_IGNORE_TAGS.has(element.tagName) &&
+      !this.isInsideContentContainer(element);
+    const dontWalkInvalidTag = DONT_WALK_AND_TRANSLATE_TAGS.has(element.tagName);
+    const dontWalkCSS =
+      window.getComputedStyle(element).display === 'none' ||
+      window.getComputedStyle(element).visibility === 'hidden';
+    const dontWalkHidden = element.hidden;
+    const dontWalkAriaHidden = element.getAttribute('aria-hidden') === 'true';
+    const dontWalkVisuallyHidden = ['sr-only', 'visually-hidden'].some((cls) =>
+      element.classList.contains(cls)
+    );
+
+    if (
+      dontWalkCustomElement ||
+      dontWalkContent ||
+      dontWalkInvalidTag ||
+      dontWalkCSS ||
+      dontWalkHidden ||
+      dontWalkAriaHidden ||
+      dontWalkVisuallyHidden
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  isInlineTransNode(node: TransNode): boolean {
+    if (this.isTextNode(node)) {
+      return true;
+    }
+    return node.hasAttribute(INLINE_ATTRIBUTE);
+  }
+
+  isBlockTransNode(node: TransNode): boolean {
+    if (this.isTextNode(node)) {
+      return false;
+    }
+    return node.hasAttribute(BLOCK_ATTRIBUTE);
+  }
+
   /**
-   * More reliable check for HTML elements that works across different contexts
-   * (iframe, shadow DOM). Avoids `instanceof HTMLElement`.
+   * More reliable check for HTML elements that works across different contexts (iframe, shadow DOM)
+   * avoid using instanceof HTMLElement
+   * @param node - The node to check
+   * @returns Whether the node is an HTML element
    */
   isHTMLElement(node: Node): node is HTMLElement {
     return (
@@ -68,28 +242,18 @@ class DomFilter {
     return this.isHTMLElement(node) || this.isTextNode(node);
   }
 
-  isBlockTransNode(node: TransNode): boolean {
-    if (this.isTextNode(node)) {
-      return false;
-    }
-    return node.hasAttribute(BLOCK_ATTRIBUTE);
+  isIFrameElement(node: Node): node is HTMLIFrameElement {
+    return node.nodeType === Node.ELEMENT_NODE && node.nodeName === 'IFRAME';
   }
 
-  isInlineTransNode(node: TransNode): boolean {
-    if (this.isTextNode(node)) {
-      return true;
-    }
-    return node.hasAttribute(INLINE_ATTRIBUTE);
-  }
-
-  isWrapper(node: Node): boolean {
+  isTranslatedWrapperNode(node: Node) {
     return this.isHTMLElement(node) && node.classList.contains(CONTENT_WRAPPER_CLASS);
   }
 
   /**
    * Check if a node is translated content (block or inline)
    */
-  isTransContent(node: Node): boolean {
+  isTranslatedContentNode(node: Node): boolean {
     return (
       this.isHTMLElement(node) &&
       (node.classList.contains(BLOCK_CONTENT_CLASS) ||
@@ -97,193 +261,16 @@ class DomFilter {
     );
   }
 
-  // ────────────────────────────────────────────────────────────────────────────
-  // Inline / block display helpers
-  // ────────────────────────────────────────────────────────────────────────────
-
-  // treat large floating letter on some news websites as inline node
-  // for example: https://www.economist.com/business/2025/08/21/china-is-quietly-upstaging-america-with-its-open-models
-  private isLargeInitialFloatingLetter(element: HTMLElement): boolean {
-    const computedStyle = window.getComputedStyle(element);
-    return (
-      computedStyle.float === 'left' &&
-      !!element.nextSibling &&
-      this.isInlineNode(element.nextSibling)
-    );
-  }
-
-  private isInlineDisplay(display: string): boolean {
-    const normalizedDisplay = display.trim().toLowerCase();
-
-    if (!normalizedDisplay) {
-      return false;
-    }
-
-    if (normalizedDisplay === 'contents') {
-      return true;
-    }
-
-    if (normalizedDisplay.startsWith('inline')) {
-      return true;
-    }
-
-    return [
-      'ruby',
-      'ruby-base',
-      'ruby-text',
-      'ruby-base-container',
-      'ruby-text-container'
-    ].includes(normalizedDisplay);
-  }
-
-  // shallow means only check the node itself, not the children
-  // if a shallow inline node has children are block node, then it's block node rather than inline node
-  isInlineNode(node: Node): boolean {
-    if (this.isTextNode(node) && node.textContent?.trim()) {
-      return true;
-    } else if (this.isHTMLElement(node)) {
-      return this.isInlineEl(node);
-    }
-    return false;
-  }
-
-  isInlineEl(element: HTMLElement): boolean {
-    // to prevent too many inline nodes that make <body> as a paragraph node
-    if (!element.textContent?.trim()) {
-      return false;
-    }
-
-    if (FORCE_BLOCK_TAGS.has(element.tagName)) {
-      return false;
-    }
-
-    const computedStyle = window.getComputedStyle(element);
-
-    if (this.isLargeInitialFloatingLetter(element)) {
-      return true;
-    }
-
-    return this.isInlineDisplay(computedStyle.display);
-  }
-
-  // Note: !(inline node) != block node because of `notranslate` class and all cases not in the if else block
-  isBlockEl(element: HTMLElement): boolean {
-    const computedStyle = window.getComputedStyle(element);
-
-    if (FORCE_BLOCK_TAGS.has(element.tagName)) {
-      return true;
-    }
-
-    if (this.isLargeInitialFloatingLetter(element)) {
-      return false;
-    }
-
-    return !this.isInlineDisplay(computedStyle.display);
-  }
-
-  isForceInline(targetNode: TransNode): boolean {
-    if (this.isHTMLElement(targetNode)) {
-      const computedStyle = window.getComputedStyle(targetNode);
-      return FORCE_INLINE_TAGS.has(targetNode.tagName) || computedStyle.display.includes('flex');
-    }
-    return false;
-  }
-
-  // ────────────────────────────────────────────────────────────────────────────
-  // Walk / translation filter predicates
-  // ────────────────────────────────────────────────────────────────────────────
-
-  isOpaque(element: HTMLElement): boolean {
-    const notranslate = element.classList.contains(NOTRANSLATE_CLASS);
-
-    const opaqueTag = OPAQUE_TAGS.has(element.tagName);
-
-    // issue: https://github.com/mengxi-ream/read-frog/issues/459
-    // const dontWalkAttr = element.getAttribute('translate') === 'no'
-
-    return notranslate || opaqueTag;
-  }
-
-  isSiteSkipped(element: HTMLElement): boolean {
-    const skipSelectorList = SITE_SKIP_SELECTOR_MAP[window.location.hostname] ?? [];
-
-    const skipSelector = skipSelectorList.join(',');
-
-    if (!skipSelector) return false;
-
-    return element.matches(skipSelector);
-  }
-
-  // ────────────────────────────────────────────────────────────────────────────
-  // Content-container check
-  // ────────────────────────────────────────────────────────────────────────────
-
-  /**
-   * Check if an element sits inside `<article>` or `<main>`.
-   * Elements outside these containers are candidates for removal when the
-   * page range is not `"all"`.
-   */
-  // https://github.com/mengxi-ream/read-frog/issues/940
-  inMainContent(element: HTMLElement): boolean {
-    let current: HTMLElement | null = element.parentElement;
-    while (current) {
-      if (current.tagName === 'ARTICLE' || current.tagName === 'MAIN') {
-        return true;
-      }
-      current = current.parentElement;
-    }
-    return false;
-  }
-
-  isSkipped(element: HTMLElement): boolean {
-    const customSkip = this.isSiteSkipped(element);
-    const config = configStore.get();
-    const skipContent =
-      config.adaptiveTranslate.translate.pageRange !== 'all' &&
-      NOISE_TAGS.has(element.tagName) &&
-      !this.inMainContent(element);
-    const invalidTag = SKIP_TAGS.has(element.tagName);
-    const hiddenByCSS =
-      window.getComputedStyle(element).display === 'none' ||
-      window.getComputedStyle(element).visibility === 'hidden';
-    const hiddenAttr = element.hidden;
-    const ariaHidden = element.getAttribute('aria-hidden') === 'true';
-    const visuallyHidden = ['sr-only', 'visually-hidden'].some((cls) =>
-      element.classList.contains(cls)
-    );
-
-    if (
-      customSkip ||
-      skipContent ||
-      invalidTag ||
-      hiddenByCSS ||
-      hiddenAttr ||
-      ariaHidden ||
-      visuallyHidden
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
-  isSiteForceBlock(element: HTMLElement): boolean {
-    const forceBlockList = SITE_FORCE_BLOCK_SELECTOR_MAP[window.location.hostname] ?? [];
-
-    const forceBlockSel = forceBlockList.join(',');
-
-    if (!forceBlockSel) return false;
-
-    return element.matches(forceBlockSel);
-  }
-
   /**
    * Check if an element has an ancestor that should not be walked into
    */
-  hasNoWalkAncestor(element: HTMLElement): boolean {
+  hasNoWalkAncestor(element: HTMLElement, pageRange: TranslatePageRange): boolean {
     let current: HTMLElement | null = element.parentElement;
     while (current) {
-      if (this.isOpaque(current) || this.isSkipped(current)) {
+      if (
+        this.isDontWalkIntoButTranslateAsChildElement(current) ||
+        this.isDontWalkIntoAndDontTranslateAsChildElement(current, pageRange)
+      ) {
         return true;
       }
       current = current.parentElement;

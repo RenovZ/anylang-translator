@@ -3,10 +3,11 @@ import { franc } from 'franc';
 import { Readability } from '@mozilla/readability';
 
 import { toast } from '@/components/isolated-toast';
-import domPrune from '@/lib/dom/prune';
+import { removeDummyNodes } from '@/lib/dom';
 import { FRANC_TO_LANG_CODE } from '@/preset/franc-map';
 import { DEFAULT_LANG_DETECTION_SYSTEM_PROMPT } from '@/preset/prompt';
 import { GenerateTextParams } from '@/types/background';
+import type { LangDetectionMode, TranslatePageRange } from '@/types/config';
 import type {
   DetectLangOptions,
   DetectLangResult,
@@ -52,11 +53,13 @@ class ContentManager {
    */
   async getDocumentInfo(featureConfig?: {
     autoAppliedSites?: string[];
-    autoAppliedLangs?: string[];
+    autoAppliedLangs?: LangCode[];
+    pageRange: TranslatePageRange;
+    langDetectionMode: LangDetectionMode;
   }): Promise<DocumentInfo> {
     const documentClone = document.cloneNode(true);
-    const cfg = configStore.get();
-    domPrune.prune(documentClone as Document, cfg.adaptiveTranslate.translate.pageRange);
+    // TODO: Is this good enough?
+    removeDummyNodes(documentClone as Document, pageRange);
     const article = new Readability(documentClone as Document, {
       serializer: (el) => el
     }).parse();
@@ -76,7 +79,7 @@ class ContentManager {
     const hasAutoAppliedSiteOrLang =
       (featureConfig?.autoAppliedSites?.length ?? 0) > 0 ||
       (featureConfig?.autoAppliedLangs?.length ?? 0) > 0;
-    const enableLLM = cfg.langDetection.mode === 'llm' && hasAutoAppliedSiteOrLang;
+    const enableLLM = langDetectionMode === 'llm' && hasAutoAppliedSiteOrLang;
     const { langCode: detectedCodeOrUnd, detectMethod: detectSource } =
       await this.detectLangWithMethod(textForDetection, {
         enableLLM,

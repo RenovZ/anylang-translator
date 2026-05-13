@@ -30,3 +30,9 @@ export const TRANS_STYLE_ATTR = 'anylang-custom-translation-style';
 // Pre-computed camelCase version for use with element.dataset
 // camelCase('anylang-custom-translation-style') = 'anylangCustomTranslationStyle'
 export const TRANS_STYLE_KEY = 'anylangCustomTranslationStyle';
+
+export const SPINNER_CLASS = 'anylang-spinner';
+
+export const PRESET_STYLES_INJECTOR_ID = 'anylang-preset-styles';
+
+export const CUSTOM_STYLES_INJECTOR_ID = 'anylang-custom-styles';
