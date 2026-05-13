@@ -2,6 +2,9 @@ import { z } from 'zod';
 
 import { attributeKeys, displayStyleValues } from '@/preset/translate';
 
+import { LangCode } from './lang';
+import { ProviderConfig } from './provider';
+
 const customDisplaySchema = z.object({
   backgroundColor: z.string(),
   color: z.string(),
@@ -78,3 +81,13 @@ export type TranslationNodeStyleConfig = z.infer<typeof translationNodeStyleConf
  * or a literal LangCode for explicit language.
  */
 export type InputTranslationLang = 'sourceCode' | 'targetCode' | string;
+
+export interface TranslateBatchData<TContext = unknown> {
+  text: string;
+  sourceLangCode: LangCode | 'auto' | 'default';
+  targetLangCode: LangCode;
+  providerConfig: ProviderConfig;
+  hash: string;
+  scheduleAt: number;
+  context?: TContext;
+}

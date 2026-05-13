@@ -9,6 +9,7 @@ import {
   FEAT_KEY_PANORAMA_READING,
   FEAT_KEY_WRITING_COPILOT
 } from './constants';
+import { LANG_CODE_MAP } from './lang';
 
 const QUICK_TRANSLATE = {
   feature: FEAT_KEY_ADAPTIVE_TRANSLATE,
@@ -431,111 +432,6 @@ export const PROMPT_LIST = [
     }) satisfies Prompt
 );
 
-export const promptPresets = [
-  { value: 'general', label: i18n('prompt_preset_general', { defaultValue: 'General' }) },
-  {
-    value: 'smart_select',
-    label: i18n('prompt_preset_smart_select', { defaultValue: 'Smart selection' })
-  },
-  {
-    value: 'paraphrase_master',
-    label: i18n('prompt_preset_paraphrase_master', { defaultValue: 'Paraphrase master' })
-  },
-  {
-    value: 'paragraph_summary_expert',
-    label: i18n('prompt_preset_paragraph_summary', {
-      defaultValue: 'Paragraph summary expert'
-    })
-  },
-  {
-    value: 'english_simplify_master',
-    label: i18n('prompt_preset_english_simplify', {
-      defaultValue: 'English simplification master'
-    })
-  },
-  {
-    value: 'twitter_enhancer',
-    label: i18n('prompt_preset_twitter_enhancer', {
-      defaultValue: 'Twitter translation enhancer'
-    })
-  },
-  {
-    value: 'tech_translation_master',
-    label: i18n('prompt_preset_tech_translation', { defaultValue: 'Tech translation master' })
-  },
-  {
-    value: 'reddit_enhancer',
-    label: i18n('prompt_preset_reddit_enhancer', {
-      defaultValue: 'Reddit translation enhancer'
-    })
-  },
-  {
-    value: 'paper_translation_expert',
-    label: i18n('prompt_preset_paper_translation', {
-      defaultValue: 'Academic paper translator'
-    })
-  },
-  {
-    value: 'news_media_translator',
-    label: i18n('prompt_preset_news_media', { defaultValue: 'News media translator' })
-  },
-  {
-    value: 'music_expert',
-    label: i18n('prompt_preset_music', { defaultValue: 'Music expert' })
-  },
-  {
-    value: 'medical_translation_master',
-    label: i18n('prompt_preset_medical', { defaultValue: 'Medical translation master' })
-  },
-  {
-    value: 'legal_industry_translator',
-    label: i18n('prompt_preset_legal', { defaultValue: 'Legal industry translator' })
-  },
-  {
-    value: 'github_enhancer',
-    label: i18n('prompt_preset_github_enhancer', {
-      defaultValue: 'GitHub translation enhancer'
-    })
-  },
-  {
-    value: 'game_translator',
-    label: i18n('prompt_preset_game', { defaultValue: 'Game translator' })
-  },
-  {
-    value: 'ecommerce_translation_master',
-    label: i18n('prompt_preset_ecommerce', { defaultValue: 'E-commerce translation master' })
-  },
-  {
-    value: 'finance_translation_consultant',
-    label: i18n('prompt_preset_finance', { defaultValue: 'Finance translation consultant' })
-  },
-  {
-    value: 'novel_translator',
-    label: i18n('prompt_preset_novel', { defaultValue: 'Novel translator' })
-  },
-  {
-    value: 'ao3_translator',
-    label: i18n('prompt_preset_ao3', { defaultValue: 'AO3 translator' })
-  },
-  {
-    value: 'ebook_translator',
-    label: i18n('prompt_preset_ebook', { defaultValue: 'E-book translator' })
-  },
-  { value: 'designer', label: i18n('prompt_preset_designer', { defaultValue: 'Designer' }) },
-  {
-    value: 'mixed_zh_en',
-    label: i18n('prompt_preset_mixed_zh_en', { defaultValue: 'Mixed Chinese-English' })
-  },
-  {
-    value: 'web3_translation_master',
-    label: i18n('prompt_preset_web3', { defaultValue: 'Web3 translation master' })
-  },
-  {
-    value: 'more_translation_experts',
-    label: i18n('prompt_preset_more_experts', { defaultValue: 'More translation experts' })
-  }
-];
-
 export const promptVariables = [
   {
     value: '{{selection}}',
@@ -561,3 +457,216 @@ export const promptVariables = [
     })
   }
 ];
+
+export const BATCH_SEPARATOR = '%%';
+
+// // 网页翻译 Prompt 中可用的模板占位符（token），运行时会被真实值替换
+// export const WEB_PAGE_PROMPT_TOKENS = [
+//   'targetLanguage',
+//   'input',
+//   'webTitle',
+//   'webContent',
+//   'webSummary'
+// ] as const;
+// // 字幕翻译 Prompt 中可用的模板占位符（token）
+// export const SUBTITLE_PROMPT_TOKENS = [
+//   'targetLanguage',
+//   'input',
+//   'videoTitle',
+//   'videoSummary'
+// ] as const;
+// // 默认导出的 token 集合（目前指向网页翻译 token，供通用逻辑使用）
+// export const TOKENS = WEB_PAGE_PROMPT_TOKENS;
+
+export const TARGET_LANGUAGE = 'targetLanguage';
+export const INPUT = 'input';
+export const WEB_TITLE = 'webTitle';
+export const WEB_CONTENT = 'webContent';
+export const WEB_SUMMARY = 'webSummary';
+export const VIDEO_TITLE = 'videoTitle';
+export const VIDEO_SUMMARY = 'videoSummary';
+
+// 将 token 包装为模板占位符格式，例如 `targetLanguage` → `{{targetLanguage}}`
+// 供 Prompt 组装器（translate.ts / subtitles.ts）做 replaceAll 替换
+export const getTokenCellText = (token: string) => `{{${token}}}`;
+
+/**
+ * 网页翻译默认 System Prompt。
+ * 使用场景：用户未选择自定义 Prompt 时（promptId === null），
+ * 由 `src/utils/prompts/translate.ts` 读取并替换其中的 {{token}} 后发给 LLM。
+ * 若开启批量翻译（isBatch=true），会在末尾追加 DEFAULT_BATCH_TRANSLATE_PROMPT。
+ */
+export const DEFAULT_TRANSLATE_SYSTEM_PROMPT = `You are a professional ${getTokenCellText(TARGET_LANGUAGE)} native translator who needs to fluently translate text into ${getTokenCellText(TARGET_LANGUAGE)}.
+
+## Translation Rules
+1. Output only the translated content, without explanations or additional content (such as "Here's the translation:" or "Translation as follows:")
+2. The returned translation must maintain exactly the same number of paragraphs and format as the original text.
+3. If the text contains HTML tags, consider where the tags should be placed in the translation while maintaining fluency.
+4. For content that should not be translated (such as proper nouns, code, etc.), keep the original text.
+
+## Document Metadata for Context Awareness
+Webpage title: ${getTokenCellText(WEB_TITLE)}
+Webpage summary: ${getTokenCellText(WEB_SUMMARY)}`;
+
+/**
+ * 字幕翻译默认 System Prompt。
+ * 使用场景：用户未选择自定义 Prompt 时，
+ * 由 `src/utils/prompts/subtitles.ts` 读取并替换 {{token}} 后发给 LLM。
+ * 与网页翻译的区别：规则针对字幕场景优化（保留换行、语气、时间边界等）。
+ */
+export const DEFAULT_SUBTITLE_TRANSLATE_SYSTEM_PROMPT = `You are a professional ${getTokenCellText(TARGET_LANGUAGE)} native translator who needs to fluently translate subtitles into ${getTokenCellText(TARGET_LANGUAGE)}.
+
+## Translation Rules
+1. Output only the translated content, without explanations or additional content (such as "Here's the translation:" or "Translation as follows:")
+2. Keep subtitle timing alignment natural by matching the original subtitle segment boundaries and sentence flow.
+3. Preserve speaker intent, tone, punctuation, and line-break structure unless a small adjustment is required for fluent subtitles.
+4. For content that should not be translated (such as proper nouns, code, etc.), keep the original text.
+
+## Video Metadata for Context Awareness
+Video title: ${getTokenCellText(VIDEO_TITLE)}
+Video summary: ${getTokenCellText(VIDEO_SUMMARY)}`;
+
+/**
+ * 网页/字幕翻译默认 User Prompt（用户输入部分）。
+ * 由 Prompt 组装器替换 {{targetLanguage}} 和 {{input}} 后，作为用户消息发给 LLM。
+ */
+export const DEFAULT_TRANSLATE_PROMPT = `Translate to ${getTokenCellText(TARGET_LANGUAGE)}:
+
+
+${getTokenCellText(INPUT)}`;
+
+/**
+ * 批量翻译追加规则。
+ * 当开启批量模式（isBatch=true）时，Prompt 组装器会将其追加到 System Prompt 末尾，
+ * 指导 AI 如何识别和保留 `%%` 分隔符，以便后台队列能将结果正确拆分为多段翻译。
+ * 相关拆分逻辑见 `src/entrypoints/background/translation-queues.ts` 中的 `parseBatchResult()`。
+ */
+export const DEFAULT_BATCH_TRANSLATE_PROMPT = `## Multi-paragraph Translation Rules
+1. If input contains ${BATCH_SEPARATOR}, use ${BATCH_SEPARATOR} in your output, if input has no ${BATCH_SEPARATOR}, don't use ${BATCH_SEPARATOR} in your output
+2. **CRITICAL**: Preserve exact formatting around ${BATCH_SEPARATOR} - use exactly one empty line before and after, with no extra spaces, tabs, or whitespace
+
+## OUTPUT FORMAT:
+- **Single paragraph input** → Output translation directly (no separators, no extra text)
+- **Multi-paragraph input (input uses ${BATCH_SEPARATOR} separators)** → Use ${BATCH_SEPARATOR} as paragraph separator between translations
+
+## Examples
+
+### Multi-paragraph Input:
+Paragraph A
+
+${BATCH_SEPARATOR}
+
+Paragraph B
+
+${BATCH_SEPARATOR}
+
+Paragraph C
+
+### Multi-paragraph Output:
+Translation A
+
+${BATCH_SEPARATOR}
+
+Translation B
+
+${BATCH_SEPARATOR}
+
+Translation C
+
+### Single paragraph Input:
+Single paragraph content
+
+### Single paragraph Output:
+Direct translation without separators
+`;
+
+// === 字幕分段（Re-segmentation）Prompts ===
+// 用于将单词级字幕片段（word-level fragments）重组为句子级 VTT 格式。
+// 调用入口：`src/utils/prompts/subtitles-segmentation.ts` → `getSubtitlesSegmentationPrompt()`
+
+/**
+ * 字幕分段默认 System Prompt。
+ * 使用场景：视频字幕处理流程中，需要将逐字/短片段合并为完整句子并生成 VTT 时间轴时，
+ * 由 `subtitles-segmentation.ts` 直接作为 systemPrompt 发给 LLM。
+ */
+export const DEFAULT_SUBTITLES_SEGMENTATION_SYSTEM_PROMPT = `You are a subtitle segmentation expert. Convert word-level subtitle fragments into sentence-based VTT format.
+
+## Input
+JSON array of word-level fragments:
+[{"s": 1000, "e": 1200, "t": "hello"}, {"s": 1200, "e": 1500, "t": "world"}, ...]
+- s: start time (milliseconds)
+- e: end time (milliseconds)
+- t: text content
+
+## Output
+Simplified VTT format with millisecond timestamps:
+
+WEBVTT
+
+1000 --> 1500
+Hello world.
+
+2000 --> 3500
+This is a sentence.
+
+## Rules
+1. **Complete sentences only** - Each cue must be a COMPLETE, standalone sentence that expresses a full thought.
+2. **Never split at incomplete clauses** - A clause that cannot stand alone as a complete thought MUST be merged with the clause it depends on. Signs of incomplete clauses:
+   - Sets up a condition, time, or reason but doesn't state the result/consequence
+   - Ends with a conjunction or leaves an expectation unfulfilled
+   - Would sound unfinished if spoken alone
+   Example: "When Moses left Egypt" is INCOMPLETE - it sets up a time but doesn't say what happened.
+3. **Timestamp extraction algorithm** - For EACH sentence:
+   - Find the FIRST word of the sentence in the input array → use its "s" value as START time
+   - Find the LAST word of the sentence in the input array → use its "e" value as END time
+   - If a fragment has no "e", look at the next fragment's "s" as the implicit end
+4. **Punctuation** - Add appropriate punctuation (. ? ! ,) based on context
+5. **Capitalization** - Capitalize first letter of each sentence
+6. **No translation** - Keep the original language
+7. **Output only** - Return ONLY the VTT content, no explanations
+8. **No omission** - Include ALL input fragments. Every fragment must appear in exactly one cue.
+
+## Critical Example: Correct Timestamp Alignment
+
+Input:
+[{"s":134200,"e":134760,"t":"Moses"},{"s":134760,"e":135160,"t":"had"},{"s":135160,"e":136160,"t":"died"},{"s":136160,"e":136270,"t":"I"},{"s":136280,"e":136519,"t":"thought"},{"s":136519,"e":136720,"t":"the"},{"s":136720,"e":137040,"t":"story"},{"s":137040,"e":137239,"t":"was"},{"s":137239,"e":137599,"t":"about"},{"s":137599,"e":138160,"t":"him"}]
+
+WRONG (timestamps shifted - using end of previous sentence as start of next):
+134200 --> 138160
+Moses had died.
+
+138160 --> ...
+I thought the story was about him.
+
+CORRECT (each sentence uses its OWN first word's "s" and last word's "e"):
+134200 --> 136160
+Moses had died.
+
+136160 --> 138160
+I thought the story was about him.
+
+Explanation:
+- "Moses had died" → first word "Moses" has s:134200, last word "died" has e:136160 → 134200 --> 136160
+- "I thought the story was about him" → first word "I" has s:136160, last word "him" has e:138160 → 136160 --> 138160`;
+
+/**
+ * 字幕分段默认 User Prompt。
+ * 调用时由 `subtitles-segmentation.ts` 将 {{input}} 替换为 JSON 格式的单词级字幕片段。
+ */
+export const DEFAULT_SUBTITLES_SEGMENTATION_PROMPT = `Re-segment these subtitles:
+
+${getTokenCellText(INPUT)}`;
+
+const supportedLanguageList = Object.entries(LANG_CODE_MAP['en'])
+  .map(([code, name]) => `- ${code}: ${name}`)
+  .join('\n');
+
+export const DEFAULT_LANG_DETECTION_SYSTEM_PROMPT = `You are a language detection assistant. Your task is to identify the language of text and return ONLY the language code.
+
+Rules:
+- Return ONLY the language code (e.g., "en" or "zh-CN" or "ja")
+- Do NOT include explanations, punctuation, or any other text
+- Return "und" if the language is not in the supported list
+
+Supported language codes:
+${supportedLanguageList}`;

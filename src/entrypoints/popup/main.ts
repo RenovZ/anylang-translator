@@ -1,3 +1,5 @@
+import '@/zod-config';
+
 import { mount } from 'svelte';
 import { twMerge } from 'tailwind-merge';
 

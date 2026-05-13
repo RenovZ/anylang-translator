@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
 import {
+  ALL_PROVIDER_TYPES,
   BUILTIN_PROVIDERS,
   COMPATIBLE_PROVIDERS,
+  LLM_PROVIDER_TYPES,
   OPENAI_COMPATIBLE_PROVIDER
 } from '@/preset/provider';
 
@@ -13,29 +15,39 @@ import { promptSchema } from './prompt';
 export const aiProviderTypeSchema = z.enum(['go', 'zen', 'custom']);
 export type AIProviderType = z.infer<typeof aiProviderTypeSchema>;
 
-const providerConfigSchema = z.object({
+export const providerTypeSchema = z.enum(ALL_PROVIDER_TYPES);
+export type ProviderType = z.infer<typeof providerTypeSchema>;
+
+export const llmProviderTypeSchema = z.enum(LLM_PROVIDER_TYPES);
+export type LLMProviderType = z.infer<typeof llmProviderTypeSchema>;
+export function isLLMProvider(config: ProviderConfig): config is AIProvider {
+  return LLM_PROVIDER_TYPES.includes(config.provider);
+}
+
+const baseProviderSchema = z.object({
+  provider: providerTypeSchema,
   name: z.string(),
   description: z.string().optional(),
   enabled: z.boolean().default(true),
   features: featuresSchema
 });
 
-export const freeProviderSchema = providerConfigSchema.extend({
+export const freeProviderSchema = baseProviderSchema.extend({
   type: z.literal('free')
 });
 export type FreeProvider = z.infer<typeof freeProviderSchema>;
 
-export const goProviderSchema = providerConfigSchema.extend({
+export const goProviderSchema = baseProviderSchema.extend({
   type: z.literal('go'),
   model: z.string(),
-  temperature: z.number().min(0).optional()
-  // prompt: promptSchema
-  //   .pick({
-  //     system: true,
-  //     prompt: true,
-  //     output: true
-  //   })
-  //   .partial()
+  temperature: z.number().min(0).optional(),
+  prompt: promptSchema
+    .pick({
+      system: true,
+      prompt: true,
+      output: true
+    })
+    .partial()
 });
 export type GoProvider = z.infer<typeof goProviderSchema>;
 
@@ -45,17 +57,16 @@ export const zenProviderSchema = goProviderSchema.extend({
 export type ZenProvider = z.infer<typeof zenProviderSchema>;
 
 function createCustomProviderSchema(
-  providers: readonly { provider: string; models: readonly string[] }[],
+  providers: readonly { provider: ProviderType; models: readonly string[] }[],
   options: { baseUrlRequired?: boolean; name: string }
 ) {
-  const customProviderSchema = providerConfigSchema.extend({
+  const customProviderSchema = baseProviderSchema.extend({
     type: z.literal('custom'),
     apiKey: z.string().optional(),
     baseURL: z.string().optional(),
     temperature: z.number().min(0).optional(),
     providerOptions: z.record(z.string(), z.any()).optional(),
     connectionOptions: z.record(z.string(), z.any()).optional(),
-    provider: z.string(),
     model: z.string(),
     prompt: promptSchema.pick({
       system: true,
@@ -66,7 +77,7 @@ function createCustomProviderSchema(
   type CustomProvider = z.infer<typeof customProviderSchema>;
 
   const createProviderValidations = (
-    providers: readonly { provider: string; models: readonly string[] }[]
+    providers: readonly { provider: ProviderType; models: readonly string[] }[]
   ) => {
     return {
       provider: (data: CustomProvider) =>
@@ -121,7 +132,7 @@ export type AIProvider = z.infer<typeof aiProviderSchema>;
 
 // Provider union type with custom type to match existing usage
 export const providerSchema = z.union([freeProviderSchema, aiProviderSchema]);
-export type Provider = FreeProvider | AIProvider;
+export type ProviderConfig = FreeProvider | AIProvider;
 
 /**
  * Shape of a provider preset template (BUILTIN_PROVIDERS / COMPATIBLE_PROVIDERS).
@@ -129,7 +140,7 @@ export type Provider = FreeProvider | AIProvider;
  * converted into a CustomProvider when the user adds one.
  */
 export interface PresetItem {
-  provider: string;
+  provider: ProviderType;
   models: readonly string[];
   name: string;
   icon: string;

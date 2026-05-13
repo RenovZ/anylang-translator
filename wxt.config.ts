@@ -1,13 +1,15 @@
 import { execFileSync } from 'node:child_process';
-import path from 'node:path';
+import path, { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import Icons from 'unplugin-icons/vite';
+import { loadEnv } from 'vite';
 import { defineConfig } from 'wxt';
 
 import { loggerCallerPlugin } from './plugins/logger-caller';
 
 const configFile = fileURLToPath(import.meta.url);
+const env = loadEnv('dev', process.cwd(), '');
 const workspaceRoot = path.dirname(configFile);
 const sourceRoot = path.join(workspaceRoot, 'src');
 const extractionScript = path.join(workspaceRoot, 'scripts', 'extract-i18n.mjs');
@@ -58,6 +60,16 @@ function i18nExtractionPlugin() {
 export default defineConfig({
   srcDir: 'src',
   modules: ['@wxt-dev/module-svelte'],
+  webExt: {
+    chromiumProfile: resolve('.wxt/chrome-data'),
+    keepProfileChanges: true,
+    chromiumArgs: [
+      '--window-position=0,0',
+      '--window-size=1600,1000',
+      '--auto-open-devtools-for-tabs'
+    ],
+    startUrls: env.START_URLS
+  },
   hooks: {
     'build:before': () => {
       runI18nExtraction();

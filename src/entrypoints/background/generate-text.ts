@@ -19,6 +19,7 @@ export async function runGenerateText(params: GenerateTextParams): Promise<Gener
 
 export function registerGenerateText() {
   onMessage('generateText', async (message) => {
+    logger.debug('generateText', { message });
     try {
       return await runGenerateText(message.data);
     } catch (error) {

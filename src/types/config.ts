@@ -4,7 +4,7 @@ import type { FeatureField } from '@/preset/constants';
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
 import { displayStyles, HOTKEYS } from '@/preset/translate';
-import { aiProviderSchema, providerSchema, type Provider } from '@/types/provider';
+import { aiProviderSchema, providerSchema, type ProviderConfig } from '@/types/provider';
 
 import { langCodeSchema, uiLangCodeSchema } from './lang';
 import { promptSchema, type Prompt } from './prompt';
@@ -33,7 +33,7 @@ const featureConfigBaseSchema = z.object({
   autoAppliedSites: z.array(z.string()).optional(),
   autoAppliedLangs: z.array(z.string()).optional()
 });
-const featureQuickTranslateSchema = featureConfigBaseSchema.extend({
+const featureAdaptiveTranslateSchema = featureConfigBaseSchema.extend({
   provider: providerSchema,
   translate: z.object({
     mode: translateModeSchema.default('bilingual'),
@@ -54,7 +54,7 @@ const featureInstantLookupSchema = featureConfigBaseSchema.extend({
 });
 export const featureConfigSchema = z.union([
   featureConfigBaseSchema,
-  featureQuickTranslateSchema,
+  featureAdaptiveTranslateSchema,
   featureInstantLookupSchema
 ]);
 export type FeatureConfig = z.infer<typeof featureConfigSchema>;
@@ -74,7 +74,7 @@ export const configSchema = z.object({
     .array(providerSchema)
     .superRefine((providers, ctx) => {
       const nameSet = new Set<string>();
-      providers.forEach((provider: Provider, index: number) => {
+      providers.forEach((provider: ProviderConfig, index: number) => {
         if (nameSet.has(provider.name)) {
           ctx.addIssue({
             code: 'custom',
@@ -87,7 +87,7 @@ export const configSchema = z.object({
     })
     .default([...freeProviders, ...goProviders, ...zenProviders]),
 
-  adaptiveTranslate: featureQuickTranslateSchema,
+  adaptiveTranslate: featureAdaptiveTranslateSchema,
   instantLookup: featureInstantLookupSchema,
   intelligentInput: featureConfigBaseSchema,
   bilingualSubtitles: featureConfigBaseSchema,

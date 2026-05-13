@@ -182,7 +182,6 @@ class Shortcut {
   async syncFromBrowser(): Promise<boolean> {
     const commands = await browser.commands.getAll();
     const config = configStore.get();
-    if (!config) return false;
 
     let updated = false;
     const newConfig = { ...config };

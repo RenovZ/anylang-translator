@@ -159,3 +159,13 @@ export const HOTKEY_EVENT_KEYS: Record<(typeof HOTKEYS)[number], string> = {
   backtick: 'Backtick',
   clickAndHold: 'ClickAndHold' // Special handling, not a keyboard event
 };
+
+export const DEFAULT_REQUEST_QUEUE_CONFIG = {
+  capacity: 60,
+  rate: 8
+};
+
+export const DEFAULT_BATCH_QUEUE_CONFIG = {
+  maxCharactersPerBatch: 1000,
+  maxItemsPerBatch: 4
+};

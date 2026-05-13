@@ -49,7 +49,9 @@ class AnalyticsManager {
 
   async trackFeatureUsed(input: FeatureUsedEventInput): Promise<void> {
     try {
-      await sendMessage('trackFeatureUsedEvent', this.buildFeatureUsedEventProperties(input));
+      const msg = this.buildFeatureUsedEventProperties(input);
+      logger.debug('trackFeatureUsedEvent', { msg });
+      await sendMessage('trackFeatureUsedEvent', msg);
     } catch (error) {
       logger.warn(`Failed to track ${ANALYTICS_FEATURE_USED_EVENT}`, {
         error: formatError(error)

@@ -1,0 +1,2 @@
+export const REQUEST_RECORD_MAX_COUNT = 10000;
+export const REQUEST_RECORD_MAX_AGE_DAYS = 120;

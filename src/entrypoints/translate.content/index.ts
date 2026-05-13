@@ -1,3 +1,5 @@
+import '@/zod-config';
+
 import type { ContentScriptContext } from '#imports';
 
 import logger from '@/lib/logger';
@@ -17,6 +19,7 @@ export default defineContentScript({
   async main(ctx: ContentScriptContext) {
     logger.info('main', { ctx });
 
+    // Prevent double injection (manifest-based + programmatic injection)
     if (window.__ANYLANG_ADAPTIVE_TRANSLATE_INJECTED__) return;
     window.__ANYLANG_ADAPTIVE_TRANSLATE_INJECTED__ = true;
 

@@ -6,7 +6,7 @@ import {
   MSG_INSTANT_LOOKUP,
   MSG_INTELLIGENT_INPUT,
   MSG_QUICK_TRANSLATE
-} from '@/preset/constants';
+} from '@/lib/preset/constants';
 
 import NotificationManager from './notification-manager';
 import TranslatePopup from './translate-popup';

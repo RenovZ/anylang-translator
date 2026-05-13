@@ -182,10 +182,6 @@ class ProviderManager {
    */
   async getLanguageModel(provider: string) {
     const config = configStore.get();
-    if (!config) {
-      throw new Error('Config not found');
-    }
-
     const providerConfig = config.providers.find(
       (p): p is CustomProvider => p.type === 'custom' && 'provider' in p && p.name === provider
     );

@@ -61,6 +61,7 @@
 
     isTranslating = !isTranslating;
     const enabled = isTranslating;
+    logger.debug('adaptiveTranslate', { enabled, tabs });
     void sendMessage('adaptiveTranslate', {
       tabId: activeTab.id,
       enabled,

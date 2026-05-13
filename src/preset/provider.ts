@@ -66,10 +66,12 @@ export const defaultOpenedFeatures: Partial<Record<FeatureKey, FeatureValue>> = 
 
 export const FREE_PROVIDERS = [
   {
+    provider: 'bing-translate',
     name: 'Bing Translator',
     icon: 'bing'
   },
   {
+    provider: 'google-translate',
     name: 'Google Translator',
     icon: 'google'
   }
@@ -78,6 +80,7 @@ export const freeProviders = FREE_PROVIDERS.map(
   (p) =>
     ({
       type: 'free',
+      provider: p.provider,
       name: p.name,
       enabled: true,
       features: {
@@ -88,33 +91,39 @@ export const freeProviders = FREE_PROVIDERS.map(
 
 export const GO_PROVIDERS = [
   {
+    provider: 'deepseek',
     name: 'DeepSeek',
     model: 'DeepSeek-V4-Pro',
     icon: 'deepseek'
   },
   {
+    provider: 'zai',
     name: 'Z.ai',
     model: 'GLM-5.1',
     icon: 'zai'
   },
   {
+    provider: 'kimi',
     name: 'Kimi',
     company: 'Moonshot',
     model: 'Kimi K2.6',
     icon: 'kimi'
   },
   {
+    provider: 'mimo',
     name: 'MiMo',
     company: 'Xiaomi',
     model: 'MiMo-V2-Pro',
     icon: 'xiaomimimo'
   },
   {
+    provider: 'minimax',
     name: 'MiniMax',
     model: 'MiniMax M2.7',
     icon: 'minimax'
   },
   {
+    provider: 'qwen',
     name: 'Qwen',
     company: 'Alibaba',
     model: 'Qwen3.6 Plus',
@@ -125,7 +134,9 @@ export const goProviders = GO_PROVIDERS.map(
   (p) =>
     ({
       type: 'go' as const,
+      provider: p.provider,
       model: p.model,
+      prompt: {},
       name: p.name,
       enabled: true,
       features: { ...defaultOpenedFeatures } as const
@@ -134,16 +145,19 @@ export const goProviders = GO_PROVIDERS.map(
 
 export const ZEN_PROVIDERS = [
   {
+    provider: 'anthropic',
     name: 'Anthropic',
     model: 'Claude Opus 4.7',
     icon: 'anthropic'
   },
   {
+    provider: 'openai',
     name: 'OpenAI',
     model: 'GPT 5.4 Pro',
     icon: 'openai'
   },
   {
+    provider: 'gemini',
     name: 'Gemini',
     company: 'Google',
     model: 'Gemini 3.1 Pro',
@@ -154,7 +168,9 @@ export const zenProviders = ZEN_PROVIDERS.map(
   (p) =>
     ({
       type: 'zen' as const,
+      provider: p.provider,
       model: p.model,
+      prompt: {},
       name: p.name,
       enabled: true,
       features: { ...defaultOpenedFeatures } as const
@@ -892,3 +908,18 @@ export function getModelsForProvider(provider: {
   }
   return [];
 }
+
+export const ALL_PROVIDER_TYPES = [
+  ...FREE_PROVIDERS,
+  ...GO_PROVIDERS,
+  ...ZEN_PROVIDERS,
+  ...BUILTIN_PROVIDERS,
+  ...COMPATIBLE_PROVIDERS
+].map((p) => p.provider);
+
+export const LLM_PROVIDER_TYPES = [
+  ...GO_PROVIDERS,
+  ...ZEN_PROVIDERS,
+  ...BUILTIN_PROVIDERS,
+  ...COMPATIBLE_PROVIDERS
+].map((p) => p.provider);

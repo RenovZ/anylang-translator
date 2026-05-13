@@ -3,7 +3,7 @@ import { writeFileSync } from 'fs';
 import { data } from 'franc/data.js';
 import { expressions } from 'franc/expressions.js';
 
-import { DEFAULT_LANG_CODES } from '../src/preset/lang.ts';
+import { DEFAULT_LANG_CODES } from '../src/lib/preset/lang.js';
 
 import logger from './logger.mjs';
 

@@ -1,3 +1,5 @@
 legacy
 
 pnpm-lock.yaml
+tests
+*.test.ts

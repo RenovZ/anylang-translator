@@ -1,11 +1,13 @@
-import configStore from '@/lib/config';
+import analyticsManager from '@/lib/analytics';
 import logger from '@/lib/logger';
 import { onMessage, sendMessage } from '@/lib/protocol';
 import { translateState } from '@/lib/session';
-import autoTranslation from '@/lib/translate/auto-translation';
+import autoTranslation from '@/lib/translate/auto';
+import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
 
 export function registerTranslate() {
   onMessage('getPageTranslationActive', async (msg) => {
+    logger.debug('getPageTranslationActive', { msg });
     const tabId = msg.sender?.tab?.id;
     if (typeof tabId === 'number') {
       return translateState.get(tabId).enabled;
@@ -16,18 +18,21 @@ export function registerTranslate() {
 
   // translate.content/bootstrap.ts
   onMessage('checkAutoPageTranslation', async (msg) => {
+    logger.debug('checkAutoPageTranslation', { msg });
     const tabId = msg.sender?.tab?.id;
     const { url, detectedCodeOrUnd } = msg.data;
     if (typeof tabId === 'number') {
-      const config = configStore.get();
-      if (!config) return;
       const shouldEnable = await autoTranslation.run(url, detectedCodeOrUnd);
       if (shouldEnable) {
+        logger.debug('togglePageTranslation', { shouldEnable, url, detectedCodeOrUnd });
         void sendMessage(
           'togglePageTranslation',
           {
-            enabled: true
-            // TODO: analyticsContext: createFeatureUsageContext(ANALYTICS_FEATURE.PAGE_TRANSLATION, ANALYTICS_SURFACE.PAGE_AUTO)
+            enabled: true,
+            analyticsContext: analyticsManager.createFeatureUsageContext(
+              ANALYTICS_FEATURE.ADAPTIVE_TRANSLATE,
+              ANALYTICS_SURFACE.PAGE_AUTO
+            )
           },
           tabId
         );
@@ -37,16 +42,19 @@ export function registerTranslate() {
 
   // popup / adaptive-translate
   onMessage('adaptiveTranslate', async (msg) => {
-    logger.debug({ msg });
+    logger.debug('adaptiveTranslate', { msg });
     const { tabId, enabled, analyticsContext } = msg.data;
+    logger.debug('togglePageTranslation', { tabId, enabled, analyticsContext });
     void sendMessage('togglePageTranslation', { enabled, analyticsContext }, tabId);
   });
 
   // side.content / floating-button
   onMessage('trySetPageTranslationFromContentScript', async (msg) => {
+    logger.debug('trySetPageTranslationFromContentScript', { msg });
     const tabId = msg.sender?.tab?.id;
     const { enabled, analyticsContext } = msg.data;
     if (typeof tabId === 'number') {
+      logger.debug('togglePageTranslation', { tabId, enabled, analyticsContext });
       void sendMessage('togglePageTranslation', { enabled, analyticsContext }, tabId);
     } else {
       logger.error('tabId is not a number', { msg });
@@ -55,6 +63,7 @@ export function registerTranslate() {
 
   // page-translation
   onMessage('reportPageTranslateState', async (msg) => {
+    logger.debug('reportPageTranslateState', { msg });
     const tabId = msg.sender?.tab?.id;
     const { enabled } = msg.data;
     if (typeof tabId === 'number') {

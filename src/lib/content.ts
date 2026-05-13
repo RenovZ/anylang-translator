@@ -5,6 +5,7 @@ import { Readability } from '@mozilla/readability';
 import { toast } from '@/components/isolated-toast';
 import domPrune from '@/lib/dom/prune';
 import { FRANC_TO_LANG_CODE } from '@/preset/franc-map';
+import { DEFAULT_LANG_DETECTION_SYSTEM_PROMPT } from '@/preset/prompt';
 import { GenerateTextParams } from '@/types/background';
 import type {
   DetectLangOptions,
@@ -20,7 +21,6 @@ import configStore from './config';
 import i18n from './i18n';
 import langManager from './lang';
 import logger, { formatError } from './logger';
-import promptManager from './prompt';
 import { sendMessage } from './protocol';
 import providerManager from './provider';
 
@@ -368,10 +368,9 @@ class ContentManager {
     try {
       const { model, provider, providerOptions: userOptions, temperature } = providerConfig;
       const providerOptions = providerManager.overrideOptions(model, provider, userOptions);
-      const system = promptManager.getLangDetection();
       const params: GenerateTextParams = {
         model,
-        system,
+        system: DEFAULT_LANG_DETECTION_SYSTEM_PROMPT,
         prompt: text,
         temperature,
         providerOptions,
@@ -379,6 +378,7 @@ class ContentManager {
       };
 
       for (let attempt = 1; attempt <= this.MAX_ATTEMPTS; attempt++) {
+        logger.debug(`generateText`, { attempt, params });
         const response = await sendMessage('generateText', params);
         const detectedLangCode = langManager.parseLangCode(response.text);
         if (detectedLangCode) {

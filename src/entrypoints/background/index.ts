@@ -1,3 +1,5 @@
+import '@/zod-config';
+
 import config from '@/lib/config';
 import logger from '@/lib/logger';
 import { onMessage } from '@/lib/protocol';
@@ -5,6 +7,7 @@ import { translateState } from '@/lib/session';
 import shortcut from '@/lib/shortcut';
 
 import { registerGenerateText } from './generate-text';
+import { setUpSubtitlesTranslationQueue, setUpWebPageTranslationQueue } from './translate-queue';
 import { registerTranslate } from './translate-signal';
 
 export default defineBackground({
@@ -28,20 +31,22 @@ export default defineBackground({
     });
 
     shortcut.syncFromBrowser();
+    logger.info('Shortcuts synced from browser');
 
     registerGenerateText();
 
     void translateState.init();
     registerTranslate();
 
+    void setUpWebPageTranslationQueue();
+    void setUpSubtitlesTranslationQueue();
+
     onMessage('openPage', async (message) => {
       const { url, active } = message.data;
-      logger.info('openPage', { url, active });
       await browser.tabs.create({ url, active: active ?? true });
     });
 
     onMessage('openOptionsPage', async () => {
-      logger.info('openOptionsPage');
       await browser.runtime.openOptionsPage();
     });
   }

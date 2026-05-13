@@ -35,7 +35,7 @@
     getProviderIcon
   } from '@/preset/provider';
   import type { FeatureValue } from '@/types/feature';
-  import type { AIProvider, CustomProvider, PresetItem, Provider } from '@/types/provider';
+  import type { AIProvider, CustomProvider, PresetItem, ProviderConfig } from '@/types/provider';
 
   import { apiProvidersNav } from '../data';
   import Section from '../Section.svelte';
@@ -52,7 +52,7 @@
     const isCompatible = COMPATIBLE_PROVIDERS.some((p) => p.provider === preset.provider);
 
     const DEFAULT_PROMPT = { system: '', prompt: '', output: [] as never[] };
-    const newProvider: Provider = {
+    const newProvider: ProviderConfig = {
       type: 'custom',
       name: preset.name,
       description: preset.company ? `by ${preset.company}` : undefined,
