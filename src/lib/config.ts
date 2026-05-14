@@ -24,7 +24,7 @@ const defaultConfig: Config = configSchema.parse({
 
   uiLangCode: 'default',
   sourceLangCode: undefined,
-  targetLangCode: langCodeSchema.parse('zh-CN'),
+  targetLangCode: langCodeSchema.parse('en'),
 
   langDetection: {
     mode: langDetectionModeSchema.parse('basic'),

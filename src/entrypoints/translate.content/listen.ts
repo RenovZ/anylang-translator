@@ -45,7 +45,7 @@ export function setupUrlChangeListener(signal?: AbortSignal): () => void {
     const orig = history[fn];
     originals[fn] = orig;
     history[fn] = function (...args) {
-      orig.apply(this, args as Parameters<typeof history.pushState>);
+      orig.apply(this, args);
       const now = location.href;
       fire(prev, now, fn);
       prev = now;

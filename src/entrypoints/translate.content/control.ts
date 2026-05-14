@@ -6,44 +6,50 @@ import domFinder from '@/lib/dom/finder';
 import domTraversal from '@/lib/dom/traversal';
 import logger from '@/lib/logger';
 import { sendMessage } from '@/lib/protocol';
-import { removeOrShowNodeTranslation, validateTranslationConfigAndToast } from '@/lib/translate';
+import {
+  removeOrShowNodeTranslation,
+  translateTextForPageTitle,
+  validateTranslationConfigAndToast
+} from '@/lib/translate';
 import { translateWalkedElement } from '@/lib/translate/core';
 import { removeAllTranslatedWrapperNodes } from '@/lib/translate/dom';
 import * as webpage from '@/lib/translate/webpage';
-import { CONTENT_WRAPPER_CLASS } from '@/preset/dom';
+import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
+import { CONTENT_WRAPPER_CLASS, PARAGRAPH_ATTRIBUTE, WALKED_ATTRIBUTE } from '@/preset/dom';
 import { HOTKEY_EVENT_KEYS } from '@/preset/translate';
 import { FeatureUsageContext } from '@/types/analytics';
 import type { Config } from '@/types/config';
 import type { Point } from '@/types/dom';
-
-const HOLD_DELAY_MS = 1000;
-const HOLD_MOVE_TOLERANCE = 6;
-const MOVE_THROTTLE_MS = 300;
-const MOVE_MIN_DIST = 3;
+import { isLLMProvider } from '@/types/provider';
 
 class NodeTranslation {
+  private readonly CLICK_AND_HOLD_TRIGGER_MS = 1000;
+  private readonly CLICK_AND_HOLD_MOVE_TOLERANCE = 6;
+  private readonly MOUSEMOVE_THROTTLE_MS = 300;
+  private readonly MOUSEMOVE_DISTANCE_THRESHOLD = 3;
+
   private ac: AbortController | null = null;
 
   // Shared mouse position, updated on throttled mousemove
-  private pos: Point = { x: 0, y: 0 };
+  private mousePosition: Point = { x: 0, y: 0 };
 
   // --- Mousemove throttle ---
-  private lastX = 0;
-  private lastY = 0;
-  private moveTimer: ReturnType<typeof setTimeout> | null = null;
+  private lastMoveX = 0;
+  private lastMoveY = 0;
+  private moveThrottleTimer: ReturnType<typeof setTimeout> | null = null;
 
   // --- Click-and-hold ---
-  private pressed = false;
-  private holdFired = false;
-  private pressPos: Point | null = null;
-  private holdTimer: ReturnType<typeof setTimeout> | null = null;
+  private isMousePressed = false;
+  private clickAndHoldTriggered = false;
+  private mousePressPosition: Point | null = null;
+  private clickAndHoldTimerId: ReturnType<typeof setTimeout> | null = null;
 
   // --- Hotkey-hold ---
-  private keyDown = false;
-  private pureSession = true;
-  private keyTimer: ReturnType<typeof setTimeout> | null = null;
-  private keyTriggered = false;
-  private activeKey: string | null = null;
+  private isHotkeyPressed = false;
+  private isHotkeySessionPure = true;
+  private timerId: ReturnType<typeof setTimeout> | null = null;
+  private actionTriggered = false;
+  private activeHotkeyEventKey: string | null = null;
 
   /**
    * Registers node translation triggers based on the current config.
@@ -56,6 +62,7 @@ class NodeTranslation {
     this.ac = new AbortController();
     const opts = { signal: this.ac.signal } as const;
 
+    // Mousemove handler with throttle + distance threshold
     document.addEventListener('mousemove', this.onMouseMove, opts);
     document.addEventListener('mousedown', this.onMouseDown, opts);
     document.addEventListener('mouseup', this.onMouseUp, opts);
@@ -69,31 +76,29 @@ class NodeTranslation {
   private destroy(): void {
     this.ac?.abort();
     this.ac = null;
-    this.resetKey();
-    if (this.moveTimer) {
-      clearTimeout(this.moveTimer);
-      this.moveTimer = null;
+    this.resetHotkeySession();
+    if (this.moveThrottleTimer) {
+      clearTimeout(this.moveThrottleTimer);
+      this.moveThrottleTimer = null;
     }
-    this.clearHoldTimer();
+    this.clearClickAndHoldTimer();
   }
 
   // ── helpers ───────────────────────────────────────────────────────────────
 
-  private cfg(): Config | null {
+  private getCurrentConfig(): Config | null {
     if (this.ac?.signal.aborted) return null;
     return configStore.get();
   }
 
   private inTriggerMode(config: Config): boolean {
     return (
-      !!config.adaptiveTranslate.provider &&
+      !!config.adaptiveTranslate.provider && // TODO: 这个 provider 的非空判断似乎多余
       config.adaptiveTranslate.translate.triggerOnHover === 'clickAndHold'
     );
   }
 
-  private trigger(pos: Point): void {
-    const config = this.cfg();
-    if (!config) return;
+  private trigger(pos: Point, config: Config): void {
     const {
       targetLangCode,
       adaptiveTranslate: {
@@ -103,137 +108,142 @@ class NodeTranslation {
     void removeOrShowNodeTranslation(pos, translateMode, pageRange, targetLangCode, displayStyle);
   }
 
-  private clearHoldTimer(): void {
-    if (this.holdTimer) {
-      clearTimeout(this.holdTimer);
-      this.holdTimer = null;
+  private clearClickAndHoldTimer(): void {
+    if (this.clickAndHoldTimerId) {
+      clearTimeout(this.clickAndHoldTimerId);
+      this.clickAndHoldTimerId = null;
     }
   }
 
-  private resetKey(): void {
-    if (this.keyTimer) {
-      clearTimeout(this.keyTimer);
-      this.keyTimer = null;
+  private resetHotkeySession(): void {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+      this.timerId = null;
     }
-    this.keyDown = false;
-    this.pureSession = true;
-    this.keyTriggered = false;
-    this.activeKey = null;
+    this.isHotkeyPressed = false;
+    this.isHotkeySessionPure = true;
+    this.actionTriggered = false;
+    this.activeHotkeyEventKey = null;
   }
 
   // ── event handlers (arrow functions keep `this` bound) ────────────────────
 
   private onMouseMove = (e: MouseEvent): void => {
     // Distance threshold: ignore tiny movements (trackpad tremor, mouse jitter)
-    if (Math.abs(e.clientX - this.lastX) + Math.abs(e.clientY - this.lastY) <= MOVE_MIN_DIST) {
+    if (
+      Math.abs(e.clientX - this.lastMoveX) + Math.abs(e.clientY - this.lastMoveY) <=
+      this.MOUSEMOVE_DISTANCE_THRESHOLD
+    ) {
       return;
     }
 
     // Click-and-hold move cancellation (always immediate, no throttle)
-    if (this.pressed && this.pressPos) {
+    if (this.isMousePressed && this.mousePressPosition) {
       if (
-        Math.hypot(e.clientX - this.pressPos.x, e.clientY - this.pressPos.y) > HOLD_MOVE_TOLERANCE
+        Math.hypot(e.clientX - this.mousePressPosition.x, e.clientY - this.mousePressPosition.y) >
+        this.CLICK_AND_HOLD_MOVE_TOLERANCE
       ) {
-        this.pressed = false;
-        this.pressPos = null;
-        this.clearHoldTimer();
+        this.isMousePressed = false;
+        this.mousePressPosition = null;
+        this.clearClickAndHoldTimer();
       }
     }
 
     // Throttled position update
-    if (this.moveTimer) return;
-    this.moveTimer = setTimeout(() => {
-      this.moveTimer = null;
-    }, MOVE_THROTTLE_MS);
+    if (this.moveThrottleTimer) return;
+    this.moveThrottleTimer = setTimeout(() => {
+      this.moveThrottleTimer = null;
+    }, this.MOUSEMOVE_THROTTLE_MS);
 
-    this.pos.x = e.clientX;
-    this.pos.y = e.clientY;
-    this.lastX = e.clientX;
-    this.lastY = e.clientY;
+    this.mousePosition.x = e.clientX;
+    this.mousePosition.y = e.clientY;
+    this.lastMoveX = e.clientX;
+    this.lastMoveY = e.clientY;
   };
 
   private onMouseDown = (e: MouseEvent): void => {
     if (e.button !== 0) return;
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
-    const config = this.cfg();
+    const config = this.getCurrentConfig();
     if (!config || !this.inTriggerMode(config)) return;
 
-    this.pressed = true;
-    this.holdFired = false;
-    this.pressPos = { x: e.clientX, y: e.clientY };
+    this.isMousePressed = true;
+    this.clickAndHoldTriggered = false;
+    this.mousePressPosition = { x: e.clientX, y: e.clientY };
 
-    this.clearHoldTimer();
-    this.holdTimer = setTimeout(() => {
-      if (!this.pressed || !this.pressPos || this.holdFired) return;
+    this.clearClickAndHoldTimer();
+    this.clickAndHoldTimerId = setTimeout(() => {
+      if (!this.isMousePressed || !this.mousePressPosition || this.clickAndHoldTriggered) return;
 
-      const current = this.cfg();
+      const current = this.getCurrentConfig();
       if (!current || !this.inTriggerMode(current)) return;
 
-      this.trigger(this.pressPos);
-      this.holdFired = true;
-    }, HOLD_DELAY_MS);
+      this.trigger(this.mousePressPosition, current);
+      this.clickAndHoldTriggered = true;
+    }, this.CLICK_AND_HOLD_TRIGGER_MS);
   };
 
   private onMouseUp = (e: MouseEvent): void => {
     if (e.button !== 0) return;
-    if (!this.pressed && !this.holdTimer) return;
+    if (!this.isMousePressed && !this.clickAndHoldTimerId) return;
 
-    this.pressed = false;
-    this.holdFired = false;
-    this.pressPos = null;
-    this.clearHoldTimer();
+    this.isMousePressed = false;
+    this.clickAndHoldTriggered = false;
+    this.mousePressPosition = null;
+    this.clearClickAndHoldTimer();
   };
 
   private onKeyDown = (e: KeyboardEvent): void => {
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
-    const config = this.cfg();
+    const config = this.getCurrentConfig();
     if (!config || !this.inTriggerMode(config)) {
-      this.resetKey();
+      this.resetHotkeySession();
       return;
     }
 
     const hotkey = HOTKEY_EVENT_KEYS[config.adaptiveTranslate.translate.triggerOnHover];
 
     if (e.key === hotkey) {
-      if (this.keyDown) return; // already tracking this key
+      if (this.isHotkeyPressed) return; // already tracking this key
 
-      this.keyDown = true;
-      this.activeKey = hotkey;
-      this.keyTimer = setTimeout(() => {
-        if (!this.pureSession || !this.keyDown) {
-          this.keyTimer = null;
+      this.isHotkeyPressed = true;
+      this.activeHotkeyEventKey = hotkey;
+      this.timerId = setTimeout(() => {
+        if (!this.isHotkeySessionPure || !this.isHotkeyPressed) {
+          this.timerId = null;
           return;
         }
 
-        const current = this.cfg();
+        const current = this.getCurrentConfig();
         if (!current || !this.inTriggerMode(current)) {
-          this.keyTimer = null;
+          this.timerId = null;
           return;
         }
         if (
-          HOTKEY_EVENT_KEYS[current.adaptiveTranslate.translate.triggerOnHover] !== this.activeKey
+          HOTKEY_EVENT_KEYS[current.adaptiveTranslate.translate.triggerOnHover] !==
+          this.activeHotkeyEventKey
         ) {
-          this.keyTimer = null;
+          this.timerId = null;
           return;
         }
 
-        this.trigger(this.pos);
-        this.keyTriggered = true;
-        this.keyTimer = null;
-      }, HOLD_DELAY_MS);
+        this.trigger(this.mousePosition, current);
+        this.actionTriggered = true;
+        this.timerId = null;
+      }, this.CLICK_AND_HOLD_TRIGGER_MS);
 
       // Session already impure (another key was pressed first) — cancel immediately
-      if (!this.pureSession && this.keyTimer) {
-        clearTimeout(this.keyTimer);
-        this.keyTimer = null;
+      if (!this.isHotkeySessionPure && this.timerId) {
+        clearTimeout(this.timerId);
+        this.timerId = null;
       }
     } else {
-      this.pureSession = false;
-      if (this.keyDown && this.keyTimer) {
-        clearTimeout(this.keyTimer);
-        this.keyTimer = null;
+      this.isHotkeySessionPure = false;
+      if (this.isHotkeyPressed && this.timerId) {
+        clearTimeout(this.timerId);
+        this.timerId = null;
       }
     }
   };
@@ -241,27 +251,27 @@ class NodeTranslation {
   private onKeyUp = (e: KeyboardEvent): void => {
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
-    const config = this.cfg();
+    const config = this.getCurrentConfig();
     if (!config || !this.inTriggerMode(config)) {
-      if (e.key === this.activeKey) this.resetKey();
+      if (e.key === this.activeHotkeyEventKey) this.resetHotkeySession();
       return;
     }
 
     const hotkey = HOTKEY_EVENT_KEYS[config.adaptiveTranslate.translate.triggerOnHover];
 
-    if (e.key === hotkey || e.key === this.activeKey) {
-      if (this.keyDown && this.pureSession) {
-        if (this.keyTimer) {
-          clearTimeout(this.keyTimer);
-          this.keyTimer = null;
+    if (e.key === hotkey || e.key === this.activeHotkeyEventKey) {
+      if (this.isHotkeyPressed && this.isHotkeySessionPure) {
+        if (this.timerId) {
+          clearTimeout(this.timerId);
+          this.timerId = null;
         }
-        if (!this.keyTriggered) {
-          const current = this.cfg();
+        if (!this.actionTriggered) {
+          const current = this.getCurrentConfig();
           if (!current || !this.inTriggerMode(current)) return;
-          this.trigger(this.pos);
+          this.trigger(this.mousePosition, current);
         }
       }
-      this.resetKey();
+      this.resetHotkeySession();
     }
   };
 }
@@ -275,18 +285,21 @@ type SimpleIntersectionOptions = Omit<IntersectionObserverInit, 'threshold'> & {
 export class PageTranslateManager {
   private readonly MAX_DURATION = 500;
   private readonly MOVE_THRESHOLD = 30 * 30;
+  // TODO: 我们需要这个吗?
+  // Pre-translate Range
+  // Control how much content below the viewport gets pre-translated to save API costs
   private readonly DEFAULT_INTERSECTION_OPTIONS: SimpleIntersectionOptions = {
     root: null,
     rootMargin: '600px',
     threshold: 0.1
   };
 
-  private active: boolean = false;
+  private isPageTranslating: boolean = false;
   private intersectionObserver: IntersectionObserver | null = null;
   private mutationObservers: MutationObserver[] = [];
   private walkId: string | null = null;
   private intersectionOptions: IntersectionObserverInit;
-  private dontWalkCache = new WeakSet<HTMLElement>();
+  private dontWalkIntoElementsCache = new WeakSet<HTMLElement>();
   private titleObserver: MutationObserver | null = null;
   private lastSourceTitle: string | null = null;
   private lastAppliedTranslatedTitle: string | null = null;
@@ -309,7 +322,7 @@ export class PageTranslateManager {
    * Indicates whether the page translation is currently active
    */
   get isTranslating(): boolean {
-    return this.active;
+    return this.isPageTranslating;
   }
 
   /**
@@ -317,7 +330,7 @@ export class PageTranslateManager {
    * Registers observers, touch triggers and set storage
    */
   async start(analyticsContext?: FeatureUsageContext): Promise<void> {
-    if (this.active) {
+    if (this.isPageTranslating) {
       logger.warn('PageTranslateManager is already active');
       return;
     }
@@ -341,9 +354,9 @@ export class PageTranslateManager {
         enabled: true
       });
 
-      this.active = true;
-      await this.primeTitle();
-      this.startTitleTracking();
+      this.isPageTranslating = true;
+      await this.primeDocumentTitleContext();
+      this.startDocumentTitleTracking();
 
       // Listen to existing elements when they enter the viewpoint
       const walkId = cryptoPolyfill.getUUID();
@@ -352,34 +365,33 @@ export class PageTranslateManager {
         logger.trace('IntersectionObserver callback triggered', { entries });
         for (const entry of entries) {
           const { target, isIntersecting } = entry;
-          if (isIntersecting) {
-            if (domFilter.isHTMLElement(target)) {
-              logger.info('Element entered viewport', { target });
-              if (!target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
-                const {
-                  targetLangCode,
-                  adaptiveTranslate: {
-                    translate: { mode: translateMode, pageRange, displayStyle }
-                  }
-                } = configStore.get();
-                void translateWalkedElement(
-                  target,
-                  walkId,
-                  translateMode,
-                  pageRange,
-                  targetLangCode,
-                  displayStyle
-                );
-              }
+          if (!isIntersecting) continue;
+          if (domFilter.isHTMLElement(target)) {
+            logger.info('Element entered viewport', { target });
+            if (!target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
+              const {
+                targetLangCode,
+                adaptiveTranslate: {
+                  translate: { mode: translateMode, pageRange, displayStyle }
+                }
+              } = configStore.get();
+              void translateWalkedElement(
+                target,
+                walkId,
+                translateMode,
+                pageRange,
+                targetLangCode,
+                displayStyle
+              );
             }
-            observer.unobserve(entry.target);
           }
+          observer.unobserve(target);
         }
       }, this.intersectionOptions);
 
       // Initialize walkability state for existing elements
       this.addDontWalkIntoElements(document.body);
-      await this.observeParagraphs(document.body);
+      await this.observerTopLevelParagraphs(document.body);
 
       // Start observing mutations from document.body and all shadow roots
       this.observeMutations(document.body);
@@ -408,7 +420,7 @@ export class PageTranslateManager {
    * Cleans up all observers and removes translated content and set storage
    */
   stop(): void {
-    if (!this.active) {
+    if (!this.isPageTranslating) {
       logger.warn('PageTranslationManager is already inactive');
       return;
     }
@@ -419,10 +431,10 @@ export class PageTranslateManager {
       enabled: false
     });
 
-    this.active = false;
+    this.isPageTranslating = false;
     this.walkId = null;
-    this.dontWalkCache = new WeakSet();
-    this.stopTitleTracking();
+    this.dontWalkIntoElementsCache = new WeakSet();
+    this.stopDocumentTitleTracking();
 
     if (this.intersectionObserver) {
       this.intersectionObserver.disconnect();
@@ -470,10 +482,15 @@ export class PageTranslateManager {
     const onEnd = () => {
       if (!startTouches) return;
       if (performance.now() - startTime < this.MAX_DURATION) {
-        if (this.active) {
+        if (this.isPageTranslating) {
           this.stop();
         } else {
-          void this.start();
+          void this.start(
+            analyticsManager.createFeatureUsageContext(
+              ANALYTICS_FEATURE.ADAPTIVE_TRANSLATE,
+              ANALYTICS_SURFACE.TOUCH_GESTURE
+            )
+          );
         }
       }
       reset();
@@ -492,44 +509,42 @@ export class PageTranslateManager {
     };
   }
 
-  private isTopFrame(): boolean {
+  private shouldManageDocumentTitle(): boolean {
     return window === window.top;
   }
 
-  private async primeTitle(): Promise<void> {
-    if (!this.isTopFrame()) {
-      return;
-    }
+  private async primeDocumentTitleContext(): Promise<void> {
+    if (!this.shouldManageDocumentTitle()) return;
+
+    const {
+      adaptiveTranslate: {
+        provider,
+        translate: { pageRange }
+      }
+    } = configStore.get();
+
+    if (!isLLMProvider(provider)) return;
 
     try {
-      const {
-        adaptiveTranslate: {
-          translate: { pageRange }
-        }
-      } = configStore.get();
       await webpage.context.get(pageRange);
     } catch (error) {
       logger.warn('Failed to prime webpage context before translating document title', { error });
     }
   }
 
-  private startTitleTracking(): void {
-    if (!this.isTopFrame()) {
-      return;
-    }
+  private startDocumentTitleTracking(): void {
+    if (!this.shouldManageDocumentTitle()) return;
 
     this.lastSourceTitle = document.title || '';
     this.lastAppliedTranslatedTitle = null;
     this.titleRequestVersion = 0;
 
-    this.observeTitle();
-    void this.syncTitle(this.lastSourceTitle);
+    this.observeDocumentTitle();
+    void this.syncDocumentTitle(this.lastSourceTitle);
   }
 
-  private stopTitleTracking(): void {
-    if (!this.isTopFrame()) {
-      return;
-    }
+  private stopDocumentTitleTracking(): void {
+    if (!this.shouldManageDocumentTitle()) return;
 
     const currentTitle = document.title || '';
     if (currentTitle !== this.lastAppliedTranslatedTitle) {
@@ -551,17 +566,15 @@ export class PageTranslateManager {
     this.lastAppliedTranslatedTitle = null;
   }
 
-  private observeTitle(): void {
-    if (!document.head) {
-      return;
-    }
+  private observeDocumentTitle(): void {
+    if (!document.head) return;
 
     if (this.titleObserver) {
       this.titleObserver.disconnect();
     }
 
     this.titleObserver = new MutationObserver(() => {
-      this.onTitleMutation();
+      this.handleDocumentTitleMutation();
     });
 
     this.titleObserver.observe(document.head, {
@@ -571,37 +584,51 @@ export class PageTranslateManager {
     });
   }
 
-  private onTitleMutation(): void {
-    if (!this.active || !this.isTopFrame()) {
-      return;
-    }
+  private handleDocumentTitleMutation(): void {
+    if (!this.isPageTranslating || !this.shouldManageDocumentTitle()) return;
 
     const currentTitle = document.title || '';
 
-    if (currentTitle === this.lastSourceTitle) {
-      return;
-    }
+    if (currentTitle === this.lastSourceTitle) return;
 
-    if (currentTitle === this.lastAppliedTranslatedTitle) {
-      return;
-    }
+    if (currentTitle === this.lastAppliedTranslatedTitle) return;
 
     this.lastSourceTitle = currentTitle;
-    void this.syncTitle(currentTitle);
+    void this.syncDocumentTitle(currentTitle);
   }
 
-  private async syncTitle(sourceTitle: string): Promise<void> {
-    if (!sourceTitle.trim() || !this.active || !this.isTopFrame()) {
-      return;
-    }
+  private async syncDocumentTitle(sourceTitle: string): Promise<void> {
+    if (!sourceTitle.trim() || !this.isPageTranslating || !this.shouldManageDocumentTitle()) return;
 
     const requestVersion = ++this.titleRequestVersion;
+    if (!this.isPageTranslating || requestVersion !== this.titleRequestVersion) return;
 
     try {
       logger.info('Would translate title:', { sourceTitle });
-      if (!this.active || requestVersion !== this.titleRequestVersion) {
-        return;
-      }
+
+      const {
+        sourceLangCode,
+        targetLangCode,
+        adaptiveTranslate: {
+          provider: providerConfig,
+          translate: { pageRange }
+        }
+      } = configStore.get();
+
+      const translatedTitle = await translateTextForPageTitle(
+        sourceTitle,
+        providerConfig,
+        sourceLangCode ?? 'auto',
+        targetLangCode,
+        pageRange
+      );
+
+      const nextTitle = translatedTitle || sourceTitle;
+      this.lastAppliedTranslatedTitle = nextTitle;
+
+      if (document.title === nextTitle) return;
+
+      document.title = nextTitle;
     } catch (error) {
       if (requestVersion === this.titleRequestVersion) {
         logger.warn('Failed to translate document title:', { error });
@@ -609,7 +636,7 @@ export class PageTranslateManager {
     }
   }
 
-  private async observeParagraphs(container: HTMLElement): Promise<void> {
+  private async observerTopLevelParagraphs(container: HTMLElement): Promise<void> {
     const observer = this.intersectionObserver;
     if (!this.walkId || !observer) return;
 
@@ -618,19 +645,25 @@ export class PageTranslateManager {
         translate: { pageRange }
       }
     } = configStore.get();
+
+    // Skip if container has an ancestor that should not be walked into
     if (domFilter.hasNoWalkAncestor(container, pageRange)) return;
 
     domTraversal.walkAndLabelElement(container, this.walkId, pageRange);
 
-    const containerWalked = container.getAttribute('data-walked');
-    if (container.hasAttribute('data-paragraph') && containerWalked === this.walkId) {
+    // if container itself has paragraph and the id
+    const containerWalked = container.getAttribute(WALKED_ATTRIBUTE);
+    if (container.hasAttribute(PARAGRAPH_ATTRIBUTE) && containerWalked === this.walkId) {
       observer.observe(container);
       return;
     }
 
     const paragraphs = this.collectParagraphsDeep(container, this.walkId);
     const topLevelParagraphs = paragraphs.filter((el) => {
-      const ancestor = el.parentElement?.closest('[data-paragraph]');
+      const ancestor = el.parentElement?.closest(`[${PARAGRAPH_ATTRIBUTE}]`);
+      // keep it if either:
+      //  • no paragraph ancestor at all, or
+      //  • the ancestor is *not* inside container
       return !ancestor || !container.contains(ancestor);
     });
     topLevelParagraphs.forEach((el) => observer.observe(el));
@@ -644,7 +677,9 @@ export class PageTranslateManager {
 
     const collectFromContainer = (root: HTMLElement | Document | ShadowRoot) => {
       const elements = Array.from(
-        root.querySelectorAll<HTMLElement>(`[data-paragraph][data-walked="${CSS.escape(walkId)}"]`)
+        root.querySelectorAll<HTMLElement>(
+          `[${PARAGRAPH_ATTRIBUTE}][${WALKED_ATTRIBUTE}="${CSS.escape(walkId)}"]`
+        )
       );
       result.push(...elements);
     };
@@ -677,15 +712,19 @@ export class PageTranslateManager {
    * when element transitions from "don't walk into" to "walkable"
    */
   private didChangeToWalkable(element: HTMLElement): boolean {
-    const wasDontWalkInto = this.dontWalkCache.has(element);
+    const wasDontWalkInto = this.dontWalkIntoElementsCache.has(element);
     const isDontWalkIntoNow = domFilter.isDontWalkIntoButTranslateAsChildElement(element);
 
+    // Update cache with current state
     if (isDontWalkIntoNow) {
-      this.dontWalkCache.add(element);
+      this.dontWalkIntoElementsCache.add(element);
     } else {
-      this.dontWalkCache.delete(element);
+      this.dontWalkIntoElementsCache.delete(element);
     }
 
+    // Only trigger observation if element transitioned from "don't walk into" to "walkable"
+    // wasDontWalkInto === true means it was previously not walkable
+    // isDontWalkIntoNow === false means it's now walkable
     return wasDontWalkInto === true && isDontWalkIntoNow === false;
   }
 
@@ -695,9 +734,9 @@ export class PageTranslateManager {
   private addDontWalkIntoElements(element: HTMLElement): void {
     const dontWalkIntoElements = domFinder.deepQueryTopLevelSelector(
       element,
-      domFilter.isDontWalkIntoButTranslateAsChildElement.bind(this)
+      domFilter.isDontWalkIntoButTranslateAsChildElement
     );
-    dontWalkIntoElements.forEach((el) => this.dontWalkCache.add(el));
+    dontWalkIntoElements.forEach((el) => this.dontWalkIntoElementsCache.add(el));
   }
 
   /**
@@ -710,8 +749,8 @@ export class PageTranslateManager {
           rec.addedNodes.forEach((node) => {
             if (domFilter.isHTMLElement(node)) {
               this.addDontWalkIntoElements(node);
-              void this.observeParagraphs(node);
-              this.observeShadows(node);
+              void this.observerTopLevelParagraphs(node);
+              this.observeIsolatedDescendantsMutations(node);
             }
           });
         } else if (
@@ -720,7 +759,7 @@ export class PageTranslateManager {
         ) {
           const el = rec.target;
           if (domFilter.isHTMLElement(el) && this.didChangeToWalkable(el)) {
-            void this.observeParagraphs(el);
+            void this.observerTopLevelParagraphs(el);
           }
         }
       }
@@ -734,10 +773,16 @@ export class PageTranslateManager {
     });
 
     this.mutationObservers.push(mutationObserver);
-    this.observeShadows(container);
+    this.observeIsolatedDescendantsMutations(container);
   }
 
-  private observeShadows(element: HTMLElement): void {
+  /**
+   * Recursively find and observe shadow roots and iframes in an element and its descendants
+   * These can't be find as top level paragraph elements because isolated shadow roots and iframes are not
+   * considered as part of the document.
+   */
+  private observeIsolatedDescendantsMutations(element: HTMLElement): void {
+    // Check if this element has a shadow root
     if (element.shadowRoot) {
       for (const child of Array.from(element.shadowRoot.children)) {
         if (domFilter.isHTMLElement(child)) {
@@ -746,9 +791,10 @@ export class PageTranslateManager {
       }
     }
 
+    // Recursively check children
     for (const child of Array.from(element.children)) {
       if (domFilter.isHTMLElement(child)) {
-        this.observeShadows(child);
+        this.observeIsolatedDescendantsMutations(child);
       }
     }
   }

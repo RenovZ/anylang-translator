@@ -26,11 +26,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
 
   const teardownNodeTranslation = nodeTranslation.register();
 
-  const manager = new PageTranslateManager({
-    root: null,
-    rootMargin: '0px',
-    threshold: 0
-  });
+  const manager = new PageTranslateManager();
 
   const cleanupTriggers = manager.registerTriggers();
 

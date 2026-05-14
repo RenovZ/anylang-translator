@@ -31,7 +31,7 @@ const featureConfigBaseSchema = z.object({
   provider: providerSchema.nullable(),
   shortcut: z.array(z.string()),
   autoAppliedSites: z.array(z.string()).optional(),
-  autoAppliedLangs: langCodeSchema.optional()
+  autoAppliedLangs: z.array(langCodeSchema).optional()
 });
 const featureAdaptiveTranslateSchema = featureConfigBaseSchema.extend({
   provider: providerSchema,

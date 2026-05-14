@@ -71,6 +71,7 @@ class IsolatedToastManager {
     this.teardown();
 
     const target = this.ensureHost();
+    logger.trace({ target, type, msgOrOpts });
 
     this.component = mount(IsolatedToast, {
       target,

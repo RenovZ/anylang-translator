@@ -114,7 +114,8 @@
               $config.adaptiveTranslate.translate.displayStyle = {
                 value: 'custom',
                 label: item.label,
-                styles
+                styles,
+                customCSS: null
               };
               return;
             }

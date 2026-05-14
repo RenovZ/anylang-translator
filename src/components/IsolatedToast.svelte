@@ -9,6 +9,8 @@
 </script>
 
 <script lang="ts">
+  import { NOTRANSLATE_CLASS } from '@/preset/dom';
+
   let { show = $bindable(false), type, title, message, onclose }: IsolatedToastProp = $props();
 
   function close() {
@@ -19,7 +21,7 @@
 
 {#if show}
   <div
-    class="anylang-toast"
+    class={`anylang-toast ${NOTRANSLATE_CLASS}`}
     class:anylang-toast--success={type === 'success'}
     class:anylang-toast--error={type === 'error'}
     class:anylang-toast--warn={type === 'warn'}

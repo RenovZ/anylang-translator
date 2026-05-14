@@ -1,4 +1,12 @@
 :root {
+  --text-xs: 10px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+}
+
+:root {
   --anylang-primary: oklch(76.5% 0.177 163.223);
   --anylang-muted: oklch(0.97 0 0);
   --anylang-muted-foreground: oklch(0.556 0 0);
