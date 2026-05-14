@@ -9,40 +9,43 @@ interface Protocol {
   generateText: (data: GenerateTextParams) => Promise<GenerateTextResult>;
 
   // navigation
-  openPage: (data: { url: string; active?: boolean }) => void;
-  openOptionsPage: () => void;
+  openPage: (data: { url: string; active?: boolean }) => Promise<void>;
+  openOptionsPage: () => Promise<void>;
 
   // features
   adaptiveTranslate: (data: {
     tabId: number;
     enabled: boolean;
     analyticsContext?: FeatureUsageContext;
-  }) => void;
+  }) => Promise<void>;
   getPageTranslationActive: () => Promise<boolean>;
-  reportPageTranslateState: (data: { enabled: boolean }) => void;
+  reportPageTranslateState: (data: { enabled: boolean }) => Promise<void>;
   togglePageTranslation: (data: {
     enabled: boolean;
     analyticsContext?: FeatureUsageContext;
-  }) => void;
+  }) => Promise<void>;
 
   // popup / floating button → background → content script
   trySetPageTranslationByTabId: (data: {
     tabId: number;
     enabled: boolean;
     analyticsContext?: FeatureUsageContext;
-  }) => void;
+  }) => Promise<void>;
   trySetPageTranslationFromContentScript: (data: {
     enabled: boolean;
     analyticsContext?: FeatureUsageContext;
-  }) => void;
+  }) => Promise<void>;
 
-  instantLookup: () => void;
+  instantLookup: () => Promise<void>;
 
   // for auto start page translation
-  checkAutoPageTranslation: (data: { url: string; detectedCodeOrUnd: LangCode | 'und' }) => void;
+  checkAutoPageTranslation: (data: {
+    url: string;
+    detectedCodeOrUnd: LangCode | 'und';
+  }) => Promise<void>;
 
   // analytics
-  trackFeatureUsedEvent: (data: FeatureUsedEvent) => void;
+  trackFeatureUsedEvent: (data: FeatureUsedEvent) => Promise<void>;
 
   // page translate
   enqueueTranslateRequest: (data: {

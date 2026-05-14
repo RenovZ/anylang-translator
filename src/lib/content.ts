@@ -2,7 +2,7 @@ import { generateText } from 'ai';
 import { franc } from 'franc';
 import { Readability } from '@mozilla/readability';
 
-import { toast } from '@/components/isolated-toast';
+import { toast } from '@/components/toast-wrapper';
 import { removeDummyNodes } from '@/lib/dom';
 import { FRANC_TO_LANG_CODE } from '@/preset/franc-map';
 import { DEFAULT_LANG_DETECTION_SYSTEM_PROMPT } from '@/preset/prompt';

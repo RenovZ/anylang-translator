@@ -1,4 +1,4 @@
-import { toast } from '@/components/isolated-toast';
+import { toast } from '@/components/toast-wrapper';
 import configStore from '@/lib/config';
 import contentManager from '@/lib/content';
 import cryptoPolyfill from '@/lib/crypto-polyfill';
@@ -109,13 +109,13 @@ export async function translate<TContext>(
 const MIN_LANG_DETECT_LEN = 50;
 
 export function validateTranslationConfigAndToast(): boolean {
-  const config = configStore.get();
-  const { langCode: detectedCode } = config.langDetection;
+  const {
+    sourceLangCode,
+    targetLangCode,
+    langDetection: { langCode: detectedCode }
+  } = configStore.get();
 
-  if (
-    config.sourceLangCode === config.targetLangCode ||
-    (!config.sourceLangCode && detectedCode === config.targetLangCode)
-  ) {
+  if (sourceLangCode === targetLangCode || (!sourceLangCode && detectedCode === targetLangCode)) {
     toast.error(
       i18n('toast_translation_same_langauge', {
         defaultValue: 'Source and target languages are the same'

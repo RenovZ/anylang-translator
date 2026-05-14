@@ -225,7 +225,7 @@
   <button
     type="button"
     class="flex items-center gap-1"
-    onclick={() => sendMessage('openOptionsPage')}>
+    onclick={async () => sendMessage('openOptionsPage')}>
     <CogOutline class="h-4 w-4 shrink-0" />
     <span>{i18n('settings', { defaultValue: 'Settings' })}</span>
   </button>

@@ -9,6 +9,7 @@ import {
   NOTRANSLATE_CLASS,
   PARAGRAPH_ATTRIBUTE,
   SHADOW_HOST_CLASS,
+  SPINNER_CLASS,
   TRANSLATION_MODE_ATTRIBUTE,
   WALKED_ATTRIBUTE
 } from '@/preset/dom';
@@ -38,7 +39,7 @@ export function removeShadowHostInTranslatedWrapper(wrapper: HTMLElement): void 
   }
 
   // Remove lightweight spinners
-  const spinner = wrapper.querySelector('.read-frog-spinner');
+  const spinner = wrapper.querySelector(`.${SPINNER_CLASS}`);
   if (spinner) {
     domBatcher.batchDOMOperation(() => spinner.remove());
   }

@@ -10,14 +10,8 @@ declare global {
   // }
 }
 
-export type {};
-
-export {};
-
-// Type definitions for unplugin-icons
-// ~icons/tabler/arrow-right
-// ~icons/ri/translate
-// ~icons/lucide/anything
+// Type definitions for unplugin-icons virtual modules
+// e.g. ~icons/tabler/arrow-right, ~icons/ri/translate, ~icons/lucide/anything
 declare module '~icons/*' {
   import type { Component } from 'svelte';
   const component: Component;

@@ -1,10 +1,12 @@
 <script module lang="ts">
-  export interface ToastProp {
+  export interface ToastWrapperProp {
     show: boolean;
-    type: 'success' | 'error' | 'info' | 'debug';
+    type: 'success' | 'error' | 'warn' | 'info' | 'debug';
     message?: string | import('svelte').Snippet;
     title?: string | import('svelte').Snippet;
     titleClass?: string;
+    onclose?: () => void;
+    position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   }
 </script>
 
@@ -16,6 +18,7 @@
   const TYPED_COLOR = {
     success: 'green',
     error: 'red',
+    warn: 'yellow',
     info: 'blue',
     debug: 'gray'
   } as const;
@@ -25,16 +28,29 @@
     type,
     title,
     titleClass,
-    message
-  }: ToastProp & { children?: import('svelte').Snippet } = $props();
+    message,
+    onclose,
+    position = 'top-right'
+  }: ToastWrapperProp & { children?: import('svelte').Snippet } = $props();
+
+  function close() {
+    show = false;
+    onclose?.();
+  }
+
+  $effect(() => {
+    console.log(show, type, title, titleClass, message, position);
+  });
 </script>
 
 {#if show}
   <Toast
+    dismissable
+    {position}
     align={!title}
     class="fixed top-25 left-5 z-9999"
     color={TYPED_COLOR[type]}
-    onclose={() => (show = false)}>
+    onclose={close}>
     {#snippet icon()}
       {#if type === 'success'}
         <CheckCircleSolid class="h-5 w-5" />

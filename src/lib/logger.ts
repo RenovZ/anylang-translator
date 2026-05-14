@@ -1,3 +1,5 @@
+import { APP_NAME } from './app';
+
 const isDev = import.meta.env?.DEV ?? true;
 
 const LEVELS = { trace: 0, debug: 1, info: 3, warn: 4, error: 5 } as const;
@@ -147,7 +149,7 @@ class Logger {
       const prefix = callerTag
         ? `${color}[${levelStr}]${ansiReset} [${moduleName}] [${callerTag}]`
         : `${color}[${levelStr}]${ansiReset} [${moduleName}]`;
-      const args = [prefix];
+      const args = [`[${APP_NAME}]`, prefix];
       if (message) args.push(message);
       if (fields && Object.keys(fields).length > 0) {
         args.push(JSON.stringify(fields));
@@ -158,7 +160,7 @@ class Logger {
       const prefix = callerTag
         ? `[${levelStr}] [${moduleName}] [${callerTag}]`
         : `[${levelStr}] [${moduleName}]`;
-      const args: unknown[] = [`%c${prefix}`, style];
+      const args: unknown[] = [`[${APP_NAME}] %c${prefix}`, style];
       if (message) args.push(message);
       if (fields && Object.keys(fields).length > 0) {
         args.push(fields);

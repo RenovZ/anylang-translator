@@ -7,7 +7,7 @@
   import type { FeatureField } from '@/preset/constants';
 
   import SectionRow from './SectionRow.svelte';
-  import type { ToastProp } from './ToastWrapper.svelte';
+  import type { ToastWrapperProp } from './ToastWrapper.svelte';
   import ToastWrapper from './ToastWrapper.svelte';
 
   interface Prop {
@@ -19,7 +19,7 @@
   const { title, description, field }: Prop = $props();
   const shortcutSettings = shortcut.getSettingsUrl();
 
-  let toast = $state<ToastProp>({
+  let toast = $state<ToastWrapperProp>({
     show: false,
     type: 'success',
     message: ''

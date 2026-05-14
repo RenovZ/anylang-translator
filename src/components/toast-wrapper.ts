@@ -1,20 +1,24 @@
 import { mount, unmount } from 'svelte';
 
+import appCSS from '@/assets/app.css?inline';
 import logger from '@/lib/logger';
+import { ShadowHostBuilder } from '@/lib/shadow-host';
+import { SHADOW_HOST_CLASS } from '@/preset/dom';
 
-import type { IsolatedToastProp } from './IsolatedToast.svelte';
-import IsolatedToast from './IsolatedToast.svelte';
+import type { ToastWrapperProp } from './ToastWrapper.svelte';
+import ToastWrapper from './ToastWrapper.svelte';
 
-export interface ToastOptions {
+type ToastPosition = ToastWrapperProp['position'];
+type ToastType = ToastWrapperProp['type'];
+interface ToastOptions {
   message: string;
   title?: string;
   /** Auto-dismiss delay in ms. Default 4000. Set 0 to disable. */
   duration?: number;
+  position?: ToastPosition;
 }
 
-type ToastType = IsolatedToastProp['type'];
-
-class IsolatedToastManager {
+class ToastManager {
   private readonly DATA_ATTR = 'data-anylang-toast-host';
   private readonly DEFAULT_DURATION = 4000;
 
@@ -32,9 +36,17 @@ class IsolatedToastManager {
     this.shadowHost?.remove();
 
     this.shadowHost = document.createElement('div');
+    this.shadowHost.classList.add(SHADOW_HOST_CLASS);
     this.shadowHost.setAttribute(this.DATA_ATTR, '');
+
     const shadowRoot = this.shadowHost.attachShadow({ mode: 'open' });
-    this.container = document.createElement('div');
+    const hostBuilder = new ShadowHostBuilder(shadowRoot, {
+      position: 'block',
+      cssContent: [appCSS],
+      inheritStyles: false
+    });
+    this.container = hostBuilder.build();
+
     shadowRoot.appendChild(this.container);
 
     (document.body ?? document.documentElement).appendChild(this.shadowHost);
@@ -73,11 +85,12 @@ class IsolatedToastManager {
     const target = this.ensureHost();
     logger.trace({ target, type, msgOrOpts });
 
-    this.component = mount(IsolatedToast, {
+    this.component = mount(ToastWrapper, {
       target,
       props: {
         show: true,
         type,
+        position: opts.position,
         message: opts.message,
         title: opts.title,
         onclose: () => this.dismiss()
@@ -107,6 +120,7 @@ class IsolatedToastManager {
   error = (msgOrOpts: string | ToastOptions) => this.show('error', msgOrOpts);
   warn = (msgOrOpts: string | ToastOptions) => this.show('warn', msgOrOpts);
   info = (msgOrOpts: string | ToastOptions) => this.show('info', msgOrOpts);
+  debug = (msgOrOpts: string | ToastOptions) => this.show('debug', msgOrOpts);
 }
 
-export const toast = new IsolatedToastManager();
+export const toast = new ToastManager();

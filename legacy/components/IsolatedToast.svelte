@@ -84,6 +84,12 @@
 {/if}
 
 <style>
+  /*:global([data-anylang-toast-host]) {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-color: green;
+  }*/
   .anylang-toast,
   .anylang-toast *,
   .anylang-toast *::before,

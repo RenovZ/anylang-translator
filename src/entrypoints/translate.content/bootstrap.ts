@@ -1,6 +1,6 @@
 import type { ContentScriptContext } from '#imports';
 
-import { toast } from '@/components/isolated-toast';
+import { toast } from '@/components/toast-wrapper';
 import configStore from '@/lib/config';
 import contentManager from '@/lib/content';
 import logger from '@/lib/logger';
