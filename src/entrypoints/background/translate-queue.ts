@@ -5,8 +5,8 @@ import { getSubtitlesTranslatePrompt, getTranslatePrompt } from '@/lib/prompt';
 import { onMessage } from '@/lib/protocol';
 import { BatchQueue } from '@/lib/request/batch-queue';
 import { RequestQueue } from '@/lib/request/request-queue';
-import { normalizePromptContextValue, translateUtils } from '@/lib/translate/core';
 import { generateArticleSummary, translate } from '@/lib/translate/sw';
+import { translateUtils } from '@/lib/translate/utils';
 import { putBatchRequestRecord } from '@/lib/utils/batch-request-record';
 import { BATCH_SEPARATOR } from '@/preset/prompt';
 import { DEFAULT_BATCH_QUEUE_CONFIG, DEFAULT_REQUEST_QUEUE_CONFIG } from '@/preset/translate';
@@ -178,9 +178,9 @@ export async function setUpWebPageTranslationQueue() {
 
     let result = '';
     const context: WebPagePromptContext = {
-      webTitle: normalizePromptContextValue(webTitle),
-      webContent: normalizePromptContextValue(webContent),
-      webSummary: normalizePromptContextValue(webSummary)
+      webTitle: translateUtils.normalize(webTitle),
+      webContent: translateUtils.normalize(webContent),
+      webSummary: translateUtils.normalize(webSummary)
     };
 
     if (shouldUseBatchQueue(providerConfig)) {
@@ -305,8 +305,8 @@ export async function setUpSubtitlesTranslationQueue() {
 
     let result = '';
     const context: SubtitlePromptContext = {
-      videoTitle: normalizePromptContextValue(videoTitle),
-      videoSummary: normalizePromptContextValue(summary)
+      videoTitle: translateUtils.normalize(videoTitle),
+      videoSummary: translateUtils.normalize(summary)
     };
 
     if (shouldUseBatchQueue(providerConfig)) {

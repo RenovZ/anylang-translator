@@ -11,7 +11,7 @@ import { AIProvider, type ProviderConfig } from '@/types/provider';
 import { aiTranslate } from './api/ai';
 import { bingTranslate } from './api/bing';
 import { googleTranslate } from './api/google';
-import { translateUtils } from './core';
+import { translateUtils } from './utils';
 
 export async function shouldEnableAutoTranslation(
   url: string,

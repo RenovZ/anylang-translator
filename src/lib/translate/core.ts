@@ -5,7 +5,6 @@ import domTraversal from '@/lib/dom/traversal';
 import { sha256 } from '@/lib/hash';
 import logger from '@/lib/logger';
 import { sendMessage } from '@/lib/protocol';
-import { MAX_TEXT_LENGTH, WHITESPACE_RUN_RE, ZERO_WIDTH_CHARS_RE } from '@/preset/content';
 import {
   BLOCK_ATTRIBUTE,
   CONTENT_WRAPPER_CLASS,
@@ -23,7 +22,6 @@ import { isLLMProvider, type ProviderConfig } from '@/types/provider';
 import type { DisplayStyle } from '@/types/translate';
 
 import { getOwnerDocument } from '../dom';
-import { FORCE_INLINE_TRANSLATION_TAGS } from '../dom/constants';
 import { getTranslatePrompt } from '../prompt';
 
 import {
@@ -36,6 +34,7 @@ import {
   getTranslatedTextAndRemoveSpinner,
   setTranslationDirAndLang
 } from './ui';
+import { translateUtils } from './utils';
 
 const HTML_COMMENT_RE = /<!--[\s\S]*?-->/g;
 
@@ -511,29 +510,6 @@ export async function translateWalkedElement(
   await Promise.all(promises);
 }
 
-export function normalizePromptContextValue(
-  value: string | null | undefined
-): string | null | undefined {
-  if (value == null) {
-    return value;
-  }
-  return value.trim() === '' ? null : value;
-}
-
-function normalizeWebPagePromptContext(
-  webPageContext?: WebPagePromptContext
-): WebPagePromptContext | undefined {
-  if (!webPageContext) {
-    return undefined;
-  }
-
-  return {
-    webTitle: normalizePromptContextValue(webPageContext.webTitle),
-    webContent: normalizePromptContextValue(webPageContext.webContent),
-    webSummary: normalizePromptContextValue(webPageContext.webSummary)
-  };
-}
-
 async function buildWebPageHashComponents(
   text: string,
   providerConfig: ProviderConfig,
@@ -543,7 +519,7 @@ async function buildWebPageHashComponents(
   webPageContext?: WebPagePromptContext
 ): Promise<string[]> {
   const preparedText = translateUtils.prepareTranslationText(text);
-  const context = normalizeWebPagePromptContext(webPageContext);
+  const context = translateUtils.normalizeWebPagePromptContext(webPageContext);
   const hashComponents = [
     preparedText,
     JSON.stringify(providerConfig),
@@ -611,7 +587,7 @@ export async function translateTextCore(options: {
   const preparedText = translateUtils.prepareTranslationText(text);
   if (preparedText === '') return '';
 
-  const normalizedWebPageContext = normalizeWebPagePromptContext(webPageContext);
+  const normalizedWebPageContext = translateUtils.normalizeWebPagePromptContext(webPageContext);
 
   const hashComponents = await buildWebPageHashComponents(
     preparedText,
@@ -639,53 +615,3 @@ export async function translateTextCore(options: {
   logger.debug('enqueueTranslateRequest', { msg });
   return await sendMessage('enqueueTranslateRequest', msg);
 }
-
-class TranslateUtils {
-  // Pattern matches numbers with optional thousand separators and decimal points
-  // Examples: "123", "1,234", "1,234.56", "1 234", "1.234,56" (European format)
-  private readonly NUMERIC_PATTERN = /^[\d\s,.-]+$/;
-  private readonly CONTAINS_DIGIT_RE = /\d/;
-  private readonly INVISIBLE_TRANSLATION_CHARACTERS_REGEX = /[\u200B-\u200D\uFEFF]/g;
-
-  // Helper function to check if content is purely numeric
-  isNumericContent(text: string): boolean {
-    // Remove whitespace and check if remaining content is numeric
-    // Allow numbers, decimals, commas, and common numeric separators
-    const cleanedText = text.trim();
-    if (!cleanedText) return false;
-
-    if (!this.NUMERIC_PATTERN.test(cleanedText)) return false;
-
-    // Additional check: ensure there's at least one digit
-    return this.CONTAINS_DIGIT_RE.test(cleanedText);
-  }
-
-  isForceInlineTranslation(targetNode: TransNode): boolean {
-    if (domFilter.isHTMLElement(targetNode)) {
-      const computedStyle = window.getComputedStyle(targetNode);
-      return (
-        FORCE_INLINE_TRANSLATION_TAGS.has(targetNode.tagName) ||
-        computedStyle.display.includes('flex')
-      );
-    }
-    return false;
-  }
-
-  prepareTranslationText(value: string | null | undefined): string {
-    return value?.replace(this.INVISIBLE_TRANSLATION_CHARACTERS_REGEX, '').trim() ?? '';
-  }
-
-  /**
-   * Clean and truncate article text for post processing
-   */
-  cleanText(textContent: string, maxLength: number = MAX_TEXT_LENGTH): string {
-    const cleaned = textContent
-      .replace(ZERO_WIDTH_CHARS_RE, '') // 零宽字符
-      .replace(WHITESPACE_RUN_RE, ' ')
-      .trim();
-
-    return cleaned.length <= maxLength ? cleaned : cleaned.slice(0, maxLength);
-  }
-}
-
-export const translateUtils = new TranslateUtils();

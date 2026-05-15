@@ -17,8 +17,9 @@ import { TransNode } from '@/types/dom';
 import type { DisplayStyle } from '@/types/translate';
 
 import { getOwnerDocument } from '../dom';
+import { FORCE_INLINE_TRANSLATION_TAGS } from '../dom/constants';
 
-import { translateState, translateUtils } from './core';
+import { translateState } from './core';
 import { decorateTranslationNode } from './ui';
 
 export function removeShadowHostInTranslatedWrapper(wrapper: HTMLElement): void {
@@ -183,7 +184,7 @@ export async function insertTranslatedNodeIntoWrapper(
   // Use the wrapper's owner document
   const ownerDoc = getOwnerDocument(translatedWrapperNode);
   const translatedNode = ownerDoc.createElement('span');
-  const forceInlineTranslation = translateUtils.isForceInlineTranslation(targetNode);
+  const forceInlineTranslation = isForceInlineTranslation(targetNode);
   const customForceBlock =
     domFilter.isHTMLElement(targetNode) && domFilter.isCustomForceBlockTranslation(targetNode);
 
@@ -213,4 +214,15 @@ export async function insertTranslatedNodeIntoWrapper(
   ) {
     translatedNode.setAttribute(FLOAT_WRAP_ATTRIBUTE, 'true');
   }
+}
+
+function isForceInlineTranslation(targetNode: TransNode): boolean {
+  if (domFilter.isHTMLElement(targetNode)) {
+    const computedStyle = window.getComputedStyle(targetNode);
+    return (
+      FORCE_INLINE_TRANSLATION_TAGS.has(targetNode.tagName) ||
+      computedStyle.display.includes('flex')
+    );
+  }
+  return false;
 }

@@ -3,7 +3,7 @@ import { Readability } from '@mozilla/readability';
 
 import { toast } from '@/components/toast-wrapper';
 import { removeDummyNodes } from '@/lib/dom';
-import { translateUtils } from '@/lib/translate/core';
+import { translateUtils } from '@/lib/translate/utils';
 import { DEFAULT_MAX_LENGTH_FOR_LLM, DEFAULT_MIN_LENGTH } from '@/preset/content';
 import { FRANC_TO_LANG_CODE } from '@/preset/franc-map';
 import { DEFAULT_LANG_DETECTION_SYSTEM_PROMPT } from '@/preset/prompt';
