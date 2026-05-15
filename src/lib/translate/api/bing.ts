@@ -39,8 +39,8 @@ export async function bingTranslate(
     }
 
     return result[0].translations[0].text;
-  } catch (error) {
-    throw new Error(`Failed to parse Microsoft translation response: ${(error as Error).message}`);
+  } catch (cause) {
+    throw new Error('Failed to parse Microsoft translation response', { cause });
   }
 }
 
@@ -53,7 +53,7 @@ async function refreshMicrosoftToken(): Promise<string> {
     }
 
     return await resp.text();
-  } catch (error) {
-    throw new Error(`Error refreshing Microsoft token: ${(error as Error).message}`);
+  } catch (cause) {
+    throw new Error('Error refreshing Microsoft token', { cause });
   }
 }

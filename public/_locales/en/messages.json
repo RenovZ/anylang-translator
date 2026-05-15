@@ -620,6 +620,9 @@
   "reset_settings": {
     "message": "Reset settings"
   },
+  "retry": {
+    "message": "Retry"
+  },
   "save": {
     "message": "Save"
   },
@@ -671,6 +674,9 @@
   "show_original": {
     "message": "Show Original"
   },
+  "something_went_wrong": {
+    "message": "Something went wrong"
+  },
   "source_language": {
     "message": "Source language"
   },
@@ -718,6 +724,9 @@
   },
   "translate_display_styles_description": {
     "message": "Set any style you want to distinguish translation results from original text"
+  },
+  "translate_failed": {
+    "message": "Translate Failed"
   },
   "translate_page_range": {
     "message": "Translate page range"

@@ -28,8 +28,8 @@ export const TRANSLATION_ERROR_CONTAINER_CLASS = 'anylang-translation-error-cont
 export const TRANS_STYLE_ATTR = 'anylang-custom-translation-style';
 
 // Pre-computed camelCase version for use with element.dataset
-// camelCase('anylang-custom-translation-style') = 'anylangCustomTranslationStyle'
-export const TRANS_STYLE_KEY = 'anylangCustomTranslationStyle';
+// camelCase('anylang-custom-translate-style') = 'anylangCustomTranslateStyle'
+export const TRANS_STYLE_KEY = 'anylangCustomTranslateStyle';
 
 export const SPINNER_CLASS = 'anylang-spinner';
 

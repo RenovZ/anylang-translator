@@ -1,6 +1,6 @@
 import { mount, unmount } from 'svelte';
 
-import appCSS from '@/assets/app.css?inline';
+import appCss from '@/assets/app.css?inline';
 import logger from '@/lib/logger';
 import { ShadowHostBuilder } from '@/lib/shadow-host';
 import { SHADOW_HOST_CLASS } from '@/preset/dom';
@@ -42,7 +42,7 @@ class ToastManager {
     const shadowRoot = this.shadowHost.attachShadow({ mode: 'open' });
     const hostBuilder = new ShadowHostBuilder(shadowRoot, {
       position: 'block',
-      cssContent: [appCSS],
+      cssContent: [appCss],
       inheritStyles: false
     });
     this.container = hostBuilder.build();

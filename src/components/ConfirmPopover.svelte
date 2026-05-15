@@ -7,7 +7,7 @@
   interface Props {
     title?: string;
     description: string;
-    classes?: { class?: string; content?: string };
+    classes?: { class?: string; content?: string; footer?: string; description?: string };
     trigger?: 'click' | 'hover';
     placement?: 'top' | 'bottom' | 'left' | 'right';
     handleConfirm: () => void;
@@ -41,11 +41,15 @@
     <Heading tag="h5" class="text-base font-medium">
       {title}
     </Heading>
-    <p>
+    <p class={twMerge('text-sm', classes?.description)}>
       {description}
     </p>
   </div>
-  <div class="flex place-content-end gap-2 rounded-b-xl bg-gray-100 p-2 dark:bg-gray-700">
+  <div
+    class={twMerge(
+      'flex place-content-end gap-2 rounded-b-xl bg-gray-100 p-2 dark:bg-gray-700',
+      classes?.footer
+    )}>
     <Button class="border-none shadow" color="light" size="xs" onclick={handleCancel}>
       {cancelText}
     </Button>

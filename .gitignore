@@ -32,4 +32,4 @@ bun.lock
 migrate.md
 AGENTS.md
 
-.env.dev
+.env.*

@@ -176,7 +176,7 @@ export async function setUpWebPageTranslationQueue() {
       }
     }
 
-    let result = '';
+    let result: string | undefined;
     const context: WebPagePromptContext = {
       webTitle: translateUtils.normalize(webTitle),
       webContent: translateUtils.normalize(webContent),
@@ -303,7 +303,7 @@ export async function setUpSubtitlesTranslationQueue() {
       }
     }
 
-    let result = '';
+    let result: string | undefined;
     const context: SubtitlePromptContext = {
       videoTitle: translateUtils.normalize(videoTitle),
       videoSummary: translateUtils.normalize(summary)

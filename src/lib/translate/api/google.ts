@@ -46,7 +46,7 @@ export async function googleTranslate(
       .join('');
 
     return translatedText;
-  } catch (error) {
-    throw new Error(`Failed to parse translation response: ${(error as Error).message}`);
+  } catch (cause) {
+    throw new Error('Failed to parse translation response', { cause });
   }
 }

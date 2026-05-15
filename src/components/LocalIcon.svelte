@@ -2,6 +2,7 @@
   import IconBookOpenText from '~icons/lucide/book-open-text';
   import IconTranslate from '~icons/ri/translate';
   import IconTranslateAi from '~icons/ri/translate-ai';
+  import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconArrowRight from '~icons/tabler/arrow-right';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconCommand from '~icons/tabler/command';
@@ -9,6 +10,7 @@
   import IconGripVertical from '~icons/tabler/grip-vertical';
   import IconKeyboard from '~icons/tabler/keyboard';
   import IconListSearch from '~icons/tabler/list-search';
+  import IconReload from '~icons/tabler/reload';
   import IconScanTraces from '~icons/tabler/scan-traces';
   import IconSubtitles from '~icons/tabler/subtitles';
 
@@ -24,6 +26,8 @@
     'tabler:keyboard': IconKeyboard,
     'tabler:subtitles': IconSubtitles,
     'tabler:command': IconCommand,
+    'tabler:reload': IconReload,
+    'tabler:alert-circle': IconAlertCircle,
 
     'lucide:book-open-text': IconBookOpenText,
 

@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "i18n:extract": "node scripts/extract-i18n.mjs",
-    "dev": "wxt",
-    "dev:chrome": "wxt -b chrome",
-    "dev:firefox": "wxt -b firefox",
+    "dev": "wxt --mode dev",
+    "dev:chrome": "wxt --mode dev -b chrome",
+    "dev:firefox": "wxt --mode dev -b firefox",
     "build": "node scripts/build-all.mjs",
     "build:chrome": "wxt build -b chrome",
     "build:firefox": "wxt build -b firefox",

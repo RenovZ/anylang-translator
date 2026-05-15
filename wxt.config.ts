@@ -58,7 +58,6 @@ function i18nExtractionPlugin() {
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
-  imports: false,
   srcDir: 'src',
   modules: ['@wxt-dev/module-svelte'],
   dev: {
@@ -95,17 +94,17 @@ export default defineConfig({
     keepProfileChanges: true,
     chromiumArgs: [
       '--window-position=0,0',
-      '--window-size=1600,1000',
+      '--window-size=1700,1000',
       '--auto-open-devtools-for-tabs'
     ],
-    startUrls: env.START_URLS
+    startUrls: env.START_URLS.split(',')
   },
   hooks: {
     'build:before': () => {
       runI18nExtraction();
     }
   },
-  manifest: ({}) => ({
+  manifest: () => ({
     default_locale: 'en',
     permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'webNavigation'],
     host_permissions: [
@@ -147,7 +146,7 @@ export default defineConfig({
   experimental: {
     viteNode: false
   },
-  vite: ({}) => ({
+  vite: () => ({
     plugins: [i18nExtractionPlugin(), loggerCallerPlugin(), Icons({ compiler: 'svelte' })],
     test: { include: ['src/**/*.{test,spec}.{js,ts}'] }
   })

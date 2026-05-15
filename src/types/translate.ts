@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { attributeKeys, displayStyleValues, MAX_CUSTOM_CSS_LENGTH } from '@/preset/translate';
 
+import { TranslateMode, TranslatePageRange } from './config';
 import { LangCode } from './lang';
 import { ProviderConfig } from './provider';
 
@@ -31,10 +32,14 @@ export const displayStyleSchema = z.object({
 });
 export type DisplayStyle = z.infer<typeof displayStyleSchema>;
 
-export interface Options {
-  text: string;
-  sourceLang?: string;
-  targetLang?: string;
+export interface TranslateOptions {
+  providerConfig: ProviderConfig;
+  sourceLangCode: LangCode | 'auto' | 'default';
+  targetLangCode: LangCode;
+  pageRange: TranslatePageRange;
+  mode?: TranslateMode;
+  displayStyle?: DisplayStyle;
+  text?: string;
 }
 
 export interface Result {

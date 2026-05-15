@@ -1,7 +1,7 @@
 @import '@/assets/host-theme.css';
 
 /*TODO: 这些css需要补充完善*/
-[data-anylang-custom-translation-style='blur'] {
+[data-anylang-custom-translate-style='blur'] {
   filter: blur(4px);
   opacity: 0.75;
   transition:
@@ -9,37 +9,37 @@
     opacity 0.1s ease-in-out;
 }
 
-[data-anylang-custom-translation-style='blur']:hover {
+[data-anylang-custom-translate-style='blur']:hover {
   filter: blur(0);
   opacity: 1;
 }
 
-.anylang-translated-block-content[data-anylang-custom-translation-style='blockquote'] {
+.anylang-translated-block-content[data-anylang-custom-translate-style='blockquote'] {
   border-left: 4px solid var(--anylang-primary);
   padding: 4px 0 4px 8px;
 }
 
-[data-anylang-custom-translation-style='weakened'] {
+[data-anylang-custom-translate-style='weakened'] {
   opacity: 1;
   color: var(--anylang-muted-foreground) !important;
 }
 
-[data-anylang-custom-translation-style='dashedLine'] {
+[data-anylang-custom-translate-style='dashedLine'] {
   text-decoration: underline dashed var(--anylang-primary) !important;
   text-underline-offset: 5px;
 }
 
-[data-anylang-custom-translation-style='border'] {
+[data-anylang-custom-translate-style='border'] {
   border: 1px solid var(--anylang-primary);
   padding: 2px 4px;
   border-radius: 4px;
 }
 
-[data-anylang-custom-translation-style='textColor'] {
+[data-anylang-custom-translate-style='textColor'] {
   color: var(--anylang-primary) !important;
 }
 
-[data-anylang-custom-translation-style='background'] {
+[data-anylang-custom-translate-style='background'] {
   background-color: color-mix(in srgb, var(--anylang-primary) 15%, transparent);
   padding: 2px 4px;
   border-radius: 4px;

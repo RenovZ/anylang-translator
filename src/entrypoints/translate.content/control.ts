@@ -99,13 +99,12 @@ class NodeTranslation {
   }
 
   private trigger(pos: Point, config: Config): void {
-    const {
-      targetLangCode,
-      adaptiveTranslate: {
-        translate: { mode: translateMode, pageRange, displayStyle }
-      }
-    } = config;
-    void removeOrShowNodeTranslation(pos, translateMode, pageRange, targetLangCode, displayStyle);
+    void removeOrShowNodeTranslation(pos, {
+      providerConfig: config.adaptiveTranslate.provider,
+      sourceLangCode: config.sourceLangCode ?? 'auto',
+      targetLangCode: config.targetLangCode,
+      ...config.adaptiveTranslate.translate
+    });
   }
 
   private clearClickAndHoldTimer(): void {
@@ -370,19 +369,16 @@ export class PageTranslateManager {
             logger.info('Element entered viewport', { target });
             if (!target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
               const {
+                sourceLangCode = 'auto',
                 targetLangCode,
-                adaptiveTranslate: {
-                  translate: { mode: translateMode, pageRange, displayStyle }
-                }
+                adaptiveTranslate: { provider: providerConfig, translate }
               } = configStore.get();
-              void translateWalkedElement(
-                target,
-                walkId,
-                translateMode,
-                pageRange,
+              void translateWalkedElement(target, walkId, {
+                providerConfig,
+                sourceLangCode,
                 targetLangCode,
-                displayStyle
-              );
+                ...translate
+              });
             }
           }
           observer.unobserve(target);
@@ -597,33 +593,30 @@ export class PageTranslateManager {
     void this.syncDocumentTitle(currentTitle);
   }
 
-  private async syncDocumentTitle(sourceTitle: string): Promise<void> {
-    if (!sourceTitle.trim() || !this.isPageTranslating || !this.shouldManageDocumentTitle()) return;
+  private async syncDocumentTitle(text: string): Promise<void> {
+    if (!text.trim() || !this.isPageTranslating || !this.shouldManageDocumentTitle()) return;
 
     const requestVersion = ++this.titleRequestVersion;
     if (!this.isPageTranslating || requestVersion !== this.titleRequestVersion) return;
 
     try {
-      logger.info('Would translate title:', { sourceTitle });
+      logger.info('Would translate title:', { text });
 
       const {
-        sourceLangCode,
+        sourceLangCode = 'auto',
         targetLangCode,
-        adaptiveTranslate: {
-          provider: providerConfig,
-          translate: { pageRange }
-        }
+        adaptiveTranslate: { provider: providerConfig, translate }
       } = configStore.get();
 
-      const translatedTitle = await translateTextForPageTitle(
-        sourceTitle,
+      const translatedTitle = await translateTextForPageTitle({
         providerConfig,
-        sourceLangCode ?? 'auto',
+        sourceLangCode,
         targetLangCode,
-        pageRange
-      );
+        ...translate,
+        text
+      });
 
-      const nextTitle = translatedTitle || sourceTitle;
+      const nextTitle = translatedTitle || text;
       this.lastAppliedTranslatedTitle = nextTitle;
 
       if (document.title === nextTitle) return;

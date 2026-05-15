@@ -1,7 +1,12 @@
+import { APICallError } from 'ai';
+
+import appCss from '@/assets/app.css?inline';
 import customTranslationNodeCss from '@/assets/custom-translation-node.css?raw';
 import hostThemeCss from '@/assets/host-theme.css?raw';
+import textCss from '@/assets/text.css?inline';
 import translationNodePresetCss from '@/assets/translation-node-preset.css?raw';
 import { toast } from '@/components/toast-wrapper';
+import TranslateError, { TranslateErrorProp } from '@/components/TranslateError.svelte';
 import configStore from '@/lib/config';
 import contentManager from '@/lib/content';
 import cryptoPolyfill from '@/lib/crypto-polyfill';
@@ -11,18 +16,19 @@ import domFind from '@/lib/dom/finder';
 import domTraversal from '@/lib/dom/traversal';
 import i18n from '@/lib/i18n';
 import logger from '@/lib/logger';
+import { createShadowHost } from '@/lib/shadow-host';
 import {
   CUSTOM_STYLES_INJECTOR_ID,
   PRESET_STYLES_INJECTOR_ID,
   SPINNER_CLASS,
-  TRANS_STYLE_KEY
+  TRANS_STYLE_KEY,
+  TRANSLATION_ERROR_CONTAINER_CLASS
 } from '@/preset/dom';
-import { TranslateMode, TranslatePageRange } from '@/types/config';
 import { WebPagePromptContext } from '@/types/content';
 import { Point } from '@/types/dom';
 import { LangCode } from '@/types/lang';
-import { isLLMProvider, ProviderConfig } from '@/types/provider';
-import type { DisplayStyle } from '@/types/translate';
+import { isLLMProvider } from '@/types/provider';
+import type { DisplayStyle, TranslateOptions } from '@/types/translate';
 import { displayStyleSchema } from '@/types/translate';
 
 import { translateTextCore, translateWalkedElement } from './core';
@@ -190,6 +196,7 @@ export async function decorateTranslationNode(
   translatedNode: HTMLElement,
   displayStyle: DisplayStyle
 ): Promise<void> {
+  logger.trace({ translatedNode, displayStyle });
   if (displayStyleSchema.safeParse(displayStyle.value).error) return;
 
   const root = getContainingShadowRoot(translatedNode) ?? document;
@@ -269,40 +276,36 @@ export function createSpinnerInside(translatedWrapperNode: HTMLElement): HTMLEle
 
 export async function getTranslatedTextAndRemoveSpinner(
   nodes: ChildNode[],
-  textContent: string,
   spinner: HTMLElement,
-  translatedWrapperNode: HTMLElement
+  translatedWrapperNode: HTMLElement,
+  options: Required<Pick<TranslateOptions, 'text' | 'mode'>> &
+    Omit<TranslateOptions, 'text' | 'mode'>
 ): Promise<string | undefined> {
-  // TODO:
-  logger.trace({ nodes, textContent, spinner, translatedWrapperNode });
-  throw new Error('unimplemented');
-
-  // let translatedText: string | undefined;
-
-  // try {
-  //   translatedText = await translateTextForPage(textContent);
-  // } catch (error) {
-  //   const errorComponent = React.createElement(TranslationError, {
-  //     nodes,
-  //     error: error as APICallError
-  //   });
-
-  //   const container = createReactShadowHost(errorComponent, {
-  //     className: TRANSLATION_ERROR_CONTAINER_CLASS,
-  //     position: 'inline',
-  //     inheritStyles: false,
-  //     cssContent: [themeCSS, textSmallCSS],
-  //     style: {
-  //       verticalAlign: 'middle'
-  //     }
-  //   });
-
-  //   translatedWrapperNode.appendChild(container);
-  // } finally {
-  //   spinner.remove();
-  // }
-
-  // return translatedText;
+  let translatedText: string | undefined;
+  try {
+    translatedText = await translateTextForPage(options);
+  } catch (error) {
+    const props: TranslateErrorProp = {
+      nodes,
+      error: error as APICallError,
+      options
+    };
+    const container = createShadowHost({
+      component: TranslateError,
+      props,
+      className: TRANSLATION_ERROR_CONTAINER_CLASS,
+      position: 'inline',
+      inheritStyles: false,
+      cssContent: [appCss, textCss],
+      style: {
+        verticalAlign: 'middle'
+      }
+    });
+    translatedWrapperNode.appendChild(container);
+  } finally {
+    spinner.remove();
+  }
+  return translatedText;
 }
 
 export function validateTranslationConfigAndToast(): boolean {
@@ -340,10 +343,7 @@ export function validateTranslationConfigAndToast(): boolean {
 // High-level orchestration function
 export async function removeOrShowNodeTranslation(
   point: Point,
-  translateMode: TranslateMode,
-  pageRange: TranslatePageRange,
-  targetLangCode: LangCode,
-  displayStyle: DisplayStyle
+  options: Required<Pick<TranslateOptions, 'mode'>> & Omit<TranslateOptions, 'mode'>
 ): Promise<void> {
   const node = domFind.findNearestAncestorBlockNodeAt(point);
 
@@ -352,16 +352,8 @@ export async function removeOrShowNodeTranslation(
   if (!validateTranslationConfigAndToast()) return;
 
   const id = cryptoPolyfill.getUUID();
-  domTraversal.walkAndLabelElement(node, id, pageRange);
-  await translateWalkedElement(
-    node,
-    id,
-    translateMode,
-    pageRange,
-    targetLangCode,
-    displayStyle,
-    true
-  );
+  domTraversal.walkAndLabelElement(node, id, options.pageRange);
+  await translateWalkedElement(node, id, options, true);
 }
 
 // TODO: 不确定是否要这个功能
@@ -381,10 +373,10 @@ export async function removeOrShowNodeTranslation(
 // }
 
 async function getWebPagePromptContext(
-  pageRange: TranslatePageRange,
-  providerConfig: ProviderConfig,
+  options: Pick<TranslateOptions, 'providerConfig' | 'pageRange'>,
   includeSummary: boolean
 ): Promise<WebPagePromptContext | undefined> {
+  const { providerConfig, pageRange } = options;
   // Only LLM (non-free) providers can use web page context
   if (isLLMProvider(providerConfig)) return undefined;
 
@@ -413,15 +405,13 @@ async function isTextAlreadyInTargetLanguage(text: string, targetCode: LangCode)
 }
 
 async function translateTextUsingPageConfig(
-  text: string,
-  providerConfig: ProviderConfig,
-  sourceLangCode: LangCode | 'auto' | 'default',
-  targetLangCode: LangCode,
-  options: {
-    extraHashTags?: string[];
-    webPageContext?: WebPagePromptContext;
-  } = {}
+  options: Required<Pick<TranslateOptions, 'text'>> &
+    Omit<TranslateOptions, 'text'> & {
+      extraHashTags?: string[];
+      webPageContext?: WebPagePromptContext;
+    }
 ): Promise<string> {
+  const { text, targetLangCode, extraHashTags, webPageContext } = options;
   const preparedText = text.trim();
   if (preparedText === '') return '';
 
@@ -450,12 +440,10 @@ async function translateTextUsingPageConfig(
   // }
 
   return translateTextCore({
-    text: preparedText,
-    sourceLangCode,
-    targetLangCode,
-    providerConfig,
-    extraHashTags: options.extraHashTags,
-    webPageContext: options.webPageContext
+    ...options,
+    extraHashTags,
+    webPageContext,
+    text: preparedText
   });
 }
 
@@ -464,15 +452,12 @@ async function translateTextUsingPageConfig(
  * Includes skip-language logic (page translation only).
  */
 export async function translateTextForPage(
-  text: string,
-  providerConfig: ProviderConfig,
-  sourceLangCode: LangCode | 'auto' | 'default',
-  targetLangCode: LangCode,
-  pageRange: TranslatePageRange
+  options: Required<Pick<TranslateOptions, 'text'>> & Omit<TranslateOptions, 'text'>
 ): Promise<string> {
-  const webPageContext = await getWebPagePromptContext(pageRange, providerConfig, true);
+  const webPageContext = await getWebPagePromptContext(options, true);
 
-  return translateTextUsingPageConfig(text, providerConfig, sourceLangCode, targetLangCode, {
+  return translateTextUsingPageConfig({
+    ...options,
     webPageContext
   });
 }
@@ -482,25 +467,19 @@ export async function translateTextForPage(
  * current source title as the webpage title context.
  */
 export async function translateTextForPageTitle(
-  text: string,
-  providerConfig: ProviderConfig,
-  sourceLangCode: LangCode | 'auto' | 'default',
-  targetLangCode: LangCode,
-  pageRange: TranslatePageRange
+  options: Required<Pick<TranslateOptions, 'text'>> & Omit<TranslateOptions, 'text'>
 ): Promise<string> {
-  // prettier-ignore
-  const { webContent, webSummary } =
-      (await getWebPagePromptContext(
-        pageRange, providerConfig, true
-      )) ?? {};
+  const { webContent, webSummary } = (await getWebPagePromptContext(options, true)) ?? {};
 
-  return translateTextUsingPageConfig(text, providerConfig, sourceLangCode, targetLangCode, {
+  const { text: webTitle } = options;
+  return translateTextUsingPageConfig({
     extraHashTags: ['pageTitleTranslation'],
     webPageContext: {
-      webTitle: text,
+      webTitle,
       webContent,
       webSummary
-    }
+    },
+    ...options
   });
 }
 
@@ -522,15 +501,12 @@ export async function translateTextForPageTitle(
  * Input translation — translates user-typed text using configured languages.
  */
 export async function translateTextForInput(
-  text: string,
-  providerConfig: ProviderConfig,
-  sourceLangCode: LangCode | 'auto' | 'default',
-  targetLangCode: LangCode,
-  pageRange: TranslatePageRange
+  options: Required<Pick<TranslateOptions, 'text'>> & Omit<TranslateOptions, 'text'>
 ): Promise<string> {
+  const { text, sourceLangCode, targetLangCode, providerConfig, pageRange } = options;
   if (sourceLangCode === targetLangCode) return '';
 
-  const webPageContext = await getWebPagePromptContext(pageRange, providerConfig, true);
+  const webPageContext = await getWebPagePromptContext({ pageRange, providerConfig }, true);
 
   return translateTextCore({
     text,

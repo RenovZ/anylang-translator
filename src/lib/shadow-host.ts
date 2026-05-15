@@ -180,7 +180,6 @@ export interface CreateShadowHostOptions<Props extends Record<string, unknown>> 
  *
  * - ShadowWrapperContext  → `SHADOW_WRAPPER_CONTEXT_KEY` context (see src/preset/shadow-host.ts)
  * - ThemeProvider         → ThemeProvider.svelte (applies light/dark class reactively)
- * - TooltipProvider       → not needed; Flowbite-Svelte tooltips are self-contained
  */
 export function createShadowHost<Props extends Record<string, unknown>>(
   options: CreateShadowHostOptions<Props>

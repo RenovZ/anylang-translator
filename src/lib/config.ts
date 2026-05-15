@@ -17,6 +17,8 @@ import { displayStyleSchema } from '@/types/translate';
 
 import logger from './logger';
 
+const env = import.meta.env ?? {};
+
 const defaultConfig: Config = configSchema.parse({
   installDateTime: null,
   lastTimeShowingReleaseNotes: null,
@@ -24,7 +26,7 @@ const defaultConfig: Config = configSchema.parse({
 
   uiLangCode: 'default',
   sourceLangCode: undefined,
-  targetLangCode: langCodeSchema.parse('en'),
+  targetLangCode: env.DEV ? env.VITE_TARGET_LANG_CODE : langCodeSchema.parse('en'),
 
   langDetection: {
     mode: langDetectionModeSchema.parse('basic'),

@@ -39,6 +39,6 @@ export async function aiTranslate<TContext>(
 
     return finalTranslation;
   } catch (error) {
-    throw new Error(errorManager.extractAISDKErrorMessage(error));
+    throw new Error(errorManager.extractAISDKErrorMessage(error), { cause: error });
   }
 }

@@ -14,12 +14,12 @@ import {
   TRANSLATION_MODE_ATTRIBUTE,
   WALKED_ATTRIBUTE
 } from '@/preset/dom';
-import type { TranslateMode, TranslatePageRange } from '@/types/config';
+import type { TranslateMode } from '@/types/config';
 import type { WebPagePromptContext } from '@/types/content';
 import type { TransNode } from '@/types/dom';
 import type { LangCode } from '@/types/lang';
 import { isLLMProvider, type ProviderConfig } from '@/types/provider';
-import type { DisplayStyle } from '@/types/translate';
+import type { TranslateOptions } from '@/types/translate';
 
 import { getOwnerDocument } from '../dom';
 import { getTranslatePrompt } from '../prompt';
@@ -64,34 +64,22 @@ export const translateState = {
 export async function translateNodes(
   nodes: ChildNode[],
   walkId: string,
-  translationMode: TranslateMode,
-  pageRange: TranslatePageRange,
-  targetLangCode: LangCode,
-  displayStyle: DisplayStyle,
+  options: Required<Pick<TranslateOptions, 'mode'>> & Omit<TranslateOptions, 'mode'>,
   toggle: boolean = false,
   forceBlockTranslation: boolean = false
 ): Promise<void> {
-  if (translationMode === 'translation_only') {
-    await translationOnlyMode(nodes, walkId, pageRange, targetLangCode, toggle);
-  } else if (translationMode === 'bilingual') {
-    await bilingualMode(
-      nodes,
-      walkId,
-      pageRange,
-      targetLangCode,
-      displayStyle,
-      toggle,
-      forceBlockTranslation
-    );
+  const { mode } = options;
+  if (mode === 'translation_only') {
+    await translationOnlyMode(nodes, walkId, options, toggle);
+  } else if (mode === 'bilingual') {
+    await bilingualMode(nodes, walkId, options, toggle, forceBlockTranslation);
   }
 }
 
 async function bilingualMode(
   nodes: ChildNode[],
   walkId: string,
-  pageRange: TranslatePageRange,
-  targetLangCode: LangCode,
-  displayStyle: DisplayStyle,
+  options: Required<Pick<TranslateOptions, 'mode'>> & Omit<TranslateOptions, 'mode'>,
   toggle: boolean = false,
   forceBlockTranslation: boolean = false
 ): Promise<void> {
@@ -110,7 +98,7 @@ async function bilingualMode(
       transNodes.length === 1 &&
       domFilter.isBlockTransNode(lastNode) &&
       domFilter.isHTMLElement(lastNode)
-        ? await domFinder.unwrapDeepestOnlyHTMLChild(lastNode, pageRange)
+        ? await domFinder.unwrapDeepestOnlyHTMLChild(lastNode, options.pageRange)
         : lastNode;
 
     const existedTranslatedWrapper = findPreviousTranslatedWrapperInside(targetNode, walkId);
@@ -120,16 +108,16 @@ async function bilingualMode(
         return;
       } else {
         nodes.forEach((node) => translateState.nodes.delete(node));
-        void bilingualMode(nodes, walkId, pageRange, targetLangCode, displayStyle, toggle);
+        void bilingualMode(nodes, walkId, options, toggle);
         return;
       }
     }
 
-    const textContent = transNodes
-      .map((node) => domTraversal.extractTextContent(node, pageRange))
+    const text = transNodes
+      .map((node) => domTraversal.extractTextContent(node, options.pageRange))
       .join('')
       .trim();
-    if (!textContent || translateUtils.isNumericContent(textContent)) return;
+    if (!text || translateUtils.isNumericContent(text)) return;
 
     // TODO: 不确定是否需要这个
     // if (await shouldFilterSmallParagraph(textContent, config)) return;
@@ -142,7 +130,7 @@ async function bilingualMode(
       'bilingual' satisfies TranslateMode
     );
     translatedWrapperNode.setAttribute(WALKED_ATTRIBUTE, walkId);
-    setTranslationDirAndLang(translatedWrapperNode, targetLangCode);
+    setTranslationDirAndLang(translatedWrapperNode, options.targetLangCode);
     const spinner = createSpinnerInside(translatedWrapperNode);
 
     // Batch DOM insertion to reduce layout thrashing
@@ -157,12 +145,12 @@ async function bilingualMode(
 
     const realTranslatedText = await getTranslatedTextAndRemoveSpinner(
       nodes,
-      textContent,
       spinner,
-      translatedWrapperNode
+      translatedWrapperNode,
+      { text, ...options }
     );
 
-    const translatedText = getDisplayTranslation(textContent, realTranslatedText);
+    const translatedText = getDisplayTranslation(text, realTranslatedText);
 
     if (!translatedText) {
       // Only remove wrapper if translation returned empty (not needed),
@@ -178,7 +166,7 @@ async function bilingualMode(
       translatedWrapperNode,
       targetNode,
       translatedText,
-      displayStyle,
+      options.displayStyle,
       forceBlockTranslation
     );
   } finally {
@@ -189,8 +177,7 @@ async function bilingualMode(
 async function translationOnlyMode(
   nodes: ChildNode[],
   walkId: string,
-  pageRange: TranslatePageRange,
-  targetLangCode: LangCode,
+  options: Required<Pick<TranslateOptions, 'mode'>> & Omit<TranslateOptions, 'mode'>,
   toggle: boolean = false
 ): Promise<void> {
   const isTransNodeAndNotTranslatedWrapper = (node: Node): node is TransNode => {
@@ -229,7 +216,7 @@ async function translationOnlyMode(
   if (outerTransNodes.length === 1 && domFilter.isHTMLElement(outerTransNodes[0])) {
     const unwrappedHTMLChild = await domFinder.unwrapDeepestOnlyHTMLChild(
       outerTransNodes[0],
-      pageRange
+      options.pageRange
     );
     allChildNodes = Array.from(unwrappedHTMLChild.childNodes);
     transNodes = allChildNodes.filter(isTransNodeAndNotTranslatedWrapper);
@@ -277,13 +264,13 @@ async function translationOnlyMode(
         // same nodes array, we ensure the translation uses the newly created DOM elements since the
         // function will re-query and find the correct parent and child nodes from the restored DOM.
         nodes.forEach((node) => translateState.nodes.delete(node));
-        void translationOnlyMode(nodes, walkId, pageRange, targetLangCode, toggle);
+        void translationOnlyMode(nodes, walkId, options, toggle);
         return;
       }
     }
 
     const innerTextContent = transNodes
-      .map((node) => domTraversal.extractTextContent(node, pageRange))
+      .map((node) => domTraversal.extractTextContent(node, options.pageRange))
       .join('');
     if (!innerTextContent.trim() || translateUtils.isNumericContent(innerTextContent)) return;
 
@@ -311,8 +298,8 @@ async function translationOnlyMode(
       return node.outerHTML;
     };
 
-    const textContent = cleanTextContent(transNodes.map(getStringFormatFromNode).join(''));
-    if (!textContent) return;
+    const text = cleanTextContent(transNodes.map(getStringFormatFromNode).join(''));
+    if (!text) return;
 
     const ownerDoc = getOwnerDocument(targetNode);
     const translatedWrapperNode = ownerDoc.createElement('span');
@@ -323,7 +310,7 @@ async function translationOnlyMode(
     );
     translatedWrapperNode.setAttribute(WALKED_ATTRIBUTE, walkId);
     translatedWrapperNode.style.display = 'contents';
-    setTranslationDirAndLang(translatedWrapperNode, targetLangCode);
+    setTranslationDirAndLang(translatedWrapperNode, options.targetLangCode);
     const spinner = createSpinnerInside(translatedWrapperNode);
 
     // Batch DOM insertion to reduce layout thrashing
@@ -338,12 +325,12 @@ async function translationOnlyMode(
 
     const realTranslatedText = await getTranslatedTextAndRemoveSpinner(
       nodes,
-      textContent,
       spinner,
-      translatedWrapperNode
+      translatedWrapperNode,
+      { text, ...options }
     );
     const translatedText = realTranslatedText
-      ? getDisplayTranslation(textContent, realTranslatedText)
+      ? getDisplayTranslation(text, realTranslatedText)
       : realTranslatedText;
 
     if (!translatedText) {
@@ -375,10 +362,7 @@ async function translationOnlyMode(
 export async function translateWalkedElement(
   element: HTMLElement,
   walkId: string,
-  translateMode: TranslateMode,
-  pageRange: TranslatePageRange,
-  targetLangCode: LangCode,
-  displayStyle: DisplayStyle,
+  options: Required<Pick<TranslateOptions, 'mode'>> & Omit<TranslateOptions, 'mode'>,
   toggle: boolean = false
 ): Promise<void> {
   if (!toggle && element.querySelector(`.${CONTENT_WRAPPER_CLASS}`)) return;
@@ -403,17 +387,7 @@ export async function translateWalkedElement(
     const isFlexParent = computedStyle.display.includes('flex');
 
     if (!hasBlockNodeChild) {
-      promises.push(
-        translateNodes(
-          [element],
-          walkId,
-          translateMode,
-          pageRange,
-          targetLangCode,
-          displayStyle,
-          toggle
-        )
-      );
+      promises.push(translateNodes([element], walkId, options, toggle));
     } else {
       // prevent children change during iteration
       const children = Array.from(element.childNodes);
@@ -425,29 +399,9 @@ export async function translateWalkedElement(
           !domFilter.isTextNode(child)
         ) {
           // force the children to be block translation style unless the parent is a flex parent
-          promises.push(
-            translateNodes(
-              consecutiveInlineNodes,
-              walkId,
-              translateMode,
-              pageRange,
-              targetLangCode,
-              displayStyle,
-              toggle
-            )
-          );
+          promises.push(translateNodes(consecutiveInlineNodes, walkId, options, toggle));
           consecutiveInlineNodes = [];
-          promises.push(
-            translateWalkedElement(
-              child,
-              walkId,
-              translateMode,
-              pageRange,
-              targetLangCode,
-              displayStyle,
-              toggle
-            )
-          );
+          promises.push(translateWalkedElement(child, walkId, options, toggle));
         } else {
           consecutiveInlineNodes.push(child);
         }
@@ -455,52 +409,23 @@ export async function translateWalkedElement(
 
       if (consecutiveInlineNodes.length) {
         promises.push(
-          translateNodes(
-            consecutiveInlineNodes,
-            walkId,
-            translateMode,
-            pageRange,
-            targetLangCode,
-            displayStyle,
-            toggle,
-            !isFlexParent
-          )
+          translateNodes(consecutiveInlineNodes, walkId, options, toggle, !isFlexParent)
         );
-        consecutiveInlineNodes = [];
+        // consecutiveInlineNodes = [];
       }
     }
   } else {
     const childNodes = Array.from(element.childNodes);
     for (const child of childNodes) {
       if (domFilter.isHTMLElement(child)) {
-        promises.push(
-          translateWalkedElement(
-            child,
-            walkId,
-            translateMode,
-            pageRange,
-            targetLangCode,
-            displayStyle,
-            toggle
-          )
-        );
+        promises.push(translateWalkedElement(child, walkId, options, toggle));
       }
     }
     if (element.shadowRoot) {
       const children = Array.from(element.shadowRoot.children);
       for (const child of children) {
         if (domFilter.isHTMLElement(child)) {
-          promises.push(
-            translateWalkedElement(
-              child,
-              walkId,
-              translateMode,
-              pageRange,
-              targetLangCode,
-              displayStyle,
-              toggle
-            )
-          );
+          promises.push(translateWalkedElement(child, walkId, options, toggle));
         }
       }
     }

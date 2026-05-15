@@ -13,6 +13,7 @@ import {
   TRANSLATION_MODE_ATTRIBUTE,
   WALKED_ATTRIBUTE
 } from '@/preset/dom';
+import { displayStyles } from '@/preset/translate';
 import { TransNode } from '@/types/dom';
 import type { DisplayStyle } from '@/types/translate';
 
@@ -178,7 +179,7 @@ export async function insertTranslatedNodeIntoWrapper(
   translatedWrapperNode: HTMLElement,
   targetNode: TransNode,
   translatedText: string,
-  displayStyle: DisplayStyle,
+  displayStyle: DisplayStyle = displayStyles[0],
   forceBlockTranslation: boolean = false
 ): Promise<void> {
   // Use the wrapper's owner document
