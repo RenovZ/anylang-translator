@@ -1,6 +1,7 @@
 import '@/zod-config';
 
-import type { ContentScriptContext } from '#imports';
+import { ContentScriptContext } from 'wxt/utils/content-script-context';
+import { defineContentScript } from 'wxt/utils/define-content-script';
 
 import logger from '@/lib/logger';
 

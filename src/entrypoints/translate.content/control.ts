@@ -6,13 +6,13 @@ import domFinder from '@/lib/dom/finder';
 import domTraversal from '@/lib/dom/traversal';
 import logger from '@/lib/logger';
 import { sendMessage } from '@/lib/protocol';
+import { translateWalkedElement } from '@/lib/translate/core';
+import { removeAllTranslatedWrapperNodes } from '@/lib/translate/dom';
 import {
   removeOrShowNodeTranslation,
   translateTextForPageTitle,
   validateTranslationConfigAndToast
-} from '@/lib/translate';
-import { translateWalkedElement } from '@/lib/translate/core';
-import { removeAllTranslatedWrapperNodes } from '@/lib/translate/dom';
+} from '@/lib/translate/ui';
 import * as webpage from '@/lib/translate/webpage';
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
 import { CONTENT_WRAPPER_CLASS, PARAGRAPH_ATTRIBUTE, WALKED_ATTRIBUTE } from '@/preset/dom';

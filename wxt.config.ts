@@ -58,6 +58,7 @@ function i18nExtractionPlugin() {
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
+  imports: false,
   srcDir: 'src',
   modules: ['@wxt-dev/module-svelte'],
   dev: {
@@ -104,9 +105,12 @@ export default defineConfig({
       runI18nExtraction();
     }
   },
-  manifest: {
+  manifest: ({}) => ({
     default_locale: 'en',
     permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'webNavigation'],
+    host_permissions: [
+      '*://*/*' // Required for scripting.executeScript in any frame
+    ],
     commands: {
       'adaptive-translate': {
         suggested_key: {
@@ -139,12 +143,12 @@ export default defineConfig({
         description: 'Writing Copilot'
       }
     }
+  }),
+  experimental: {
+    viteNode: false
   },
-  vite: () => ({
+  vite: ({}) => ({
     plugins: [i18nExtractionPlugin(), loggerCallerPlugin(), Icons({ compiler: 'svelte' })],
-    server: {
-      host: '0.0.0.0'
-    },
     test: { include: ['src/**/*.{test,spec}.{js,ts}'] }
   })
 });

@@ -3,7 +3,7 @@ import configStore from '@/lib/config';
 import logger from '@/lib/logger';
 import { onMessage, sendMessage } from '@/lib/protocol';
 import { translateState } from '@/lib/session';
-import { shouldEnableAutoTranslation } from '@/lib/translate';
+import { shouldEnableAutoTranslation } from '@/lib/translate/sw';
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
 
 export function registerTranslate() {

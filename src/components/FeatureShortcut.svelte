@@ -35,8 +35,8 @@
     defaultValue: `(Copied to clipboard)`
   });
 
-  const handleClick = () => {
-    shortcut.openSettings(
+  const handleClick = async () => {
+    await shortcut.tryOpenSettings(
       () =>
         showToast(
           'success',

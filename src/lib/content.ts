@@ -1,9 +1,10 @@
-import { generateText } from 'ai';
 import { franc } from 'franc';
 import { Readability } from '@mozilla/readability';
 
 import { toast } from '@/components/toast-wrapper';
 import { removeDummyNodes } from '@/lib/dom';
+import { translateUtils } from '@/lib/translate/core';
+import { DEFAULT_MAX_LENGTH_FOR_LLM, DEFAULT_MIN_LENGTH } from '@/preset/content';
 import { FRANC_TO_LANG_CODE } from '@/preset/franc-map';
 import { DEFAULT_LANG_DETECTION_SYSTEM_PROMPT } from '@/preset/prompt';
 import { GenerateTextParams } from '@/types/background';
@@ -16,7 +17,6 @@ import type {
   LangDirection
 } from '@/types/content';
 import { langCodeSchema, type LangCode } from '@/types/lang';
-import { AIProvider } from '@/types/provider';
 
 import configStore from './config';
 import i18n from './i18n';
@@ -25,27 +25,8 @@ import logger, { formatError } from './logger';
 import { sendMessage } from './protocol';
 import providerManager from './provider';
 
-const MAX_TEXT_LENGTH = 3000;
-const ZERO_WIDTH_CHARS_RE = /[\u200B-\u200D\uFEFF]/g;
-const WHITESPACE_RUN_RE = /\s+/g;
-
-const DEFAULT_MIN_LENGTH = 10;
-const DEFAULT_MAX_LENGTH_FOR_LLM = 500;
-
 class ContentManager {
   private readonly MAX_ATTEMPTS = 3; // 1 original + 2 retries
-
-  /**
-   * Clean and truncate article text for post processing
-   */
-  cleanText(textContent: string, maxLength: number = MAX_TEXT_LENGTH): string {
-    const cleaned = textContent
-      .replace(ZERO_WIDTH_CHARS_RE, '') // 零宽字符
-      .replace(WHITESPACE_RUN_RE, ' ')
-      .trim();
-
-    return cleaned.length <= maxLength ? cleaned : cleaned.slice(0, maxLength);
-  }
 
   /**
    * Get document info including article content and language detection
@@ -302,7 +283,7 @@ class ContentManager {
     if (options?.enableLLM) {
       try {
         const maxLength = options.maxLengthForLLM ?? DEFAULT_MAX_LENGTH_FOR_LLM;
-        const textForLLM = this.cleanText(trimmedText, maxLength);
+        const textForLLM = translateUtils.cleanText(trimmedText, maxLength);
         const llmResult = await this.detectLangCodeByLLM(textForLLM);
         if (llmResult && llmResult !== 'und') {
           return { langCode: llmResult, detectMethod: 'llm' };
@@ -397,57 +378,6 @@ class ContentManager {
       }
 
       return null;
-    } catch (error) {
-      logger.error({
-        error: formatError(error)
-      });
-      return null;
-    }
-  }
-
-  /**
-   * Generate a brief summary of article content for translation context
-   */
-  async generateArticleSummary(
-    title: string,
-    textContent: string,
-    providerConfig: AIProvider
-  ): Promise<string | null> {
-    const preparedText = this.cleanText(textContent);
-    if (!preparedText) {
-      return null;
-    }
-
-    // TODO: Implement go/zen provider detection
-    if (providerConfig.type === 'go' || providerConfig.type === 'zen') {
-      throw new Error('generateArticleSummary: go/zen provider will come soon');
-    }
-
-    try {
-      const { model, provider, providerOptions: userOptions, temperature } = providerConfig;
-      const providerOptions = providerManager.overrideOptions(model, provider, userOptions);
-      const languageModel = await providerManager.getLanguageModel(model);
-
-      const prompt = `Summarize the following article in 2-3 sentences. Focus on the main topic and key points. Return ONLY the summary, no explanations or formatting.
-
-Title: ${title}
-
-Content:
-${preparedText}`;
-
-      const { text: summary } = await generateText({
-        model: languageModel,
-        prompt,
-        temperature,
-        providerOptions
-      });
-
-      const cleanedSummary = summary.trim();
-      logger.info({
-        summary: `${cleanedSummary.slice(0, 100)}...`
-      });
-
-      return cleanedSummary;
     } catch (error) {
       logger.error({
         error: formatError(error)

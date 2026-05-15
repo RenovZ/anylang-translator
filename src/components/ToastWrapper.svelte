@@ -37,10 +37,6 @@
     show = false;
     onclose?.();
   }
-
-  $effect(() => {
-    console.log(show, type, title, titleClass, message, position);
-  });
 </script>
 
 {#if show}
@@ -48,7 +44,7 @@
     dismissable
     {position}
     align={!title}
-    class="fixed top-25 left-5 z-9999"
+    class="fixed z-2147483647"
     color={TYPED_COLOR[type]}
     onclose={close}>
     {#snippet icon()}

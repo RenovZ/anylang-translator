@@ -1,4 +1,3 @@
-import contentManager from '@/lib/content';
 import * as domBatcher from '@/lib/dom/batcher';
 import domFilter from '@/lib/dom/filter';
 import domFinder from '@/lib/dom/finder';
@@ -6,6 +5,7 @@ import domTraversal from '@/lib/dom/traversal';
 import { sha256 } from '@/lib/hash';
 import logger from '@/lib/logger';
 import { sendMessage } from '@/lib/protocol';
+import { MAX_TEXT_LENGTH, WHITESPACE_RUN_RE, ZERO_WIDTH_CHARS_RE } from '@/preset/content';
 import {
   BLOCK_ATTRIBUTE,
   CONTENT_WRAPPER_CLASS,
@@ -251,7 +251,10 @@ async function translationOnlyMode(
 
     const parentNode = targetNode.parentElement;
     if (!parentNode) {
-      console.error('targetNode.parentElement is not HTMLElement', targetNode.parentElement);
+      logger.error('targetNode.parentElement is null', {
+        parentNode: targetNode.parentElement,
+        targetNode: targetNode
+      });
       return;
     }
     const existedTranslatedWrapper = findPreviousTranslatedWrapperInside(
@@ -508,35 +511,6 @@ export async function translateWalkedElement(
   await Promise.all(promises);
 }
 
-// Minimum text length for skip language detection (shorter than general detection
-// to catch short phrases like "Bonjour!" or "こんにちは")
-const MIN_LENGTH_FOR_SKIP_LLM_DETECTION = 10;
-
-/**
- * Check if text should be skipped based on language detection.
- * Uses LLM detection if enabled, falls back to franc library.
- * @param text - Text to detect language for
- * @param skipLangCodes - List of languages to skip translation for
- * @param enableLLM - Whether to use LLM for language detection
- * @returns true if text language is in skipLanguages list (should skip translation)
- */
-export async function shouldSkipByLanguage(
-  text: string,
-  skipLangCodes: LangCode[],
-  enableLLM: boolean
-): Promise<boolean> {
-  const detectedLang = await contentManager.detectLangCode(text, {
-    minLength: MIN_LENGTH_FOR_SKIP_LLM_DETECTION,
-    enableLLM
-  });
-
-  if (!detectedLang) {
-    return false;
-  }
-
-  return skipLangCodes.includes(detectedLang);
-}
-
 export function normalizePromptContextValue(
   value: string | null | undefined
 ): string | null | undefined {
@@ -699,6 +673,18 @@ class TranslateUtils {
 
   prepareTranslationText(value: string | null | undefined): string {
     return value?.replace(this.INVISIBLE_TRANSLATION_CHARACTERS_REGEX, '').trim() ?? '';
+  }
+
+  /**
+   * Clean and truncate article text for post processing
+   */
+  cleanText(textContent: string, maxLength: number = MAX_TEXT_LENGTH): string {
+    const cleaned = textContent
+      .replace(ZERO_WIDTH_CHARS_RE, '') // 零宽字符
+      .replace(WHITESPACE_RUN_RE, ' ')
+      .trim();
+
+    return cleaned.length <= maxLength ? cleaned : cleaned.slice(0, maxLength);
   }
 }
 

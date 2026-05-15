@@ -1,4 +1,3 @@
-import contentManager from '@/lib/content';
 import db from '@/lib/db';
 import { sha256 } from '@/lib/hash';
 import logger from '@/lib/logger';
@@ -6,8 +5,8 @@ import { getSubtitlesTranslatePrompt, getTranslatePrompt } from '@/lib/prompt';
 import { onMessage } from '@/lib/protocol';
 import { BatchQueue } from '@/lib/request/batch-queue';
 import { RequestQueue } from '@/lib/request/request-queue';
-import { translate } from '@/lib/translate';
-import { normalizePromptContextValue } from '@/lib/translate/core';
+import { normalizePromptContextValue, translateUtils } from '@/lib/translate/core';
+import { generateArticleSummary, translate } from '@/lib/translate/sw';
 import { putBatchRequestRecord } from '@/lib/utils/batch-request-record';
 import { BATCH_SEPARATOR } from '@/preset/prompt';
 import { DEFAULT_BATCH_QUEUE_CONFIG, DEFAULT_REQUEST_QUEUE_CONFIG } from '@/preset/translate';
@@ -52,7 +51,7 @@ async function getOrGenerateWebPageSummary(
   providerConfig: AIProvider,
   requestQueue: RequestQueue
 ): Promise<string | null> {
-  const preparedText = contentManager.cleanText(webContent);
+  const preparedText = translateUtils.cleanText(webContent);
   if (!preparedText) {
     return null;
   }
@@ -72,11 +71,7 @@ async function getOrGenerateWebPageSummary(
       return cachedAgain.summary;
     }
 
-    const summary = await contentManager.generateArticleSummary(
-      webTitle,
-      webContent,
-      providerConfig
-    );
+    const summary = await generateArticleSummary(webTitle, webContent, providerConfig);
     if (!summary) {
       return '';
     }
@@ -236,7 +231,7 @@ async function getOrGenerateSubtitleSummary(
   providerConfig: AIProvider,
   requestQueue: RequestQueue
 ): Promise<string | null> {
-  const preparedText = contentManager.cleanText(subtitlesContext);
+  const preparedText = translateUtils.cleanText(subtitlesContext);
   if (!preparedText) {
     return null;
   }
@@ -256,11 +251,7 @@ async function getOrGenerateSubtitleSummary(
       return cachedAgain.summary;
     }
 
-    const summary = await contentManager.generateArticleSummary(
-      videoTitle,
-      subtitlesContext,
-      providerConfig
-    );
+    const summary = await generateArticleSummary(videoTitle, subtitlesContext, providerConfig);
     if (!summary) {
       return '';
     }

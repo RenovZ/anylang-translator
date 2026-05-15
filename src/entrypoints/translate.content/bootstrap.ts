@@ -1,4 +1,4 @@
-import type { ContentScriptContext } from '#imports';
+import { ContentScriptContext } from 'wxt/utils/content-script-context';
 
 import { toast } from '@/components/toast-wrapper';
 import configStore from '@/lib/config';

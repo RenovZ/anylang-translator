@@ -1,5 +1,9 @@
 import '@/zod-config';
 
+import { browser } from 'wxt/browser';
+import { defineBackground } from 'wxt/utils/define-background';
+
+import { APP_NAME } from '@/lib/app';
 import config from '@/lib/config';
 import logger from '@/lib/logger';
 import { onMessage } from '@/lib/protocol';
@@ -13,6 +17,16 @@ import { registerTranslate } from './translate-signal';
 export default defineBackground({
   type: 'module',
   main: () => {
+    console.log(`[${APP_NAME}] background started`);
+
+    self.addEventListener('error', (e) => {
+      console.error('GLOBAL ERROR', e);
+    });
+
+    self.addEventListener('unhandledrejection', (e) => {
+      console.error('UNHANDLED PROMISE', e.reason);
+    });
+
     logger.info('Welcome.', { id: browser.runtime.id });
 
     browser.runtime.onInstalled.addListener(async (details) => {

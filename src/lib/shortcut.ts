@@ -19,6 +19,7 @@ import { featureConfigSchema, type FeatureConfig } from '@/types/config';
 import configStore from './config';
 import i18n from './i18n';
 import logger from './logger';
+import { sendMessage } from './protocol';
 
 /**
  * 快捷键管理器 - 统一处理快捷键的显示、解析和同步
@@ -157,21 +158,29 @@ class Shortcut {
   /**
    * 尝试打开快捷键设置页面
    */
-  openSettings(onCopySuccess?: (url: string) => void, onCopyFail?: (url: string) => void): void {
+  async tryOpenSettings(
+    onCopySuccess?: (url: string) => void,
+    onCopyFail?: (url: string) => void
+  ): Promise<void> {
     const { url } = this.getSettingsUrl();
 
-    // about: 和 x-apple. 协议可以直接打开
-    if (url.startsWith('about:') || url.startsWith('x-apple.')) {
-      window.open(url, '_blank');
-      return;
+    // 尝试直接打开页面；某些 URL（如 Firefox 的 about:addons）无法通过 tabs.create 打开
+    try {
+      if (url.startsWith('about:') || url.startsWith('x-apple.')) {
+        await sendMessage('openPage', { url });
+        return;
+      }
+    } catch (err) {
+      logger.error('Failed to open settings page, falling back to clipboard copy', { err });
     }
 
-    // Chrome/Edge 的内部页面无法通过 JS 打开，复制到剪贴板
-    if (url.startsWith('chrome://') || url.startsWith('edge://')) {
-      navigator.clipboard
+    try {
+      await navigator.clipboard
         .writeText(url)
         .then(() => onCopySuccess?.(url))
         .catch(() => onCopyFail?.(url));
+    } catch (err) {
+      logger.error('Failed to copy settings URL to clipboard', { err });
     }
   }
 

@@ -1,6 +1,6 @@
 import { get, writable, type Subscriber, type Writable } from 'svelte/store';
 import { browser } from 'wxt/browser';
-import { storage } from 'wxt/utils/storage';
+import { storage, type WxtStorageItem } from 'wxt/utils/storage';
 import z from 'zod';
 
 import logger from './logger';
