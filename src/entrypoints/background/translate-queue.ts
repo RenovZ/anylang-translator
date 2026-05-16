@@ -153,7 +153,7 @@ export async function setUpWebPageTranslationQueue() {
   const { requestQueue, batchQueue } = await createTranslationQueues(getTranslatePrompt);
 
   onMessage('enqueueTranslateRequest', async (message) => {
-    logger.trace('enqueueTranslateRequest', { message });
+    logger.debug({ message });
     const {
       data: {
         text,

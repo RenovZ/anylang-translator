@@ -1,22 +1,22 @@
 <script lang="ts">
   import { Button, Dropdown, DropdownItem, Input, Label, Select } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
-  // import '@/assets/custom-translation-node.css';
-  // import '@/assets/text.css';
-  // import '@/assets/translation-node-preset.css';
-
   import { twMerge } from 'tailwind-merge';
+  import { css } from '@codemirror/lang-css';
 
+  import CodeMirrorWrapper from '@/components/CodeMirrorWrapper.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
+  import { toast } from '@/components/toast-wrapper';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import logger from '@/lib/logger';
   import { decorateTranslationNode } from '@/lib/translate/ui';
-  import { BLOCK_CONTENT_CLASS, CONTENT_WRAPPER_CLASS } from '@/preset/dom';
+  import { BLOCK_CONTENT_CLASS, CONTENT_WRAPPER_CLASS, TRANS_STYLE_ATTR } from '@/preset/dom';
   import {
     defaultCustomDisplayStyles,
     DISPLAY_STYLES,
     fontFamilyOptions,
+    MAX_CUSTOM_CSS_LENGTH,
     PREVIEW_TEXT_MAP
   } from '@/preset/translate';
   import { displayStyleSchema, type CustomDisplayStyle } from '@/types/translate';
@@ -38,11 +38,14 @@
   );
 
   const setCustomStyle = (key: keyof CustomDisplayStyle, value: string | number) => {
+    if (displayStyle.preset !== 'custom') return;
+
     const current = $config.adaptiveTranslate.translate.displayStyle;
-    const styles = { ...(current.customStyles as CustomDisplayStyle), [key]: value };
+    const styles = { ...current.customStyles, [key]: value };
     const { success, data, error } = displayStyleSchema.safeParse({ ...current, styles });
     if (!success) {
       logger.error('Failed to update custom display style: ', { error });
+      toast.error(i18n('display_style_invalid', { defaultValue: 'Invalid display style' }));
       return;
     }
 
@@ -116,12 +119,22 @@
                 customStyles: {
                   ...defaultCustomDisplayStyles,
                   ...customStyles
-                }
+                },
+                customCss: undefined
+              };
+              return;
+            }
+            if (preset === 'css') {
+              const { customCss } = $config.adaptiveTranslate.translate.displayStyle;
+              $config.adaptiveTranslate.translate.displayStyle = {
+                preset,
+                customStyles: undefined,
+                customCss
               };
               return;
             }
 
-            $config.adaptiveTranslate.translate.displayStyle = { ...item };
+            $config.adaptiveTranslate.translate.displayStyle = { preset };
           }}>
           {item.label}
         </DropdownItem>
@@ -129,7 +142,39 @@
     </Dropdown>
   </div>
 
-  {#if customStyles}
+  {#if displayStyle.preset === 'css'}
+    <div class="mt-4">
+      <CodeMirrorWrapper
+        class="rounded-xl bg-gray-50 shadow-inner dark:bg-gray-700"
+        lang={css()}
+        placeholder={`/* ${i18n('display_mode_custom_css_placeholder', { defaultValue: 'Example Css' })} */
+[data-${TRANS_STYLE_ATTR}='css'] {
+  color: black;
+  background-color: color-mix(in srgb, #9d8189 20%, transparent);
+  padding: 2px 4px;
+  border-radius: 8px;
+}`}
+        value={displayStyle.customCss ?? ''}
+        onchange={(v) => {
+          if ((v?.length ?? 0) > MAX_CUSTOM_CSS_LENGTH) {
+            toast.error(
+              i18n('display_style_custom_css_too_long', { defaultValue: 'Custom CSS is too long' })
+            );
+            return;
+          }
+
+          $config.adaptiveTranslate.translate.displayStyle = {
+            ...$config.adaptiveTranslate.translate.displayStyle,
+            customCss: v || undefined
+          };
+        }} />
+      <p class="text-right text-xs text-slate-400 dark:text-slate-500">
+        {displayStyle.customCss?.length ?? 0} / {MAX_CUSTOM_CSS_LENGTH}
+      </p>
+    </div>
+  {/if}
+
+  {#if displayStyle.preset === 'custom' && customStyles}
     <div class="mt-4 space-y-3 rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
       <Label class="grid grid-cols-[1fr_140px_80px] items-center gap-4">
         <span>{i18n('background_color', { defaultValue: 'Background color' })}</span>

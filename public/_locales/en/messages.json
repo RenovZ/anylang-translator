@@ -188,6 +188,9 @@
   "display_mode_bilingual_mode": {
     "message": "Bilingual Mode"
   },
+  "display_mode_custom_css_placeholder": {
+    "message": "Example Css"
+  },
   "display_mode_translation_only": {
     "message": "Translation only"
   },
@@ -206,8 +209,14 @@
   "display_style_custom": {
     "message": "Custom"
   },
+  "display_style_custom_css_too_long": {
+    "message": "Custom CSS is too long"
+  },
   "display_style_dashed_underline": {
     "message": "Dashed Underline"
+  },
+  "display_style_invalid": {
+    "message": "Invalid display style"
   },
   "display_style_mark_pencil": {
     "message": "Mark Pencil"

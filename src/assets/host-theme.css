@@ -1,19 +1,19 @@
 :root {
-  --anylang-primary: oklch(76.5% 0.177 163.223);
-  --anylang-muted: oklch(0.97 0 0);
-  --anylang-muted-foreground: oklch(0.556 0 0);
-  --anylang-background: oklch(98.5% 0.002 247.839);
-  --anylang-weaken: oklch(92.8% 0.006 264.531);
-  --anylang-mark: oklch(93% 0.14 95);
+  --anylang-background: color-mix(in srgb, #ffbcad 20%, transparent);
+  --anylang-primary: color-mix(in srgb, #fe795d 40%, transparent);
+  --anylang-muted: color-mix(in srgb, #fff1ee 40%, transparent);
+  --anylang-muted-foreground: color-mix(in srgb, #6b7280 40%, transparent);
+  --anylang-weaken: color-mix(in srgb, #6b7280 20%, transparent);
+  --anylang-mark: color-mix(in srgb, #dda15e 20%, transparent);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --anylang-primary: oklch(59.6% 0.145 163.225);
-    --anylang-muted: oklch(0.269 0 0);
-    --anylang-muted-foreground: oklch(0.708 0 0);
-    --anylang-background: oklch(44.6% 0.03 256.802);
-    --anylang-weaken: oklch(44.6% 0.03 256.802);
-    --anylang-mark: oklch(78% 0.11 95);
+    --anylang-background: color-mix(in srgb, #ffbcad 40%, transparent);
+    --anylang-primary: color-mix(in srgb, #fe795d 60%, transparent);
+    --anylang-muted: color-mix(in srgb, #fff1ee 60%, transparent);
+    --anylang-muted-foreground: color-mix(in srgb, #6b7280 20%, transparent);
+    --anylang-weaken: color-mix(in srgb, #6b7280 40%, transparent);
+    --anylang-mark: color-mix(in srgb, #dda15e 40%, transparent);
   }
 }

@@ -8,14 +8,14 @@ export const PREVIEW_TEXT_MAP = {
 } as const;
 
 export const defaultCustomDisplayStyles = {
-  // refer from src/assets/host-theme.css
-  backgroundColor: '#00d49280', //#00d492 + opacity(50%)
+  // refer https://coolors.co/palettes/trending
+  backgroundColor: '#d6ccc2',
   color: 'inherit',
   fontSize: '14px',
   fontWeight: 400,
   fontFamily: '',
-  borderRadius: '4px',
-  padding: '4px 8px'
+  borderRadius: '8px',
+  padding: '2px 4px'
 } satisfies CustomDisplayStyle;
 
 export const DISPLAY_STYLES = [
