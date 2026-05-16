@@ -18,17 +18,18 @@ import i18n from '@/lib/i18n';
 import logger from '@/lib/logger';
 import { createShadowHost } from '@/lib/shadow-host';
 import {
+  CUSTOM_PRESET_STYLES_INJECTOR_ID,
   CUSTOM_STYLES_INJECTOR_ID,
   PRESET_STYLES_INJECTOR_ID,
   SPINNER_CLASS,
   TRANS_STYLE_KEY,
-  TRANSLATION_ERROR_CONTAINER_CLASS
+  TRANSLATE_ERROR_CONTAINER_CLASS
 } from '@/preset/dom';
 import { WebPagePromptContext } from '@/types/content';
 import { Point } from '@/types/dom';
 import { LangCode } from '@/types/lang';
 import { isLLMProvider } from '@/types/provider';
-import type { DisplayStyle, TranslateOptions } from '@/types/translate';
+import type { CustomDisplayStyle, DisplayStyle, TranslateOptions } from '@/types/translate';
 import { displayStyleSchema } from '@/types/translate';
 
 import { translateTextCore, translateWalkedElement } from './core';
@@ -50,6 +51,11 @@ class StyleInjector {
   private shadowPresetStyleSheet: CSSStyleSheet | null = null;
   private customCSSMap = new WeakMap<StyleRoot, CSSStyleSheet>();
   private documentCachedCSS: string | null = null;
+
+  // 共享单例 — 因为 custom styles 是全局用户设置，所有 root 注入相同 CSS
+  private customStylesSheet: CSSStyleSheet | null = null;
+  private customStylesCachedCSS: string | null = null;
+  private customStylesAdoptedRoots = new WeakSet<StyleRoot>();
 
   supportsConstructableStyleSheets(
     root: StyleRoot
@@ -153,6 +159,65 @@ class StyleInjector {
     }
   }
 
+  // Inject custom styles into the given root
+  async ensureCustomStyles(root: StyleRoot, customStyles: CustomDisplayStyle): Promise<void> {
+    // Ensure preset styles are injected first (provides CSS variables)
+    this.ensurePresetStyles(root);
+
+    /** Convert CustomDisplayStyle to CSS rule text */
+    function buildCustomStylesCSS(styles: CustomDisplayStyle): string {
+      const props: string[] = [];
+
+      if (styles.backgroundColor) {
+        props.push(`  background-color: ${styles.backgroundColor} !important;`);
+      }
+      if (styles.color) {
+        props.push(`  color: ${styles.color} !important;`);
+      }
+      if (styles.fontSize) {
+        props.push(`  font-size: ${styles.fontSize} !important;`);
+      }
+      if (styles.fontWeight) {
+        props.push(`  font-weight: ${styles.fontWeight} !important;`);
+      }
+      if (styles.fontFamily) {
+        props.push(`  font-family: ${styles.fontFamily} !important;`);
+      }
+      if (styles.borderRadius) {
+        props.push(`  border-radius: ${styles.borderRadius} !important;`);
+      }
+      if (styles.padding) {
+        props.push(`  padding: ${styles.padding} !important;`);
+      }
+
+      return `[data-anylang-custom-translate-style="custom"] {\n${props.join('\n')}\n}`;
+    }
+
+    // Build CSS from structured style properties
+    const cssText = buildCustomStylesCSS(customStyles);
+
+    // Only rebuild the shared sheet when CSS actually changes
+    if (this.customStylesCachedCSS !== cssText) {
+      this.customStylesCachedCSS = cssText;
+      if (this.supportsConstructableStyleSheets(root)) {
+        if (!this.customStylesSheet) {
+          this.customStylesSheet = new CSSStyleSheet();
+        }
+        await this.customStylesSheet.replace(cssText);
+      }
+    }
+
+    // Adopt or inject — unified path
+    if (this.supportsConstructableStyleSheets(root)) {
+      if (!this.customStylesAdoptedRoots.has(root)) {
+        this.customStylesAdoptedRoots.add(root);
+        root.adoptedStyleSheets = [...root.adoptedStyleSheets, this.customStylesSheet!];
+      }
+    } else {
+      this.injectStyleElement(root, CUSTOM_PRESET_STYLES_INJECTOR_ID, cssText);
+    }
+  }
+
   /** Inject custom CSS into the given root */
   async ensureCustomCSS(root: StyleRoot, cssText: string): Promise<void> {
     // Ensure preset styles are injected first (provides CSS variables)
@@ -196,18 +261,29 @@ export async function decorateTranslationNode(
   translatedNode: HTMLElement,
   displayStyle: DisplayStyle
 ): Promise<void> {
-  logger.trace({ translatedNode, displayStyle });
-  if (displayStyleSchema.safeParse(displayStyle.value).error) return;
+  logger.trace({ outerHTML: translatedNode.outerHTML, displayStyle });
 
-  const root = getContainingShadowRoot(translatedNode) ?? document;
-
-  if (displayStyle.customCSS) {
-    translatedNode.dataset[TRANS_STYLE_KEY] = 'custom';
-    await styleInjector.ensureCustomCSS(root, displayStyle.customCSS);
+  const { success, error } = displayStyleSchema.safeParse(displayStyle);
+  if (!success) {
+    logger.error({ error });
     return;
   }
 
-  translatedNode.dataset[TRANS_STYLE_KEY] = displayStyle.value;
+  const { preset, customStyles, customCss } = displayStyle;
+
+  translatedNode.dataset[TRANS_STYLE_KEY] = preset;
+  const root = getContainingShadowRoot(translatedNode) ?? document;
+
+  if (customStyles) {
+    await styleInjector.ensureCustomStyles(root, customStyles);
+    return;
+  }
+
+  if (customCss) {
+    await styleInjector.ensureCustomCSS(root, customCss);
+    return;
+  }
+
   styleInjector.ensurePresetStyles(root);
 }
 
@@ -293,7 +369,7 @@ export async function getTranslatedTextAndRemoveSpinner(
     const container = createShadowHost({
       component: TranslateError,
       props,
-      className: TRANSLATION_ERROR_CONTAINER_CLASS,
+      className: TRANSLATE_ERROR_CONTAINER_CLASS,
       position: 'inline',
       inheritStyles: false,
       cssContent: [appCss, textCss],

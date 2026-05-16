@@ -1,7 +1,58 @@
 @import '@/assets/host-theme.css';
 
-/*TODO: 这些css需要补充完善*/
-[data-anylang-custom-translate-style='blur'] {
+[data-anylang-custom-translate-style='dashed_underline'] {
+  text-decoration: underline dashed var(--anylang-primary) !important;
+  text-underline-offset: 5px !important;
+}
+
+[data-anylang-custom-translate-style='solid_underline'] {
+  text-decoration: underline solid var(--anylang-primary) !important;
+  text-underline-offset: 5px !important;
+}
+
+[data-anylang-custom-translate-style='wavy_underline'] {
+  text-decoration: underline wavy var(--anylang-primary) !important;
+  text-underline-offset: 5px !important;
+  text-decoration-thickness: 2px !important;
+  text-decoration-skip-ink: none !important;
+}
+
+[data-anylang-custom-translate-style='weaken_effect'] {
+  color: var(--anylang-weaken) !important;
+}
+
+[data-anylang-custom-translate-style='shadow_effect'] {
+  background-color: var(--anylang-background);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  padding: 5px !important;
+  margin: 2px !important;
+}
+
+[data-anylang-custom-translate-style='mark_pencil'] {
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--anylang-mark) 10%, transparent),
+    color-mix(in srgb, var(--anylang-mark) 90%, transparent) 3%,
+    color-mix(in srgb, var(--anylang-mark) 90%, transparent) 35%,
+    color-mix(in srgb, var(--anylang-mark) 90%, transparent) 70%,
+    color-mix(in srgb, var(--anylang-mark) 80%, transparent) 95%,
+    color-mix(in srgb, var(--anylang-mark) 30%, transparent)
+  ) !important;
+  padding: 0px 4px !important;
+  border-radius: 4px 12px 8px 10px !important;
+  box-decoration-break: clone !important;
+  -webkit-box-decoration-break: clone !important;
+}
+
+.anylang-translated-block-content[data-anylang-custom-translate-style='quoted_style'] {
+  border-left: 4px solid var(--anylang-primary) !important;
+  padding: 4px 0 4px 8px !important;
+}
+
+[data-anylang-custom-translate-style='blur_effect'] {
   filter: blur(4px);
   opacity: 0.75;
   transition:
@@ -9,33 +60,26 @@
     opacity 0.1s ease-in-out;
 }
 
-[data-anylang-custom-translate-style='blur']:hover {
+[data-anylang-custom-translate-style='blur_effect']:hover {
   filter: blur(0);
   opacity: 1;
 }
 
-.anylang-translated-block-content[data-anylang-custom-translate-style='blockquote'] {
-  border-left: 4px solid var(--anylang-primary);
-  padding: 4px 0 4px 8px;
+[data-anylang-custom-translate-style='transparent_effect'] {
+  opacity: 0.15;
 }
 
-[data-anylang-custom-translate-style='weakened'] {
+[data-anylang-custom-translate-style='transparent_effect']:hover {
   opacity: 1;
-  color: var(--anylang-muted-foreground) !important;
 }
 
-[data-anylang-custom-translate-style='dashedLine'] {
-  text-decoration: underline dashed var(--anylang-primary) !important;
-  text-underline-offset: 5px;
-}
-
-[data-anylang-custom-translate-style='border'] {
+[data-anylang-custom-translate-style='border_style'] {
   border: 1px solid var(--anylang-primary);
   padding: 2px 4px;
   border-radius: 4px;
 }
 
-[data-anylang-custom-translate-style='textColor'] {
+[data-anylang-custom-translate-style='text_color'] {
   color: var(--anylang-primary) !important;
 }
 

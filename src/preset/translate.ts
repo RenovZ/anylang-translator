@@ -1,139 +1,99 @@
 import i18n from '@/lib/i18n';
-import type { DisplayStyle } from '@/types/translate';
+import type { CustomDisplayStyle, DisplayStyle } from '@/types/translate';
 
-const DISPLAY_STYLES = [
+export const PREVIEW_TEXT_MAP = {
+  en: 'The sky above the port was the color of television, tuned to a dead channel. It was a bright cold day in April, and the clocks were striking thirteen. Winston Smith, his chin nuzzled into his breast in an effort to escape the vile wind, slipped quickly through the glass doors of Victory Mansions, though not quickly enough to prevent a swirl of gritty dust from entering along with him.',
+  'zh-CN':
+    '港口上空的天空呈现出电视屏幕调到一个死频道时的颜色。那是四月里一个明亮而寒冷的日子，时钟正敲着十三点。温斯顿·史密斯把下巴紧贴着胸口，试图躲避那令人厌恶的寒风，快步穿过胜利大厦的玻璃门，尽管速度还不够快，没能阻止一阵夹杂着沙砾的尘土随他一起飘了进来。'
+} as const;
+
+export const defaultCustomDisplayStyles = {
+  // refer from src/assets/host-theme.css
+  backgroundColor: '#00d49280', //#00d492 + opacity(50%)
+  color: 'inherit',
+  fontSize: '14px',
+  fontWeight: 400,
+  fontFamily: '',
+  borderRadius: '4px',
+  padding: '4px 8px'
+} satisfies CustomDisplayStyle;
+
+export const DISPLAY_STYLES = [
   {
-    value: 'none',
-    label: i18n('display_style_none', { defaultValue: 'None' }),
-    styles: {}
+    preset: 'none',
+    label: i18n('display_style_none', { defaultValue: 'None' })
   },
   {
-    value: 'dashed_underline',
-    label: i18n('display_style_dashed_underline', { defaultValue: 'Dotted lines' }),
-    styles: {
-      textDecorationLine: 'underline',
-      textDecorationStyle: 'dashed',
-      textDecorationColor: '#38bdf8',
-      textUnderlineOffset: '4px'
-    }
+    preset: 'dashed_underline',
+    label: i18n('display_style_dashed_underline', { defaultValue: 'Dashed Underline' })
   },
   {
-    value: 'solid_underline',
-    label: i18n('display_style_solid_underline', { defaultValue: 'Straight line' }),
-    styles: {
-      textDecorationLine: 'underline',
-      textDecorationStyle: 'solid',
-      textDecorationColor: '#0ea5e9',
-      textUnderlineOffset: '4px'
-    }
+    preset: 'solid_underline',
+    label: i18n('display_style_solid_underline', { defaultValue: 'Solid Underline' })
   },
   {
-    value: 'wavy_lines',
-    label: i18n('display_style_wavy_lines', { defaultValue: 'Wavy Lines' }),
-    styles: {
-      textDecorationLine: 'underline',
-      textDecorationStyle: 'wavy',
-      textDecorationColor: '#38bdf8',
-      textUnderlineOffset: '4px'
-    }
+    preset: 'wavy_underline',
+    label: i18n('display_style_wavy_underline', { defaultValue: 'Wavy Underline' })
   },
   {
-    value: 'weaken',
-    label: i18n('display_style_weaken', { defaultValue: 'Weaken' }),
-    styles: {
-      color: '#9ca3af'
-    }
+    preset: 'weaken_effect',
+    label: i18n('display_style_weaken', { defaultValue: 'Weaken Effect' })
   },
   {
-    value: 'shadow_effect',
-    label: i18n('display_style_shadow_effect', {
-      defaultValue: 'Shadow effect'
-    }),
-    styles: {
-      backgroundColor: '#ffffff',
-      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
-      borderRadius: '8px',
-      padding: '12px',
-      margin: '2px'
-    }
+    preset: 'shadow_effect',
+    label: i18n('display_style_shadow_effect', { defaultValue: 'Shadow Effect' })
   },
   {
-    value: 'mark',
-    label: i18n('display_style_mark', { defaultValue: 'Mark' }),
-    styles: {
-      backgroundColor: '#fde047',
-      padding: '0px 4px'
-    }
+    preset: 'mark_pencil',
+    label: i18n('display_style_mark_pencil', { defaultValue: 'Mark Pencil' })
   },
   {
-    value: 'quoted',
-    label: i18n('display_style_quoted', { defaultValue: 'Quoted' }),
-    styles: {
-      borderLeftWidth: '4px',
-      borderLeftStyle: 'solid',
-      borderLeftColor: '#f87171',
-      paddingLeft: '12px'
-    }
+    preset: 'quoted_style',
+    label: i18n('display_style_quoted_style', { defaultValue: 'Quoted Style' })
   },
   {
-    value: 'blur',
-    label: i18n('display_style_blur', {
-      defaultValue: 'Blur'
-    }),
-    styles: {
-      filter: 'blur(4px)'
-    },
-    attributes: {
-      'data-anylang-translator-hover-style': 'filter_none'
-    }
+    preset: 'blur_effect',
+    label: i18n('display_style_blur', { defaultValue: 'Blur Effect' })
   },
   {
-    value: 'transparent',
-    label: i18n('display_style_transparent', { defaultValue: 'Transparent' }),
-    styles: {
-      opacity: '0.15'
-    },
-    attributes: {
-      'data-anylang-translator-hover-style': 'opacity_1'
-    }
+    preset: 'transparent_effect',
+    label: i18n('display_style_transparent', { defaultValue: 'Transparent Effect' })
   },
   {
-    value: 'background',
-    label: i18n('display_style_background', { defaultValue: 'Background' }),
-    styles: {
-      backgroundColor: 'oklch(98% 0.016 73.684)',
-      borderRadius: '4px',
-      padding: '4px 8px'
-    }
+    preset: 'border_style',
+    label: i18n('display_style_border_style', { defaultValue: 'Border Style' })
   },
   {
-    value: 'custom',
+    preset: 'text_color',
+    label: i18n('display_style_text_color', { defaultValue: 'Text Color' })
+  },
+  {
+    preset: 'background',
+    label: i18n('display_style_background', { defaultValue: 'Background' })
+  },
+  {
+    preset: 'custom',
     label: i18n('display_style_custom', { defaultValue: 'Custom' }),
-    styles: {}
+    styles: defaultCustomDisplayStyles
   },
   {
-    value: 'css',
-    label: i18n('display_style_css', { defaultValue: 'CSS' }),
-    styles: {}
+    preset: 'css',
+    label: i18n('display_style_css', { defaultValue: 'CSS' })
   }
 ] as const;
-
-export const attributeKeys = ['data-anylang-translator-hover-style'] as const;
 
 export const displayStyles = DISPLAY_STYLES.map(
   (item) =>
     ({
-      value: item.value,
-      label: item.label,
-      styles: item.styles,
-      ...('attributes' in item && item.attributes ? { attributes: item.attributes } : {}),
-      customCSS: ''
+      preset: item.preset,
+      customStyles: 'styles' in item && item.styles ? item.styles : undefined
+      // customCss: undefined
     }) satisfies DisplayStyle
 );
 
 export const MAX_CUSTOM_CSS_LENGTH = 8192;
 
-export const displayStyleValues: string[] = displayStyles.map((s) => s.value);
+export const displayStylePresets: string[] = displayStyles.map((s) => s.preset);
 
 export const fontFamilyOptions = [
   { value: '', label: i18n('system_default', { defaultValue: 'System Default' }) },

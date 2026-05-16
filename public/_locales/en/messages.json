@@ -195,7 +195,10 @@
     "message": "Background"
   },
   "display_style_blur": {
-    "message": "Blur"
+    "message": "Blur Effect"
+  },
+  "display_style_border_style": {
+    "message": "Border Style"
   },
   "display_style_css": {
     "message": "CSS"
@@ -204,31 +207,34 @@
     "message": "Custom"
   },
   "display_style_dashed_underline": {
-    "message": "Dotted lines"
+    "message": "Dashed Underline"
   },
-  "display_style_mark": {
-    "message": "Mark"
+  "display_style_mark_pencil": {
+    "message": "Mark Pencil"
   },
   "display_style_none": {
     "message": "None"
   },
-  "display_style_quoted": {
-    "message": "Quoted"
+  "display_style_quoted_style": {
+    "message": "Quoted Style"
   },
   "display_style_shadow_effect": {
-    "message": "Shadow effect"
+    "message": "Shadow Effect"
   },
   "display_style_solid_underline": {
-    "message": "Straight line"
+    "message": "Solid Underline"
+  },
+  "display_style_text_color": {
+    "message": "Text Color"
   },
   "display_style_transparent": {
-    "message": "Transparent"
+    "message": "Transparent Effect"
   },
-  "display_style_wavy_lines": {
-    "message": "Wavy Lines"
+  "display_style_wavy_underline": {
+    "message": "Wavy Underline"
   },
   "display_style_weaken": {
-    "message": "Weaken"
+    "message": "Weaken Effect"
   },
   "docs": {
     "message": "Documentation"

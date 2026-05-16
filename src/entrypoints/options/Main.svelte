@@ -36,12 +36,12 @@
     }
   };
 
-  const hoverCssUrl = browser.runtime.getURL('/contentScript/css/styles.css' as PublicPath);
+  // const hoverCssUrl = browser.runtime.getURL('/contentScript/css/styles.css' as PublicPath);
 </script>
 
-<svelte:head>
+<!-- <svelte:head>
   <link rel="stylesheet" href={hoverCssUrl} />
-</svelte:head>
+</svelte:head> -->
 
 <!-- Header -->
 <header

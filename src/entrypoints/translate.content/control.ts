@@ -366,7 +366,7 @@ export class PageTranslateManager {
           const { target, isIntersecting } = entry;
           if (!isIntersecting) continue;
           if (domFilter.isHTMLElement(target)) {
-            logger.info('Element entered viewport', { target });
+            logger.debug({ target });
             if (!target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
               const {
                 sourceLangCode = 'auto',

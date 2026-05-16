@@ -41,7 +41,6 @@ export async function bootstrap(ctx: ContentScriptContext) {
     // Extension context may be invalidated during update, proceed without auto-start
     logger.error('Failed to check translation state:', { error });
   }
-  logger.trace({ translationEnabled });
   if (translationEnabled) {
     void manager.start();
   }
@@ -109,7 +108,6 @@ export async function bootstrap(ctx: ContentScriptContext) {
       pageRange,
       langDetectionMode
     });
-    logger.trace({ detectedCodeOrUnd });
     await configStore.setDetectedLangCode(detectedCodeOrUnd);
 
     logger.debug('checkAutoPageTranslation', { url: window.location.href, detectedCodeOrUnd });

@@ -1,83 +1,90 @@
 <script lang="ts">
   import { Button, Dropdown, DropdownItem, Input, Label, Select } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
+  // import '@/assets/custom-translation-node.css';
+  // import '@/assets/text.css';
+  // import '@/assets/translation-node-preset.css';
+
+  import { twMerge } from 'tailwind-merge';
 
   import SectionRow from '@/components/SectionRow.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import { displayStyles, fontFamilyOptions } from '@/preset/translate';
-  import type { CustomDisplayStyle } from '@/types/translate';
+  import logger from '@/lib/logger';
+  import { decorateTranslationNode } from '@/lib/translate/ui';
+  import { BLOCK_CONTENT_CLASS, CONTENT_WRAPPER_CLASS } from '@/preset/dom';
+  import {
+    defaultCustomDisplayStyles,
+    DISPLAY_STYLES,
+    fontFamilyOptions,
+    PREVIEW_TEXT_MAP
+  } from '@/preset/translate';
+  import { displayStyleSchema, type CustomDisplayStyle } from '@/types/translate';
 
-  const previewTextEn =
-    'Night gathers, and now my watch begins. It shall not end until my death. I shall take no wife, hold no lands, father no children.';
-  const previewTextZh =
-    '长夜将至，我从今开始守望，至死方休。我将不娶妻、不封地、不生子。我将不戴宝冠，不争荣宠。我将尽忠职守，生死于斯。';
-
-  const previewStyles = (
-    node: HTMLElement,
-    styles: Record<string, string> | CustomDisplayStyle
-  ) => {
-    const apply = (s: Record<string, string> | CustomDisplayStyle) => {
-      const css: Record<string, string> = {};
-      for (const [k, v] of Object.entries(s)) {
-        let val = String(v);
-        if (k === 'fontSize' && /^\d+$/.test(val)) val += 'px';
-        css[k] = val;
-      }
-      Object.assign(node.style, css);
-    };
-    if (styles) apply(styles);
-    return {
-      update(newStyles: Record<string, string> | CustomDisplayStyle) {
-        node.style.cssText = '';
-        if (newStyles) apply(newStyles);
-      }
-    };
-  };
-
-  const defaultCustomStyles: CustomDisplayStyle = {
-    backgroundColor: '#f3f4f6',
-    color: 'inherit',
-    fontSize: '14px',
-    fontWeight: 400,
-    fontFamily: '',
-    borderRadius: '4px',
-    padding: '4px 8px'
-  };
+  let previewRef: HTMLElement | undefined;
+  const displayStyle = $derived($config.adaptiveTranslate.translate.displayStyle);
+  $effect(() => {
+    if (!previewRef) return;
+    void decorateTranslationNode(previewRef, displayStyle);
+  });
 
   const customStyles = $derived(
-    $config.adaptiveTranslate.translate.displayStyle.value === 'custom'
+    $config.adaptiveTranslate.translate.displayStyle.preset === 'custom'
       ? {
-          ...defaultCustomStyles,
-          ...($config.adaptiveTranslate.translate.displayStyle.styles as CustomDisplayStyle)
+          ...defaultCustomDisplayStyles,
+          ...$config.adaptiveTranslate.translate.displayStyle.customStyles
         }
       : null
   );
 
   const setCustomStyle = (key: keyof CustomDisplayStyle, value: string | number) => {
     const current = $config.adaptiveTranslate.translate.displayStyle;
-    $config.adaptiveTranslate.translate.displayStyle = {
-      ...current,
-      styles: { ...(current.styles as CustomDisplayStyle), [key]: value }
-    };
+    const styles = { ...(current.customStyles as CustomDisplayStyle), [key]: value };
+    const { success, data, error } = displayStyleSchema.safeParse({ ...current, styles });
+    if (!success) {
+      logger.error('Failed to update custom display style: ', { error });
+      return;
+    }
+
+    $config.adaptiveTranslate.translate.displayStyle = { ...data };
   };
 
-  const previewAttributes = (node: HTMLElement, attributes: Record<string, string> | undefined) => {
-    const apply = (attrs: Record<string, string> | undefined) => {
-      if (attrs) Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
-    };
-    const clear = (attrs: Record<string, string> | undefined) => {
-      if (attrs) Object.keys(attrs).forEach((k) => node.removeAttribute(k));
-    };
-    apply(attributes);
-    return {
-      update(newAttributes: Record<string, string> | undefined) {
-        clear(attributes);
-        attributes = newAttributes;
-        apply(newAttributes);
-      }
-    };
-  };
+  // const previewStyles = (node: HTMLElement, styles: CustomDisplayStyle | undefined) => {
+  //   const apply = (s: CustomDisplayStyle | undefined) => {
+  //     if (!s) return;
+  //     const css: Record<string, string> = {};
+  //     for (const [k, v] of Object.entries(s)) {
+  //       let val = String(v);
+  //       if (k === 'fontSize' && /^\d+$/.test(val)) val += 'px';
+  //       css[k] = val;
+  //     }
+  //     Object.assign(node.style, css);
+  //   };
+  //   if (styles) apply(styles);
+  //   return {
+  //     update(newStyles: CustomDisplayStyle) {
+  //       node.style.cssText = '';
+  //       if (newStyles) apply(newStyles);
+  //     }
+  //   };
+  // };
+
+  // const previewAttributes = (node: HTMLElement, attributes: Record<string, string> | undefined) => {
+  //   const apply = (attrs: Record<string, string> | undefined) => {
+  //     if (attrs) Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+  //   };
+  //   const clear = (attrs: Record<string, string> | undefined) => {
+  //     if (attrs) Object.keys(attrs).forEach((k) => node.removeAttribute(k));
+  //   };
+  //   apply(attributes);
+  //   return {
+  //     update(newAttributes: Record<string, string> | undefined) {
+  //       clear(attributes);
+  //       attributes = newAttributes;
+  //       apply(newAttributes);
+  //     }
+  //   };
+  // };
 </script>
 
 <SectionRow
@@ -91,31 +98,25 @@
     <Button
       class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <span>
-        {displayStyles.find(
-          (item) => item.value === $config.adaptiveTranslate.translate.displayStyle.value
-        )?.label ?? displayStyles[0].label}
+        {DISPLAY_STYLES.find(
+          (item) => item.preset === $config.adaptiveTranslate.translate.displayStyle.preset
+        )?.label ?? DISPLAY_STYLES[0].label}
       </span>
       <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
     </Button>
     <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-      {#each displayStyles as item (item)}
+      {#each DISPLAY_STYLES as item (item)}
         <DropdownItem
           onclick={() => {
-            if (item.value === 'custom') {
-              const currentStyles = $config.adaptiveTranslate.translate.displayStyle.styles;
-              const isCustom =
-                $config.adaptiveTranslate.translate.displayStyle.value === 'custom' &&
-                currentStyles &&
-                typeof currentStyles === 'object' &&
-                'fontSize' in currentStyles;
-              const styles = isCustom
-                ? (currentStyles as CustomDisplayStyle)
-                : { ...defaultCustomStyles };
+            const { preset } = item;
+            if (preset === 'custom') {
+              const { customStyles } = $config.adaptiveTranslate.translate.displayStyle;
               $config.adaptiveTranslate.translate.displayStyle = {
-                value: 'custom',
-                label: item.label,
-                styles,
-                customCSS: null
+                preset,
+                customStyles: {
+                  ...defaultCustomDisplayStyles,
+                  ...customStyles
+                }
               };
               return;
             }
@@ -189,12 +190,15 @@
     </div>
   {/if}
 
-  <div class="mt-3 space-y-3 text-lg">
-    <p>{previewTextEn}</p>
-    <p
+  <div class={twMerge('mt-3 space-y-3 text-lg', CONTENT_WRAPPER_CLASS)}>
+    <p>{PREVIEW_TEXT_MAP.en}</p>
+    <!-- <p
       use:previewStyles={$config.adaptiveTranslate.translate.displayStyle.styles}
       use:previewAttributes={$config.adaptiveTranslate.translate.displayStyle.attributes}>
       {previewTextZh}
+    </p> -->
+    <p class={BLOCK_CONTENT_CLASS} bind:this={previewRef}>
+      {PREVIEW_TEXT_MAP['zh-CN']}
     </p>
   </div>
 </SectionRow>

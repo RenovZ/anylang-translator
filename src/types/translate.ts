@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-import { attributeKeys, displayStyleValues, MAX_CUSTOM_CSS_LENGTH } from '@/preset/translate';
+import { displayStylePresets, MAX_CUSTOM_CSS_LENGTH } from '@/preset/translate';
 
 import { TranslateMode, TranslatePageRange } from './config';
 import { LangCode } from './lang';
 import { ProviderConfig } from './provider';
 
-const customDisplaySchema = z.object({
+export const customStylesSchema = z.object({
   backgroundColor: z.string(),
   color: z.string(),
   fontSize: z.string(),
@@ -15,20 +15,12 @@ const customDisplaySchema = z.object({
   borderRadius: z.string(),
   padding: z.string()
 });
-export type CustomDisplayStyle = z.infer<typeof customDisplaySchema>;
+export type CustomDisplayStyle = z.infer<typeof customStylesSchema>;
 
-const stylesSchema: z.ZodType<Record<string, string> | CustomDisplayStyle> = z.union([
-  z.record(z.string(), z.string()),
-  customDisplaySchema
-]);
-const attributeKeySchema = z.enum(attributeKeys);
-const attributesSchema = z.record(attributeKeySchema, z.string());
 export const displayStyleSchema = z.object({
-  value: z.enum(displayStyleValues),
-  label: z.string(),
-  styles: stylesSchema,
-  attributes: attributesSchema.optional(),
-  customCSS: z.string().max(MAX_CUSTOM_CSS_LENGTH, 'Custom CSS cannot exceed 8KB').nullable()
+  preset: z.enum(displayStylePresets),
+  customStyles: customStylesSchema.optional(),
+  customCss: z.string().max(MAX_CUSTOM_CSS_LENGTH, 'Custom CSS cannot exceed 8KB').optional()
 });
 export type DisplayStyle = z.infer<typeof displayStyleSchema>;
 

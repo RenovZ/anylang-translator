@@ -10,7 +10,7 @@ import {
   PARAGRAPH_ATTRIBUTE,
   SHADOW_HOST_CLASS,
   SPINNER_CLASS,
-  TRANSLATION_MODE_ATTRIBUTE,
+  TRANSLATE_MODE_ATTRIBUTE,
   WALKED_ATTRIBUTE
 } from '@/preset/dom';
 import { displayStyles } from '@/preset/translate';
@@ -54,7 +54,7 @@ export function removeShadowHostInTranslatedWrapper(wrapper: HTMLElement): void 
 export function removeTranslatedWrapperWithRestore(wrapper: HTMLElement): void {
   removeShadowHostInTranslatedWrapper(wrapper);
 
-  const translationMode = wrapper.getAttribute(TRANSLATION_MODE_ATTRIBUTE);
+  const translationMode = wrapper.getAttribute(TRANSLATE_MODE_ATTRIBUTE);
 
   if (translationMode === 'translationOnly') {
     // For translation-only mode, find nearest ancestor in originalContentMap and restore

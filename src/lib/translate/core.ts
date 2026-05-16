@@ -11,7 +11,7 @@ import {
   MARK_ATTRIBUTES,
   NOTRANSLATE_CLASS,
   PARAGRAPH_ATTRIBUTE,
-  TRANSLATION_MODE_ATTRIBUTE,
+  TRANSLATE_MODE_ATTRIBUTE,
   WALKED_ATTRIBUTE
 } from '@/preset/dom';
 import type { TranslateMode } from '@/types/config';
@@ -126,7 +126,7 @@ async function bilingualMode(
     const translatedWrapperNode = ownerDoc.createElement('span');
     translatedWrapperNode.className = `${NOTRANSLATE_CLASS} ${CONTENT_WRAPPER_CLASS}`;
     translatedWrapperNode.setAttribute(
-      TRANSLATION_MODE_ATTRIBUTE,
+      TRANSLATE_MODE_ATTRIBUTE,
       'bilingual' satisfies TranslateMode
     );
     translatedWrapperNode.setAttribute(WALKED_ATTRIBUTE, walkId);
@@ -305,7 +305,7 @@ async function translationOnlyMode(
     const translatedWrapperNode = ownerDoc.createElement('span');
     translatedWrapperNode.className = `${NOTRANSLATE_CLASS} ${CONTENT_WRAPPER_CLASS}`;
     translatedWrapperNode.setAttribute(
-      TRANSLATION_MODE_ATTRIBUTE,
+      TRANSLATE_MODE_ATTRIBUTE,
       'translation_only' satisfies TranslateMode
     );
     translatedWrapperNode.setAttribute(WALKED_ATTRIBUTE, walkId);
