@@ -34,8 +34,7 @@ export default defineBackground({
       }
     });
 
-    shortcut.syncFromBrowser();
-    logger.info('Shortcuts synced from browser');
+    void shortcut.main();
 
     registerGenerateText();
 
@@ -44,6 +43,22 @@ export default defineBackground({
 
     void setUpWebPageTranslationQueue();
     void setUpSubtitlesTranslationQueue();
+
+    onMessage('instantLookup', async (msg) => {
+      logger.debug({ msg });
+    });
+    onMessage('intelligentInput', async (msg) => {
+      logger.debug({ msg });
+    });
+    onMessage('bilingualSubtitles', async (msg) => {
+      logger.debug({ msg });
+    });
+    onMessage('panoramaReading', async (msg) => {
+      logger.debug({ msg });
+    });
+    onMessage('writingCopilot', async (msg) => {
+      logger.debug({ msg });
+    });
 
     onMessage('openPage', async (message) => {
       const { url, active } = message.data;

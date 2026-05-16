@@ -36,7 +36,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
   let translationEnabled = false;
   try {
     logger.debug('getPageTranslationActive');
-    translationEnabled = await sendMessage('getPageTranslationActive');
+    translationEnabled = await sendMessage('getPageTranslationActive', {});
   } catch (error) {
     // Extension context may be invalidated during update, proceed without auto-start
     logger.error('Failed to check translation state:', { error });

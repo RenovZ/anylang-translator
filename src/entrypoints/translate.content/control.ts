@@ -15,6 +15,7 @@ import {
 } from '@/lib/translate/ui';
 import * as webpage from '@/lib/translate/webpage';
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
+import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/constants';
 import { CONTENT_WRAPPER_CLASS, PARAGRAPH_ATTRIBUTE, WALKED_ATTRIBUTE } from '@/preset/dom';
 import { HOTKEY_EVENT_KEYS } from '@/preset/translate';
 import { FeatureUsageContext } from '@/types/analytics';
@@ -483,7 +484,7 @@ export class PageTranslateManager {
         } else {
           void this.start(
             analyticsManager.createFeatureUsageContext(
-              ANALYTICS_FEATURE.ADAPTIVE_TRANSLATE,
+              ANALYTICS_FEATURE[FEAT_ADAPTIVE_TRANSLATE],
               ANALYTICS_SURFACE.TOUCH_GESTURE
             )
           );

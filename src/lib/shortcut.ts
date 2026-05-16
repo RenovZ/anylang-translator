@@ -1,5 +1,7 @@
 import { browser } from 'wxt/browser';
 
+import analyticsManager from '@/lib/analytics';
+import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
 import {
   CMD_ADAPTIVE_TRANSLATE,
   CMD_BILINGUAL_SUBTITLES,
@@ -81,6 +83,8 @@ class Shortcut {
     }
   };
 
+  private initialized = false;
+
   // ========== 平台检测 ==========
   isMac(): boolean {
     if (typeof navigator === 'undefined') return false;
@@ -155,6 +159,44 @@ class Shortcut {
     );
   }
 
+  private register() {
+    browser.commands.onCommand.addListener(async (command) => {
+      logger.info({ command });
+      const featureKey = this.COMMAND_MAP[command as keyof typeof this.COMMAND_MAP];
+      if (!featureKey) return;
+      const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+      const tabId = tab?.id;
+      if (!tabId) {
+        logger.debug('No active tab found');
+        return;
+      }
+      // const enabled = await sendMessage('getPageTranslationActive', { tabId });
+      void sendMessage(featureKey, {
+        tabId,
+        enabled: true,
+        analyticsContext: analyticsManager.createFeatureUsageContext(
+          ANALYTICS_FEATURE[featureKey as keyof typeof ANALYTICS_FEATURE],
+          ANALYTICS_SURFACE.SHORTCUT
+        )
+      });
+    });
+  }
+
+  async main() {
+    if (this.initialized) {
+      logger.debug('Shortcuts already initialized');
+      return;
+    }
+    logger.debug('Initializing shortcuts');
+
+    await this.sync();
+    logger.info('Shortcuts synced from browser');
+    this.register();
+    this.initialized = true;
+
+    logger.debug('Shortcuts initialized');
+  }
+
   /**
    * 尝试打开快捷键设置页面
    */
@@ -184,11 +226,7 @@ class Shortcut {
     }
   }
 
-  // ========== 同步 ==========
-  /**
-   * 从浏览器同步快捷键配置到本地存储
-   */
-  async syncFromBrowser(): Promise<boolean> {
+  private async sync(): Promise<boolean> {
     const commands = await browser.commands.getAll();
     const config = configStore.get();
 
@@ -196,6 +234,7 @@ class Shortcut {
     const newConfig = { ...config };
 
     for (const cmd of commands) {
+      logger.debug({ cmd });
       if (!cmd.shortcut) continue;
 
       const featureKey = this.COMMAND_MAP[cmd.name as keyof typeof this.COMMAND_MAP];

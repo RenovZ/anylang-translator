@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import type { FeatureKey } from '@/preset/constants';
 
+import { FeatureUsageContext } from './analytics';
+
 // FeatureValue type
 export const featureValueSchema = z.object({
   disabled: z.boolean().optional(),
@@ -19,3 +21,9 @@ export type FeatureItem = z.infer<typeof featureItemSchema>;
 export const featuresSchema = z.record(z.string(), featureValueSchema) as z.ZodType<
   Partial<Record<FeatureKey, FeatureValue>>
 >;
+
+export interface FeaturePayload {
+  tabId: number;
+  enabled: boolean;
+  analyticsContext?: FeatureUsageContext;
+}

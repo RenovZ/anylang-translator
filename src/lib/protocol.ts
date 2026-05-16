@@ -2,7 +2,8 @@ import { defineExtensionMessaging } from '@webext-core/messaging';
 
 import type { FeatureUsageContext, FeatureUsedEvent } from '@/types/analytics';
 import type { GenerateTextParams, GenerateTextResult } from '@/types/background';
-import { LangCode } from '@/types/lang';
+import type { FeaturePayload } from '@/types/feature';
+import type { LangCode } from '@/types/lang';
 import type { ProviderConfig } from '@/types/provider';
 
 interface Protocol {
@@ -13,12 +14,8 @@ interface Protocol {
   openOptionsPage: () => Promise<void>;
 
   // features
-  adaptiveTranslate: (data: {
-    tabId: number;
-    enabled: boolean;
-    analyticsContext?: FeatureUsageContext;
-  }) => Promise<void>;
-  getPageTranslationActive: () => Promise<boolean>;
+  adaptiveTranslate: (data: FeaturePayload) => Promise<void>;
+  getPageTranslationActive: (data: { tabId?: number }) => Promise<boolean>;
   reportPageTranslateState: (data: { enabled: boolean }) => Promise<void>;
   togglePageTranslation: (data: {
     enabled: boolean;
@@ -36,7 +33,11 @@ interface Protocol {
     analyticsContext?: FeatureUsageContext;
   }) => Promise<void>;
 
-  instantLookup: () => Promise<void>;
+  instantLookup: (data: FeaturePayload) => Promise<void>;
+  intelligentInput: (data: FeaturePayload) => Promise<void>;
+  bilingualSubtitles: (data: FeaturePayload) => Promise<void>;
+  panoramaReading: (data: FeaturePayload) => Promise<void>;
+  writingCopilot: (data: FeaturePayload) => Promise<void>;
 
   // for auto start page translation
   checkAutoPageTranslation: (data: {

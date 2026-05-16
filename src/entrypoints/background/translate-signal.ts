@@ -5,11 +5,12 @@ import { onMessage, sendMessage } from '@/lib/protocol';
 import { translateState } from '@/lib/session';
 import { shouldEnableAutoTranslation } from '@/lib/translate/sw';
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
+import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/constants';
 
 export function registerTranslate() {
   onMessage('getPageTranslationActive', async (msg) => {
     logger.debug('getPageTranslationActive', { msg });
-    const tabId = msg.sender?.tab?.id;
+    const tabId = msg.data?.tabId ?? msg.sender?.tab?.id;
     if (typeof tabId === 'number') {
       return translateState.get(tabId).enabled;
     }
@@ -42,7 +43,7 @@ export function registerTranslate() {
           {
             enabled: true,
             analyticsContext: analyticsManager.createFeatureUsageContext(
-              ANALYTICS_FEATURE.ADAPTIVE_TRANSLATE,
+              ANALYTICS_FEATURE[FEAT_ADAPTIVE_TRANSLATE],
               ANALYTICS_SURFACE.PAGE_AUTO
             )
           },

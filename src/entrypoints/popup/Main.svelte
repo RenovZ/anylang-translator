@@ -8,12 +8,8 @@
     Toggle,
     Tooltip
   } from 'flowbite-svelte';
-  import {
-    ArrowRightOutline,
-    ChevronDownOutline,
-    CogOutline,
-    LanguageOutline
-  } from 'flowbite-svelte-icons';
+  import { ChevronDownOutline, CogOutline } from 'flowbite-svelte-icons';
+  import { onMount } from 'svelte';
   import { browser } from 'wxt/browser';
 
   import '@/assets/app.css';
@@ -30,6 +26,7 @@
   import lang from '@/lib/lang';
   import logger, { formatError } from '@/lib/logger';
   import { sendMessage } from '@/lib/protocol';
+  import { translateState } from '@/lib/session';
   import shortcut from '@/lib/shortcut';
   import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
   import {
@@ -46,31 +43,40 @@
 
   let currentSite = $state('');
   let isTranslating = $state(false);
+  let currentTabId = $state<number | null>(null);
 
   $effect(() => {
-    shortcut.syncFromBrowser();
-    browser.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
-      currentSite = tab.url ? new URL(tab.url).origin : window.location.origin;
+    if (currentTabId === null) return;
+    return translateState.subscribe(currentTabId, (state) => {
+      isTranslating = state.enabled;
     });
   });
 
+  onMount(async () => {
+    await shortcut.main();
+    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+    currentSite = tab?.url ? new URL(tab.url).origin : window.location.origin;
+    if (tab?.id) {
+      currentTabId = tab.id;
+      isTranslating = await sendMessage('getPageTranslationActive', { tabId: tab.id });
+    }
+  });
+
   const toggleTranslate = async () => {
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-    const activeTab = tabs[0];
-    if (!activeTab?.id) {
+    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id) {
       logger.error('No active tab found');
       return;
     }
 
     isTranslating = !isTranslating;
-    const enabled = isTranslating;
-    logger.debug('adaptiveTranslate', { enabled, tabs });
+    logger.debug({ isTranslating, tab });
     void sendMessage('adaptiveTranslate', {
-      tabId: activeTab.id,
-      enabled,
-      analyticsContext: enabled
+      tabId: tab.id,
+      enabled: isTranslating,
+      analyticsContext: isTranslating
         ? analyticsManager.createFeatureUsageContext(
-            ANALYTICS_FEATURE.ADAPTIVE_TRANSLATE,
+            ANALYTICS_FEATURE[FEAT_ADAPTIVE_TRANSLATE],
             ANALYTICS_SURFACE.POPUP
           )
         : undefined
@@ -154,7 +160,7 @@
       showFreeProviders={true}
       showShortcut={false}
       classes={{
-        main: 'grid-cols-[auto_1fr] gap-6',
+        main: 'grid-cols-[96px_1fr]',
         button:
           'rounded-lg border-none bg-slate-100 px-1 py-1.5 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600'
       }}
@@ -164,7 +170,7 @@
       showFreeProviders={true}
       showShortcut={false}
       classes={{
-        main: 'grid-cols-[auto_1fr]'
+        main: 'grid-cols-[96px_1fr]'
       }}
       title={i18n('translate_mode', { defaultValue: 'Translate Mode' })}>
       <TranslateModeDropdown>

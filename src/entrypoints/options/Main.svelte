@@ -19,7 +19,7 @@
   const activeNav = $derived(navItems.find((item) => item.id === activeNavId));
 
   onMount(() => {
-    shortcut.syncFromBrowser();
+    shortcut.main();
     syncActiveNavWithHash();
     window.addEventListener('hashchange', syncActiveNavWithHash);
     return () => window.removeEventListener('hashchange', syncActiveNavWithHash);
