@@ -31,7 +31,10 @@
   const customProvidersList = $derived($config.providers.filter((item) => item.type === 'custom'));
 </script>
 
-<Dropdown simple placement="bottom-end" class={twMerge('max-h-72 overflow-y-auto', className)}>
+<Dropdown
+  simple
+  placement="bottom-end"
+  class={twMerge('max-h-72 overflow-y-auto shadow-md', className)}>
   {#if showFreeProviders}
     <DropdownGroup class="py-0">
       <DropdownHeader class="py-1 text-sm text-slate-400">

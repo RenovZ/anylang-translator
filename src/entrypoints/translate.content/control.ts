@@ -727,7 +727,7 @@ export class PageTranslateManager {
   private addDontWalkIntoElements(element: HTMLElement): void {
     const dontWalkIntoElements = domFinder.deepQueryTopLevelSelector(
       element,
-      domFilter.isDontWalkIntoButTranslateAsChildElement
+      domFilter.isDontWalkIntoButTranslateAsChildElement.bind(domFilter)
     );
     dontWalkIntoElements.forEach((el) => this.dontWalkIntoElementsCache.add(el));
   }

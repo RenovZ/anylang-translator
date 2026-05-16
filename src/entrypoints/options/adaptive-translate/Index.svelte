@@ -4,6 +4,7 @@
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
+  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/constants';
 
@@ -83,5 +84,7 @@
   <DisplayMode />
 
   <!-- translation display style -->
-  <DisplayStyle />
+  {#if $config.adaptiveTranslate.translate.mode === 'bilingual'}
+    <DisplayStyle />
+  {/if}
 </Section>

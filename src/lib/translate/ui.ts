@@ -12,7 +12,7 @@ import contentManager from '@/lib/content';
 import cryptoPolyfill from '@/lib/crypto-polyfill';
 import { getContainingShadowRoot, getOwnerDocument } from '@/lib/dom';
 import domFilter from '@/lib/dom/filter';
-import domFind from '@/lib/dom/finder';
+import domFinder from '@/lib/dom/finder';
 import domTraversal from '@/lib/dom/traversal';
 import i18n from '@/lib/i18n';
 import logger from '@/lib/logger';
@@ -421,7 +421,7 @@ export async function removeOrShowNodeTranslation(
   point: Point,
   options: Required<Pick<TranslateOptions, 'mode'>> & Omit<TranslateOptions, 'mode'>
 ): Promise<void> {
-  const node = domFind.findNearestAncestorBlockNodeAt(point);
+  const node = domFinder.findNearestAncestorBlockNodeAt(point);
 
   if (!node || !domFilter.isHTMLElement(node)) return;
 

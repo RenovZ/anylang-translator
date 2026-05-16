@@ -81,7 +81,7 @@ export function removeTranslatedWrapperWithRestore(wrapper: HTMLElement): void {
 export function removeAllTranslatedWrapperNodes(root: Document | ShadowRoot = document): void {
   const translatedNodes = domFinder.deepQueryTopLevelSelector(
     root,
-    domFilter.isTranslatedWrapperNode
+    domFilter.isTranslatedWrapperNode.bind(domFilter)
   );
   translatedNodes.forEach((contentWrapperNode) => {
     removeTranslatedWrapperWithRestore(contentWrapperNode);

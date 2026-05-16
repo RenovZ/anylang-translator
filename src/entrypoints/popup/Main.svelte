@@ -19,6 +19,9 @@
   import '@/assets/app.css';
 
   import LocalIcon from '@/components/LocalIcon.svelte';
+  import TranslateModeDropdown, {
+    translateModeOptions
+  } from '@/components/TranslateModeDropdown.svelte';
   import analyticsManager from '@/lib/analytics';
   import avatar from '@/lib/avatar';
   import config from '@/lib/config';
@@ -151,10 +154,32 @@
       showFreeProviders={true}
       showShortcut={false}
       classes={{
+        main: 'grid-cols-[auto_1fr] gap-6',
         button:
-          'rounded-lg border-none bg-slate-100 p-1 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600'
+          'rounded-lg border-none bg-slate-100 px-1 py-1.5 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600'
       }}
-      title={i18n('api_provider', { defaultValue: 'API Provider' })}>
+      title={i18n('api_provider', { defaultValue: 'API Provider' })} />
+    <Feature
+      field={FEAT_ADAPTIVE_TRANSLATE}
+      showFreeProviders={true}
+      showShortcut={false}
+      classes={{
+        main: 'grid-cols-[auto_1fr]'
+      }}
+      title={i18n('translate_mode', { defaultValue: 'Translate Mode' })}>
+      <TranslateModeDropdown>
+        <button
+          type="button"
+          class="flex items-center rounded-lg border-none bg-slate-100 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
+          <div class="flex flex-1 items-center gap-1">
+            {translateModeOptions.find(
+              (item) => item.value === $config.adaptiveTranslate.translate.mode
+            )?.label ??
+              i18n('unsupported_translate_mode', { defaultValue: 'Unsupported Translate Mode' })}
+          </div>
+          <LocalIcon icon="tabler:chevron-down" class="h-4 w-4" />
+        </button>
+      </TranslateModeDropdown>
     </Feature>
     <div class="flex items-center justify-between gap-2">
       <span class="line-clamp-1 font-medium">

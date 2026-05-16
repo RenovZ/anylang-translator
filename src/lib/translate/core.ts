@@ -83,7 +83,7 @@ async function bilingualMode(
   toggle: boolean = false,
   forceBlockTranslation: boolean = false
 ): Promise<void> {
-  const transNodes = nodes.filter((node) => domFilter.isTransNode(node));
+  const transNodes = nodes.filter(domFilter.isTransNode.bind(domFilter));
   if (transNodes.length === 0) return;
 
   try {
@@ -186,7 +186,7 @@ async function translationOnlyMode(
     return domFilter.isTransNode(node);
   };
 
-  const outerTransNodes = nodes.filter(domFilter.isTransNode);
+  const outerTransNodes = nodes.filter(domFilter.isTransNode.bind(domFilter));
   if (outerTransNodes.length === 0) return;
 
   // snapshot the outer parent element, to prevent lose it if we go to deeper by unwrapDeepestOnlyHTMLChild
@@ -537,6 +537,5 @@ export async function translateTextCore(options: {
     webContent: normalizedWebPageContext?.webContent,
     webSummary: normalizedWebPageContext?.webSummary
   };
-  logger.debug('enqueueTranslateRequest', { msg });
   return await sendMessage('enqueueTranslateRequest', msg);
 }

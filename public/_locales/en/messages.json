@@ -734,6 +734,9 @@
   "translate_failed": {
     "message": "Translate Failed"
   },
+  "translate_mode": {
+    "message": "Translate Mode"
+  },
   "translate_page_range": {
     "message": "Translate page range"
   },
@@ -754,6 +757,9 @@
   },
   "unsupported_content": {
     "message": "Unsupported Content"
+  },
+  "unsupported_translate_mode": {
+    "message": "Unsupported Translate Mode"
   },
   "unsupported_trigger": {
     "message": "Unsupported Trigger"

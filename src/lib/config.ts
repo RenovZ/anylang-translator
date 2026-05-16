@@ -99,15 +99,18 @@ const defaultConfig: Config = configSchema.parse({
 
 class ConfigStore {
   private store = writable<Config>(defaultConfig);
-  private initialized = false;
+  private initPromise: Promise<void> | null = null;
   private storage = storage.defineItem<unknown>('local:config_v1', {
     fallback: defaultConfig
   });
 
   async init(): Promise<void> {
-    if (this.initialized) return;
-    this.initialized = true;
+    if (this.initPromise) return this.initPromise;
+    this.initPromise = this._init();
+    return this.initPromise;
+  }
 
+  private async _init(): Promise<void> {
     const rawValue = await this.storage.getValue();
     const { success, data, error } = configSchema.safeParse(rawValue);
     if (success) {
@@ -134,6 +137,7 @@ class ConfigStore {
   }
 
   get(): Config {
+    this.init();
     return get(this.store);
   }
 
@@ -171,10 +175,12 @@ class ConfigStore {
   }
 
   async setDetectedLangCode(langCode: LangCode | 'und'): Promise<void> {
-    const config = this.get();
-    config.langDetection.langCode = langCode;
+    await this.init();
     try {
-      await this.set(config);
+      await this.update((config) => {
+        config.langDetection.langCode = langCode;
+        return config;
+      });
     } catch (error) {
       logger.error('Failed to sync detected lang code from browser', { error });
     }
