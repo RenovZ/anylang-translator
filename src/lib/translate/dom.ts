@@ -14,11 +14,13 @@ import {
   WALKED_ATTRIBUTE
 } from '@/preset/dom';
 import { displayStyles } from '@/preset/translate';
+import { translateModeSchema } from '@/types/config';
 import { TransNode } from '@/types/dom';
 import type { DisplayStyle } from '@/types/translate';
 
 import { getOwnerDocument } from '../dom';
 import { FORCE_INLINE_TRANSLATION_TAGS } from '../dom/constants';
+import logger from '../logger';
 
 import { translateState } from './core';
 import { decorateTranslationNode } from './ui';
@@ -54,9 +56,14 @@ export function removeShadowHostInTranslatedWrapper(wrapper: HTMLElement): void 
 export function removeTranslatedWrapperWithRestore(wrapper: HTMLElement): void {
   removeShadowHostInTranslatedWrapper(wrapper);
 
-  const translationMode = wrapper.getAttribute(TRANSLATE_MODE_ATTRIBUTE);
+  const rawTranslateMode = wrapper.getAttribute(TRANSLATE_MODE_ATTRIBUTE);
+  const { success, data: translationMode, error } = translateModeSchema.safeParse(rawTranslateMode);
+  if (!success) {
+    logger.error('Failed to parse translate mode', { error });
+    return;
+  }
 
-  if (translationMode === 'translationOnly') {
+  if (translationMode === 'translation_only') {
     // For translation-only mode, find nearest ancestor in originalContentMap and restore
     let currentNode = wrapper.parentNode;
 
@@ -83,6 +90,7 @@ export function removeAllTranslatedWrapperNodes(root: Document | ShadowRoot = do
     root,
     domFilter.isTranslatedWrapperNode.bind(domFilter)
   );
+  logger.debug({ translatedNodes });
   translatedNodes.forEach((contentWrapperNode) => {
     removeTranslatedWrapperWithRestore(contentWrapperNode);
   });
