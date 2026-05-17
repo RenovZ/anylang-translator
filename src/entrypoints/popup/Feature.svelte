@@ -8,6 +8,7 @@
   import shortcut from '@/lib/shortcut';
   import type { FeatureField } from '@/preset/constants';
   import { getProviderIcon } from '@/preset/provider';
+  import { isCustomProvider, isPaidProvider } from '@/types/provider';
 
   interface Prop {
     title: string | import('svelte').Snippet;
@@ -53,8 +54,10 @@
         {#if $config[field].provider}
           <span class="line-clamp-1 w-full text-left">
             {$config[field].provider.name}
-            {#if $config[field].provider.type !== 'free' && $config[field].provider.model}
+            {#if isPaidProvider($config[field].provider)}
               ({$config[field].provider.model})
+            {:else if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
+              ({$config[field].provider.model.name})
             {/if}
           </span>
         {:else}

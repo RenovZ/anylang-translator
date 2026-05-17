@@ -6,6 +6,7 @@
   import i18n from '@/lib/i18n';
   import type { FeatureField } from '@/preset/constants';
   import { getProviderIcon } from '@/preset/provider';
+  import { isCustomProvider, isPaidProvider } from '@/types/provider';
 
   import ProviderIcon from './ProviderIcon.svelte';
   import ProvidersDropdown from './ProvidersDropdown.svelte';
@@ -33,8 +34,10 @@
             class="w-4" />
           <span>
             {$config[field].provider.name}
-            {#if $config[field].provider.type !== 'free' && $config[field].provider.model}
+            {#if isPaidProvider($config[field].provider)}
               ({$config[field].provider.model})
+            {:else if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
+              ({$config[field].provider.model.name})
             {/if}
           </span>
         {:else}

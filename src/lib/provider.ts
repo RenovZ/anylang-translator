@@ -25,7 +25,7 @@ import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 
 import configStore from '@/lib/config';
 import { COMPATIBLE_PROVIDERS, MODEL_OPTIONS, OPENAI_COMPATIBLE_PROVIDER } from '@/preset/provider';
-import type { CustomProvider } from '@/types/provider';
+import { CustomProviderType, type CustomProvider } from '@/types/provider';
 
 export interface RecommendedProviderOptions {
   matchIndex: number;
@@ -82,7 +82,7 @@ class ProviderManager {
    * Normalize user provider options by converting alias keys to canonical keys.
    */
   private normalizeOptions(
-    provider: string,
+    provider: CustomProviderType,
     userOptions: Record<string, JSONValue>
   ): Record<string, JSONValue> {
     if (!COMPATIBLE_PROVIDERS.some((p) => p.provider === provider)) {
@@ -112,18 +112,25 @@ class ProviderManager {
    * Detect the recommended provider options for a given model.
    * First match wins - more specific patterns should be placed first in MODEL_OPTIONS.
    */
-  matchRecommendedOptions(model: string): RecommendedProviderOptions | undefined {
+  matchRecommendedOptions(modelName: string): RecommendedProviderOptions | undefined {
     for (const [matchIndex, { pattern, options }] of MODEL_OPTIONS.entries()) {
-      if (pattern.test(model)) {
+      if (pattern.test(modelName)) {
         return { matchIndex, options };
       }
     }
   }
 
+  matchRecommendedHeaders(provider: CustomProviderType): Record<string, string> | undefined {
+    return CUSTOM_HEADER_MAP[provider as keyof typeof CUSTOM_HEADER_MAP];
+  }
+
   /**
    * Wrap a recommendation for the AI SDK request shape.
    */
-  getOptions(model: string, provider: string): Record<string, Record<string, JSONValue>> {
+  getOptions(
+    model: string,
+    provider: CustomProviderType
+  ): Record<CustomProviderType, Record<string, JSONValue>> {
     const options = this.matchRecommendedOptions(model)?.options;
     if (!options) {
       return {};
@@ -139,9 +146,9 @@ class ProviderManager {
    */
   overrideOptions(
     model: string,
-    provider: string,
+    provider: CustomProviderType,
     userOptions?: Record<string, JSONValue>
-  ): Record<string, Record<string, JSONValue>> | undefined {
+  ): Record<CustomProviderType, Record<string, JSONValue>> | undefined {
     if (userOptions !== undefined) {
       return { [provider]: this.normalizeOptions(provider, userOptions) };
     }
@@ -152,6 +159,34 @@ class ProviderManager {
     }
 
     return { [provider]: recommendedOptions };
+  }
+
+  overrideHeaders(
+    provider: CustomProviderType,
+    userHeaders?: Record<string, string>
+  ): Record<string, string> | undefined {
+    const compactStringRecord = (
+      record?: Readonly<Record<string, unknown>>
+    ): Record<string, string> | undefined => {
+      if (!record) {
+        return undefined;
+      }
+
+      const compacted = Object.fromEntries(
+        Object.entries(record).filter((entry): entry is [string, string] => {
+          const [, value] = entry;
+          return typeof value === 'string' && value !== '';
+        })
+      );
+
+      return Object.keys(compacted).length > 0 ? compacted : undefined;
+    };
+
+    if (userHeaders !== undefined) {
+      return compactStringRecord(userHeaders);
+    }
+
+    return compactStringRecord(this.matchRecommendedHeaders(provider));
   }
 
   /**
@@ -180,46 +215,55 @@ class ProviderManager {
    * Get language model instance by provider name.
    * Uses the config store to retrieve provider configuration.
    */
-  async getLanguageModel(provider: string) {
+  async getLanguageModel(providerName: string) {
     const config = configStore.get();
     const providerConfig = config.providers.find(
-      (p): p is CustomProvider => p.type === 'custom' && 'provider' in p && p.name === provider
+      (p): p is CustomProvider => p.type === 'custom' && 'provider' in p && p.name === providerName
     );
 
     if (!providerConfig) {
-      throw new Error(`Provider ${provider} not found`);
-    }
-    if (!providerConfig.model) {
-      throw new Error(`Model in ${provider} is undefined`);
+      throw new Error(`Provider ${providerName} not found`);
     }
 
-    if (!this.isValidProvider(providerConfig.provider)) {
-      throw new Error(`Invalid provider ${providerConfig.provider}`);
+    const {
+      model,
+      provider,
+      baseURL,
+      apiKey,
+      connectionOptions: connectionConfig,
+      headers: userHeaders
+    } = providerConfig;
+
+    if (!model.name) {
+      throw new Error(`Model in ${providerName} is undefined`);
     }
 
-    const pid = providerConfig.provider;
-    const customHeaders = CUSTOM_HEADER_MAP[pid];
-    const connectionOptions = this.compactObject(providerConfig.connectionOptions ?? {});
+    if (!this.isValidProvider(provider)) {
+      throw new Error(`Invalid provider ${provider}`);
+    }
+
+    const headers = this.overrideHeaders(provider, userHeaders);
+    const connectionOptions = this.compactObject(connectionConfig ?? {});
 
     const sharedOptions = {
       ...connectionOptions,
-      ...(providerConfig.apiKey && { apiKey: providerConfig.apiKey }),
-      ...(customHeaders && { headers: customHeaders })
+      ...(apiKey && { apiKey }),
+      ...(headers && { headers })
     };
 
-    const providerInstance = this.isCompatibleProvider(pid)
-      ? CREATE_AI_MAPPER[pid]({
+    const providerInstance = this.isCompatibleProvider(provider)
+      ? CREATE_AI_MAPPER[provider]({
           ...sharedOptions,
-          name: providerConfig.provider,
-          baseURL: providerConfig.baseURL ?? '',
+          name: provider,
+          baseURL: baseURL ?? '',
           supportsStructuredOutputs: true
         })
-      : CREATE_AI_MAPPER[pid]({
+      : CREATE_AI_MAPPER[provider]({
           ...sharedOptions,
-          ...(providerConfig.baseURL && { baseURL: providerConfig.baseURL })
+          ...(baseURL && { baseURL })
         });
 
-    return providerInstance.languageModel(providerConfig.model);
+    return providerInstance.languageModel(model.name);
   }
 }
 

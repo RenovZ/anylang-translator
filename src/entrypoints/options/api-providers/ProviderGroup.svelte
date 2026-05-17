@@ -6,20 +6,22 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { getProviderIcon } from '@/preset/provider';
-  import type { AIProviderType } from '@/types/provider';
+  import { isPaidProvider, type AIProviderType } from '@/types/provider';
 
   interface Props {
     title: string;
     currentType?: 'free' | AIProviderType;
     selectedIndex: number;
     open?: boolean;
+    callback?: () => void;
   }
 
   let {
     title,
     selectedIndex = $bindable(0),
     currentType,
-    open = $bindable(false)
+    open = $bindable(false),
+    callback
   }: Props = $props();
 </script>
 
@@ -38,31 +40,26 @@
         class:dark:bg-slate-600={selectedIndex === index}
         class:hover:bg-slate-50={selectedIndex !== index}
         class:dark:hover:bg-slate-700={selectedIndex !== index}
-        onclick={() => (selectedIndex = index)}>
-        <ProviderIcon name={provider.name} icon={getProviderIcon(provider)} />
+        onclick={() => {
+          selectedIndex = index;
+          callback?.();
+        }}>
+        <ProviderIcon name={provider.name} icon={getProviderIcon(provider)} class="w-6" />
         {#if provider.type === 'free'}
           <span class="line-clamp-1 flex flex-1 text-sm font-medium">{provider.name}</span>
-        {:else if provider.type === 'go'}
+        {:else if isPaidProvider(provider)}
           <div class="flex w-full items-center justify-between text-sm font-medium">
             <span class="line-clamp-1 flex">{provider.model}</span>
             <!--
-          TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
-          -->
-            <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
-          </div>
-        {:else if provider.type === 'zen'}
-          <div class="flex w-full items-center justify-between text-sm font-medium">
-            <span class="line-clamp-1 flex">{provider.model}</span>
-            <!--
-          TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
-          -->
+            TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
+            -->
             <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
           </div>
         {:else if provider.type === 'custom'}
           <div class="line-clamp-1 w-full text-sm font-medium">
             <span>{provider.name}</span>
-            {#if provider.model}
-              <span>({provider.model})</span>
+            {#if provider.model.name}
+              <span>({provider.model.name})</span>
             {/if}
           </div>
         {/if}

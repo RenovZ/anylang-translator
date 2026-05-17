@@ -4,6 +4,7 @@ import {
   ALL_PROVIDER_TYPES,
   BUILTIN_PROVIDERS,
   COMPATIBLE_PROVIDERS,
+  CUSTOM_PROVIDER_TYPES,
   LLM_PROVIDER_TYPES,
   OPENAI_COMPATIBLE_PROVIDER
 } from '@/preset/provider';
@@ -20,8 +21,25 @@ export type ProviderType = z.infer<typeof providerTypeSchema>;
 
 export const llmProviderTypeSchema = z.enum(LLM_PROVIDER_TYPES);
 export type LLMProviderType = z.infer<typeof llmProviderTypeSchema>;
-export function isLLMProvider(config: ProviderConfig): config is AIProvider {
+export function isLLMProvider(config: Pick<ProviderConfig, 'provider'>): config is AIProvider {
   return LLM_PROVIDER_TYPES.includes(config.provider);
+}
+export function isCompatibleProvider(
+  config: Pick<ProviderConfig, 'provider'>
+): config is AIProvider {
+  return COMPATIBLE_PROVIDERS.some((p) => p.provider === config.provider);
+}
+
+export const customProviderTypeSchema = z.enum(CUSTOM_PROVIDER_TYPES);
+export type CustomProviderType = z.infer<typeof customProviderTypeSchema>;
+export function isCustomProvider(config: Pick<ProviderConfig, 'type'>): config is CustomProvider {
+  return config.type === 'custom';
+}
+
+export function isPaidProvider(
+  config: Pick<ProviderConfig, 'type'>
+): config is GoProvider | ZenProvider {
+  return config.type === 'go' || config.type === 'zen';
 }
 
 const baseProviderSchema = z.object({
@@ -60,6 +78,11 @@ function createCustomProviderSchema(
   providers: readonly { provider: ProviderType; models: readonly string[] }[],
   options: { baseUrlRequired?: boolean; name: string }
 ) {
+  const modelSchema = z.object({
+    name: z.string().optional(),
+    isCustom: z.boolean()
+  });
+
   const customProviderSchema = baseProviderSchema.extend({
     type: z.literal('custom'),
     apiKey: z.string().optional(),
@@ -67,7 +90,8 @@ function createCustomProviderSchema(
     temperature: z.number().min(0).optional(),
     providerOptions: z.record(z.string(), z.any()).optional(),
     connectionOptions: z.record(z.string(), z.any()).optional(),
-    model: z.string(),
+    headers: z.record(z.string(), z.any()).optional(),
+    model: modelSchema,
     prompt: promptSchema.pick({
       system: true,
       prompt: true,
@@ -83,12 +107,13 @@ function createCustomProviderSchema(
       provider: (data: CustomProvider) =>
         (providers.map((p) => p.provider) as readonly string[]).includes(data.provider),
       model: (data: CustomProvider) => {
+        if (!data.model.name) return true;
         const provider = providers.find((p) => p.provider === data.provider);
         if (!provider) return true;
         if (data.provider === OPENAI_COMPATIBLE_PROVIDER) {
-          return data.model.trim().length > 0;
+          return data.model.name.trim().length > 0;
         }
-        return (provider.models as readonly string[]).includes(data.model);
+        return (provider.models as readonly string[]).includes(data.model.name);
       }
     } as const;
   };

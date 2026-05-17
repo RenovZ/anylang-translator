@@ -36,13 +36,14 @@ export function getTranslatePrompt(
   input: string,
   options?: TranslatePromptOptions<WebPagePromptContext>
 ): TranslatePromptResult {
-  let { system: systemPrompt = DEFAULT_TRANSLATE_SYSTEM_PROMPT } = providerConfig.prompt;
-  const { prompt = DEFAULT_TRANSLATE_PROMPT } = providerConfig.prompt;
+  const promptConfig = providerConfig.prompt || {};
+  let systemPrompt = promptConfig.system || DEFAULT_TRANSLATE_SYSTEM_PROMPT;
+  const prompt = promptConfig.prompt || DEFAULT_TRANSLATE_PROMPT;
 
   // For batch mode, append batch rules to system prompt
   if (options?.isBatch) {
     systemPrompt = `${systemPrompt}
-  ${DEFAULT_BATCH_TRANSLATE_PROMPT}`;
+${DEFAULT_BATCH_TRANSLATE_PROMPT}`;
   }
   // Build title and summary replacement values
   const title = resolvePromptReplacementValue(options?.context?.webTitle, 'No title available');

@@ -3,21 +3,18 @@
   import { twMerge } from 'tailwind-merge';
 
   import avatar from '@/lib/avatar';
-  import type { ProviderConfig } from '@/types/provider';
 
-  const {
-    icon,
-    name,
-    class: className
-  }: {
+  interface ProviderIconProps {
     icon?: string;
     name: string;
     class?: string;
-  } = $props();
+  }
+
+  const { icon, name, class: className }: ProviderIconProps = $props();
 </script>
 
-{#if icon}
-  {#if icon}
+{#if icon && name}
+  {#if icon !== 'custom'}
     <picture>
       <source
         media="(prefers-color-scheme: dark)"

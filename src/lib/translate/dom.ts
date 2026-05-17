@@ -90,7 +90,6 @@ export function removeAllTranslatedWrapperNodes(root: Document | ShadowRoot = do
     root,
     domFilter.isTranslatedWrapperNode.bind(domFilter)
   );
-  logger.debug({ translatedNodes });
   translatedNodes.forEach((contentWrapperNode) => {
     removeTranslatedWrapperWithRestore(contentWrapperNode);
   });

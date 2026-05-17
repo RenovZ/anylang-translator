@@ -101,10 +101,7 @@ class StyleInjector {
     } catch (error) {
       // When the browser/runtime only partially exposes constructable
       // stylesheets, fall back to injecting a normal <style> element.
-      logger.warn(
-        '[style-injector] constructable stylesheet assignment failed, falling back to <style>',
-        { error }
-      );
+      logger.warn('constructable stylesheet assignment failed, falling back to <style>', { error });
       this.constructableStyleSheetSupportMap.set(root, false);
       return false;
     }
@@ -549,13 +546,13 @@ export async function translateTextForPageTitle(
 
   const { text: webTitle } = options;
   return translateTextUsingPageConfig({
+    ...options,
     extraHashTags: ['pageTitleTranslation'],
     webPageContext: {
       webTitle,
       webContent,
       webSummary
-    },
-    ...options
+    }
   });
 }
 
@@ -579,16 +576,13 @@ export async function translateTextForPageTitle(
 export async function translateTextForInput(
   options: Required<Pick<TranslateOptions, 'text'>> & Omit<TranslateOptions, 'text'>
 ): Promise<string> {
-  const { text, sourceLangCode, targetLangCode, providerConfig, pageRange } = options;
+  const { sourceLangCode, targetLangCode, providerConfig, pageRange } = options;
   if (sourceLangCode === targetLangCode) return '';
 
   const webPageContext = await getWebPagePromptContext({ pageRange, providerConfig }, true);
 
   return translateTextCore({
-    text,
-    sourceLangCode,
-    targetLangCode,
-    providerConfig,
+    ...options,
     extraHashTags: [`inputTranslation:${sourceLangCode}->${targetLangCode}`],
     webPageContext
   });

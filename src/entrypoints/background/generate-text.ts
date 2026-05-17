@@ -6,12 +6,12 @@ import providerManager from '@/lib/provider';
 import type { GenerateTextParams, GenerateTextResult } from '@/types/background';
 
 export async function runGenerateText(params: GenerateTextParams): Promise<GenerateTextResult> {
-  const { model, ...restParams } = params;
-  const languageModel = await providerManager.getLanguageModel(model);
+  const { providerName, ...restParams } = params;
+  const model = await providerManager.getLanguageModel(providerName);
 
   const { text } = await generateText({
     ...restParams,
-    model: languageModel
+    model
   });
 
   return { text };

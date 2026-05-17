@@ -1,7 +1,7 @@
 import type { JSONValue } from 'ai';
 
 export interface GenerateTextParams {
-  model: string;
+  providerName: string;
   system: string;
   prompt: string;
   temperature?: number;

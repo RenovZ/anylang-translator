@@ -145,7 +145,7 @@
   {#if displayStyle.preset === 'css'}
     <div class="mt-4">
       <CodeMirrorWrapper
-        class="rounded-xl bg-gray-50 shadow-inner dark:bg-gray-700"
+        class="rounded-xl bg-gray-50 shadow-inner dark:bg-gray-600"
         lang={css()}
         placeholder={`/* ${i18n('display_mode_custom_css_placeholder', { defaultValue: 'Example Css' })} */
 [data-${TRANS_STYLE_ATTR}='css'] {

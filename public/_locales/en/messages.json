@@ -86,6 +86,9 @@
   "api_key": {
     "message": "API Key"
   },
+  "api_key_required": {
+    "message": "Api key is required"
+  },
   "api_provider": {
     "message": "API Provider"
   },
@@ -260,8 +263,8 @@
   "enable_speaking": {
     "message": "Enable speaking"
   },
-  "enter_custom_model": {
-    "message": "Enter the name of the custom model"
+  "enter_the_model_name": {
+    "message": "Enter the model name"
   },
   "feature_adaptive_translate": {
     "message": "Adaptive Translate"
@@ -608,11 +611,23 @@
   "provider_description": {
     "message": "Description"
   },
+  "provider_headers": {
+    "message": "HTTP Headers"
+  },
+  "provider_headers_parse_failed": {
+    "message": "Provider http headers parse failed"
+  },
+  "provider_headers_tooltip": {
+    "message": "Custom HTTP headers sent when creating the AI provider client. Leave empty to use provider defaults; use {} to disable defaults."
+  },
   "provider_name": {
     "message": "Name"
   },
   "provider_options": {
     "message": "Provider Options"
+  },
+  "provider_options_parse_failed": {
+    "message": "Provider options parse failed"
   },
   "provider_options_tooltip": {
     "message": "Provider-specific options for non-standard API features like thinking/reasoning mode. See the Vercel AI SDK docs or your provider's official documentation for configuration details."
@@ -718,6 +733,12 @@
   },
   "test_connection": {
     "message": "Test Connection"
+  },
+  "test_connection_failed": {
+    "message": "Test connection failed"
+  },
+  "test_connection_success": {
+    "message": "Test connection successful"
   },
   "text_color": {
     "message": "Text color"

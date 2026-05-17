@@ -6,7 +6,7 @@ import providerManager from '@/lib/provider';
 import urlUtils from '@/lib/url';
 import type { LangCode } from '@/types/lang';
 import type { PromptResolver } from '@/types/prompt';
-import { AIProvider, type ProviderConfig } from '@/types/provider';
+import { AIProvider, isPaidProvider, type ProviderConfig } from '@/types/provider';
 
 import { aiTranslate } from './api/ai';
 import { bingTranslate } from './api/bing';
@@ -61,7 +61,7 @@ export async function translate<TContext>(
   logger.trace({ text, sourceLangCode, targetLangCode, providerConfig, options });
 
   const preparedText = translateUtils.prepareTranslationText(text);
-  if (preparedText === '') return '';
+  if (!preparedText) return '';
 
   const { provider, type } = providerConfig;
 
@@ -82,14 +82,13 @@ export async function translate<TContext>(
     return '';
   }
 
-  if (type === 'go' || type === 'zen') {
+  if (isPaidProvider(providerConfig)) {
     // TODO: route to appropriate free/go/zen provider call
-    throw new Error('executeTranslate: free/go/zen provider not yet implemented');
+    throw new Error('translate: go/zen provider not yet implemented');
   }
 
   if (type === 'custom') {
-    const targetLangName = targetLangCode;
-    return await aiTranslate(preparedText, targetLangName, providerConfig, promptResolver, options);
+    return await aiTranslate(preparedText, targetLangCode, providerConfig, promptResolver, options);
   }
 
   throw new Error(`Unsupported ${type} provider: ${provider}`);
@@ -104,19 +103,27 @@ export async function generateArticleSummary(
   providerConfig: AIProvider
 ): Promise<string | null> {
   const preparedText = translateUtils.cleanText(textContent);
-  if (!preparedText) {
-    return null;
-  }
+  if (!preparedText) return null;
 
   // TODO: Implement go/zen provider detection
-  if (providerConfig.type === 'go' || providerConfig.type === 'zen') {
+  if (isPaidProvider(providerConfig)) {
     throw new Error('generateArticleSummary: go/zen provider will come soon');
   }
 
+  const {
+    model,
+    name: providerName,
+    provider,
+    providerOptions: userOptions,
+    temperature
+  } = providerConfig;
+  if (!model.name) {
+    throw new Error('generateArticleSummary: model must be provided');
+  }
+
   try {
-    const { model, provider, providerOptions: userOptions, temperature } = providerConfig;
-    const providerOptions = providerManager.overrideOptions(model, provider, userOptions);
-    const languageModel = await providerManager.getLanguageModel(model);
+    const providerOptions = providerManager.overrideOptions(model.name, provider, userOptions);
+    const languageModel = await providerManager.getLanguageModel(providerName);
 
     const prompt = `Summarize the following article in 2-3 sentences. Focus on the main topic and key points. Return ONLY the summary, no explanations or formatting.
 

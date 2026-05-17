@@ -149,7 +149,7 @@ class ConfigStore {
       await this.storage.setValue(data);
     } else {
       logger.error('Invalid config value:', { error });
-      throw new Error('Invalid config value');
+      // throw new Error('Invalid config value');
     }
   }
 

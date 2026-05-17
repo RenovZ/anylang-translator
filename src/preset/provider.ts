@@ -260,7 +260,10 @@ export const BUILTIN_PROVIDERS = (
         'claude-3-5-haiku-latest'
       ],
       name: 'Anthropic',
-      icon: 'anthropic'
+      icon: 'anthropic',
+      headers: {
+        'anthropic-dangerous-direct-browser-access': 'true'
+      }
     },
     {
       provider: 'xai',
@@ -923,3 +926,7 @@ export const LLM_PROVIDER_TYPES = [
   ...BUILTIN_PROVIDERS,
   ...COMPATIBLE_PROVIDERS
 ].map((p) => p.provider);
+
+export const CUSTOM_PROVIDER_TYPES = [...BUILTIN_PROVIDERS, ...COMPATIBLE_PROVIDERS].map(
+  (p) => p.provider
+);

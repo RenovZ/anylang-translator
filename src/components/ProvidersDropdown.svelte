@@ -25,10 +25,26 @@
   let { showFreeProviders = true, field, class: className }: Prop = $props();
 
   // ── Derived: filter providers by type once per config change ─────────────
-  const freeProvidersList = $derived($config.providers.filter((item) => item.type === 'free'));
-  const goProvidersList = $derived($config.providers.filter((item) => item.type === 'go'));
-  const zenProvidersList = $derived($config.providers.filter((item) => item.type === 'zen'));
-  const customProvidersList = $derived($config.providers.filter((item) => item.type === 'custom'));
+  const freeProvidersList = $derived(
+    $config.providers.filter(
+      (item) => item.type === 'free' && item.enabled && item.features[field]?.state
+    )
+  );
+  const goProvidersList = $derived(
+    $config.providers.filter(
+      (item) => item.type === 'go' && item.enabled && item.features[field]?.state
+    )
+  );
+  const zenProvidersList = $derived(
+    $config.providers.filter(
+      (item) => item.type === 'zen' && item.enabled && item.features[field]?.state
+    )
+  );
+  const customProvidersList = $derived(
+    $config.providers.filter(
+      (item) => item.type === 'custom' && item.enabled && item.features[field]?.state
+    )
+  );
 </script>
 
 <Dropdown
@@ -106,8 +122,8 @@
           class="w-4" />
         <span>
           {provider.name}
-          {#if provider.model}
-            ({provider.model})
+          {#if provider.model.name}
+            ({provider.model.name})
           {/if}
         </span>
       </DropdownItem>

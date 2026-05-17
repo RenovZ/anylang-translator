@@ -490,15 +490,14 @@ async function buildWebPageHashComponents(
  * Core translation function — pure, zero config fetching.
  * All dependencies must be provided explicitly.
  */
-export async function translateTextCore(options: {
-  text: string;
-  sourceLangCode: LangCode | 'auto' | 'default';
-  targetLangCode: LangCode;
-  providerConfig: ProviderConfig;
-  enableAIContentAware?: boolean;
-  extraHashTags?: string[];
-  webPageContext?: WebPagePromptContext;
-}): Promise<string> {
+export async function translateTextCore(
+  options: Required<Pick<TranslateOptions, 'text'>> &
+    Omit<TranslateOptions, 'text'> & {
+      enableAIContentAware?: boolean;
+      extraHashTags?: string[];
+      webPageContext?: WebPagePromptContext;
+    }
+): Promise<string> {
   const {
     text,
     sourceLangCode,

@@ -17,6 +17,7 @@ import type {
   LangDirection
 } from '@/types/content';
 import { langCodeSchema, type LangCode } from '@/types/lang';
+import { isPaidProvider } from '@/types/provider';
 
 import configStore from './config';
 import i18n from './i18n';
@@ -345,15 +346,25 @@ class ContentManager {
     }
 
     // TODO: Implement go/zen provider detection
-    if (providerConfig.type === 'go' || providerConfig.type === 'zen') {
+    if (isPaidProvider(providerConfig)) {
       throw new Error('detectLanguageWithLLM: go/zen provider will come soon');
     }
 
+    const {
+      name: providerName,
+      model,
+      provider,
+      providerOptions: userOptions,
+      temperature
+    } = providerConfig;
+    if (!model.name) {
+      throw new Error('detectLanguageWithLLM: model must be provided');
+    }
+
     try {
-      const { model, provider, providerOptions: userOptions, temperature } = providerConfig;
-      const providerOptions = providerManager.overrideOptions(model, provider, userOptions);
+      const providerOptions = providerManager.overrideOptions(model.name, provider, userOptions);
       const params: GenerateTextParams = {
-        model,
+        providerName,
         system: DEFAULT_LANG_DETECTION_SYSTEM_PROMPT,
         prompt: text,
         temperature,
