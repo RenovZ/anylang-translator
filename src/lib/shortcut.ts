@@ -166,19 +166,16 @@ class Shortcut {
       if (!featureKey) return;
       const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
       const tabId = tab?.id;
+      logger.debug({ tabId, featureKey, command });
       if (!tabId) {
         logger.debug('No active tab found');
         return;
       }
-      // const enabled = await sendMessage('getPageTranslationActive', { tabId });
-      void sendMessage(featureKey, {
-        tabId,
-        enabled: true,
-        analyticsContext: analyticsManager.createFeatureUsageContext(
-          ANALYTICS_FEATURE[featureKey as keyof typeof ANALYTICS_FEATURE],
-          ANALYTICS_SURFACE.SHORTCUT
-        )
-      });
+      const analyticsContext = analyticsManager.createFeatureUsageContext(
+        ANALYTICS_FEATURE[featureKey as keyof typeof ANALYTICS_FEATURE],
+        ANALYTICS_SURFACE.SHORTCUT
+      );
+      await sendMessage(featureKey, { enabled: true, analyticsContext }, tabId);
     });
   }
 

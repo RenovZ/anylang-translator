@@ -38,7 +38,7 @@ export async function shouldEnableAutoTranslation(
  *
  * The actual per-provider API calls (Google, Microsoft, OpenAI, etc.)
  * live in `translate/api/*` and are handled by the background service worker
- * via `sendMessage('enqueueTranslateRequest', ...)`.
+ * via `sendMessage('enqueueAdaptiveTranslateRequest', ...)`.
  *
  * This function is the thin dispatch layer that validates input and routes
  * to the appropriate backend — it is intentionally kept provider-agnostic

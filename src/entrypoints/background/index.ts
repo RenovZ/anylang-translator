@@ -6,7 +6,7 @@ import { defineBackground } from 'wxt/utils/define-background';
 import config from '@/lib/config';
 import logger from '@/lib/logger';
 import { onMessage } from '@/lib/protocol';
-import { translateState } from '@/lib/session';
+import { adaptiveTranslateSession } from '@/lib/session';
 import shortcut from '@/lib/shortcut';
 
 import { registerGenerateText } from './generate-text';
@@ -38,7 +38,7 @@ export default defineBackground({
 
     registerGenerateText();
 
-    void translateState.init();
+    void adaptiveTranslateSession.init();
     registerTranslate();
 
     void setUpWebPageTranslationQueue();

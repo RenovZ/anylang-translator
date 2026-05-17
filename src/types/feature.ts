@@ -23,7 +23,7 @@ export const featuresSchema = z.record(z.string(), featureValueSchema) as z.ZodT
 >;
 
 export interface FeaturePayload {
-  tabId: number;
+  tabId?: number;
   enabled: boolean;
   analyticsContext?: FeatureUsageContext;
 }

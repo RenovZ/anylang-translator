@@ -129,6 +129,7 @@ class NodeTranslation {
   // ── event handlers (arrow functions keep `this` bound) ────────────────────
 
   private onMouseMove = (e: MouseEvent): void => {
+    logger.debug('onMouseMove', { e });
     // Distance threshold: ignore tiny movements (trackpad tremor, mouse jitter)
     if (
       Math.abs(e.clientX - this.lastMoveX) + Math.abs(e.clientY - this.lastMoveY) <=
@@ -162,6 +163,7 @@ class NodeTranslation {
   };
 
   private onMouseDown = (e: MouseEvent): void => {
+    logger.debug('onMouseDown', { e });
     if (e.button !== 0) return;
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
@@ -185,6 +187,7 @@ class NodeTranslation {
   };
 
   private onMouseUp = (e: MouseEvent): void => {
+    logger.debug('onMouseUp', { e });
     if (e.button !== 0) return;
     if (!this.isMousePressed && !this.clickAndHoldTimerId) return;
 
@@ -195,6 +198,7 @@ class NodeTranslation {
   };
 
   private onKeyDown = (e: KeyboardEvent): void => {
+    logger.debug('onKeyDown', { e });
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
     const config = this.getCurrentConfig();
@@ -249,6 +253,7 @@ class NodeTranslation {
   };
 
   private onKeyUp = (e: KeyboardEvent): void => {
+    logger.debug('onKeyUp', { e });
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
     const config = this.getCurrentConfig();
@@ -349,8 +354,8 @@ export class PageTranslateManager {
     }
 
     try {
-      logger.debug('reportPageTranslateState', { enabled: true });
-      await sendMessage('reportPageTranslateState', {
+      logger.debug('reportAdaptiveTranslateState', { enabled: true });
+      await sendMessage('reportAdaptiveTranslateState', {
         enabled: true
       });
 
@@ -423,8 +428,8 @@ export class PageTranslateManager {
     }
     logger.info('Stopping PageTranslateManager');
 
-    logger.debug('reportPageTranslateState', { enabled: false });
-    void sendMessage('reportPageTranslateState', {
+    logger.debug('reportAdaptiveTranslateState', { enabled: false });
+    void sendMessage('reportAdaptiveTranslateState', {
       enabled: false
     });
 
@@ -457,6 +462,7 @@ export class PageTranslateManager {
     };
 
     const onStart = (e: TouchEvent) => {
+      logger.debug('onStart', { e });
       if (e.touches.length === 4) {
         startTime = performance.now();
         startTouches = e.touches;
@@ -466,6 +472,7 @@ export class PageTranslateManager {
     };
 
     const onMove = (e: TouchEvent) => {
+      logger.debug('onMove', { e });
       if (!startTouches) return;
       if (e.touches.length !== 4) return reset();
 
@@ -476,7 +483,8 @@ export class PageTranslateManager {
       }
     };
 
-    const onEnd = () => {
+    const onEnd = (e: TouchEvent) => {
+      logger.debug('onEnd', { e });
       if (!startTouches) return;
       if (performance.now() - startTime < this.MAX_DURATION) {
         if (this.isPageTranslating) {
@@ -795,6 +803,7 @@ export class PageTranslateManager {
 }
 
 /**
+ * TODO: Maybe same as the native shortcut key binding and will be remove in the future
  * Binds page translation shortcut key from the given config.
  * Uses sync cached config inside the hotkey callback to avoid async overhead.
  */
@@ -817,7 +826,8 @@ export function bindTranslationShortcutKey(
     if (event.ctrlKey) keys.push('Control');
     if (event.shiftKey) keys.push('Shift');
     if (event.metaKey) keys.push('Meta');
-    keys.push(event.key);
+    // NOTE: This is a fix for browser shortcut binding.
+    keys.push(event.key.length === 1 ? event.key.toUpperCase() : event.key);
 
     const pressedCombo = keys.join('+');
     if (pressedCombo === keyCombo) {

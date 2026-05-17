@@ -1,6 +1,6 @@
 import { defineExtensionMessaging } from '@webext-core/messaging';
 
-import type { FeatureUsageContext, FeatureUsedEvent } from '@/types/analytics';
+import type { FeatureUsedEvent } from '@/types/analytics';
 import type { GenerateTextParams, GenerateTextResult } from '@/types/background';
 import type { FeaturePayload } from '@/types/feature';
 import type { LangCode } from '@/types/lang';
@@ -14,42 +14,18 @@ interface Protocol {
   openOptionsPage: () => Promise<void>;
 
   // features
-  adaptiveTranslate: (data: FeaturePayload) => Promise<void>;
-  getPageTranslationActive: (data: { tabId?: number }) => Promise<boolean>;
-  reportPageTranslateState: (data: { enabled: boolean }) => Promise<void>;
-  togglePageTranslation: (data: {
-    enabled: boolean;
-    analyticsContext?: FeatureUsageContext;
-  }) => Promise<void>;
-
-  // popup / floating button → background → content script
-  trySetPageTranslationByTabId: (data: {
-    tabId: number;
-    enabled: boolean;
-    analyticsContext?: FeatureUsageContext;
-  }) => Promise<void>;
-  trySetPageTranslationFromContentScript: (data: {
-    enabled: boolean;
-    analyticsContext?: FeatureUsageContext;
-  }) => Promise<void>;
-
-  instantLookup: (data: FeaturePayload) => Promise<void>;
-  intelligentInput: (data: FeaturePayload) => Promise<void>;
-  bilingualSubtitles: (data: FeaturePayload) => Promise<void>;
-  panoramaReading: (data: FeaturePayload) => Promise<void>;
-  writingCopilot: (data: FeaturePayload) => Promise<void>;
-
-  // for auto start page translation
-  checkAutoPageTranslation: (data: {
+  tryAdaptiveTranslate: (data: FeaturePayload) => Promise<void>;
+  // getPageTranslationActive
+  getAdaptiveTranslateState: (data: { tabId?: number }) => Promise<boolean>;
+  // reportPageTranslateState
+  reportAdaptiveTranslateState: (data: { enabled: boolean }) => Promise<void>;
+  // checkAutoPageTranslation: for auto start page translation
+  checkAutoAdaptiveTranslate: (data: {
     url: string;
     detectedCodeOrUnd: LangCode | 'und';
   }) => Promise<void>;
-
-  // analytics
-  trackFeatureUsedEvent: (data: FeatureUsedEvent) => Promise<void>;
-
-  // page translate
-  enqueueTranslateRequest: (data: {
+  // enqueueTranslateRequest
+  enqueueAdaptiveTranslateRequest: (data: {
     text: string;
     sourceLangCode: LangCode | 'auto' | 'default';
     targetLangCode: LangCode;
@@ -60,6 +36,31 @@ interface Protocol {
     webContent?: string | null;
     webSummary?: string | null;
   }) => Promise<string>;
+
+  // popup / floating button → background → content script
+  // trySetPageTranslationByTabId: (data: {
+  //   tabId: number;
+  //   enabled: boolean;
+  //   analyticsContext?: FeatureUsageContext;
+  // }) => Promise<void>;
+  // trySetPageTranslationFromContentScript: (data: {
+  //   enabled: boolean;
+  //   analyticsContext?: FeatureUsageContext;
+  // }) => Promise<void>;
+
+  // togglePageTranslation
+  adaptiveTranslate: (data: FeaturePayload) => Promise<void>;
+  instantLookup: (data: FeaturePayload) => Promise<void>;
+  intelligentInput: (data: FeaturePayload) => Promise<void>;
+  bilingualSubtitles: (data: FeaturePayload) => Promise<void>;
+  panoramaReading: (data: FeaturePayload) => Promise<void>;
+  writingCopilot: (data: FeaturePayload) => Promise<void>;
+
+  // analytics
+  trackFeatureUsedEvent: (data: FeatureUsedEvent) => Promise<void>;
+
+  // page translate
+  // getOrGenerateWebPageSummary
   getOrGenerateWebPageSummary: (data: {
     webTitle: string;
     webContent: string;
@@ -83,3 +84,13 @@ interface Protocol {
 }
 
 export const { sendMessage, onMessage } = defineExtensionMessaging<Protocol>();
+
+// export const sendToBackground = sendMessage;
+
+// export async function sendToTab<T extends keyof Protocol>(
+//   type: T,
+//   data: GetDataType<Protocol[T]>,
+//   tabId: number
+// ): Promise<GetReturnType<Protocol[T]>> {
+//   return await sendMessage(type, { ...data, tabId }, tabId);
+// }

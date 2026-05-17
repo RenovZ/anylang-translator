@@ -2,25 +2,25 @@ import analyticsManager from '@/lib/analytics';
 import configStore from '@/lib/config';
 import logger from '@/lib/logger';
 import { onMessage, sendMessage } from '@/lib/protocol';
-import { translateState } from '@/lib/session';
+import { adaptiveTranslateSession } from '@/lib/session';
 import { shouldEnableAutoTranslation } from '@/lib/translate/sw';
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
 import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/constants';
 
 export function registerTranslate() {
-  onMessage('getPageTranslationActive', async (msg) => {
-    logger.debug('getPageTranslationActive', { msg });
+  onMessage('getAdaptiveTranslateState', async (msg) => {
+    logger.debug('getAdaptiveTranslateState', { msg });
     const tabId = msg.data?.tabId ?? msg.sender?.tab?.id;
     if (typeof tabId === 'number') {
-      return translateState.get(tabId).enabled;
+      return adaptiveTranslateSession.get(tabId).enabled;
     }
-    logger.error('Invalid tabId of getPageTranslationActive', { msg });
+    logger.error('Invalid tabId of getAdaptiveTranslateState', { msg });
     return false;
   });
 
   // translate.content/bootstrap.ts
-  onMessage('checkAutoPageTranslation', async (msg) => {
-    logger.debug('checkAutoPageTranslation', { msg });
+  onMessage('checkAutoAdaptiveTranslate', async (msg) => {
+    logger.debug('checkAutoAdaptiveTranslate', { msg });
     const tabId = msg.sender?.tab?.id;
     const { url, detectedCodeOrUnd } = msg.data;
     if (typeof tabId === 'number') {
@@ -37,9 +37,9 @@ export function registerTranslate() {
         autoAppliedLangs
       );
       if (shouldEnable) {
-        logger.debug('togglePageTranslation', { shouldEnable, url, detectedCodeOrUnd });
+        logger.debug('adaptiveTranslate', { shouldEnable, url, detectedCodeOrUnd });
         void sendMessage(
-          'togglePageTranslation',
+          'adaptiveTranslate',
           {
             enabled: true,
             analyticsContext: analyticsManager.createFeatureUsageContext(
@@ -54,33 +54,37 @@ export function registerTranslate() {
   });
 
   // popup / adaptive-translate
-  onMessage('adaptiveTranslate', async (msg) => {
-    logger.debug('adaptiveTranslate', { msg });
+  onMessage('tryAdaptiveTranslate', async (msg) => {
+    logger.debug('tryAdaptiveTranslate', { msg });
     const { tabId, enabled, analyticsContext } = msg.data;
-    logger.debug('togglePageTranslation', { tabId, enabled, analyticsContext });
-    void sendMessage('togglePageTranslation', { enabled, analyticsContext }, tabId);
+    if (!tabId) {
+      logger.error('tryAdaptiveTranslate no tabId provided', { msg });
+      return;
+    }
+    logger.debug('adaptiveTranslate', { tabId, enabled, analyticsContext });
+    void sendMessage('adaptiveTranslate', { enabled, analyticsContext }, tabId);
   });
 
-  // side.content / floating-button
-  onMessage('trySetPageTranslationFromContentScript', async (msg) => {
-    logger.debug('trySetPageTranslationFromContentScript', { msg });
-    const tabId = msg.sender?.tab?.id;
-    const { enabled, analyticsContext } = msg.data;
-    if (typeof tabId === 'number') {
-      logger.debug('togglePageTranslation', { tabId, enabled, analyticsContext });
-      void sendMessage('togglePageTranslation', { enabled, analyticsContext }, tabId);
-    } else {
-      logger.error('tabId is not a number', { msg });
-    }
-  });
+  // // side.content / floating-button
+  // onMessage('trySetPageTranslationFromContentScript', async (msg) => {
+  //   logger.debug('trySetPageTranslationFromContentScript', { msg });
+  //   const tabId = msg.sender?.tab?.id;
+  //   const { enabled, analyticsContext } = msg.data;
+  //   if (typeof tabId === 'number') {
+  //     logger.debug('adaptiveTranslate', { tabId, enabled, analyticsContext });
+  //     void sendMessage('adaptiveTranslate', { enabled, analyticsContext }, tabId);
+  //   } else {
+  //     logger.error('tabId is not a number', { msg });
+  //   }
+  // });
 
   // page-translation
-  onMessage('reportPageTranslateState', async (msg) => {
+  onMessage('reportAdaptiveTranslateState', async (msg) => {
     logger.debug('reportPageTranslateState', { msg });
     const tabId = msg.sender?.tab?.id;
     const { enabled } = msg.data;
     if (typeof tabId === 'number') {
-      await translateState.set(tabId, { enabled });
+      await adaptiveTranslateSession.set(tabId, { enabled });
     } else {
       logger.error('tabId is not a number', { msg });
     }

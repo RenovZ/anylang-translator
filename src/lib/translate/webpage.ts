@@ -1,12 +1,12 @@
 import { Readability } from '@mozilla/readability';
 
 import logger, { formatError } from '@/lib/logger';
-import { sendMessage } from '@/lib/protocol';
 import type { TranslatePageRange } from '@/types/config';
 import type { CachedWebPageContext } from '@/types/content';
 import type { ProviderConfig } from '@/types/provider';
 
 import { removeDummyNodes } from '../dom';
+import { sendMessage } from '../protocol';
 
 class Util {
   readonly CONTENT_LIMIT = 2000;

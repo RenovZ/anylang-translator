@@ -152,7 +152,7 @@ async function createTranslationQueues<TContext>(promptResolver: PromptResolver<
 export async function setUpWebPageTranslationQueue() {
   const { requestQueue, batchQueue } = await createTranslationQueues(getTranslatePrompt);
 
-  onMessage('enqueueTranslateRequest', async (message) => {
+  onMessage('enqueueAdaptiveTranslateRequest', async (message) => {
     logger.debug({ message });
     const {
       data: {

@@ -131,8 +131,8 @@ export class SessionStore<T> {
   }
 }
 
-export const translateState = new SessionStore<TranslateState>(
-  'translate-state',
+export const adaptiveTranslateSession = new SessionStore<TranslateState>(
+  'adaptive-translate-state',
   translateStateSchema,
   { enabled: false }
 );

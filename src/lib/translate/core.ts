@@ -4,7 +4,6 @@ import domFinder from '@/lib/dom/finder';
 import domTraversal from '@/lib/dom/traversal';
 import { sha256 } from '@/lib/hash';
 import logger from '@/lib/logger';
-import { sendMessage } from '@/lib/protocol';
 import {
   BLOCK_ATTRIBUTE,
   CONTENT_WRAPPER_CLASS,
@@ -23,6 +22,7 @@ import type { TranslateOptions } from '@/types/translate';
 
 import { getOwnerDocument } from '../dom';
 import { getTranslatePrompt } from '../prompt';
+import { sendMessage } from '../protocol';
 
 import {
   findPreviousTranslatedWrapperInside,
@@ -537,5 +537,5 @@ export async function translateTextCore(options: {
     webContent: normalizedWebPageContext?.webContent,
     webSummary: normalizedWebPageContext?.webSummary
   };
-  return await sendMessage('enqueueTranslateRequest', msg);
+  return await sendMessage('enqueueAdaptiveTranslateRequest', msg);
 }

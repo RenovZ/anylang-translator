@@ -7,7 +7,7 @@ import logger from '@/lib/logger';
 import { onMessage, sendMessage } from '@/lib/protocol';
 import { styleInjector } from '@/lib/translate/ui';
 
-import { bindTranslationShortcutKey, nodeTranslation, PageTranslateManager } from './control';
+import { PageTranslateManager } from './control';
 import { EVENT_EXTENSION_URL_CHANGE, setupUrlChangeListener } from './listen';
 
 export async function bootstrap(ctx: ContentScriptContext) {
@@ -24,19 +24,19 @@ export async function bootstrap(ctx: ContentScriptContext) {
 
   const cleanupUrlListener = setupUrlChangeListener();
 
-  const teardownNodeTranslation = nodeTranslation.register();
+  // const teardownNodeTranslation = nodeTranslation.register();
 
   const manager = new PageTranslateManager();
 
   const cleanupTriggers = manager.registerTriggers();
 
-  const cleanupTranslationShortcut = bindTranslationShortcutKey(manager);
+  // const cleanupTranslationShortcut = bindTranslationShortcutKey(manager);
 
   // For late-loading iframes: check if translation is already enabled for this tab
   let translationEnabled = false;
   try {
-    logger.debug('getPageTranslationActive');
-    translationEnabled = await sendMessage('getPageTranslationActive', {});
+    logger.debug('getAdaptiveTranslateState');
+    translationEnabled = await sendMessage('getAdaptiveTranslateState', {});
   } catch (error) {
     // Extension context may be invalidated during update, proceed without auto-start
     logger.error('Failed to check translation state:', { error });
@@ -63,9 +63,9 @@ export async function bootstrap(ctx: ContentScriptContext) {
         logger.trace({ detectedCodeOrUnd });
         await configStore.setDetectedLangCode(detectedCodeOrUnd);
 
-        logger.debug('checkAutoPageTranslation', { to, detectedCodeOrUnd });
+        logger.debug('checkAutoAdaptiveTranslate', { to, detectedCodeOrUnd });
         // Notify background script that URL has changed, let it decide whether to automatically enable translation
-        void sendMessage('checkAutoPageTranslation', { url: to, detectedCodeOrUnd });
+        void sendMessage('checkAutoAdaptiveTranslate', { url: to, detectedCodeOrUnd });
       }
     }
   };
@@ -78,8 +78,8 @@ export async function bootstrap(ctx: ContentScriptContext) {
   window.addEventListener(EVENT_EXTENSION_URL_CHANGE, handleExtensionUrlChange);
 
   // Listen for translation state changes from background
-  const cleanupTranslationStateListener = onMessage('togglePageTranslation', (msg) => {
-    logger.debug('togglePageTranslation', { msg });
+  const cleanupTranslationStateListener = onMessage('adaptiveTranslate', (msg) => {
+    logger.debug('adaptiveTranslate', { msg });
     const { enabled, analyticsContext } = msg.data;
     if (enabled === manager.isTranslating) return;
     if (enabled) {
@@ -92,9 +92,9 @@ export async function bootstrap(ctx: ContentScriptContext) {
   ctx.onInvalidated(() => {
     toast.destroy();
     cleanupUrlListener();
-    teardownNodeTranslation();
+    // teardownNodeTranslation();
     cleanupTriggers();
-    cleanupTranslationShortcut();
+    // cleanupTranslationShortcut();
     cleanupTranslationStateListener();
     window.removeEventListener(EVENT_EXTENSION_URL_CHANGE, handleExtensionUrlChange);
     window.__ANYLANG_ADAPTIVE_TRANSLATE_INJECTED__ = false;
@@ -110,9 +110,9 @@ export async function bootstrap(ctx: ContentScriptContext) {
     });
     await configStore.setDetectedLangCode(detectedCodeOrUnd);
 
-    logger.debug('checkAutoPageTranslation', { url: window.location.href, detectedCodeOrUnd });
+    logger.debug('checkAutoAdaptiveTranslate', { url: window.location.href, detectedCodeOrUnd });
     // Check if auto-translation should be enabled for initial page load
-    void sendMessage('checkAutoPageTranslation', {
+    void sendMessage('checkAutoAdaptiveTranslate', {
       url: window.location.href,
       detectedCodeOrUnd
     });

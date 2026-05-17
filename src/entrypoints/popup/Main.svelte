@@ -26,7 +26,7 @@
   import lang from '@/lib/lang';
   import logger, { formatError } from '@/lib/logger';
   import { sendMessage } from '@/lib/protocol';
-  import { translateState } from '@/lib/session';
+  import { adaptiveTranslateSession } from '@/lib/session';
   import shortcut from '@/lib/shortcut';
   import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
   import {
@@ -47,7 +47,7 @@
 
   $effect(() => {
     if (currentTabId === null) return;
-    return translateState.subscribe(currentTabId, (state) => {
+    return adaptiveTranslateSession.subscribe(currentTabId, (state) => {
       isTranslating = state.enabled;
     });
   });
@@ -56,23 +56,24 @@
     await shortcut.main();
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
     currentSite = tab?.url ? new URL(tab.url).origin : window.location.origin;
-    if (tab?.id) {
-      currentTabId = tab.id;
-      isTranslating = await sendMessage('getPageTranslationActive', { tabId: tab.id });
+    const currentTabId = tab?.id;
+    if (currentTabId) {
+      isTranslating = await sendMessage('getAdaptiveTranslateState', { tabId: currentTabId });
     }
   });
 
   const toggleTranslate = async () => {
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    if (!tab?.id) {
+    const tabId = tab?.id;
+    if (!tabId) {
       logger.error('No active tab found');
       return;
     }
 
     isTranslating = !isTranslating;
-    logger.debug({ isTranslating, tab });
-    void sendMessage('adaptiveTranslate', {
-      tabId: tab.id,
+    logger.debug({ isTranslating, tabId, tab });
+    void sendMessage('tryAdaptiveTranslate', {
+      tabId,
       enabled: isTranslating,
       analyticsContext: isTranslating
         ? analyticsManager.createFeatureUsageContext(
