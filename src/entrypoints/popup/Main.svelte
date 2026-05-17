@@ -59,6 +59,10 @@
     const currentTabId = tab?.id;
     if (currentTabId) {
       isTranslating = await sendMessage('getAdaptiveTranslateState', { tabId: currentTabId });
+
+      adaptiveTranslateSession.subscribe(currentTabId, (state) => {
+        isTranslating = state.enabled;
+      });
     }
   });
 
@@ -216,15 +220,17 @@
   </section>
 
   <Button onclick={toggleTranslate} class="flex w-full items-center border-none font-medium shadow">
-    {#if isTranslating}
-      <span>{i18n('show_original', { defaultValue: 'Show Original' })}</span>
-    {:else}
-      <span>{i18n('adaptive_translate', { defaultValue: 'Adaptive Translate' })}</span>
-      {#if $config.adaptiveTranslate.shortcut?.length}
-        <span>
-          ({shortcut.formatForDisplay($config.adaptiveTranslate.shortcut).join('')})
-        </span>
+    <span>
+      {#if isTranslating}
+        {i18n('show_original', { defaultValue: 'Show Original' })}
+      {:else}
+        {i18n('adaptive_translate', { defaultValue: 'Adaptive Translate' })}
       {/if}
+    </span>
+    {#if $config.adaptiveTranslate.shortcut?.length}
+      <span>
+        ({shortcut.formatForDisplay($config.adaptiveTranslate.shortcut).join('')})
+      </span>
     {/if}
   </Button>
 

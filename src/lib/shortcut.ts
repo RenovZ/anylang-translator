@@ -22,6 +22,7 @@ import configStore from './config';
 import i18n from './i18n';
 import logger from './logger';
 import { sendMessage } from './protocol';
+import { adaptiveTranslateSession } from './session';
 
 /**
  * 快捷键管理器 - 统一处理快捷键的显示、解析和同步
@@ -175,7 +176,12 @@ class Shortcut {
         ANALYTICS_FEATURE[featureKey as keyof typeof ANALYTICS_FEATURE],
         ANALYTICS_SURFACE.SHORTCUT
       );
-      await sendMessage(featureKey, { enabled: true, analyticsContext }, tabId);
+      if (featureKey === 'adaptiveTranslate') {
+        const rawTranslateState = adaptiveTranslateSession.get(tabId);
+        const enabled = rawTranslateState ? !rawTranslateState.enabled : true;
+        return await sendMessage(featureKey, { enabled, analyticsContext }, tabId);
+      }
+      return await sendMessage(featureKey, { enabled: true, analyticsContext }, tabId);
     });
   }
 

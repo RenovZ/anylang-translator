@@ -78,10 +78,12 @@ export async function bootstrap(ctx: ContentScriptContext) {
   window.addEventListener(EVENT_EXTENSION_URL_CHANGE, handleExtensionUrlChange);
 
   // Listen for translation state changes from background
-  const cleanupTranslationStateListener = onMessage('adaptiveTranslate', (msg) => {
-    logger.debug('adaptiveTranslate', { msg });
+  // cleanupTranslationStateListener
+  const cleanupTranslateStateListener = onMessage('adaptiveTranslate', (msg) => {
+    const isTranslating = manager.isTranslating;
+    logger.debug('adaptiveTranslate', { msg, isTranslating });
     const { enabled, analyticsContext } = msg.data;
-    if (enabled === manager.isTranslating) return;
+    if (enabled === isTranslating) return;
     if (enabled) {
       void manager.start(window === window.top ? analyticsContext : undefined);
     } else {
@@ -95,7 +97,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
     // teardownNodeTranslation();
     cleanupTriggers();
     // cleanupTranslationShortcut();
-    cleanupTranslationStateListener();
+    cleanupTranslateStateListener();
     window.removeEventListener(EVENT_EXTENSION_URL_CHANGE, handleExtensionUrlChange);
     window.__ANYLANG_ADAPTIVE_TRANSLATE_INJECTED__ = false;
   });
