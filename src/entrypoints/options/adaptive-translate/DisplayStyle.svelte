@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Button, Dropdown, DropdownItem, Input, Label, Select } from 'flowbite-svelte';
-  import { ChevronDownOutline } from 'flowbite-svelte-icons';
+  import { Input, Label, Select } from 'flowbite-svelte';
   import { twMerge } from 'tailwind-merge';
   import { css } from '@codemirror/lang-css';
 
   import CodeMirrorWrapper from '@/components/CodeMirrorWrapper.svelte';
+  import DisplayStyle from '@/components/DisplayStyle.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
   import { toast } from '@/components/toast-wrapper';
   import config from '@/lib/config';
@@ -14,7 +14,6 @@
   import { BLOCK_CONTENT_CLASS, CONTENT_WRAPPER_CLASS, TRANS_STYLE_ATTR } from '@/preset/dom';
   import {
     defaultCustomDisplayStyles,
-    DISPLAY_STYLES,
     fontFamilyOptions,
     MAX_CUSTOM_CSS_LENGTH,
     PREVIEW_TEXT_MAP
@@ -98,48 +97,7 @@
     defaultValue: 'Set any style you want to distinguish translation results from original text'
   })}>
   <div slot="controls">
-    <Button
-      class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
-      <span>
-        {DISPLAY_STYLES.find(
-          (item) => item.preset === $config.adaptiveTranslate.translate.displayStyle.preset
-        )?.label ?? DISPLAY_STYLES[0].label}
-      </span>
-      <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
-    </Button>
-    <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-      {#each DISPLAY_STYLES as item (item)}
-        <DropdownItem
-          onclick={() => {
-            const { preset } = item;
-            if (preset === 'custom') {
-              const { customStyles } = $config.adaptiveTranslate.translate.displayStyle;
-              $config.adaptiveTranslate.translate.displayStyle = {
-                preset,
-                customStyles: {
-                  ...defaultCustomDisplayStyles,
-                  ...customStyles
-                },
-                customCss: undefined
-              };
-              return;
-            }
-            if (preset === 'css') {
-              const { customCss } = $config.adaptiveTranslate.translate.displayStyle;
-              $config.adaptiveTranslate.translate.displayStyle = {
-                preset,
-                customStyles: undefined,
-                customCss
-              };
-              return;
-            }
-
-            $config.adaptiveTranslate.translate.displayStyle = { preset };
-          }}>
-          {item.label}
-        </DropdownItem>
-      {/each}
-    </Dropdown>
+    <DisplayStyle />
   </div>
 
   {#if displayStyle.preset === 'css'}

@@ -197,6 +197,9 @@
   "display_mode_translation_only": {
     "message": "Translation only"
   },
+  "display_style": {
+    "message": "Display Style"
+  },
   "display_style_background": {
     "message": "Background"
   },
@@ -484,6 +487,9 @@
   },
   "no_site_configured": {
     "message": "No site configured"
+  },
+  "open_display_style_settings": {
+    "message": "Open display style settings"
   },
   "options_about_check_update": {
     "message": "Check for updates"

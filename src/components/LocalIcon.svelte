@@ -2,6 +2,8 @@
   import IconBookOpenText from '~icons/lucide/book-open-text';
   import IconTranslate from '~icons/ri/translate';
   import IconTranslateAi from '~icons/ri/translate-ai';
+  import IconAdjustments from '~icons/tabler/adjustments';
+  import IconAdjustmentsCog from '~icons/tabler/adjustments-cog';
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconArrowRight from '~icons/tabler/arrow-right';
   import IconChevronDown from '~icons/tabler/chevron-down';
@@ -28,6 +30,8 @@
     'tabler:command': IconCommand,
     'tabler:reload': IconReload,
     'tabler:alert-circle': IconAlertCircle,
+    'tabler:adjustments': IconAdjustments,
+    'tabler:adjustments-cog': IconAdjustmentsCog,
 
     'lucide:book-open-text': IconBookOpenText,
 

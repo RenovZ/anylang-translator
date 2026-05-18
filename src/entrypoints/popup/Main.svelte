@@ -14,6 +14,7 @@
 
   import '@/assets/app.css';
 
+  import DisplayStyle from '@/components/DisplayStyle.svelte';
   import LocalIcon from '@/components/LocalIcon.svelte';
   import TranslateModeDropdown, {
     translateModeOptions
@@ -37,7 +38,7 @@
     FEAT_PANORAMA_READING,
     FEAT_WRITING_COPILOT
   } from '@/preset/feature';
-  import { TRIGGER_ON_HOVER } from '@/preset/translate';
+  import { DISPLAY_STYLES, TRIGGER_ON_HOVER } from '@/preset/translate';
 
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
   import Feature from './Feature.svelte';
@@ -88,9 +89,11 @@
         : undefined
     });
   };
+
+  const adaptiveTranslateId = 'adaptive-translate';
 </script>
 
-<main class="space-y-6 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
+<main class="space-y-5 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
   <!-- header -->
   <header class="flex items-center justify-between">
     <div class="flex items-center justify-between gap-2">
@@ -160,7 +163,7 @@
   </section>
 
   <!-- adaptive-translate feature -->
-  <section class="space-y-4">
+  <section class="space-y-2">
     <Feature
       field={FEAT_ADAPTIVE_TRANSLATE}
       showFreeProviders={true}
@@ -193,6 +196,50 @@
         </button>
       </TranslateModeDropdown>
     </Feature>
+    {#if $config.adaptiveTranslate.translate.mode === 'bilingual'}
+      <Feature
+        field={FEAT_ADAPTIVE_TRANSLATE}
+        showFreeProviders={true}
+        showShortcut={false}
+        classes={{
+          main: 'grid-cols-[96px_1fr]'
+        }}
+        title={i18n('display_style', { defaultValue: 'Display Style' })}>
+        <div class="flex place-content-end items-center gap-2">
+          <DisplayStyle classes={{ dropdown: 'max-h-56' }}>
+            {#snippet button()}
+              <button
+                type="button"
+                class="flex w-full items-center justify-between rounded-lg border-none bg-slate-100 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
+                <span>
+                  {DISPLAY_STYLES.find(
+                    (item) =>
+                      item.preset === $config.adaptiveTranslate.translate.displayStyle.preset
+                  )?.label ?? DISPLAY_STYLES[0].label}
+                </span>
+                <LocalIcon icon="tabler:chevron-down" class="h-4 w-4" />
+              </button>
+            {/snippet}
+          </DisplayStyle>
+          {#if ['custom', 'css'].includes($config.adaptiveTranslate.translate.displayStyle.preset)}
+            <button
+              type="button"
+              class="flex items-center justify-between rounded-lg border-none bg-slate-100 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600"
+              onclick={() =>
+                sendMessage('openPage', {
+                  url: browser.runtime.getURL(`/options.html#${adaptiveTranslateId}`)
+                })}>
+              <LocalIcon icon="tabler:adjustments-cog" class="h-auto w-4" />
+            </button>
+            <Tooltip class="flex max-w-full text-xs">
+              {i18n('open_display_style_settings', {
+                defaultValue: 'Open display style settings'
+              })}
+            </Tooltip>
+          {/if}
+        </div>
+      </Feature>
+    {/if}
     <div class="flex items-center justify-between gap-2">
       <span
         class="line-clamp-1 font-medium aria-disabled:text-gray-400"
@@ -237,7 +284,7 @@
         </span>
         <LocalIcon icon="tabler:chevron-down" class="h-4 w-4" />
       </button>
-      <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
+      <Dropdown simple placement="bottom-end" class="max-h-56 overflow-y-auto shadow-md">
         {#each TRIGGER_ON_HOVER as { hotkey, label } (hotkey)}
           <DropdownItem
             class="flex items-center gap-2"
