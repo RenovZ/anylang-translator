@@ -130,15 +130,15 @@ export default defineConfig({
         description: 'Intelligent Input'
       },
       'bilingual-subtitles': {
-        suggested_key: {
-          default: 'Alt+S'
-        },
         description: 'Bilingual Subtitles'
       },
       'panorama-reading': {
         description: 'Panorama Reading'
       },
       'writing-copilot': {
+        suggested_key: {
+          default: 'Alt+C'
+        },
         description: 'Writing Copilot'
       }
     }

@@ -83,7 +83,7 @@ const defaultConfig: Config = configSchema.parse({
   bilingualSubtitles: {
     icon: 'tabler:subtitles',
     provider: structuredClone(freeProviders[0]),
-    shortcut: ['Alt', 'S']
+    shortcut: []
   },
 
   panoramaReading: {
@@ -95,7 +95,7 @@ const defaultConfig: Config = configSchema.parse({
   writingCopilot: {
     icon: 'tabler:feather-filled',
     provider: null,
-    shortcut: []
+    shortcut: ['Alt', 'C']
   },
 
   customAIPrompts: structuredClone(PROMPT_LIST)
