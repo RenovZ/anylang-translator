@@ -3,7 +3,7 @@ import { storage } from 'wxt/utils/storage';
 
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
-import { displayStyles, HOTKEYS } from '@/preset/translate';
+import { displayStyles, TRIGGER_HOTKEYS } from '@/preset/translate';
 import {
   configSchema,
   langDetectionModeSchema,
@@ -59,7 +59,7 @@ const defaultConfig: Config = configSchema.parse({
       displayStyle: displayStyleSchema.parse(displayStyles[0]),
       pageRange: pageRangeSchema.parse('main'),
       triggerOnHover: triggerOnHoverSchema.parse({
-        hotkey: HOTKEYS[0],
+        hotkey: TRIGGER_HOTKEYS[0],
         enabled: true
       })
     }

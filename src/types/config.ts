@@ -3,7 +3,7 @@ import { z } from 'zod';
 import type { FeatureField } from '@/preset/feature';
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
-import { displayStyles, HOTKEYS } from '@/preset/translate';
+import { displayStyles, TRIGGER_HOTKEYS } from '@/preset/translate';
 import { aiProviderSchema, providerSchema, type ProviderConfig } from '@/types/provider';
 
 import { LangCode, langCodeSchema, uiLangCodeSchema } from './lang';
@@ -20,7 +20,7 @@ export const langDetectionModeSchema = z.enum(['basic', 'llm']);
 export type LangDetectionMode = z.infer<typeof langDetectionModeSchema>;
 
 export const triggerOnHoverSchema = z.object({
-  hotkey: z.enum(HOTKEYS).default('control'),
+  hotkey: z.enum(TRIGGER_HOTKEYS).default(TRIGGER_HOTKEYS[0]),
   enabled: z.boolean().default(true)
 });
 

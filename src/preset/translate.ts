@@ -109,24 +109,58 @@ export const fontFamilyOptions = [
   { value: 'Noto Sans SC, Source Han Sans SC, sans-serif', label: 'Noto Sans SC' }
 ];
 
-export const HOTKEYS = ['control', 'alt', 'shift', 'backtick', 'clickAndHold'] as const;
+// export const HOTKEYS = ['ctrl', 'alt', 'shift', 'clickAndHold'] as const;
 
-export const HOTKEY_ICONS: Record<(typeof HOTKEYS)[number], string> = {
-  control: '⌃',
-  alt: '⌥',
-  shift: '⇧',
-  backtick: '`',
-  clickAndHold: '⏱'
-};
+// export const HOTKEY_ICONS: Record<(typeof HOTKEYS)[number], string> = {
+//   ctrl: '⌃',
+//   alt: '⌥',
+//   shift: '⇧',
+//   // backtick: '`',
+//   clickAndHold: '⏱'
+// };
 
-// Maps to actual keyboard event key (for keydown/keyup detection)
-export const HOTKEY_EVENT_KEYS: Record<(typeof HOTKEYS)[number], string> = {
-  control: 'Control',
-  alt: 'Alt',
-  shift: 'Shift',
-  backtick: 'Backtick',
-  clickAndHold: 'ClickAndHold' // Special handling, not a keyboard event
-};
+// // Maps to actual keyboard event key (for keydown/keyup detection)
+// export const HOTKEY_EVENT_KEYS: Record<(typeof HOTKEYS)[number], string> = {
+//   ctrl: 'Control',
+//   alt: 'Alt',
+//   shift: 'Shift',
+//   // backtick: 'Backtick',
+//   clickAndHold: 'ClickAndHold' // Special handling, not a keyboard event
+// };
+
+export const TRIGGER_HOTKEY_MAP = {
+  ctrl: { icon: '⌃', key: 'Control' },
+  alt: { icon: '⌥', key: 'Alt' },
+  shift: { icon: '⇧', key: 'Shift' },
+  // backtick: {icon: '`', key: 'Backtick'},
+  clickAndHold: { icon: '⏱', key: 'ClickAndHold' } // Special handling, not a keyboard event
+} as const;
+
+export const TRIGGER_HOTKEYS = Object.keys(TRIGGER_HOTKEY_MAP);
+
+export const TRIGGER_ON_HOVER = [
+  {
+    hotkey: 'ctrl',
+    label: i18n('trigger_on_hover_ctrl', { defaultValue: 'Hover + Ctrl to translate paragraph' })
+  },
+  {
+    hotkey: 'alt',
+    label: i18n('trigger_on_hover_alt', { defaultValue: 'Hover + Alt to translate paragraph' })
+  },
+  {
+    hotkey: 'shift',
+    label: i18n('trigger_on_hover_shift', { defaultValue: 'Hover + Shift to translate paragraph' })
+  },
+  // {
+  //   hotkey: 'backtick',
+  //   label: i18n('trigger_on_hover_backtick', { defaultValue: 'Hover + Backtick to translate paragraph' })
+  // },
+  {
+    hotkey: 'clickAndHold',
+    // prettier-ignore
+    label: i18n('trigger_on_click_and_hold', { defaultValue: 'Click and hold to translate paragraph' })
+  }
+] as const;
 
 export const DEFAULT_REQUEST_QUEUE_CONFIG = {
   capacity: 60,

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Button, Dropdown, DropdownItem, Kbd } from 'flowbite-svelte';
+  import { Button, Dropdown, DropdownItem, Kbd, Toggle } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
   import SectionRow from '@/components/SectionRow.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import { HOTKEY_EVENT_KEYS, HOTKEY_ICONS, HOTKEYS } from '@/preset/translate';
+  import { TRIGGER_HOTKEYS, TRIGGER_ON_HOVER } from '@/preset/translate';
 </script>
 
 <SectionRow
@@ -15,13 +15,20 @@
   description={i18n('translate_selection_trigger_description', {
     defaultValue: 'Customize the hover modifier key or use long press to translate paragraphs'
   })}>
-  <div slot="controls">
+  <div slot="controls" class="flex flex-col gap-2">
+    <!-- NOTE: add relative to fix input[type="checkbox"] sr-only style bug -->
+    <Toggle
+      class="relative self-end"
+      classes={{ span: 'me-0' }}
+      bind:checked={$config.adaptiveTranslate.translate.triggerOnHover.enabled}>
+    </Toggle>
     <Button
+      disabled={!$config.adaptiveTranslate.translate.triggerOnHover.enabled}
       class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <span>
-        {#if HOTKEYS.includes($config.adaptiveTranslate.translate.triggerOnHover.hotkey)}
-          <Kbd>{HOTKEY_ICONS[$config.adaptiveTranslate.translate.triggerOnHover.hotkey]}</Kbd>
-          <Kbd>{HOTKEY_EVENT_KEYS[$config.adaptiveTranslate.translate.triggerOnHover.hotkey]}</Kbd>
+        {#if TRIGGER_HOTKEYS.includes($config.adaptiveTranslate.translate.triggerOnHover.hotkey)}
+          <!-- <Kbd>{HOTKEY_ICONS[$config.adaptiveTranslate.translate.triggerOnHover.hotkey]}</Kbd> -->
+          <Kbd>{$config.adaptiveTranslate.translate.triggerOnHover.hotkey}</Kbd>
         {:else}
           {i18n('unsupported_trigger', { defaultValue: 'Unsupported Trigger' })}
         {/if}
@@ -29,11 +36,13 @@
       <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
     </Button>
     <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-      {#each HOTKEYS as key (key)}
+      {#each TRIGGER_ON_HOVER as { hotkey, label } (hotkey)}
         <DropdownItem
-          onclick={() => ($config.adaptiveTranslate.translate.triggerOnHover.hotkey = key)}>
-          <Kbd>{HOTKEY_ICONS[key]}</Kbd>
-          <Kbd>{HOTKEY_EVENT_KEYS[key]}</Kbd>
+          class="flex items-center gap-2"
+          onclick={() => ($config.adaptiveTranslate.translate.triggerOnHover.hotkey = hotkey)}>
+          <!-- <Kbd>{HOTKEY_ICONS[key]}</Kbd> -->
+          <Kbd>{hotkey}</Kbd>
+          {label}
         </DropdownItem>
       {/each}
     </Dropdown>

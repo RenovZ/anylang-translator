@@ -782,6 +782,21 @@
   "translate_selection_trigger_description": {
     "message": "Customize the hover modifier key or use long press to translate paragraphs"
   },
+  "trigger_on_click_and_hold": {
+    "message": "Click and hold to translate paragraph"
+  },
+  "trigger_on_hover_alt": {
+    "message": "Hover + Alt to translate paragraph"
+  },
+  "trigger_on_hover_backtick": {
+    "message": "Hover + Backtick to translate paragraph"
+  },
+  "trigger_on_hover_ctrl": {
+    "message": "Hover + Ctrl to translate paragraph"
+  },
+  "trigger_on_hover_shift": {
+    "message": "Hover + Shift to translate paragraph"
+  },
   "ui_language": {
     "message": "UI language"
   },

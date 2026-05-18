@@ -37,6 +37,7 @@
     FEAT_PANORAMA_READING,
     FEAT_WRITING_COPILOT
   } from '@/preset/feature';
+  import { TRIGGER_ON_HOVER } from '@/preset/translate';
 
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
   import Feature from './Feature.svelte';
@@ -193,7 +194,11 @@
       </TranslateModeDropdown>
     </Feature>
     <div class="flex items-center justify-between gap-2">
-      <span class="line-clamp-1 font-medium">
+      <span
+        class="line-clamp-1 font-medium aria-disabled:text-gray-400"
+        aria-disabled={currentSite
+          ? !$config.adaptiveTranslate.autoAppliedSites?.includes(currentSite)
+          : true}>
         {i18n('always_auto_translate_this_site', {
           defaultValue: 'Always auto-translate this site'
         })}
@@ -212,6 +217,34 @@
             $config.adaptiveTranslate.autoAppliedSites = [...(autoAppliedSites ?? []), currentSite];
           }
         }}
+        size="small"
+        classes={{
+          span: 'cursor-pointer bg-slate-200 dark:bg-slate-600 m-0'
+        }} />
+    </div>
+    <div class="flex items-center justify-between">
+      <button
+        type="button"
+        disabled={!$config.adaptiveTranslate.translate.triggerOnHover.enabled}
+        class="flex items-center justify-between gap-2 disabled:text-gray-400">
+        <span class="line-clamp-1 font-medium">
+          {TRIGGER_ON_HOVER.find(
+            (item) => item.hotkey === $config.adaptiveTranslate.translate.triggerOnHover.hotkey
+          )?.label ?? i18n('unsupported_trigger', { defaultValue: 'Unsupported Trigger' })}
+        </span>
+        <LocalIcon icon="tabler:chevron-down" class="h-4 w-4" />
+      </button>
+      <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
+        {#each TRIGGER_ON_HOVER as { hotkey, label } (hotkey)}
+          <DropdownItem
+            class="flex items-center gap-2"
+            onclick={() => ($config.adaptiveTranslate.translate.triggerOnHover.hotkey = hotkey)}>
+            {label}
+          </DropdownItem>
+        {/each}
+      </Dropdown>
+      <Toggle
+        bind:checked={$config.adaptiveTranslate.translate.triggerOnHover.enabled}
         size="small"
         classes={{
           span: 'cursor-pointer bg-slate-200 dark:bg-slate-600 m-0'

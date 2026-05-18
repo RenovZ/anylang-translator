@@ -17,7 +17,7 @@ import * as webpage from '@/lib/translate/webpage';
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
 import { CONTENT_WRAPPER_CLASS, PARAGRAPH_ATTRIBUTE, WALKED_ATTRIBUTE } from '@/preset/dom';
 import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/feature';
-import { HOTKEY_EVENT_KEYS } from '@/preset/translate';
+import { TRIGGER_HOTKEY_MAP } from '@/preset/translate';
 import { FeatureUsageContext } from '@/types/analytics';
 import type { Config } from '@/types/config';
 import type { Point } from '@/types/dom';
@@ -93,10 +93,8 @@ class NodeTranslation {
   }
 
   private inTriggerMode(config: Config): boolean {
-    return (
-      !!config.adaptiveTranslate.provider && // TODO: 这个 provider 的非空判断似乎多余
-      config.adaptiveTranslate.translate.triggerOnHover.hotkey === 'clickAndHold'
-    );
+    const { hotkey, enabled } = config.adaptiveTranslate.translate.triggerOnHover;
+    return !!config.adaptiveTranslate.provider && enabled && hotkey !== 'clickAndHold';
   }
 
   private trigger(pos: Point, config: Config): void {
@@ -126,10 +124,16 @@ class NodeTranslation {
     this.activeHotkeyEventKey = null;
   }
 
+  private getHotkey(config: Config): string {
+    return TRIGGER_HOTKEY_MAP[
+      config.adaptiveTranslate.translate.triggerOnHover.hotkey as keyof typeof TRIGGER_HOTKEY_MAP
+    ].key;
+  }
+
   // ── event handlers (arrow functions keep `this` bound) ────────────────────
 
   private onMouseMove = (e: MouseEvent): void => {
-    logger.debug('onMouseMove', { e });
+    // logger.debug('onMouseMove', { e });
     // Distance threshold: ignore tiny movements (trackpad tremor, mouse jitter)
     if (
       Math.abs(e.clientX - this.lastMoveX) + Math.abs(e.clientY - this.lastMoveY) <=
@@ -163,7 +167,7 @@ class NodeTranslation {
   };
 
   private onMouseDown = (e: MouseEvent): void => {
-    logger.debug('onMouseDown', { e });
+    // logger.debug('onMouseDown', { e });
     if (e.button !== 0) return;
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
@@ -187,7 +191,7 @@ class NodeTranslation {
   };
 
   private onMouseUp = (e: MouseEvent): void => {
-    logger.debug('onMouseUp', { e });
+    // logger.debug('onMouseUp', { e });
     if (e.button !== 0) return;
     if (!this.isMousePressed && !this.clickAndHoldTimerId) return;
 
@@ -198,7 +202,6 @@ class NodeTranslation {
   };
 
   private onKeyDown = (e: KeyboardEvent): void => {
-    logger.debug('onKeyDown', { e });
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
     const config = this.getCurrentConfig();
@@ -207,7 +210,7 @@ class NodeTranslation {
       return;
     }
 
-    const hotkey = HOTKEY_EVENT_KEYS[config.adaptiveTranslate.translate.triggerOnHover.hotkey];
+    const hotkey = this.getHotkey(config);
 
     if (e.key === hotkey) {
       if (this.isHotkeyPressed) return; // already tracking this key
@@ -225,10 +228,7 @@ class NodeTranslation {
           this.timerId = null;
           return;
         }
-        if (
-          HOTKEY_EVENT_KEYS[current.adaptiveTranslate.translate.triggerOnHover.hotkey] !==
-          this.activeHotkeyEventKey
-        ) {
+        if (this.getHotkey(current) !== this.activeHotkeyEventKey) {
           this.timerId = null;
           return;
         }
@@ -253,7 +253,6 @@ class NodeTranslation {
   };
 
   private onKeyUp = (e: KeyboardEvent): void => {
-    logger.debug('onKeyUp', { e });
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
     const config = this.getCurrentConfig();
@@ -262,7 +261,7 @@ class NodeTranslation {
       return;
     }
 
-    const hotkey = HOTKEY_EVENT_KEYS[config.adaptiveTranslate.translate.triggerOnHover.hotkey];
+    const hotkey = this.getHotkey(config);
 
     if (e.key === hotkey || e.key === this.activeHotkeyEventKey) {
       if (this.isHotkeyPressed && this.isHotkeySessionPure) {
