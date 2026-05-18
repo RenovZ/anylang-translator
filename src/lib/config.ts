@@ -10,6 +10,7 @@ import {
   pageRangeSchema,
   selectionTriggerSchema,
   translateModeSchema,
+  triggerOnHoverSchema,
   type Config
 } from '@/types/config';
 import { LangCode, langCodeSchema } from '@/types/lang';
@@ -57,7 +58,10 @@ const defaultConfig: Config = configSchema.parse({
       mode: translateModeSchema.parse('bilingual'),
       displayStyle: displayStyleSchema.parse(displayStyles[0]),
       pageRange: pageRangeSchema.parse('main'),
-      triggerOnHover: HOTKEYS[0]
+      triggerOnHover: triggerOnHoverSchema.parse({
+        hotkey: HOTKEYS[0],
+        enabled: true
+      })
     }
   },
 

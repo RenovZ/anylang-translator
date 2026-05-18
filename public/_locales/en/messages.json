@@ -278,6 +278,9 @@
   "feature_intelligent_input": {
     "message": "Intelligent Input"
   },
+  "feature_lang_detection": {
+    "message": "Language Detection"
+  },
   "feature_panorama_reading": {
     "message": "Panorama Reading"
   },

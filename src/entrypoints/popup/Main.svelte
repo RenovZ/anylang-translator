@@ -36,7 +36,7 @@
     FEAT_INTELLIGENT_INPUT,
     FEAT_PANORAMA_READING,
     FEAT_WRITING_COPILOT
-  } from '@/preset/constants';
+  } from '@/preset/feature';
 
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
   import Feature from './Feature.svelte';

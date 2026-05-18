@@ -7,7 +7,7 @@ import logger from '@/lib/logger';
 import { onMessage, sendMessage } from '@/lib/protocol';
 import { styleInjector } from '@/lib/translate/ui';
 
-import { PageTranslateManager } from './control';
+import { nodeTranslation, PageTranslateManager } from './control';
 import { EVENT_EXTENSION_URL_CHANGE, setupUrlChangeListener } from './listen';
 
 export async function bootstrap(ctx: ContentScriptContext) {
@@ -24,7 +24,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
 
   const cleanupUrlListener = setupUrlChangeListener();
 
-  // const teardownNodeTranslation = nodeTranslation.register();
+  const teardownNodeTranslation = nodeTranslation.register();
 
   const manager = new PageTranslateManager();
 
@@ -94,7 +94,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
   ctx.onInvalidated(() => {
     toast.destroy();
     cleanupUrlListener();
-    // teardownNodeTranslation();
+    teardownNodeTranslation();
     cleanupTriggers();
     // cleanupTranslationShortcut();
     cleanupTranslateStateListener();

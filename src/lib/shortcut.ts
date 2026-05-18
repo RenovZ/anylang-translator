@@ -15,7 +15,7 @@ import {
   FEAT_INTELLIGENT_INPUT,
   FEAT_PANORAMA_READING,
   FEAT_WRITING_COPILOT
-} from '@/preset/constants';
+} from '@/preset/feature';
 import { featureConfigSchema, type FeatureConfig } from '@/types/config';
 
 import configStore from './config';

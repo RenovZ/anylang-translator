@@ -11,14 +11,15 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { sendMessage } from '@/lib/protocol';
-  import type { FeatureField } from '@/preset/constants';
+  import type { FeatureField } from '@/preset/feature';
   import { ICON_BY_NAME, ICON_BY_PROVIDER_ID } from '@/preset/provider';
+  import type { CustomProvider, FreeProvider, GoProvider, ZenProvider } from '@/types/provider';
 
   import ProviderIcon from './ProviderIcon.svelte';
 
   interface Prop {
     showFreeProviders?: boolean;
-    field: FeatureField | 'langDetection';
+    field: FeatureField;
     class?: string;
   }
 
@@ -27,22 +28,26 @@
   // ── Derived: filter providers by type once per config change ─────────────
   const freeProvidersList = $derived(
     $config.providers.filter(
-      (item) => item.type === 'free' && item.enabled && item.features[field]?.state
+      (item): item is FreeProvider =>
+        item.type === 'free' && item.enabled && !!item.features[field]?.state
     )
   );
   const goProvidersList = $derived(
     $config.providers.filter(
-      (item) => item.type === 'go' && item.enabled && item.features[field]?.state
+      (item): item is GoProvider =>
+        item.type === 'go' && item.enabled && !!item.features[field]?.state
     )
   );
   const zenProvidersList = $derived(
     $config.providers.filter(
-      (item) => item.type === 'zen' && item.enabled && item.features[field]?.state
+      (item): item is ZenProvider =>
+        item.type === 'zen' && item.enabled && !!item.features[field]?.state
     )
   );
   const customProvidersList = $derived(
     $config.providers.filter(
-      (item) => item.type === 'custom' && item.enabled && item.features[field]?.state
+      (item): item is CustomProvider =>
+        item.type === 'custom' && item.enabled && !!item.features[field]?.state
     )
   );
 </script>

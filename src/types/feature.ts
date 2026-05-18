@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { FeatureKey } from '@/preset/constants';
+import type { FeatureKey } from '@/preset/feature';
 
 import { FeatureUsageContext } from './analytics';
 

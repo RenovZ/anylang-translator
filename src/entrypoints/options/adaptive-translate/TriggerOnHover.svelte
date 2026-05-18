@@ -19,9 +19,9 @@
     <Button
       class="w-full justify-between rounded-xl border-none bg-slate-100 px-3 py-2 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <span>
-        {#if HOTKEYS.includes($config.adaptiveTranslate.translate.triggerOnHover)}
-          <Kbd>{HOTKEY_ICONS[$config.adaptiveTranslate.translate.triggerOnHover]}</Kbd>
-          <Kbd>{HOTKEY_EVENT_KEYS[$config.adaptiveTranslate.translate.triggerOnHover]}</Kbd>
+        {#if HOTKEYS.includes($config.adaptiveTranslate.translate.triggerOnHover.hotkey)}
+          <Kbd>{HOTKEY_ICONS[$config.adaptiveTranslate.translate.triggerOnHover.hotkey]}</Kbd>
+          <Kbd>{HOTKEY_EVENT_KEYS[$config.adaptiveTranslate.translate.triggerOnHover.hotkey]}</Kbd>
         {:else}
           {i18n('unsupported_trigger', { defaultValue: 'Unsupported Trigger' })}
         {/if}
@@ -30,7 +30,8 @@
     </Button>
     <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
       {#each HOTKEYS as key (key)}
-        <DropdownItem onclick={() => ($config.adaptiveTranslate.translate.triggerOnHover = key)}>
+        <DropdownItem
+          onclick={() => ($config.adaptiveTranslate.translate.triggerOnHover.hotkey = key)}>
           <Kbd>{HOTKEY_ICONS[key]}</Kbd>
           <Kbd>{HOTKEY_EVENT_KEYS[key]}</Kbd>
         </DropdownItem>

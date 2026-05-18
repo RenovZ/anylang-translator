@@ -6,13 +6,13 @@
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
   import config from '@/lib/config';
   import shortcut from '@/lib/shortcut';
-  import type { FeatureField } from '@/preset/constants';
+  import type { FEAT_LANG_DETECTION, FeatureField } from '@/preset/feature';
   import { getProviderIcon } from '@/preset/provider';
   import { isCustomProvider, isPaidProvider } from '@/types/provider';
 
   interface Prop {
     title: string | import('svelte').Snippet;
-    field: FeatureField;
+    field: Exclude<FeatureField, typeof FEAT_LANG_DETECTION>;
     showFreeProviders?: boolean;
     showShortcut?: boolean;
     classes?: { main?: string; button?: string };

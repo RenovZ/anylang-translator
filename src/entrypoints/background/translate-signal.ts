@@ -5,7 +5,7 @@ import { onMessage, sendMessage } from '@/lib/protocol';
 import { adaptiveTranslateSession } from '@/lib/session';
 import { shouldEnableAutoTranslation } from '@/lib/translate/sw';
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
-import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/constants';
+import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/feature';
 
 export function registerTranslate() {
   onMessage('getAdaptiveTranslateState', async (msg) => {

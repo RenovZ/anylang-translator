@@ -35,7 +35,7 @@
   import { getTranslatePrompt } from '@/lib/prompt';
   import providerManager from '@/lib/provider';
   import { translate } from '@/lib/translate/sw';
-  import type { FeatureKey } from '@/preset/constants';
+  import type { FeatureKey } from '@/preset/feature';
   import {
     COMPATIBLE_PROVIDERS,
     defaultAIFeatures,

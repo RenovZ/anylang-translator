@@ -3,7 +3,6 @@
   import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
   import { onMount } from 'svelte';
   import { twMerge } from 'tailwind-merge';
-  import { browser, type PublicPath } from 'wxt/browser';
 
   import '@/assets/app.css';
 
@@ -35,13 +34,7 @@
       window.location.hash = id;
     }
   };
-
-  // const hoverCssUrl = browser.runtime.getURL('/contentScript/css/styles.css' as PublicPath);
 </script>
-
-<!-- <svelte:head>
-  <link rel="stylesheet" href={hoverCssUrl} />
-</svelte:head> -->
 
 <!-- Header -->
 <header

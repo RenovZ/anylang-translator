@@ -6,7 +6,7 @@
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
   import i18n from '@/lib/i18n';
-  import { FEAT_INTELLIGENT_INPUT } from '@/preset/constants';
+  import { FEAT_INTELLIGENT_INPUT } from '@/preset/feature';
 
   import { intelligentInputNav as nav } from './data';
   import Section from './Section.svelte';

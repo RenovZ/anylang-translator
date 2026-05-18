@@ -9,7 +9,7 @@
   import SectionRow from '@/components/SectionRow.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import { FEAT_INSTANT_LOOKUP } from '@/preset/constants';
+  import { FEAT_INSTANT_LOOKUP } from '@/preset/feature';
 
   import { instantLookupNav as nav } from './data';
   import Section from './Section.svelte';

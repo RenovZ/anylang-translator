@@ -5,7 +5,7 @@
   import IconWrapper from '@/components/IconWrapper.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { FeatureField } from '@/preset/constants';
+  import type { FEAT_LANG_DETECTION, FeatureField } from '@/preset/feature';
 
   import SectionRow from './SectionRow.svelte';
 
@@ -13,7 +13,7 @@
     title: string;
     description?: string;
     iconClass?: string;
-    field: FeatureField;
+    field: Exclude<FeatureField, typeof FEAT_LANG_DETECTION>;
   }
 
   const { title, description, iconClass, field }: Prop = $props();

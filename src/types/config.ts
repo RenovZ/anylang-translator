@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { FeatureField } from '@/preset/constants';
+import type { FeatureField } from '@/preset/feature';
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
 import { displayStyles, HOTKEYS } from '@/preset/translate';
@@ -18,6 +18,11 @@ export type TranslatePageRange = z.infer<typeof pageRangeSchema>;
 
 export const langDetectionModeSchema = z.enum(['basic', 'llm']);
 export type LangDetectionMode = z.infer<typeof langDetectionModeSchema>;
+
+export const triggerOnHoverSchema = z.object({
+  hotkey: z.enum(HOTKEYS).default('control'),
+  enabled: z.boolean().default(true)
+});
 
 export const langDetectionSchema = z.object({
   mode: langDetectionModeSchema,
@@ -39,7 +44,7 @@ const featureAdaptiveTranslateSchema = featureConfigBaseSchema.extend({
     mode: translateModeSchema.default('bilingual'),
     displayStyle: displayStyleSchema.default(displayStyles[0]),
     pageRange: pageRangeSchema.default('main'),
-    triggerOnHover: z.enum(HOTKEYS)
+    triggerOnHover: triggerOnHoverSchema
     // NOTE: we dont need these options
     // minCharactersPerNode: z.number().default(0),
     // minWordsPerNode: z.number().default(0),

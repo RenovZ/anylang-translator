@@ -4,7 +4,7 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import shortcut from '@/lib/shortcut';
-  import type { FeatureField } from '@/preset/constants';
+  import type { FEAT_LANG_DETECTION, FeatureField } from '@/preset/feature';
 
   import SectionRow from './SectionRow.svelte';
   import type { ToastWrapperProp } from './ToastWrapper.svelte';
@@ -13,7 +13,7 @@
   interface Prop {
     title: string;
     description?: string;
-    field: FeatureField;
+    field: Exclude<FeatureField, typeof FEAT_LANG_DETECTION>;
   }
 
   const { title, description, field }: Prop = $props();

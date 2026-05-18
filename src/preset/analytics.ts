@@ -5,7 +5,7 @@ import {
   FEAT_INTELLIGENT_INPUT,
   FEAT_PANORAMA_READING,
   FEAT_WRITING_COPILOT
-} from './constants';
+} from './feature';
 
 export const ANALYTICS_FEATURE = {
   [FEAT_ADAPTIVE_TRANSLATE]: 'adaptive_translate',

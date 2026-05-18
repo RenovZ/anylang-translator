@@ -5,7 +5,7 @@
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import i18n from '@/lib/i18n';
-  import { FEAT_WRITING_COPILOT } from '@/preset/constants';
+  import { FEAT_WRITING_COPILOT } from '@/preset/feature';
 
   import { writingCopilotNav as nav } from './data';
   import Section from './Section.svelte';

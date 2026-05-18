@@ -11,12 +11,16 @@ import type { OpenAIResponsesProviderOptions } from '@ai-sdk/openai';
 import type { XaiProviderOptions } from '@ai-sdk/xai';
 
 import i18n from '@/lib/i18n';
-import type { FeatureKey } from '@/preset/constants';
+import type { FeatureKey } from '@/preset/feature';
 import type { FeatureItem, FeatureValue } from '@/types/feature';
 import type { FreeProvider, GoProvider, ZenProvider } from '@/types/provider';
 
 // Ordered feature definitions for consistent UI rendering (array order = display order)
 export const featureItems: FeatureItem[] = [
+  {
+    key: 'langDetection',
+    label: i18n('feature_lang_detection', { defaultValue: 'Language Detection' })
+  },
   {
     key: 'adaptiveTranslate',
     label: i18n('feature_adaptive_translate', { defaultValue: 'Adaptive Translate' })
@@ -47,6 +51,7 @@ export const featureItems: FeatureItem[] = [
 export const featureKeys: FeatureKey[] = featureItems.map((f) => f.key);
 
 export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
+  langDetection: { state: false },
   adaptiveTranslate: { state: false },
   bilingualSubtitles: { state: false },
   instantLookup: { state: false },
@@ -56,6 +61,7 @@ export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
 };
 
 export const defaultOpenedFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
+  langDetection: { disabled: true, state: true },
   adaptiveTranslate: { disabled: true, state: true },
   bilingualSubtitles: { disabled: true, state: true },
   instantLookup: { disabled: true, state: true },

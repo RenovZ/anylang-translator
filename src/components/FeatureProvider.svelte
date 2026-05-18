@@ -4,7 +4,7 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { FeatureField } from '@/preset/constants';
+  import type { FeatureField } from '@/preset/feature';
   import { getProviderIcon } from '@/preset/provider';
   import { isCustomProvider, isPaidProvider } from '@/types/provider';
 

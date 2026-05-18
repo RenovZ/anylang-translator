@@ -2,17 +2,17 @@ import i18n from '@/lib/i18n';
 import type { Output, Prompt } from '@/types/prompt';
 
 import {
-  FEAT_KEY_ADAPTIVE_TRANSLATE,
-  FEAT_KEY_BILINGUAL_SUBTITLES,
-  FEAT_KEY_INSTANT_LOOKUP,
-  FEAT_KEY_INTELLIGENT_INPUT,
-  FEAT_KEY_PANORAMA_READING,
-  FEAT_KEY_WRITING_COPILOT
-} from './constants';
+  FEAT_ADAPTIVE_TRANSLATE,
+  FEAT_BILINGUAL_SUBTITLES,
+  FEAT_INSTANT_LOOKUP,
+  FEAT_INTELLIGENT_INPUT,
+  FEAT_PANORAMA_READING,
+  FEAT_WRITING_COPILOT
+} from './feature';
 import { LANG_CODE_MAP } from './lang';
 
 const QUICK_TRANSLATE = {
-  feature: FEAT_KEY_ADAPTIVE_TRANSLATE,
+  feature: FEAT_ADAPTIVE_TRANSLATE,
   name: 'Quick Translate',
   system: `
 You are a fast and efficient translator.
@@ -58,7 +58,7 @@ Target language: {{targetLanguage}}
 } as const;
 
 const CONTEXT_TRANSLATE = {
-  feature: FEAT_KEY_ADAPTIVE_TRANSLATE,
+  feature: FEAT_ADAPTIVE_TRANSLATE,
   name: 'Context Translate',
   system: `
 You are a professional translator for language learners.
@@ -101,7 +101,7 @@ Target language: {{targetLanguage}}
 } as const;
 
 const BILINGUAL_SUBTITLES = {
-  feature: FEAT_KEY_BILINGUAL_SUBTITLES,
+  feature: FEAT_BILINGUAL_SUBTITLES,
   name: 'Bilingual Subtitles',
   system: `
 You are a bilingual subtitle assistant.
@@ -144,7 +144,7 @@ Target language: {{targetLanguage}}
 } as const;
 
 const INSTANT_LOOKUP = {
-  feature: FEAT_KEY_INSTANT_LOOKUP,
+  feature: FEAT_INSTANT_LOOKUP,
   name: 'Instant Lookup',
   system: `
 You are a dictionary assistant for language learners.
@@ -244,7 +244,7 @@ Target language: {{targetLanguage}}
 } as const;
 
 const INTELLIGENT_INPUT = {
-  feature: FEAT_KEY_INTELLIGENT_INPUT,
+  feature: FEAT_INTELLIGENT_INPUT,
   name: 'Intelligent Input',
   system: `
 You are an intelligent writing assistant.
@@ -287,7 +287,7 @@ Target language: {{targetLanguage}}
 } as const;
 
 const WRITING_COPILOT = {
-  feature: FEAT_KEY_WRITING_COPILOT,
+  feature: FEAT_WRITING_COPILOT,
   name: 'Writing Copilot',
   system: `
 You are a writing assistant for language learners.
@@ -347,7 +347,7 @@ Target language: {{targetLanguage}}
 } as const;
 
 const PANORAMA_READING = {
-  feature: FEAT_KEY_PANORAMA_READING,
+  feature: FEAT_PANORAMA_READING,
   name: 'Panorama Reading',
   system: `
 You are a comprehensive reading assistant for language learners.
