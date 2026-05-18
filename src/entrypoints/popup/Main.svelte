@@ -42,7 +42,7 @@
   import { moreItems, quickActions, selectionTranslateToggle } from './data';
   import Feature from './Feature.svelte';
 
-  let currentSite = $state('');
+  let currentHostname = $state('');
   let isTranslating = $state(false);
   let currentTabId = $state<number | null>(null);
 
@@ -56,7 +56,7 @@
   onMount(async () => {
     await shortcut.main();
     const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-    currentSite = tab?.url ? new URL(tab.url).origin : window.location.origin;
+    currentHostname = tab?.url ? new URL(tab.url).hostname : window.location.hostname;
     const currentTabId = tab?.id;
     if (currentTabId) {
       isTranslating = await sendMessage('getAdaptiveTranslateState', { tabId: currentTabId });
@@ -196,25 +196,28 @@
     <div class="flex items-center justify-between gap-2">
       <span
         class="line-clamp-1 font-medium aria-disabled:text-gray-400"
-        aria-disabled={currentSite
-          ? !$config.adaptiveTranslate.autoAppliedSites?.includes(currentSite)
+        aria-disabled={currentHostname
+          ? !$config.adaptiveTranslate.autoAppliedSites?.includes(currentHostname)
           : true}>
         {i18n('always_auto_translate_this_site', {
           defaultValue: 'Always auto-translate this site'
         })}
       </span>
       <Toggle
-        checked={currentSite
-          ? $config.adaptiveTranslate.autoAppliedSites?.includes(currentSite)
+        checked={currentHostname
+          ? $config.adaptiveTranslate.autoAppliedSites?.includes(currentHostname)
           : false}
         onchange={() => {
           const { autoAppliedSites } = $config.adaptiveTranslate;
-          if (autoAppliedSites?.includes(currentSite)) {
+          if (autoAppliedSites?.includes(currentHostname)) {
             $config.adaptiveTranslate.autoAppliedSites = autoAppliedSites.filter(
-              (s) => s !== currentSite
+              (s) => s !== currentHostname
             );
           } else {
-            $config.adaptiveTranslate.autoAppliedSites = [...(autoAppliedSites ?? []), currentSite];
+            $config.adaptiveTranslate.autoAppliedSites = [
+              ...(autoAppliedSites ?? []),
+              currentHostname
+            ];
           }
         }}
         size="small"
