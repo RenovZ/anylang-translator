@@ -84,13 +84,3 @@ interface Protocol {
 }
 
 export const { sendMessage, onMessage } = defineExtensionMessaging<Protocol>();
-
-// export const sendToBackground = sendMessage;
-
-// export async function sendToTab<T extends keyof Protocol>(
-//   type: T,
-//   data: GetDataType<Protocol[T]>,
-//   tabId: number
-// ): Promise<GetReturnType<Protocol[T]>> {
-//   return await sendMessage(type, { ...data, tabId }, tabId);
-// }
