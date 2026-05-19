@@ -276,5 +276,9 @@ export function removeShadowHost(shadowHost: HTMLElement): void {
 }
 
 export function initShadowRoot(root: HTMLElement) {
-  root.className = `text-base font-sans text-gray-950 dark:text-gray-50 z-2147483647 ${NOTRANSLATE_CLASS}`;
+  root.className = `text-green-500! text-base font-sans text-gray-950 dark:text-gray-50 z-2147483647 ${NOTRANSLATE_CLASS}`;
+  // const wrapper = document.createElement('div');
+  // wrapper.className = `text-green-500 text-base font-sans text-gray-950 dark:text-gray-50 z-2147483647 ${NOTRANSLATE_CLASS}`;
+  // root.append(wrapper);
+  // return wrapper;
 }
