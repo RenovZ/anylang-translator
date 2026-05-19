@@ -40,7 +40,6 @@ async function main(ctx: ContentScriptContext) {
     position: 'overlay',
     anchor: 'body',
     onMount(target: HTMLElement, _shadow: ShadowRoot, shadowHost: HTMLElement) {
-      console.log(target);
       initShadowRoot(target);
       protectSelectAllShadowRoot(shadowHost, target);
 

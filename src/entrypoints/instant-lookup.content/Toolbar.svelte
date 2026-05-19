@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte';
   import { SvelteSet } from 'svelte/reactivity';
   import { twMerge } from 'tailwind-merge';
 
@@ -42,6 +43,7 @@
 
   let tooltipContainerRef: HTMLElement | null = $state(null);
   let toolbarRef: HTMLDivElement | null = $state(null);
+  let translateBtnRef: HTMLButtonElement | null = $state(null);
 
   let selectionPosition: { x: number; y: number } | null = $state(null);
   let selectionStart: { x: number; y: number } | null = $state(null);
@@ -196,7 +198,7 @@
   }
 
   function updatePosition() {
-    if (!$isSelectionToolbarVisible || !toolbarRef || !selectionPosition) return;
+    if (!toolbarRef || !selectionPosition) return;
 
     const scrollY = window.scrollY;
     const viewportHeight = window.innerHeight;
@@ -233,14 +235,14 @@
   $effect(() => {
     let animationFrameId: number;
 
-    const handleMouseUp = (e: MouseEvent) => {
+    const handleMouseUp = async (e: MouseEvent) => {
       if (isPointerDownInsideOverlay) {
         isPointerDownInsideOverlay = false;
         preserveSelectionState = true;
         return;
       }
 
-      requestAnimationFrame(() => {
+      requestAnimationFrame(async () => {
         const isInputOrTextarea =
           document.activeElement instanceof HTMLInputElement ||
           document.activeElement instanceof HTMLTextAreaElement;
@@ -294,6 +296,12 @@
             isSelectionToolbarVisible.set(true);
             requestAnimationFrame(updatePosition);
           } else if (triggerMode === 'directly') {
+            // Wait for the toolbar DOM to be created and bound to toolbarRef,
+            // then position it before opening the popover so that
+            // flowbite-svelte's computePosition sees the trigger at the
+            // correct coordinates.
+            await tick();
+            updatePosition();
             isPopoverOpen.set(true);
           }
         }
@@ -369,63 +377,54 @@
 
 <div bind:this={tooltipContainerRef} class={NOTRANSLATE_CLASS}>
   {#if isEnabled && selectionPosition}
-    {console.log(selectionPosition)}
     <!--
-      Toolbar container.
-      NOTE: In read-frog this used document-coordinates directly on an
-      absolute element. We follow the same pattern here.
+      TODO: features.translate.enabled should be configurable instead of
+      hard-coded true. For now we always show the translate button since
+      the target project's instantLookup config does not yet have a
+      features.translate.enabled field.
     -->
     <div
+      inert={!$isSelectionToolbarVisible}
       bind:this={toolbarRef}
       class={twMerge(
+        'flex max-w-105 items-center overflow-x-auto overflow-y-hidden rounded-lg border-none bg-gray-50 shadow-lg dark:bg-gray-600',
         'absolute z-2147483647 overflow-visible transition-opacity',
         $isSelectionToolbarVisible
           ? 'pointer-events-auto opacity-100'
           : 'pointer-events-none opacity-0'
       )}>
-      <div
-        class="flex items-center rounded-sm border border-gray-200/50 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-        <!--
-          TODO: features.translate.enabled should be configurable instead of
-          hard-coded true. For now we always show the translate button since
-          the target project's instantLookup config does not yet have a
-          features.translate.enabled field.
-        -->
-        <div class="flex max-w-105 items-center overflow-x-auto overflow-y-hidden rounded-sm">
-          <!--
-            This button wrapper is the previousElementSibling of the Popover's
-            internal hidden div, making it the Popper trigger element.
-          -->
-          <div
-            class={twMerge(
-              'transition-opacity',
-              triggerMode === 'show icons' && $isSelectionToolbarVisible
-                ? 'opacity-100'
-                : 'pointer-events-none opacity-0'
-            )}>
-            <button
-              type="button"
-              class="flex h-7 cursor-pointer items-center justify-center px-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-              aria-label="Translate">
-              <LocalIcon icon="ri:translate-ai" class="h-4.5 w-4.5" />
-            </button>
-          </div>
+      <!--
+        This button wrapper is the previousElementSibling of the Popover's
+        internal hidden div, making it the Popper trigger element.
+      -->
+      <button
+        bind:this={translateBtnRef}
+        type="button"
+        class={twMerge(
+          'bg-primary-700 hover:bg-primary-800 dark:bg-primary-600 dark:hover:bg-primary-700 focus-within:ring-primary-300 dark:focus-within:ring-primary-800 inline-flex items-center justify-center rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white focus-within:ring-4 focus-within:outline-hidden',
+          'flex h-7 cursor-pointer items-center justify-center px-2',
+          'transition-opacity',
+          triggerMode === 'show icons' && $isSelectionToolbarVisible
+            ? 'opacity-100'
+            : 'pointer-events-none opacity-0'
+        )}
+        aria-label="Instant Lookup">
+        <LocalIcon icon="lucide:book-open-text" class="h-4.5 w-4.5" />
+      </button>
 
-          <SelectionPopover
-            bind:isOpen={$isPopoverOpen}
-            onbeforetoggle={(ev) => {
-              console.log(ev);
-              if (ev.newState === 'open') {
-                isSelectionToolbarVisible.set(false);
-              }
-            }}>
-            <!-- TODO: Implement popover content (translation result, provider selection, etc.) -->
-            <div class="min-w-50 p-4">
-              <p class="text-sm text-gray-500">Translation content will be rendered here.</p>
-            </div>
-          </SelectionPopover>
+      <SelectionPopover
+        bind:isOpen={$isPopoverOpen}
+        offset={-(translateBtnRef?.offsetHeight ?? MARGIN)}
+        onbeforetoggle={(ev) => {
+          if (ev.newState === 'open') {
+            isSelectionToolbarVisible.set(false);
+          }
+        }}>
+        <!-- TODO: Implement popover content (translation result, provider selection, etc.) -->
+        <div class="min-w-50 p-4">
+          <p class="text-sm text-gray-500">Translation content will be rendered here.</p>
         </div>
-      </div>
+      </SelectionPopover>
     </div>
   {/if}
 </div>
