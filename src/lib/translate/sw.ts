@@ -13,13 +13,13 @@ import { bingTranslate } from './api/bing';
 import { googleTranslate } from './api/google';
 import { translateUtils } from './utils';
 
-export async function shouldEnableAutoTranslation(
+export function shouldEnableAutoTranslation(
   url: string,
   detectedCodeOrUnd: LangCode | 'und',
   sourceLangCode: LangCode | 'auto' | 'default',
   autoAppliedSites: string[] = [],
   autoAppliedLangs: LangCode[] = []
-): Promise<boolean> {
+): boolean {
   const doesMatchSites =
     autoAppliedSites.some((pattern) => urlUtils.matchDomainPattern(url, pattern)) ?? false;
 

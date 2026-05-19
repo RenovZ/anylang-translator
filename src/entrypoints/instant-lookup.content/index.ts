@@ -1,9 +1,14 @@
 import '@/zod-config';
 
+import { mount, unmount } from 'svelte';
 import { ContentScriptContext } from 'wxt/utils/content-script-context';
 import { defineContentScript } from 'wxt/utils/define-content-script';
 
+import { initShadowRoot } from '@/lib/dom/shadow';
 import logger from '@/lib/logger';
+import { protectSelectAllShadowRoot } from '@/lib/utils/select-all';
+
+import Main from './Main.svelte';
 
 declare global {
   interface Window {
@@ -25,27 +30,27 @@ export default defineContentScript({
       window.__ANYLANG_INSTANT_LOOKUP_INJECTED__ = false;
     });
 
-    const ui = await createUi(ctx);
-    ui.mount();
-
-    // Optionally, return a value to the background
-    return 'Hello world!';
+    await main(ctx);
   }
 });
 
-function createUi(ctx: ContentScriptContext) {
-  return createShadowRootUi(ctx, {
+async function main(ctx: ContentScriptContext) {
+  const ui = await createShadowRootUi(ctx, {
     name: 'anylang-instant-lookup',
     position: 'overlay',
     anchor: 'body',
-    onMount(container) {
-      const app = document.createElement('p');
-      app.textContent = 'Hello active tab!';
-      container.append(app);
+    onMount(target: HTMLElement, _shadow: ShadowRoot, shadowHost: HTMLElement) {
+      console.log(target);
+      initShadowRoot(target);
+      protectSelectAllShadowRoot(shadowHost, target);
+
+      const root = mount(Main, { target });
+      return root;
+    },
+    onRemove: (root) => {
+      if (root) unmount(root);
     }
-    // onRemove: (root) => {
-    //   root?.unmount();
-    //   shadowWrapper = null;
-    // }
   });
+
+  ui.mount();
 }

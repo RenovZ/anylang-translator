@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ThemeMode } from '@/preset/shadow-host';
+  import type { ThemeMode } from '@/preset/dom/shadow';
 
   import ThemeProvider from './ThemeProvider.svelte';
 

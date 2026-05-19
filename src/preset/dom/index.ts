@@ -38,3 +38,5 @@ export const PRESET_STYLES_INJECTOR_ID = 'anylang-preset-styles';
 export const CUSTOM_STYLES_INJECTOR_ID = 'anylang-custom-styles';
 
 export const CUSTOM_PRESET_STYLES_INJECTOR_ID = 'anylang-custom-preset-styles';
+
+export const INSTANT_LOOKUP_OVERLAY_ATTRIBUTE = 'data-anylang-instant-lookup-overlay';

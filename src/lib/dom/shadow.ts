@@ -1,10 +1,10 @@
 import { mount, unmount, type Component, type ComponentProps } from 'svelte';
 
 import ShadowWrapper from '@/components/ShadowWrapper.svelte';
-import { SHADOW_HOST_CLASS } from '@/preset/dom';
-import type { ThemeMode } from '@/preset/shadow-host';
+import { NOTRANSLATE_CLASS, SHADOW_HOST_CLASS } from '@/preset/dom';
+import type { ThemeMode } from '@/preset/dom/shadow';
 
-import { sha256 } from './hash';
+import { sha256 } from '../hash';
 
 class CSSRegistry {
   private readonly SHADOW_CSS_KEY_ATTR = 'data-anylang-shadow-css-key';
@@ -273,4 +273,8 @@ export function removeShadowHost(shadowHost: HTMLElement): void {
   // Mark as cleaned so double-calls are safe
   delete host[CLEANUP_KEY];
   host.remove();
+}
+
+export function initShadowRoot(root: HTMLElement) {
+  root.className = `text-base font-sans text-gray-950 dark:text-gray-50 z-2147483647 ${NOTRANSLATE_CLASS}`;
 }

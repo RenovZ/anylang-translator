@@ -29,7 +29,7 @@ export function registerTranslate() {
         sourceLangCode,
         adaptiveTranslate: { autoAppliedSites, autoAppliedLangs }
       } = config;
-      const shouldEnable = await shouldEnableAutoTranslation(
+      const shouldEnable = shouldEnableAutoTranslation(
         url,
         detectedCodeOrUnd,
         sourceLangCode ?? 'auto',

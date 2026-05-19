@@ -6,7 +6,7 @@
     resolveTheme,
     SHADOW_WRAPPER_CONTEXT_KEY,
     type ThemeMode
-  } from '@/preset/shadow-host';
+  } from '@/preset/dom/shadow';
 
   interface Props {
     container: HTMLElement;

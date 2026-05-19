@@ -1,8 +1,8 @@
 import { mount, unmount } from 'svelte';
 
 import appCss from '@/assets/app.css?inline';
+import { ShadowHostBuilder } from '@/lib/dom/shadow';
 import logger from '@/lib/logger';
-import { ShadowHostBuilder } from '@/lib/shadow-host';
 import { SHADOW_HOST_CLASS } from '@/preset/dom';
 
 import type { ToastWrapperProp } from './ToastWrapper.svelte';

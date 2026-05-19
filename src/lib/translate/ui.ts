@@ -13,10 +13,10 @@ import cryptoPolyfill from '@/lib/crypto-polyfill';
 import { getContainingShadowRoot, getOwnerDocument } from '@/lib/dom';
 import domFilter from '@/lib/dom/filter';
 import domFinder from '@/lib/dom/finder';
+import { createShadowHost } from '@/lib/dom/shadow';
 import domTraversal from '@/lib/dom/traversal';
 import i18n from '@/lib/i18n';
 import logger from '@/lib/logger';
-import { createShadowHost } from '@/lib/shadow-host';
 import {
   CUSTOM_PRESET_STYLES_INJECTOR_ID,
   CUSTOM_STYLES_INJECTOR_ID,
