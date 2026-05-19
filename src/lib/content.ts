@@ -34,12 +34,13 @@ class ContentManager {
    * @param featureConfig - Optional feature config to check for auto-applied sites/languages
    */
   async getDocumentInfo(featureConfig: {
-    autoAppliedSites?: string[];
-    autoAppliedLangs?: LangCode[];
+    autoTranslatedSites?: string[];
+    autoTranslatedLangs?: LangCode[];
     pageRange: TranslatePageRange;
     langDetectionMode: LangDetectionMode;
   }): Promise<DocumentInfo> {
-    const { autoAppliedSites, autoAppliedLangs, pageRange, langDetectionMode } = featureConfig;
+    const { autoTranslatedSites, autoTranslatedLangs, pageRange, langDetectionMode } =
+      featureConfig;
     const documentClone = document.cloneNode(true);
     // TODO: Is this good enough?
     removeDummyNodes(documentClone as Document, pageRange);
@@ -60,7 +61,7 @@ class ContentManager {
     // Only use LLM when user has configured auto-translate or skip languages,
     // otherwise detecting page language with LLM is wasteful since nothing depends on the result.
     const hasAutoAppliedSiteOrLang =
-      (autoAppliedSites?.length ?? 0) > 0 || (autoAppliedLangs?.length ?? 0) > 0;
+      (autoTranslatedSites?.length ?? 0) > 0 || (autoTranslatedLangs?.length ?? 0) > 0;
     const enableLLM = langDetectionMode === 'llm' && hasAutoAppliedSiteOrLang;
     const { langCode: detectedCodeOrUnd, detectMethod: detectSource } =
       await this.detectLangWithMethod(textForDetection, {

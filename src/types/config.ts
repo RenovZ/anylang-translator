@@ -1,12 +1,11 @@
 import { z } from 'zod';
 
-import type { FeatureField } from '@/preset/feature';
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
 import { displayStyles, TRIGGER_HOTKEYS } from '@/preset/translate';
 import { aiProviderSchema, providerSchema, type ProviderConfig } from '@/types/provider';
 
-import { LangCode, langCodeSchema, uiLangCodeSchema } from './lang';
+import { langCodeSchema, uiLangCodeSchema } from './lang';
 import { promptSchema, type Prompt } from './prompt';
 import { displayStyleSchema } from './translate';
 
@@ -31,14 +30,14 @@ export const langDetectionSchema = z.object({
 });
 export type LangDetection = z.infer<typeof langDetectionSchema>;
 
-const featureConfigBaseSchema = z.object({
+const featureBaseSchema = z.object({
   icon: z.string(),
   provider: providerSchema.nullable(),
-  shortcut: z.array(z.string()),
-  autoAppliedSites: z.array(z.string()).optional(),
-  autoAppliedLangs: z.array(langCodeSchema).optional()
+  shortcut: z.array(z.string())
 });
-const featureAdaptiveTranslateSchema = featureConfigBaseSchema.extend({
+const adaptiveTranslateSchema = featureBaseSchema.extend({
+  autoTranslatedSites: z.array(z.string()).default([]),
+  autoTranslatedLangs: z.array(langCodeSchema).default([]),
   provider: providerSchema,
   translate: z.object({
     mode: translateModeSchema.default('bilingual'),
@@ -51,16 +50,38 @@ const featureAdaptiveTranslateSchema = featureConfigBaseSchema.extend({
     // skipLanguages: z.array(z.enum(DEFAULT_LANG_CODES)).default([])
   })
 });
-const featureInstantLookupSchema = featureConfigBaseSchema.extend({
+const instantLookupSchema = featureBaseSchema.extend({
+  disabledSites: z.array(z.string()).default([]),
+  disabledLangs: z.array(langCodeSchema).default([]),
   provider: providerSchema,
   selection: z.object({
     triggerTranslate: selectionTriggerSchema.default('directly')
   })
 });
+const intelligentInputSchema = featureBaseSchema.extend({
+  disabledSites: z.array(z.string()).default([]),
+  disabledLangs: z.array(langCodeSchema).default([])
+});
+const bilingualSubtitlesSchema = featureBaseSchema.extend({
+  autoEnabledSites: z.array(z.string()).default([]),
+  autoEnabledLangs: z.array(langCodeSchema).default([])
+});
+const panoramaReadingSchema = featureBaseSchema.extend({
+  disabledSites: z.array(z.string()).default([]),
+  disabledLangs: z.array(langCodeSchema).default([])
+});
+const writingCopilotSchema = featureBaseSchema.extend({
+  disabledSites: z.array(z.string()).default([]),
+  disabledLangs: z.array(langCodeSchema).default([])
+});
 export const featureConfigSchema = z.union([
-  featureConfigBaseSchema,
-  featureAdaptiveTranslateSchema,
-  featureInstantLookupSchema
+  featureBaseSchema,
+  adaptiveTranslateSchema,
+  instantLookupSchema,
+  intelligentInputSchema,
+  bilingualSubtitlesSchema,
+  panoramaReadingSchema,
+  writingCopilotSchema
 ]);
 export type FeatureConfig = z.infer<typeof featureConfigSchema>;
 
@@ -92,12 +113,12 @@ export const configSchema = z.object({
     })
     .default([...freeProviders, ...goProviders, ...zenProviders]),
 
-  adaptiveTranslate: featureAdaptiveTranslateSchema,
-  instantLookup: featureInstantLookupSchema,
-  intelligentInput: featureConfigBaseSchema,
-  bilingualSubtitles: featureConfigBaseSchema,
-  panoramaReading: featureConfigBaseSchema,
-  writingCopilot: featureConfigBaseSchema,
+  adaptiveTranslate: adaptiveTranslateSchema,
+  instantLookup: instantLookupSchema,
+  intelligentInput: intelligentInputSchema,
+  bilingualSubtitles: bilingualSubtitlesSchema,
+  panoramaReading: panoramaReadingSchema,
+  writingCopilot: writingCopilotSchema,
 
   customAIPrompts: z
     .array(promptSchema)
@@ -119,10 +140,20 @@ export const configSchema = z.object({
 
 export type Config = z.infer<typeof configSchema>;
 
-export type AutoAppliedLangsField = {
-  [K in FeatureField]: Config[K] extends { autoAppliedLangs?: LangCode[] } ? K : never;
-}[FeatureField];
+// export type XLangsField = {
+//   [K in FeatureField]: Config[K] extends
+//     | { autoAppliedLangs?: LangCode[] }
+//     | { autoEnabledLangs?: LangCode[] }
+//     | { disabledLangs?: LangCode[] }
+//     ? K
+//     : never;
+// }[FeatureField];
 
-export type AutoAppliedSitesField = {
-  [K in FeatureField]: Config[K] extends { autoAppliedSites?: string[] } ? K : never;
-}[FeatureField];
+// export type XSitesField = {
+//   [K in FeatureField]: Config[K] extends
+//     | { autoAppliedSites?: string[] }
+//     | { autoEnabledSites?: string[] }
+//     | { disabledSites?: string[] }
+//     ? K
+//     : never;
+// }[FeatureField];

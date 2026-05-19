@@ -1,12 +1,10 @@
 <script lang="ts">
-  import { Toggle } from 'flowbite-svelte';
-
-  import FeatureAutoAppliedLangs from '@/components/FeatureAutoAppliedLangs.svelte';
-  import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
-  import SectionRow from '@/components/SectionRow.svelte';
+  import XLangs from '@/components/XLangs.svelte';
+  import XSites from '@/components/XSites.svelte';
+  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { FEAT_BILINGUAL_SUBTITLES } from '@/preset/feature';
 
@@ -38,24 +36,24 @@
     showFreeProviders={true} />
 
   <!-- always apply bilingual subtitles sites -->
-  <FeatureAutoAppliedSites
-    {field}
-    title={i18n('always_apply_bilingual_subtitles_sites', {
-      defaultValue: 'Automatically apply on sites'
+  <XSites
+    bind:sites={$config[field].autoEnabledSites}
+    title={i18n('bilingual_subtitles_auto_enabled_sites', {
+      defaultValue: 'Auto-enabled sites'
     })}
-    description={i18n('always_apply_bilingual_subtitles_sites_description', {
+    description={i18n('bilingual_subtitles_auto_enabled_sites_description', {
       defaultValue:
-        'When visiting these sites, bilingual subtitles will be automatically applied. Site rules take priority over language rules.'
+        'When visiting these sites, bilingual subtitles will be automatically enabled. Site rules take priority over language rules.'
     })} />
 
   <!-- always apply bilingual subtitles language -->
-  <FeatureAutoAppliedLangs
-    {field}
-    title={i18n('always_apply_bilingual_subtitles_langs', {
-      defaultValue: 'Automatically apply for languages'
+  <XLangs
+    bind:langs={$config[field].autoEnabledLangs}
+    title={i18n('bilingual_subtitles_auto_enabled_langs', {
+      defaultValue: 'Auto-enabled languages'
     })}
-    description={i18n('always_apply_bilingual_subtitles_langs_description', {
+    description={i18n('bilingual_subtitles_auto_enabled_langs_description', {
       defaultValue:
-        'When the page language matches one of these, bilingual subtitles will be automatically applied. Site rules take priority on conflicts.'
+        'When the page language matches one of these, bilingual subtitles will be automatically enabled. Site rules take priority on conflicts.'
     })} />
 </Section>

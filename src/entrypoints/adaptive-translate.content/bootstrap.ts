@@ -14,8 +14,8 @@ export async function bootstrap(ctx: ContentScriptContext) {
   const {
     langDetection: { mode: langDetectionMode },
     adaptiveTranslate: {
-      autoAppliedSites,
-      autoAppliedLangs,
+      autoTranslatedSites,
+      autoTranslatedLangs,
       translate: { pageRange }
     }
   } = configStore.get();
@@ -55,8 +55,8 @@ export async function bootstrap(ctx: ContentScriptContext) {
       // Only the top frame should detect and set language to avoid race conditions from iframes
       if (window === window.top) {
         const { detectedCodeOrUnd } = await contentManager.getDocumentInfo({
-          autoAppliedSites,
-          autoAppliedLangs,
+          autoTranslatedSites,
+          autoTranslatedLangs,
           pageRange,
           langDetectionMode
         });
@@ -105,8 +105,8 @@ export async function bootstrap(ctx: ContentScriptContext) {
   // Only the top frame should detect and set language to avoid race conditions from iframes
   if (window === window.top) {
     const { detectedCodeOrUnd } = await contentManager.getDocumentInfo({
-      autoAppliedSites,
-      autoAppliedLangs,
+      autoTranslatedSites,
+      autoTranslatedLangs,
       pageRange,
       langDetectionMode
     });

@@ -1,19 +1,17 @@
 <script lang="ts">
   import { Button, Checkbox, Input, Label } from 'flowbite-svelte';
 
-  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import type { AutoAppliedSitesField } from '@/types/config';
 
   import SectionRow from './SectionRow.svelte';
 
   interface Props {
     title: string;
     description: string;
-    field: AutoAppliedSitesField;
+    sites: string[];
   }
 
-  const { title, description, field }: Props = $props();
+  let { title, description, sites = $bindable([]) }: Props = $props();
 
   let newSite = $state('');
   let editingSite = $state<string | null>(null);
@@ -33,12 +31,12 @@
       class="rounded-xl border-none shadow"
       disabled={!newSite}
       onclick={async () => {
-        if (!$config[field].autoAppliedSites) {
-          $config[field].autoAppliedSites = [];
+        if (!sites) {
+          sites = [];
         }
 
-        if (!$config[field].autoAppliedSites.includes(newSite)) {
-          $config[field].autoAppliedSites = [...$config[field].autoAppliedSites, newSite];
+        if (!sites.includes(newSite)) {
+          sites = [...sites, newSite];
         }
 
         newSite = '';
@@ -55,8 +53,8 @@
           selectedSites = [];
         } else {
           batchMode = true;
-          if ($config[field].autoAppliedSites) {
-            selectedSites = [...$config[field].autoAppliedSites];
+          if (sites) {
+            selectedSites = [...sites];
           }
         }
       }}>
@@ -69,9 +67,7 @@
         color="red"
         size="sm"
         onclick={() => {
-          $config[field].autoAppliedSites = $config[field].autoAppliedSites?.filter(
-            (s) => !selectedSites.includes(s)
-          );
+          sites = sites?.filter((s) => !selectedSites.includes(s));
           selectedSites = [];
           batchMode = false;
         }}>
@@ -81,8 +77,8 @@
   </div>
   <div
     class="max-h-80 space-y-1 overflow-y-auto rounded-xl bg-gray-50 p-4 shadow-inner dark:bg-gray-700">
-    {#if $config[field].autoAppliedSites}
-      {#each $config[field].autoAppliedSites as site (site)}
+    {#if sites}
+      {#each sites as site (site)}
         <div class="flex items-center justify-between pb-3 last:pb-0">
           {#if editingSite === site}
             <Input
@@ -91,12 +87,12 @@
               class="mr-2 flex-1"
               onkeydown={(e) => {
                 if (e.key === 'Enter') {
-                  if ($config[field].autoAppliedSites) {
-                    const idx = $config[field].autoAppliedSites.indexOf(site);
+                  if (sites) {
+                    const idx = sites.indexOf(site);
                     if (idx !== -1 && editingValue.trim()) {
-                      const newList = [...$config[field].autoAppliedSites];
+                      const newList = [...sites];
                       newList[idx] = editingValue.trim();
-                      $config[field].autoAppliedSites = newList;
+                      sites = newList;
                     }
                   }
                   editingSite = null;
@@ -108,12 +104,12 @@
               <button
                 type="button"
                 onclick={() => {
-                  if ($config[field].autoAppliedSites) {
-                    const idx = $config[field].autoAppliedSites.indexOf(site);
+                  if (sites) {
+                    const idx = sites.indexOf(site);
                     if (idx !== -1 && editingValue.trim()) {
-                      const newList = [...$config[field].autoAppliedSites];
+                      const newList = [...sites];
                       newList[idx] = editingValue.trim();
-                      $config[field].autoAppliedSites = newList;
+                      sites = newList;
                     }
                   }
                   editingSite = null;
@@ -155,9 +151,7 @@
               <button
                 type="button"
                 onclick={() => {
-                  $config[field].autoAppliedSites = $config[field].autoAppliedSites?.filter(
-                    (s) => s !== site
-                  );
+                  sites = sites?.filter((s) => s !== site);
                 }}>
                 {i18n('delete', { defaultValue: 'Delete' })}
               </button>

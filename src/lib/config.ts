@@ -45,7 +45,7 @@ const defaultConfig: Config = configSchema.parse({
     icon: 'ri:translate-ai',
     provider: structuredClone(freeProviders[0]),
     shortcut: ['Alt', 'A'],
-    autoAppliedSites: [
+    autoTranslatedSites: [
       'twitter.com',
       'x.com',
       'www.reddit.com',
@@ -54,6 +54,7 @@ const defaultConfig: Config = configSchema.parse({
       '*.medium.com',
       'news.ycombinator.com'
     ],
+    autoTranslatedLangs: [],
     translate: {
       mode: translateModeSchema.parse('bilingual'),
       displayStyle: displayStyleSchema.parse(displayStyles[0]),
@@ -69,6 +70,8 @@ const defaultConfig: Config = configSchema.parse({
     icon: 'lucide:book-open-text',
     provider: structuredClone(freeProviders[0]),
     shortcut: ['Alt', 'Q'],
+    disabledSites: [],
+    disabledLangs: [],
     selection: {
       triggerTranslate: selectionTriggerSchema.parse('directly')
     }
@@ -77,25 +80,33 @@ const defaultConfig: Config = configSchema.parse({
   intelligentInput: {
     icon: 'tabler:keyboard',
     provider: null,
-    shortcut: ['Alt', 'E']
+    shortcut: ['Alt', 'E'],
+    disabledSites: [],
+    disabledLangs: []
   },
 
   bilingualSubtitles: {
     icon: 'tabler:subtitles',
     provider: structuredClone(freeProviders[0]),
-    shortcut: []
+    shortcut: [],
+    autoEnabledSites: [],
+    autoEnabledLangs: []
   },
 
   panoramaReading: {
     icon: 'tabler:scan-traces',
     provider: null,
-    shortcut: []
+    shortcut: [],
+    disabledSites: [],
+    disabledLangs: []
   },
 
   writingCopilot: {
     icon: 'tabler:feather-filled',
     provider: null,
-    shortcut: ['Alt', 'C']
+    shortcut: ['Alt', 'C'],
+    disabledSites: [],
+    disabledLangs: []
   },
 
   customAIPrompts: structuredClone(PROMPT_LIST)

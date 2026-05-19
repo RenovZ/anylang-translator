@@ -1,32 +1,31 @@
 <script lang="ts">
-  import { Badge, MultiSelect } from 'flowbite-svelte';
+  import { MultiSelect } from 'flowbite-svelte';
 
-  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
-  import type { AutoAppliedLangsField } from '@/types/config';
+  import type { LangCode } from '@/types/lang';
 
   import SectionRow from './SectionRow.svelte';
 
   interface Props {
     title: string;
     description: string;
-    field: AutoAppliedLangsField;
+    langs: LangCode[];
   }
 
-  const { title, description, field }: Props = $props();
+  let { title, description, langs = $bindable([]) }: Props = $props();
 
   const languageOptions = Object.entries(lang.getLangCodeMap()).map(([langCode, langName]) => ({
     value: langCode,
     name: langName
   }));
 
-  let selectedLanguages = $derived($config[field].autoAppliedLangs ?? []);
+  let selectedLanguages = $derived(langs ?? []);
 
   function handleChange(e: Event) {
     const value = (e.target as HTMLSelectElement).value;
     const values = Object.values(value);
-    $config[field].autoAppliedLangs = values.length > 0 ? values : undefined;
+    langs = values.length > 0 ? values : [];
   }
 </script>
 
@@ -55,7 +54,7 @@
             large
             onclose={() => {
               const newValues = selectedLanguages.filter((code) => code !== langCode);
-              $config[field].autoAppliedLangs = newValues.length > 0 ? newValues : undefined;
+              $config[field][langsField] = newValues.length > 0 ? newValues : undefined;
             }}>
             {lang.codeToLang(langCode) ?? langCode}
           </Badge>

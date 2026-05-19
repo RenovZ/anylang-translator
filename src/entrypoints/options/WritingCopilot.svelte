@@ -1,9 +1,10 @@
 <script lang="ts">
-  import FeatureAutoAppliedLangs from '@/components/FeatureAutoAppliedLangs.svelte';
-  import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
+  import XLangs from '@/components/XLangs.svelte';
+  import XSites from '@/components/XSites.svelte';
+  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { FEAT_WRITING_COPILOT } from '@/preset/feature';
 
@@ -34,8 +35,8 @@
     })} />
 
   <!-- always apply writing copilot sites -->
-  <FeatureAutoAppliedSites
-    {field}
+  <XSites
+    bind:sites={$config[field].disabledSites}
     title={i18n('writing_copilot_auto_apply_sites', {
       defaultValue: 'Automatically apply on sites'
     })}
@@ -45,8 +46,8 @@
     })} />
 
   <!-- always apply writing copilot languages -->
-  <FeatureAutoAppliedLangs
-    {field}
+  <XLangs
+    bind:langs={$config[field].disabledLangs}
     title={i18n('writing_copilot_auto_apply_langs', {
       defaultValue: 'Automatically apply for languages'
     })}

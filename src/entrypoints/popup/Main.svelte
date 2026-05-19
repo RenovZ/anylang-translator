@@ -244,7 +244,7 @@
       <span
         class="line-clamp-1 font-medium aria-disabled:text-gray-400"
         aria-disabled={currentHostname
-          ? !$config.adaptiveTranslate.autoAppliedSites?.includes(currentHostname)
+          ? !$config.adaptiveTranslate.autoTranslatedSites?.includes(currentHostname)
           : true}>
         {i18n('always_auto_translate_this_site', {
           defaultValue: 'Always auto-translate this site'
@@ -252,17 +252,17 @@
       </span>
       <Toggle
         checked={currentHostname
-          ? $config.adaptiveTranslate.autoAppliedSites?.includes(currentHostname)
+          ? $config.adaptiveTranslate.autoTranslatedSites?.includes(currentHostname)
           : false}
         onchange={() => {
-          const { autoAppliedSites } = $config.adaptiveTranslate;
-          if (autoAppliedSites?.includes(currentHostname)) {
-            $config.adaptiveTranslate.autoAppliedSites = autoAppliedSites.filter(
+          const { autoTranslatedSites } = $config.adaptiveTranslate;
+          if (autoTranslatedSites?.includes(currentHostname)) {
+            $config.adaptiveTranslate.autoTranslatedSites = autoTranslatedSites.filter(
               (s) => s !== currentHostname
             );
           } else {
-            $config.adaptiveTranslate.autoAppliedSites = [
-              ...(autoAppliedSites ?? []),
+            $config.adaptiveTranslate.autoTranslatedSites = [
+              ...(autoTranslatedSites ?? []),
               currentHostname
             ];
           }

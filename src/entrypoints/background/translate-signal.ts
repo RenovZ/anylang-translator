@@ -27,14 +27,14 @@ export function registerTranslate() {
       const config = configStore.get();
       const {
         sourceLangCode,
-        adaptiveTranslate: { autoAppliedSites, autoAppliedLangs }
+        adaptiveTranslate: { autoTranslatedSites, autoTranslatedLangs }
       } = config;
       const shouldEnable = shouldEnableAutoTranslation(
         url,
         detectedCodeOrUnd,
         sourceLangCode ?? 'auto',
-        autoAppliedSites,
-        autoAppliedLangs
+        autoTranslatedSites,
+        autoTranslatedLangs
       );
       if (shouldEnable) {
         logger.debug('adaptiveTranslate', { shouldEnable, url, detectedCodeOrUnd });

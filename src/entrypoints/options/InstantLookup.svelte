@@ -1,12 +1,9 @@
 <script lang="ts">
-  import { Button } from 'flowbite-svelte';
-
-  import FeatureAutoAppliedLangs from '@/components/FeatureAutoAppliedLangs.svelte';
-  import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
-  import SectionRow from '@/components/SectionRow.svelte';
+  import XLangs from '@/components/XLangs.svelte';
+  import XSites from '@/components/XSites.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { FEAT_INSTANT_LOOKUP } from '@/preset/feature';
@@ -38,24 +35,24 @@
     })} />
 
   <!-- always apply instant lookup sites -->
-  <FeatureAutoAppliedSites
-    {field}
-    title={i18n('instant_lookup_auto_apply_sites', {
-      defaultValue: 'Automatically apply on sites'
+  <XSites
+    bind:sites={$config[field].disabledSites}
+    title={i18n('instant_lookup_disabled_sites', {
+      defaultValue: 'Disabled sites'
     })}
-    description={i18n('instant_lookup_auto_apply_sites_description', {
+    description={i18n('instant_lookup_disabled_sites_description', {
       defaultValue:
-        'When visiting these sites, instant lookup will be automatically applied. Site rules take priority over language rules.'
+        'When visiting these sites, instant lookup will be disabled. Site rules take priority over language rules.'
     })} />
 
   <!-- always apply instant lookup language -->
-  <FeatureAutoAppliedLangs
-    {field}
-    title={i18n('instant_lookup_auto_apply_langs', {
-      defaultValue: 'Automatically apply for languages'
+  <XLangs
+    bind:langs={$config[field].disabledLangs}
+    title={i18n('instant_lookup_disabled_langs', {
+      defaultValue: 'Disabled languages'
     })}
-    description={i18n('instant_lookup_auto_apply_langs_description', {
+    description={i18n('instant_lookup_disabled_langs_description', {
       defaultValue:
-        'When the page language matches one of these, instant lookup will be automatically applied. Site rules take priority on conflicts.'
+        'When the page language matches one of these, instant lookup will be disabled. Site rules take priority on conflicts.'
     })} />
 </Section>

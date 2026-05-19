@@ -8,6 +8,18 @@
   "adaptive_translate": {
     "message": "Adaptive Translate"
   },
+  "adaptive_translate_auto_translated_langs": {
+    "message": "Auto-translated languages"
+  },
+  "adaptive_translate_auto_translated_langs_description": {
+    "message": "When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts."
+  },
+  "adaptive_translate_auto_translated_sites": {
+    "message": "Auto-translated sites"
+  },
+  "adaptive_translate_auto_translated_sites_description": {
+    "message": "When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules."
+  },
   "adaptive_translate_description": {
     "message": "Adaptive translation that combines lightweight instant translation with context-aware AI understanding, balancing speed, nuance, and quality across different scenarios."
   },
@@ -56,32 +68,8 @@
   "ai_prompts_description": {
     "message": "Configure prompts for custom API providers. Customize model instructions to shape responses and behavior across providers."
   },
-  "always_apply_bilingual_subtitles_langs": {
-    "message": "Automatically apply for languages"
-  },
-  "always_apply_bilingual_subtitles_langs_description": {
-    "message": "When the page language matches one of these, bilingual subtitles will be automatically applied. Site rules take priority on conflicts."
-  },
-  "always_apply_bilingual_subtitles_sites": {
-    "message": "Automatically apply on sites"
-  },
-  "always_apply_bilingual_subtitles_sites_description": {
-    "message": "When visiting these sites, bilingual subtitles will be automatically applied. Site rules take priority over language rules."
-  },
   "always_auto_translate_this_site": {
     "message": "Always auto-translate this site"
-  },
-  "always_auto_translated_langs": {
-    "message": "Always auto-translate languages"
-  },
-  "always_auto_translated_langs_description": {
-    "message": "When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts."
-  },
-  "always_auto_translated_sites": {
-    "message": "Always auto-translated sites"
-  },
-  "always_auto_translated_sites_description": {
-    "message": "When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules."
   },
   "api_key": {
     "message": "API Key"
@@ -118,6 +106,18 @@
   },
   "bilingual_subtitles": {
     "message": "Bilingual Subtitles"
+  },
+  "bilingual_subtitles_auto_enabled_langs": {
+    "message": "Auto-enabled languages"
+  },
+  "bilingual_subtitles_auto_enabled_langs_description": {
+    "message": "When the page language matches one of these, bilingual subtitles will be automatically enabled. Site rules take priority on conflicts."
+  },
+  "bilingual_subtitles_auto_enabled_sites": {
+    "message": "Auto-enabled sites"
+  },
+  "bilingual_subtitles_auto_enabled_sites_description": {
+    "message": "When visiting these sites, bilingual subtitles will be automatically enabled. Site rules take priority over language rules."
   },
   "bilingual_subtitles_description": {
     "message": "Real-time bilingual subtitles powered by contextual AI, making video content clearer, richer, and easier to follow."
@@ -332,20 +332,20 @@
   "instant_lookup": {
     "message": "Instant Lookup"
   },
-  "instant_lookup_auto_apply_langs": {
-    "message": "Automatically apply for languages"
-  },
-  "instant_lookup_auto_apply_langs_description": {
-    "message": "When the page language matches one of these, instant lookup will be automatically applied. Site rules take priority on conflicts."
-  },
-  "instant_lookup_auto_apply_sites": {
-    "message": "Automatically apply on sites"
-  },
-  "instant_lookup_auto_apply_sites_description": {
-    "message": "When visiting these sites, instant lookup will be automatically applied. Site rules take priority over language rules."
-  },
   "instant_lookup_description": {
     "message": "Understand words, idioms, and concepts instantly with AI-powered explanations and multilingual insight."
+  },
+  "instant_lookup_disabled_langs": {
+    "message": "Disabled languages"
+  },
+  "instant_lookup_disabled_langs_description": {
+    "message": "When the page language matches one of these, instant lookup will be disabled. Site rules take priority on conflicts."
+  },
+  "instant_lookup_disabled_sites": {
+    "message": "Disabled sites"
+  },
+  "instant_lookup_disabled_sites_description": {
+    "message": "When visiting these sites, instant lookup will be disabled. Site rules take priority over language rules."
   },
   "instant_lookup_icon": {
     "message": "Instant lookup icon"
@@ -365,20 +365,20 @@
   "intelligent_input": {
     "message": "Intelligent Input"
   },
-  "intelligent_input_auto_apply_langs": {
-    "message": "Automatically apply for languages"
-  },
-  "intelligent_input_auto_apply_langs_description": {
-    "message": "When the page language matches one of these, intelligent input will be automatically applied. Site rules take priority on conflicts."
-  },
-  "intelligent_input_auto_apply_sites": {
-    "message": "Automatically apply on sites"
-  },
-  "intelligent_input_auto_apply_sites_description": {
-    "message": "When visiting these sites, intelligent input will be automatically applied. Site rules take priority over language rules."
-  },
   "intelligent_input_description": {
     "message": "Generate polished multilingual text directly where you type — from quick replies to forms and everyday writing."
+  },
+  "intelligent_input_disabled_langs": {
+    "message": "Disabled languages"
+  },
+  "intelligent_input_disabled_langs_description": {
+    "message": "When the page language matches one of these, intelligent input will be disabled. Site rules take priority on conflicts."
+  },
+  "intelligent_input_disabled_sites": {
+    "message": "Disabled sites"
+  },
+  "intelligent_input_disabled_sites_description": {
+    "message": "When visiting these sites, intelligent input will be disabled. Site rules take priority over language rules."
   },
   "intelligent_input_icon": {
     "message": "Intelligent input icon"
@@ -578,20 +578,20 @@
   "panorama_reading": {
     "message": "Panorama Reading"
   },
-  "panorama_reading_auto_apply_langs": {
-    "message": "Automatically apply for languages"
-  },
-  "panorama_reading_auto_apply_langs_description": {
-    "message": "When the page language matches one of these, panorama reading will be automatically applied. Site rules take priority on conflicts."
-  },
-  "panorama_reading_auto_apply_sites": {
-    "message": "Automatically apply on sites"
-  },
-  "panorama_reading_auto_apply_sites_description": {
-    "message": "When visiting these sites, panorama reading will be automatically applied. Site rules take priority over language rules."
-  },
   "panorama_reading_description": {
     "message": "Extract key ideas, surface critical details, and grasp context faster with AI-enhanced reading intelligence."
+  },
+  "panorama_reading_disabled_langs": {
+    "message": "Disabled languages"
+  },
+  "panorama_reading_disabled_langs_description": {
+    "message": "When the page language matches one of these, panorama reading will be disabled. Site rules take priority on conflicts."
+  },
+  "panorama_reading_disabled_sites": {
+    "message": "Disabled sites"
+  },
+  "panorama_reading_disabled_sites_description": {
+    "message": "When visiting these sites, panorama reading will be disabled. Site rules take priority over language rules."
   },
   "panorama_reading_icon": {
     "message": "Panorama reading icon"

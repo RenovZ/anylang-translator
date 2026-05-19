@@ -1,9 +1,9 @@
 <script lang="ts">
-  import FeatureAutoAppliedLangs from '@/components/FeatureAutoAppliedLangs.svelte';
-  import FeatureAutoAppliedSites from '@/components/FeatureAutoAppliedSites.svelte';
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
+  import XLangs from '@/components/XLangs.svelte';
+  import XSites from '@/components/XSites.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/feature';
@@ -15,6 +15,8 @@
   import DisplayStyle from './DisplayStyle.svelte';
   import PageRange from './PageRange.svelte';
   import TriggerOnHover from './TriggerOnHover.svelte';
+
+  const field = FEAT_ADAPTIVE_TRANSLATE;
 </script>
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
@@ -23,15 +25,15 @@
     title={i18n('adaptive_translate_icon', {
       defaultValue: 'Adaptive translate icon'
     })}
-    field={FEAT_ADAPTIVE_TRANSLATE} />
+    {field} />
 
   <FeatureShortcut
     title={i18n('adaptive_translate_shortcut', { defaultValue: 'Adaptive translate shortcut' })}
-    field={FEAT_ADAPTIVE_TRANSLATE} />
+    {field} />
 
   <!-- adaptive translate api provider -->
   <FeatureProvider
-    field={FEAT_ADAPTIVE_TRANSLATE}
+    {field}
     title={i18n('adaptive_translate_provider', { defaultValue: 'Adaptive translate provider' })}
     description={i18n('adaptive_translate_provider_description', {
       defaultValue:
@@ -54,22 +56,24 @@
       }} />
   </SectionRow> -->
 
-  <!-- always auto-translated sites -->
-  <FeatureAutoAppliedSites
-    field={FEAT_ADAPTIVE_TRANSLATE}
-    title={i18n('always_auto_translated_sites', { defaultValue: 'Always auto-translated sites' })}
-    description={i18n('always_auto_translated_sites_description', {
+  <!-- auto-translated sites -->
+  <XSites
+    bind:sites={$config[field].autoTranslatedSites}
+    title={i18n('adaptive_translate_auto_translated_sites', {
+      defaultValue: 'Auto-translated sites'
+    })}
+    description={i18n('adaptive_translate_auto_translated_sites_description', {
       defaultValue:
         'When current site matches these domains, content will auto-translate to target language. This rule has higher priority than language rules.'
     })} />
 
-  <!-- always auto-translated language -->
-  <FeatureAutoAppliedLangs
-    field={FEAT_ADAPTIVE_TRANSLATE}
-    title={i18n('always_auto_translated_langs', {
-      defaultValue: 'Always auto-translate languages'
+  <!-- auto-translated language -->
+  <XLangs
+    bind:langs={$config[field].autoTranslatedLangs}
+    title={i18n('adaptive_translate_auto_translated_langs', {
+      defaultValue: 'Auto-translated languages'
     })}
-    description={i18n('always_auto_translated_langs_description', {
+    description={i18n('adaptive_translate_auto_translated_langs_description', {
       defaultValue:
         'When page language is one of these languages, content auto-translates to target language. Site rules still take priority on conflicts.'
     })} />
