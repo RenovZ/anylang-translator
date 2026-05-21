@@ -1,6 +1,7 @@
 <script lang="ts">
   import { MultiSelect } from 'flowbite-svelte';
 
+  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
   import type { LangCode } from '@/types/lang';
@@ -15,10 +16,12 @@
 
   let { title, description, langs = $bindable([]) }: Props = $props();
 
-  const languageOptions = Object.entries(lang.getLangCodeMap()).map(([langCode, langName]) => ({
-    value: langCode,
-    name: langName
-  }));
+  const languageOptions = Object.entries(lang.getLangCodeMap($config.uiLangCode)).map(
+    ([langCode, langName]) => ({
+      value: langCode,
+      name: langName
+    })
+  );
 
   let selectedLanguages = $derived(langs ?? []);
 

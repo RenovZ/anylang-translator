@@ -14,11 +14,9 @@
 
   import '@/assets/app.css';
 
+  import TranslateModes, { translateModeOptions } from '@/components/AdaptiveTranslateModes.svelte';
   import DisplayStyle from '@/components/DisplayStyle.svelte';
   import LocalIcon from '@/components/LocalIcon.svelte';
-  import TranslateModeDropdown, {
-    translateModeOptions
-  } from '@/components/TranslateModeDropdown.svelte';
   import analyticsManager from '@/lib/analytics';
   import avatar from '@/lib/avatar';
   import config from '@/lib/config';
@@ -119,7 +117,7 @@
       <div class="flex flex-col text-left">
         <span class="line-clamp-1 font-medium">
           {currentLang
-            ? lang.getLangName(currentLang)
+            ? lang.getLangName(currentLang, $config.uiLangCode)
             : i18n('auto_detect', { defaultValue: 'Auto Detect' })}
         </span>
         <span class="line-clamp-1 text-xs text-slate-400">
@@ -144,7 +142,7 @@
         }}>
         {i18n('auto_detect', { defaultValue: 'Auto Detect' })}
       </DropdownItem>
-      {#each Object.entries(lang.getLangCodeMap()) as [langCode, langName] (langCode)}
+      {#each Object.entries(lang.getLangCodeMap($config.uiLangCode)) as [langCode, langName] (langCode)}
         <DropdownItem
           onclick={() =>
             ($config[position === 'source' ? 'sourceLangCode' : 'targetLangCode'] = langCode)}>
@@ -182,7 +180,7 @@
         main: 'grid-cols-[96px_1fr]'
       }}
       title={i18n('translate_mode', { defaultValue: 'Translate Mode' })}>
-      <TranslateModeDropdown>
+      <TranslateModes>
         <button
           type="button"
           class="flex items-center rounded-lg border-none bg-slate-50 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-100/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
@@ -194,7 +192,7 @@
           </div>
           <LocalIcon icon="tabler:chevron-down" class="h-4 w-4" />
         </button>
-      </TranslateModeDropdown>
+      </TranslateModes>
     </Feature>
     {#if $config.adaptiveTranslate.translate.mode === 'bilingual'}
       <Feature

@@ -2,10 +2,14 @@
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
+  import TriggerModes from '@/components/InstantLookupTriggerModes.svelte';
+  import LangDropdown from '@/components/LangDropdown.svelte';
+  import SectionRow from '@/components/SectionRow.svelte';
   import XLangs from '@/components/XLangs.svelte';
   import XSites from '@/components/XSites.svelte';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
+  import lang from '@/lib/lang';
   import { FEAT_INSTANT_LOOKUP } from '@/preset/feature';
 
   import { instantLookupNav as nav } from './data';
@@ -33,6 +37,30 @@
     description={i18n('instant_lookup_provider_description', {
       defaultValue: 'Choose from a variety of API providers to power your instant lookup.'
     })} />
+
+  <SectionRow
+    title={i18n('target_language', {
+      defaultValue: 'Target language'
+    })}
+    description={i18n('target_language_description', {
+      defaultValue: 'Choose the language you want to lookup.'
+    })}>
+    <LangDropdown
+      langCodeType="target"
+      bind:langCode={$config.instantLookup.selection.targetLangCode}
+      fallbackLangCode={$config.targetLangCode}
+      slot="controls" />
+  </SectionRow>
+
+  <SectionRow
+    title={i18n('trigger_on_selection', {
+      defaultValue: 'Trigger mode on selection'
+    })}
+    description={i18n('trigger_on_selection_description', {
+      defaultValue: 'Choose the trigger mode for instant lookup when selecting text.'
+    })}>
+    <TriggerModes slot="controls" />
+  </SectionRow>
 
   <!-- always apply instant lookup sites -->
   <XSites

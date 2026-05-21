@@ -53,7 +53,7 @@
   let isPointerDownInsideOverlay = $state(false);
   let preserveSelectionState = $state(false);
 
-  const triggerMode = $derived($config.instantLookup.selection.triggerTranslate);
+  const triggerMode = $derived($config.instantLookup.selection.triggerMode);
 
   const isSiteDisabled = $derived(
     $config.instantLookup.disabledSites.some((pattern) =>

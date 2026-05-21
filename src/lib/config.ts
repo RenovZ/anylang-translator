@@ -8,8 +8,8 @@ import {
   configSchema,
   langDetectionModeSchema,
   pageRangeSchema,
-  selectionTriggerSchema,
   translateModeSchema,
+  triggerModeOnSelectionSchema,
   triggerOnHoverSchema,
   type Config
 } from '@/types/config';
@@ -73,7 +73,7 @@ const defaultConfig: Config = configSchema.parse({
     disabledSites: [],
     disabledLangs: [],
     selection: {
-      triggerTranslate: selectionTriggerSchema.parse('directly')
+      triggerMode: triggerModeOnSelectionSchema.parse('directly')
     }
   },
 

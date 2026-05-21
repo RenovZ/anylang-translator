@@ -161,9 +161,6 @@
   "customize_shortcuts": {
     "message": "Customize shortcuts"
   },
-  "default_language": {
-    "message": "Default Language"
-  },
   "delete": {
     "message": "Delete"
   },
@@ -731,6 +728,9 @@
   "target_language": {
     "message": "Target language"
   },
+  "target_language_description": {
+    "message": "Choose the language you want to lookup."
+  },
   "target_language_hint": {
     "message": "Set the language you want content translated into"
   },
@@ -805,6 +805,24 @@
   },
   "trigger_on_hover_shift": {
     "message": "Hover + Shift to translate paragraph"
+  },
+  "trigger_on_select": {
+    "message": "Trigger on select"
+  },
+  "trigger_on_selection": {
+    "message": "Trigger mode on selection"
+  },
+  "trigger_on_selection_description": {
+    "message": "Choose the trigger mode for instant lookup when selecting text."
+  },
+  "trigger_on_selection_directly": {
+    "message": "Directly"
+  },
+  "trigger_on_selection_noop": {
+    "message": "Noop"
+  },
+  "trigger_on_selection_show_icons": {
+    "message": "Show icons"
   },
   "ui_language": {
     "message": "UI language"

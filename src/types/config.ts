@@ -9,7 +9,7 @@ import { langCodeSchema, uiLangCodeSchema } from './lang';
 import { promptSchema, type Prompt } from './prompt';
 import { displayStyleSchema } from './translate';
 
-export const selectionTriggerSchema = z.enum(['directly', 'show icons', 'noop']);
+export const triggerModeOnSelectionSchema = z.enum(['directly', 'show icons', 'noop']);
 export const translateModeSchema = z.enum(['translation_only', 'bilingual']);
 export type TranslateMode = z.infer<typeof translateModeSchema>;
 export const pageRangeSchema = z.enum(['main', 'all']);
@@ -55,7 +55,8 @@ const instantLookupSchema = featureBaseSchema.extend({
   disabledLangs: z.array(langCodeSchema).default([]),
   provider: providerSchema,
   selection: z.object({
-    triggerTranslate: selectionTriggerSchema.default('directly')
+    targetLangCode: langCodeSchema.optional(),
+    triggerMode: triggerModeOnSelectionSchema.default('directly')
   })
 });
 const intelligentInputSchema = featureBaseSchema.extend({

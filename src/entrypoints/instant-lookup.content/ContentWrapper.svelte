@@ -35,7 +35,7 @@
   trigger="click"
   placement="bottom"
   class={twMerge(
-    'z-2147483647 max-h-120 w-140 rounded-xl border-none bg-white/80 p-0 shadow-md backdrop-blur-xs dark:bg-slate-900/80',
+    'z-2147483647 max-h-120 w-140 rounded-xl border-none bg-white/80 p-0 shadow-xl dark:bg-slate-900/80',
     className
   )}>
   {@render children?.()}

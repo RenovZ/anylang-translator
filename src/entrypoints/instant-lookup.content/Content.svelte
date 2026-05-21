@@ -5,11 +5,12 @@
 
   import FloatingLabelInput from '@/components/flowbite-svelte/FloatingLabelInput.svelte';
   import { ATTR_MANUAL_DRAGGING } from '@/components/flowbite-svelte/Popper.svelte';
+  import TriggerModes from '@/components/InstantLookupTriggerModes.svelte';
   import LangDropdown from '@/components/LangDropdown.svelte';
   import LocalIcon from '@/components/LocalIcon.svelte';
   import Provider from '@/components/Provider.svelte';
+  import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import logger from '@/lib/logger';
   import { FEAT_INSTANT_LOOKUP } from '@/preset/feature';
 
   import Dictonary from './ContentDictonary.svelte';
@@ -131,7 +132,7 @@
         bind:value={selectedText}
         class="w-full bg-white/80 dark:bg-slate-900/80"
         classes={{
-          label: twMerge('top-1', isInputFocused || selectedText ? 'hidden' : ''),
+          label: twMerge('w-full top-1 truncate', isInputFocused || selectedText ? 'hidden' : ''),
           input: 'border-gray-100 pt-0 dark:border-gray-700'
         }}>
         {i18n('please_input_the_word_to_lookup', {
@@ -197,9 +198,16 @@
     </div>
   </div>
   <div class="flex items-center justify-between border-t border-gray-100 p-2 dark:border-gray-700">
-    <Provider
-      field={FEAT_INSTANT_LOOKUP}
-      class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
-    <LangDropdown class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
+    <div class="flex flex-1 gap-2">
+      <Provider
+        field={FEAT_INSTANT_LOOKUP}
+        class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
+      <LangDropdown
+        langCodeType="target"
+        bind:langCode={$config.instantLookup.selection.targetLangCode}
+        fallbackLangCode={$config.targetLangCode}
+        class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
+    </div>
+    <TriggerModes class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
   </div>
 </div>

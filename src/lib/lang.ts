@@ -32,11 +32,8 @@ class LangManager {
     }, new Map<UILangCode, string>());
   }
 
-  getLangCodeMap(): Record<LangCode, string> {
-    const config = configStore.get();
-
-    const rawValue =
-      config.uiLangCode !== 'default' ? config.uiLangCode : browser.i18n.getUILanguage();
+  getLangCodeMap(uiLangCode: UILangCode | 'auto' | 'default'): Record<LangCode, string> {
+    const rawValue = uiLangCode !== 'default' ? uiLangCode : browser.i18n.getUILanguage();
     const { success, data, error } = uiLangCodeSchema.safeParse(rawValue);
     if (success) return LANG_CODE_MAP[data];
 
@@ -44,9 +41,12 @@ class LangManager {
     return LANG_CODE_MAP['en'];
   }
 
-  getLangName(rawLangCode: string): string | undefined {
+  getLangName(
+    rawLangCode: string,
+    uiLangCode: UILangCode | 'auto' | 'default'
+  ): string | undefined {
     const { success, data, error } = langCodeSchema.safeParse(rawLangCode);
-    if (success) return this.getLangCodeMap()[data];
+    if (success) return this.getLangCodeMap(uiLangCode)[data];
 
     logger.warn('Invalid langCode data', { rawLangCode, error });
     return undefined;

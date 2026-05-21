@@ -1,17 +1,34 @@
 <script lang="ts">
   import { Button, Dropdown, DropdownItem } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
+  import { onMount } from 'svelte';
   import { twMerge } from 'tailwind-merge';
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
+  import type { LangCode, UILangCode } from '@/types/lang';
 
-  interface Props {
+  interface Props<T extends LangCode | UILangCode> {
     class?: string;
+    langCodeType: 'ui' | 'target';
+    langCode?: T | undefined;
+    fallbackLangCode?: T;
   }
 
-  let { class: className }: Props = $props();
+  let {
+    class: className,
+    langCodeType,
+    langCode = $bindable(),
+    fallbackLangCode
+  }: Props<LangCode | UILangCode> = $props();
+
+  const displayLangCode = $derived(langCode ?? fallbackLangCode);
+  const langCodeOptions = $derived(
+    langCodeType === 'ui'
+      ? lang.getUILangCodeMap()
+      : Object.entries(lang.getLangCodeMap($config.uiLangCode))
+  );
 </script>
 
 <Button
@@ -20,15 +37,20 @@
     className
   )}>
   <span>
-    {lang.getLangName($config.targetLangCode) ??
-      i18n('auto_detect', { defaultValue: 'Auto Detect' })}
+    <!-- {lang.getLangName(langCode) ?? i18n('auto_detect', { defaultValue: 'Auto Detect' })} -->
+    {#if displayLangCode}
+      {lang.getLangName(displayLangCode, $config.uiLangCode) ??
+        i18n('auto_detect', { defaultValue: 'Auto Detect' })}
+    {:else}
+      {i18n('auto_detect', { defaultValue: 'Auto Detect' })}
+    {/if}
   </span>
   <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
 </Button>
 <Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
-  {#each Object.entries(lang.getLangCodeMap()) as [langCode, langName] (langCode)}
-    <DropdownItem onclick={() => ($config.targetLangCode = langCode)}>
-      {langName}
+  {#each langCodeOptions as [code, name] (code)}
+    <DropdownItem onclick={() => (langCode = code)}>
+      {name}
     </DropdownItem>
   {/each}
 </Dropdown>
