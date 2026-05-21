@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { Button, Heading } from 'flowbite-svelte';
+  import { Button } from 'flowbite-svelte';
+  import { SearchOutline } from 'flowbite-svelte-icons';
   import { twMerge } from 'tailwind-merge';
 
+  import FloatingLabelInput from '@/components/flowbite-svelte/FloatingLabelInput.svelte';
   import { ATTR_MANUAL_DRAGGING } from '@/components/flowbite-svelte/Popper.svelte';
   import LangDropdown from '@/components/LangDropdown.svelte';
   import LocalIcon from '@/components/LocalIcon.svelte';
@@ -18,9 +20,11 @@
 
   interface Props {
     toolbarRef: HTMLDivElement | null;
+    selectedText?: string;
   }
 
-  let { toolbarRef }: Props = $props();
+  let { toolbarRef, selectedText = '' }: Props = $props();
+  let isInputFocused = $state(false);
 
   type SectionKey = 'dictionary' | 'examples' | 'usage';
 
@@ -102,6 +106,10 @@
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
   }
+
+  const handleRefresh = () => {
+    console.log('handle refresh');
+  };
 </script>
 
 <!-- TODO: Replace mock data with real API response based on selectedText -->
@@ -111,19 +119,41 @@
     role="region"
     aria-label="Popover header"
     class={twMerge(
-      'group relative flex items-center justify-between border-b border-gray-100 p-2 dark:border-gray-700',
+      'group relative flex items-center justify-between gap-4 border-b border-gray-100 p-2 dark:border-gray-700',
       isDraggingHeader ? 'cursor-grabbing' : 'cursor-grab'
     )}
     onmousedown={handleHeaderMouseDown}>
-    <LangDropdown class="w-fit bg-white/80 px-2 py-1 shadow-xs dark:bg-slate-900/80" />
+    <div class="flex items-center gap-2">
+      <FloatingLabelInput
+        bind:isFocused={isInputFocused}
+        size="small"
+        type="text"
+        bind:value={selectedText}
+        class="w-full bg-white/80 dark:bg-slate-900/80"
+        classes={{
+          label: twMerge('top-1', isInputFocused || selectedText ? 'hidden' : ''),
+          input: 'border-gray-100 pt-0 dark:border-gray-700'
+        }}>
+        {i18n('please_input_the_word_to_lookup', {
+          defaultValue: 'Please input the word to lookup'
+        })}
+      </FloatingLabelInput>
+      <Button
+        color="alternative"
+        class="rounded-lg border-none p-1 text-sm shadow"
+        onclick={() => isPopoverPinned.set(!$isPopoverPinned)}>
+        <SearchOutline class="size-5 shrink-0" />
+      </Button>
+    </div>
+
     <span
-      class="absolute top-0 left-1/2 rounded-lg border-none p-1 text-sm opacity-0 shadow-xs transition-opacity group-hover:opacity-100">
+      class="absolute top-0 left-1/2 rounded-lg border-none p-1 text-sm opacity-0 transition-opacity group-hover:opacity-100">
       <LocalIcon icon="tabler:grip-horizontal" class="w-5" />
     </span>
     <div class="flex items-center gap-2">
       <Button
         color="alternative"
-        class="rounded-lg border-none p-1 text-sm shadow-xs"
+        class="rounded-lg border-none p-1 text-sm shadow"
         onclick={() => isPopoverPinned.set(!$isPopoverPinned)}>
         {#if $isPopoverPinned}
           <LocalIcon icon="tabler:pinned" class="w-5" />
@@ -133,7 +163,7 @@
       </Button>
       <Button
         color="alternative"
-        class="rounded-lg border-none p-1 text-sm shadow-xs"
+        class="rounded-lg border-none p-1 text-sm shadow"
         onclick={() => isPopoverOpen.set(false)}>
         <LocalIcon icon="tabler:x" class="w-5" />
       </Button>
@@ -169,9 +199,7 @@
   <div class="flex items-center justify-between border-t border-gray-100 p-2 dark:border-gray-700">
     <Provider
       field={FEAT_INSTANT_LOOKUP}
-      class="w-fit bg-white/80 px-2 py-1 shadow-xs dark:bg-slate-900/80" />
-    <Button color="alternative" class="rounded-lg border-none p-1 text-sm shadow-xs">
-      <LocalIcon icon="tabler:refresh" class="w-5" />
-    </Button>
+      class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
+    <LangDropdown class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
   </div>
 </div>

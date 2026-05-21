@@ -10,6 +10,8 @@
   import type { Coords, Middleware, Placement } from '@floating-ui/dom';
   import * as dom from '@floating-ui/dom';
 
+  import logger from '@/lib/logger';
+
   import Arrow from './Arrow.svelte';
   import { createMutualDebounce } from './debounce';
 
@@ -218,7 +220,7 @@
     else if (node.parentElement) triggerEls = [node.parentElement];
 
     if (!triggerEls.length) {
-      console.error('No triggers found.', triggeredBy);
+      logger.error('No triggers found.', { triggeredBy });
       return;
     }
 

@@ -115,7 +115,7 @@
   {#snippet languageDropdown(position: 'source' | 'target')}
     {@const currentLang = position === 'source' ? $config.sourceLangCode : $config.targetLangCode}
     <Button
-      class="rounded-xl border-none bg-slate-100 p-1 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
+      class="rounded-xl border-none bg-slate-50 p-1 text-slate-900 shadow hover:bg-slate-100/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <div class="flex flex-col text-left">
         <span class="line-clamp-1 font-medium">
           {currentLang
@@ -171,7 +171,7 @@
       classes={{
         main: 'grid-cols-[96px_1fr]',
         button:
-          'rounded-lg border-none bg-slate-100 px-1 py-1.5 text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600'
+          'rounded-lg border-none bg-slate-50 px-1 py-1.5 text-slate-900 shadow hover:bg-slate-100/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600'
       }}
       title={i18n('api_provider', { defaultValue: 'API Provider' })} />
     <Feature
@@ -185,7 +185,7 @@
       <TranslateModeDropdown>
         <button
           type="button"
-          class="flex items-center rounded-lg border-none bg-slate-100 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
+          class="flex items-center rounded-lg border-none bg-slate-50 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-100/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
           <div class="flex flex-1 items-center gap-1">
             {translateModeOptions.find(
               (item) => item.value === $config.adaptiveTranslate.translate.mode
@@ -210,7 +210,7 @@
             {#snippet button()}
               <button
                 type="button"
-                class="flex w-full items-center justify-between rounded-lg border-none bg-slate-100 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
+                class="flex w-full items-center justify-between rounded-lg border-none bg-slate-50 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-100/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
                 <span>
                   {DISPLAY_STYLES.find(
                     (item) =>
@@ -224,7 +224,7 @@
           {#if ['custom', 'css'].includes($config.adaptiveTranslate.translate.displayStyle.preset)}
             <button
               type="button"
-              class="flex items-center justify-between rounded-lg border-none bg-slate-100 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-200/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600"
+              class="flex items-center justify-between rounded-lg border-none bg-slate-50 px-1 py-1.5 font-semibold text-slate-900 shadow hover:bg-slate-100/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600"
               onclick={() =>
                 sendMessage('openPage', {
                   url: browser.runtime.getURL(`/options.html#${adaptiveTranslateId}`)
@@ -269,7 +269,7 @@
         }}
         size="small"
         classes={{
-          span: 'cursor-pointer bg-slate-200 dark:bg-slate-600 m-0'
+          span: 'cursor-pointer bg-slate-100 dark:bg-slate-600 m-0'
         }} />
     </div>
     <div class="flex items-center justify-between">
@@ -318,25 +318,25 @@
   </Button>
 
   <!-- features -->
-  <section class="rounded-xl bg-slate-100 shadow dark:bg-slate-700">
+  <section class="rounded-xl bg-slate-50 shadow dark:bg-slate-700">
     <Feature
-      classes={{ main: 'rounded-t-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
+      classes={{ main: 'rounded-t-xl px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
       title={i18n('instant_lookup', { defaultValue: 'Instant Lookup' })}
       field={FEAT_INSTANT_LOOKUP} />
     <Feature
-      classes={{ main: 'px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
+      classes={{ main: 'px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
       title={i18n('intelligent_input', { defaultValue: 'Intelligent Input' })}
       field={FEAT_INTELLIGENT_INPUT} />
     <Feature
-      classes={{ main: 'px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
+      classes={{ main: 'px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
       title={i18n('bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' })}
       field={FEAT_BILINGUAL_SUBTITLES} />
     <Feature
-      classes={{ main: 'px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
+      classes={{ main: 'px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
       title={i18n('panorama_reading', { defaultValue: 'Panorama Reading' })}
       field={FEAT_PANORAMA_READING} />
     <Feature
-      classes={{ main: 'rounded-b-xl px-3 py-2 hover:bg-slate-200/70 hover:dark:bg-slate-600' }}
+      classes={{ main: 'rounded-b-xl px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
       title={i18n('writing_copilot', { defaultValue: 'Writing Copilot' })}
       field={FEAT_WRITING_COPILOT} />
   </section>

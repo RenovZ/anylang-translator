@@ -11,7 +11,6 @@
     isOpen?: boolean;
     offset?: number;
     onbeforetoggle?: (ev: ToggleEvent) => void;
-    selectedText?: string;
     children?: Snippet;
   }
 
@@ -20,7 +19,6 @@
     offset,
     onbeforetoggle,
     class: className,
-    selectedText = '',
     children
   }: Props = $props();
 </script>

@@ -410,13 +410,12 @@
     <ContentWrapper
       bind:isOpen={$isPopoverOpen}
       offset={-(translateBtnRef?.offsetHeight ?? MARGIN)}
-      selectedText={$selectionSession?.selectionSnapshot.text ?? ''}
       onbeforetoggle={(ev) => {
         if (ev.newState === 'open') {
           isSelectionToolbarVisible.set(false);
         }
       }}>
-      <Content {toolbarRef} />
+      <Content {toolbarRef} selectedText={$selectionSession?.selectionSnapshot.text ?? ''} />
     </ContentWrapper>
   {/if}
 </div>

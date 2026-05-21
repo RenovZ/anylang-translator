@@ -611,6 +611,9 @@
   "paragraphs_tooltip": {
     "message": "Intersecting paragraph text joined with blank lines, truncated to the first 2000 characters when sent to custom AI actions"
   },
+  "please_input_the_word_to_lookup": {
+    "message": "Please input the word to lookup"
+  },
   "pricing": {
     "message": "Pricing"
   },
