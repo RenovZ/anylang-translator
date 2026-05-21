@@ -36,6 +36,7 @@ function createSelectionSession(
 export const selectionSession = writable<SelectionSession | null>(null);
 export const isSelectionToolbarVisible = writable(false);
 export const isPopoverOpen = writable(false);
+export const isPopoverPinned = writable(false);
 
 export function setSelectionState(
   selection: SelectionSnapshot | null,

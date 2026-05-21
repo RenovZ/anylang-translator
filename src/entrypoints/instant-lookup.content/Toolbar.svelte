@@ -6,14 +6,17 @@
   import LocalIcon from '@/components/LocalIcon.svelte';
   import config from '@/lib/config';
   import lang from '@/lib/lang';
+  import logger from '@/lib/logger';
   import urlUtils from '@/lib/url';
   import { INSTANT_LOOKUP_OVERLAY_ATTRIBUTE, NOTRANSLATE_CLASS } from '@/preset/dom';
 
-  import SelectionPopover from './SelectionPopover.svelte';
+  import Content from './Content.svelte';
+  import ContentWrapper from './ContentWrapper.svelte';
   import {
     clearSelectionState,
     isPopoverOpen,
     isSelectionToolbarVisible,
+    selectionSession,
     setSelectionState
   } from './state';
   import { buildContextSnapshot, readSelectionSnapshot } from './utils';
@@ -328,7 +331,7 @@
 
       clearSelectionState();
       isSelectionToolbarVisible.set(false);
-      isPopoverOpen.set(false);
+      // isPopoverOpen.set(false);
     };
 
     const handleSelectionChange = () => {
@@ -347,7 +350,7 @@
 
         clearSelectionState();
         isSelectionToolbarVisible.set(false);
-        isPopoverOpen.set(false);
+        // isPopoverOpen.set(false);
       }
     };
 
@@ -377,12 +380,6 @@
 
 <div bind:this={tooltipContainerRef} class={NOTRANSLATE_CLASS}>
   {#if isEnabled && selectionPosition}
-    <!--
-      TODO: features.translate.enabled should be configurable instead of
-      hard-coded true. For now we always show the translate button since
-      the target project's instantLookup config does not yet have a
-      features.translate.enabled field.
-    -->
     <div
       inert={!$isSelectionToolbarVisible}
       bind:this={toolbarRef}
@@ -411,20 +408,18 @@
         aria-label="Instant Lookup">
         <LocalIcon icon="lucide:book-open-text" class="h-4.5 w-4.5" />
       </button>
-
-      <SelectionPopover
-        bind:isOpen={$isPopoverOpen}
-        offset={-(translateBtnRef?.offsetHeight ?? MARGIN)}
-        onbeforetoggle={(ev) => {
-          if (ev.newState === 'open') {
-            isSelectionToolbarVisible.set(false);
-          }
-        }}>
-        <!-- TODO: Implement popover content (translation result, provider selection, etc.) -->
-        <div class="min-w-50 p-4">
-          <p class="text-sm text-gray-500">Translation content will be rendered here.</p>
-        </div>
-      </SelectionPopover>
     </div>
+
+    <ContentWrapper
+      bind:isOpen={$isPopoverOpen}
+      offset={-(translateBtnRef?.offsetHeight ?? MARGIN)}
+      selectedText={$selectionSession?.selectionSnapshot.text ?? ''}
+      onbeforetoggle={(ev) => {
+        if (ev.newState === 'open') {
+          isSelectionToolbarVisible.set(false);
+        }
+      }}>
+      <Content {toolbarRef} />
+    </ContentWrapper>
   {/if}
 </div>
