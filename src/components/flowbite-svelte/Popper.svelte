@@ -1,3 +1,7 @@
+<script module lang="ts">
+  export const ATTR_MANUAL_DRAGGING = 'data-manual-dragging';
+</script>
+
 <script lang="ts">
   import type { ParamsType, PopperProps, TriggeredToggleEvent } from 'flowbite-svelte';
   import { cn } from 'flowbite-svelte';
@@ -82,6 +86,8 @@
     if (!invoker || !popover) {
       return;
     }
+
+    if (popover.hasAttribute(ATTR_MANUAL_DRAGGING)) return;
 
     return dom
       .computePosition(referenceElement ?? invoker, popover, { placement, middleware, strategy })

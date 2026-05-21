@@ -2,6 +2,7 @@
   import { Button, Heading } from 'flowbite-svelte';
   import { twMerge } from 'tailwind-merge';
 
+  import { ATTR_MANUAL_DRAGGING } from '@/components/flowbite-svelte/Popper.svelte';
   import LangDropdown from '@/components/LangDropdown.svelte';
   import LocalIcon from '@/components/LocalIcon.svelte';
   import Provider from '@/components/Provider.svelte';
@@ -50,6 +51,7 @@
       '[popover="manual"]'
     ) as HTMLElement | null;
     if (!popover) return;
+    popover.setAttribute(ATTR_MANUAL_DRAGGING, '');
 
     isDraggingHeader = true;
 
@@ -62,7 +64,8 @@
     const offsetLeft = rect.left - currentLeft;
     const offsetTop = rect.top - currentTop;
 
-    logger.debug({ currentLeft, currentTop, offsetLeft, offsetTop });
+    const toolbarStartLeft = toolbarRef ? parseFloat(toolbarRef.style.left) || 0 : 0;
+    const toolbarStartTop = toolbarRef ? parseFloat(toolbarRef.style.top) || 0 : 0;
 
     function onMouseMove(ev: MouseEvent) {
       if (!popover) return;
@@ -78,12 +81,22 @@
 
       popover.style.left = `${newLeft - offsetLeft}px`;
       popover.style.top = `${newTop - offsetTop}px`;
+
+      if (toolbarRef) {
+        const popoverMovedX = parseFloat(popover.style.left) - currentLeft;
+        const popoverMovedY = parseFloat(popover.style.top) - currentTop;
+        toolbarRef.style.left = `${toolbarStartLeft + popoverMovedX}px`;
+        toolbarRef.style.top = `${toolbarStartTop + popoverMovedY}px`;
+      }
     }
 
     function onMouseUp() {
       isDraggingHeader = false;
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+
+      if (!popover) return;
+      popover.removeAttribute(ATTR_MANUAL_DRAGGING);
     }
 
     window.addEventListener('mousemove', onMouseMove);

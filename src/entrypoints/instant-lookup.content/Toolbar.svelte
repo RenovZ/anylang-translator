@@ -6,7 +6,6 @@
   import LocalIcon from '@/components/LocalIcon.svelte';
   import config from '@/lib/config';
   import lang from '@/lib/lang';
-  import logger from '@/lib/logger';
   import urlUtils from '@/lib/url';
   import { INSTANT_LOOKUP_OVERLAY_ATTRIBUTE, NOTRANSLATE_CLASS } from '@/preset/dom';
 
@@ -331,7 +330,6 @@
 
       clearSelectionState();
       isSelectionToolbarVisible.set(false);
-      // isPopoverOpen.set(false);
     };
 
     const handleSelectionChange = () => {
@@ -350,7 +348,6 @@
 
         clearSelectionState();
         isSelectionToolbarVisible.set(false);
-        // isPopoverOpen.set(false);
       }
     };
 
