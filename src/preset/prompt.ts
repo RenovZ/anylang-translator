@@ -759,8 +759,8 @@ Rules:
    - cognates: array of objects grouped by part of speech, each with:
      - pos: string — part of speech label.
      - words: array of objects, each with:
-       - word: string — the cognate word in ${getTokenCellText(TARGET_LANGUAGE)}.
-       - meaning: string — meaning in ${getTokenCellText(SOURCE_LANGUAGE)}.
+       - word: string — the cognate word in ${getTokenCellText(SOURCE_LANGUAGE)}.
+       - meaning: string — meaning in ${getTokenCellText(TARGET_LANGUAGE)}.
    - etymology: array of objects, each with:
      - title: string — short title summarizing the etymology point.
      - content: string — detailed etymology explanation in ${getTokenCellText(TARGET_LANGUAGE)}.
