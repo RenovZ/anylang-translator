@@ -10,13 +10,16 @@ import { translateUtils } from '@/lib/translate/utils';
 import { putBatchRequestRecord } from '@/lib/utils/batch-request-record';
 import { BATCH_SEPARATOR } from '@/preset/prompt';
 import { DEFAULT_BATCH_QUEUE_CONFIG, DEFAULT_REQUEST_QUEUE_CONFIG } from '@/preset/translate';
-import { WebPagePromptContext } from '@/types/content';
-import type { PromptResolver, SubtitlePromptContext } from '@/types/prompt';
+import type {
+  AdaptiveTranslateContext,
+  BilingualSubtitlesContext,
+  PromptResolver
+} from '@/types/prompt';
 import { AIProvider, isLLMProvider, ProviderConfig } from '@/types/provider';
 import type { TranslateBatchData } from '@/types/translate';
 
-export function parseBatchResult(result: string): string[] {
-  return result.split(BATCH_SEPARATOR).map((t) => t.trim());
+export function parseBatchResult(result: string | undefined): string[] {
+  return (result ?? '').split(BATCH_SEPARATOR).map((t) => t.trim());
 }
 
 export function shouldUseBatchQueue(providerConfig: ProviderConfig): boolean {
@@ -177,7 +180,7 @@ export async function setUpWebPageTranslationQueue() {
     }
 
     let result: string | undefined;
-    const context: WebPagePromptContext = {
+    const context: AdaptiveTranslateContext = {
       webTitle: translateUtils.normalize(webTitle),
       webContent: translateUtils.normalize(webContent),
       webSummary: translateUtils.normalize(webSummary)
@@ -304,7 +307,7 @@ export async function setUpSubtitlesTranslationQueue() {
     }
 
     let result: string | undefined;
-    const context: SubtitlePromptContext = {
+    const context: BilingualSubtitlesContext = {
       videoTitle: translateUtils.normalize(videoTitle),
       videoSummary: translateUtils.normalize(summary)
     };

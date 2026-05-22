@@ -61,3 +61,5 @@ export interface TranslateBatchData<TContext = unknown> {
   scheduleAt: number;
   context?: TContext;
 }
+
+export type TranslateResult<T> = T | undefined | null;

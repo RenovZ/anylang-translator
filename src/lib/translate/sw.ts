@@ -4,7 +4,7 @@ import lang from '@/lib/lang';
 import logger, { formatError } from '@/lib/logger';
 import providerManager from '@/lib/provider';
 import urlUtils from '@/lib/url';
-import type { LangCode } from '@/types/lang';
+import type { DetectedLangCode, LangCode } from '@/types/lang';
 import type { PromptResolver } from '@/types/prompt';
 import { AIProvider, isPaidProvider, type ProviderConfig } from '@/types/provider';
 
@@ -15,7 +15,7 @@ import { translateUtils } from './utils';
 
 export function shouldEnableAutoTranslation(
   url: string,
-  detectedCodeOrUnd: LangCode | 'und',
+  detectedCodeOrUnd: DetectedLangCode,
   sourceLangCode: LangCode | 'auto' | 'default',
   autoAppliedSites: string[] = [],
   autoAppliedLangs: LangCode[] = []
@@ -68,14 +68,13 @@ export async function translate<TContext>(
   if (type === 'free') {
     const sourceLang =
       sourceLangCode === 'auto' || sourceLangCode === 'default' ? 'auto' : sourceLangCode;
-    const targetLang = targetLangCode;
 
     if (provider === 'google-translate') {
-      return await googleTranslate(preparedText, sourceLang, targetLang);
+      return await googleTranslate(preparedText, sourceLang, targetLangCode);
     }
 
     if (provider === 'bing-translate') {
-      return await bingTranslate(preparedText, sourceLang, targetLang);
+      return await bingTranslate(preparedText, sourceLang, targetLangCode);
     }
 
     logger.error('Unsupported free provider', { provider, type });
@@ -88,7 +87,14 @@ export async function translate<TContext>(
   }
 
   if (type === 'custom') {
-    return await aiTranslate(preparedText, targetLangCode, providerConfig, promptResolver, options);
+    return await aiTranslate(
+      preparedText,
+      sourceLangCode,
+      targetLangCode,
+      providerConfig,
+      promptResolver,
+      options
+    );
   }
 
   throw new Error(`Unsupported ${type} provider: ${provider}`);

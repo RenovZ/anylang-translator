@@ -1,5 +1,7 @@
 import { writable } from 'svelte/store';
 
+import type { DetectedLangCode } from '@/types/lang';
+
 import { buildContextSnapshot } from './utils';
 import type { ContextSnapshot, SelectionSnapshot } from './utils';
 
@@ -37,6 +39,7 @@ export const selectionSession = writable<SelectionSession | null>(null);
 export const isSelectionToolbarVisible = writable(false);
 export const isPopoverOpen = writable(false);
 export const isPopoverPinned = writable(false);
+export const detectedLangCodeOrUnd = writable<DetectedLangCode | null>(null);
 
 export function setSelectionState(
   selection: SelectionSnapshot | null,

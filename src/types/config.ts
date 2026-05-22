@@ -25,8 +25,8 @@ export const triggerOnHoverSchema = z.object({
 
 export const langDetectionSchema = z.object({
   mode: langDetectionModeSchema,
-  provider: aiProviderSchema.nullable(),
-  langCode: langCodeSchema
+  provider: aiProviderSchema.nullable()
+  // langCode: langCodeSchema
 });
 export type LangDetection = z.infer<typeof langDetectionSchema>;
 
@@ -53,7 +53,6 @@ const adaptiveTranslateSchema = featureBaseSchema.extend({
 const instantLookupSchema = featureBaseSchema.extend({
   disabledSites: z.array(z.string()).default([]),
   disabledLangs: z.array(langCodeSchema).default([]),
-  provider: providerSchema,
   selection: z.object({
     targetLangCode: langCodeSchema.optional(),
     triggerMode: triggerModeOnSelectionSchema.default('directly')

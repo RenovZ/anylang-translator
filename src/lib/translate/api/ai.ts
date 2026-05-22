@@ -3,6 +3,7 @@ import { generateText } from 'ai';
 import errorManager from '@/lib/error';
 import logger from '@/lib/logger';
 import providerManager from '@/lib/provider';
+import type { LangCode } from '@/types/lang';
 import type { PromptResolver } from '@/types/prompt';
 import { isPaidProvider, type AIProvider } from '@/types/provider';
 
@@ -10,7 +11,8 @@ const THINK_TAG_RE = /<\/think>([\s\S]*)/;
 
 export async function aiTranslate<TContext>(
   text: string,
-  targetLangName: string,
+  sourceLangCode: LangCode,
+  targetLangCode: LangCode,
   providerConfig: AIProvider,
   promptResolver: PromptResolver<TContext>,
   options?: { isBatch?: boolean; context?: TContext }
@@ -33,7 +35,12 @@ export async function aiTranslate<TContext>(
   const providerOptions = providerManager.overrideOptions(model.name, provider, userOptions);
   const languageModel = await providerManager.getLanguageModel(providerName);
 
-  const { systemPrompt, prompt } = promptResolver(providerConfig, targetLangName, text, options);
+  const { systemPrompt, prompt } = await promptResolver(
+    providerConfig,
+    targetLangCode,
+    text,
+    options
+  );
 
   const params = {
     model: languageModel,

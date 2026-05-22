@@ -1,7 +1,9 @@
+import type { LangCode } from '@/types/lang';
+
 export async function googleTranslate(
   sourceText: string,
-  fromLang: string,
-  toLang: string
+  fromLang: LangCode,
+  toLang: LangCode
 ): Promise<string> {
   const params = {
     client: 'gtx',

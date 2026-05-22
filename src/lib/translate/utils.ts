@@ -1,5 +1,5 @@
 import { MAX_TEXT_LENGTH, WHITESPACE_RUN_RE, ZERO_WIDTH_CHARS_RE } from '@/preset/content';
-import { WebPagePromptContext } from '@/types/content';
+import type { AdaptiveTranslateContext } from '@/types/prompt';
 
 export class TranslateUtils {
   // Pattern matches numbers with optional thousand separators and decimal points
@@ -16,8 +16,8 @@ export class TranslateUtils {
   }
 
   normalizeWebPagePromptContext(
-    webPageContext?: WebPagePromptContext
-  ): WebPagePromptContext | undefined {
+    webPageContext?: AdaptiveTranslateContext
+  ): AdaptiveTranslateContext | undefined {
     if (!webPageContext) {
       return undefined;
     }

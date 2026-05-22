@@ -25,9 +25,9 @@ import {
   TRANS_STYLE_KEY,
   TRANSLATE_ERROR_CONTAINER_CLASS
 } from '@/preset/dom';
-import { WebPagePromptContext } from '@/types/content';
 import { Point } from '@/types/dom';
-import { LangCode } from '@/types/lang';
+import { DetectedLangCode, LangCode } from '@/types/lang';
+import type { AdaptiveTranslateContext } from '@/types/prompt';
 import { isLLMProvider } from '@/types/provider';
 import type { CustomDisplayStyle, DisplayStyle, TranslateOptions } from '@/types/translate';
 import { displayStyleSchema } from '@/types/translate';
@@ -381,14 +381,13 @@ export async function getTranslatedTextAndRemoveSpinner(
   return translatedText;
 }
 
-export function validateTranslationConfigAndToast(): boolean {
-  const {
-    sourceLangCode,
-    targetLangCode,
-    langDetection: { langCode: detectedCode }
-  } = configStore.get();
+export function validateTranslationConfigAndToast(detectedCode: DetectedLangCode): boolean {
+  const { sourceLangCode, targetLangCode } = configStore.get();
 
-  if (sourceLangCode === targetLangCode || (!sourceLangCode && detectedCode === targetLangCode)) {
+  if (
+    sourceLangCode === targetLangCode ||
+    (!sourceLangCode && detectedCode && detectedCode === targetLangCode)
+  ) {
     toast.error(
       i18n('toast_translation_same_langauge', {
         defaultValue: 'Source and target languages are the same'
@@ -415,6 +414,7 @@ export function validateTranslationConfigAndToast(): boolean {
 
 // High-level orchestration function
 export async function removeOrShowNodeTranslation(
+  detectedCode: DetectedLangCode,
   point: Point,
   options: Required<Pick<TranslateOptions, 'mode'>> & Omit<TranslateOptions, 'mode'>
 ): Promise<void> {
@@ -422,7 +422,7 @@ export async function removeOrShowNodeTranslation(
 
   if (!node || !domFilter.isHTMLElement(node)) return;
 
-  if (!validateTranslationConfigAndToast()) return;
+  if (!validateTranslationConfigAndToast(detectedCode)) return;
 
   const id = cryptoPolyfill.getUUID();
   domTraversal.walkAndLabelElement(node, id, options.pageRange);
@@ -448,7 +448,7 @@ export async function removeOrShowNodeTranslation(
 async function getWebPagePromptContext(
   options: Pick<TranslateOptions, 'providerConfig' | 'pageRange'>,
   includeSummary: boolean
-): Promise<WebPagePromptContext | undefined> {
+): Promise<AdaptiveTranslateContext | undefined> {
   const { providerConfig, pageRange } = options;
   // Only LLM (non-free) providers can use web page context
   if (isLLMProvider(providerConfig)) return undefined;
@@ -481,7 +481,7 @@ async function translateTextUsingPageConfig(
   options: Required<Pick<TranslateOptions, 'text'>> &
     Omit<TranslateOptions, 'text'> & {
       extraHashTags?: string[];
-      webPageContext?: WebPagePromptContext;
+      webPageContext?: AdaptiveTranslateContext;
     }
 ): Promise<string> {
   const { text, targetLangCode, extraHashTags, webPageContext } = options;

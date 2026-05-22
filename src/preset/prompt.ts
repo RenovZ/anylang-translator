@@ -9,6 +9,7 @@ import {
   FEAT_PANORAMA_READING,
   FEAT_WRITING_COPILOT
 } from './feature';
+import { mockDictionaryData, mockExamplesData, mockUsageData } from './instant-lookup';
 import { LANG_CODE_MAP } from './lang';
 
 const QUICK_TRANSLATE = {
@@ -478,6 +479,12 @@ export const BATCH_SEPARATOR = '%%';
 // // 默认导出的 token 集合（目前指向网页翻译 token，供通用逻辑使用）
 // export const TOKENS = WEB_PAGE_PROMPT_TOKENS;
 
+export const BILINGUAL_CASE = 'bilingualCase';
+export const AUTHENTIC_CASE = 'authenticCase';
+export const AUTHORITATIVE_CASE = 'authoritativeCase';
+export const WORD = 'word';
+
+export const SOURCE_LANGUAGE = 'sourceLanguage';
 export const TARGET_LANGUAGE = 'targetLanguage';
 export const INPUT = 'input';
 export const WEB_TITLE = 'webTitle';
@@ -670,3 +677,95 @@ Rules:
 
 Supported language codes:
 ${supportedLanguageList}`;
+
+// ========== Dictionary Data Prompts ==========
+
+export const DICTIONARY_SYSTEM_PROMPT = `You are a precise multilingual dictionary API. Your task is to return structured dictionary data for translating a word from ${getTokenCellText(SOURCE_LANGUAGE)} to ${getTokenCellText(TARGET_LANGUAGE)} in strict JSON format.
+
+Rules:
+1. Return ONLY a valid JSON object. Do NOT wrap it in markdown code blocks (no \`\`\`json).
+2. The JSON must exactly match the following structure and field names:
+   - word: string — the source language word (in ${getTokenCellText(SOURCE_LANGUAGE)}). For example, if querying from English to Chinese, return the English equivalent.
+   - pronunciations: array of objects, each with:
+     - region: optional string, MUST be exactly "UK" or "US" if present. ONLY include for English target words; otherwise return an empty array [].
+     - phonetic: optional string, IPA format.
+   - definitions: array of objects, each with:
+     - pos: string — part of speech label.
+     - meanings: array of strings — definitions or translations in ${getTokenCellText(TARGET_LANGUAGE)}.
+   - wordForms: array of objects, each with:
+     - label: string — form name in ${getTokenCellText(TARGET_LANGUAGE)} (e.g., "第三人称单数" if target is Chinese, "Plural" if target is English).
+     - value: string — the actual inflected form.
+     ONLY include if the target language has inflectional morphology; otherwise return an empty array [].
+   - examLabels: array of strings — exam or proficiency category names in ${getTokenCellText(TARGET_LANGUAGE)} (can be any strings). ONLY include if applicable to the target language; otherwise return an empty array [].
+3. Provide comprehensive definitions covering all common parts of speech and usages.
+4. Do NOT include any fields not listed above.
+5. Ensure all strings are properly escaped in JSON.
+
+## Examples
+
+### English to Chinese
+${JSON.stringify(mockDictionaryData)}`;
+
+export const DICTIONARY_USER_PROMPT = `Please return the complete dictionary entry for the ${getTokenCellText(SOURCE_LANGUAGE)} word "${getTokenCellText(WORD)}" translated into ${getTokenCellText(TARGET_LANGUAGE)}.`;
+
+// ========== Examples Data Prompts ==========
+
+export const EXAMPLES_SYSTEM_PROMPT = `You are a precise multilingual example sentence API. Your task is to return structured example sentence data for a word translated from ${getTokenCellText(SOURCE_LANGUAGE)} to ${getTokenCellText(TARGET_LANGUAGE)} in strict JSON format.
+
+Rules:
+1. Return ONLY a valid JSON array. Do NOT wrap it in markdown code blocks (no \`\`\`json).
+2. The array must contain exactly 3 category objects in this fixed order:
+   1. "${getTokenCellText(BILINGUAL_CASE)}"
+   2. "${getTokenCellText(AUTHENTIC_CASE)}"
+   3. "${getTokenCellText(AUTHORITATIVE_CASE)}"
+3. Each category object must have:
+   - name: string — exactly the provided category name above.
+   - examples: array of objects, each with:
+     - original: string — a sentence in ${getTokenCellText(TARGET_LANGUAGE)} containing the target word.
+     - translation: string — the translation in ${getTokenCellText(SOURCE_LANGUAGE)}.
+     - source: optional string — source name (dictionary, media, etc.). Include for bilingual and authoritative examples when available; omit for authentic examples if no specific source.
+4. Provide 2-3 examples per category.
+5. Ensure the target word appears naturally in each original sentence.
+6. Do NOT include any fields not listed above.
+7. Ensure all strings are properly escaped in JSON.
+
+## Examples
+${JSON.stringify(mockExamplesData)}`;
+
+export const EXAMPLES_USER_PROMPT = `Please return example sentences for the ${getTokenCellText(SOURCE_LANGUAGE)} word "${getTokenCellText(WORD)}" translated into ${getTokenCellText(TARGET_LANGUAGE)}. Use the provided category names exactly as given.`;
+
+// ========== Usage Data Prompts ==========
+
+export const USAGE_SYSTEM_PROMPT = `You are a precise multilingual word usage API. Your task is to return structured usage data for a word translated from ${getTokenCellText(SOURCE_LANGUAGE)} to ${getTokenCellText(TARGET_LANGUAGE)} in strict JSON format.
+
+Rules:
+1. Return ONLY a valid JSON object. Do NOT wrap it in markdown code blocks (no \`\`\`json).
+2. The JSON must exactly match the following structure and field names:
+   - word: string — the target language word (in ${getTokenCellText(TARGET_LANGUAGE)}).
+   - phrases: array of objects, each with:
+     - phrase: string — a common collocation or phrase in ${getTokenCellText(TARGET_LANGUAGE)} containing the word.
+     - meaning: string — explanation or translation in ${getTokenCellText(TARGET_LANGUAGE)}.
+   - synonyms: array of objects grouped by part of speech, each with:
+     - pos: string — part of speech label.
+     - meaning: string — shared meaning in ${getTokenCellText(TARGET_LANGUAGE)}.
+     - words: array of strings — synonym words in ${getTokenCellText(TARGET_LANGUAGE)}.
+   - cognates: array of objects grouped by part of speech, each with:
+     - pos: string — part of speech label.
+     - words: array of objects, each with:
+       - word: string — the cognate word in ${getTokenCellText(TARGET_LANGUAGE)}.
+       - meaning: string — meaning in ${getTokenCellText(TARGET_LANGUAGE)}.
+   - etymology: array of objects, each with:
+     - title: string — short title summarizing the etymology point.
+     - content: string — detailed etymology explanation in ${getTokenCellText(TARGET_LANGUAGE)}.
+3. If a concept is not applicable to the target language (e.g., cognates for isolating languages, etymology when unavailable), return an empty array [] for that field. Do NOT omit the field key.
+4. Provide at least 3 phrases if commonly used.
+5. Provide synonyms grouped by distinct meanings and parts of speech.
+6. Provide cognates (derivatives, related word forms) grouped by part of speech where applicable.
+7. Provide 1-2 etymology entries explaining word origin where applicable.
+8. Do NOT include any fields not listed above.
+9. Ensure all strings are properly escaped in JSON.
+
+## Examples
+${JSON.stringify(mockUsageData)}`;
+
+export const USAGE_USER_PROMPT = `Please return usage information including common phrases, synonyms, cognates, and etymology for the ${getTokenCellText(SOURCE_LANGUAGE)} word "${getTokenCellText(WORD)}" translated into ${getTokenCellText(TARGET_LANGUAGE)}.`;

@@ -185,6 +185,9 @@
   "description_placeholder": {
     "message": "Describe what this field should contain..."
   },
+  "dictionary": {
+    "message": "Dictonary"
+  },
   "display_mode_bilingual_mode": {
     "message": "Bilingual Mode"
   },
@@ -266,6 +269,9 @@
   "enter_the_model_name": {
     "message": "Enter the model name"
   },
+  "examples": {
+    "message": "Examples"
+  },
   "feature_adaptive_translate": {
     "message": "Adaptive Translate"
   },
@@ -344,8 +350,14 @@
   "instant_lookup_disabled_sites_description": {
     "message": "When visiting these sites, instant lookup will be disabled. Site rules take priority over language rules."
   },
+  "instant_lookup_free_provider_not_supported": {
+    "message": "Instant lookup is not supported for free providers. Please use a LLM provider."
+  },
   "instant_lookup_icon": {
     "message": "Instant lookup icon"
+  },
+  "instant_lookup_no_llm_provider": {
+    "message": "No LLM provider selected. Please select a LLM provider in the settings."
   },
   "instant_lookup_provider": {
     "message": "Instant lookup provider"
@@ -355,6 +367,12 @@
   },
   "instant_lookup_shortcut": {
     "message": "Instant lookup shortcut"
+  },
+  "instant_lookup_source_language_and_target_language_is_the_same": {
+    "message": "Source language and target language are the same, instant lookup is skipped."
+  },
+  "instant_lookup_source_language_undetected": {
+    "message": "Source language is undetected, please select a LLM provider for language detection."
   },
   "instant_lookup_subtitle": {
     "message": "More than a dictionary."
@@ -830,6 +848,9 @@
   "ui_language_hint": {
     "message": "UI language affects panel display language and does not change translation target language"
   },
+  "uk": {
+    "message": "英"
+  },
   "unsupported_content": {
     "message": "Unsupported Content"
   },
@@ -841,6 +862,12 @@
   },
   "upgrade": {
     "message": "Upgrade"
+  },
+  "us": {
+    "message": "美"
+  },
+  "usage": {
+    "message": "Usage"
   },
   "view_provider_docs": {
     "message": "View Provider Docs"

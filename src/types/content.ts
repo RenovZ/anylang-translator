@@ -1,4 +1,4 @@
-import { LangCode } from './lang';
+import { DetectedLangCode, LangCode } from './lang';
 
 // Detection source type
 export type DetectMethod = 'llm' | 'franc' | 'fallback';
@@ -60,7 +60,7 @@ export interface DocumentInfo {
     publishedTime?: string | null;
   } | null;
   paragraphs: string[];
-  detectedCodeOrUnd: LangCode | 'und';
+  detectedCodeOrUnd: DetectedLangCode;
   detectSource: DetectMethod;
 }
 
@@ -77,13 +77,4 @@ export interface WebPageContext {
 export interface CachedWebPageContext extends WebPageContext {
   url: string;
   webContent: string;
-}
-
-/**
- * Prompt context passed to LLM translation for better quality
- */
-export interface WebPagePromptContext {
-  webTitle?: string | null;
-  webContent?: string | null;
-  webSummary?: string | null;
 }

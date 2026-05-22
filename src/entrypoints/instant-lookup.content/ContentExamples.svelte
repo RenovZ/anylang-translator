@@ -2,14 +2,14 @@
   import { TabItem, Tabs } from 'flowbite-svelte';
 
   import LocalIcon from '@/components/LocalIcon.svelte';
-
-  import type { ExampleCategory } from './types';
+  import type { ExamplesData } from '@/types/instant-lookup';
 
   interface Props {
-    categories: ExampleCategory[];
+    categories: ExamplesData;
+    selectedText: string;
   }
 
-  const { categories }: Props = $props();
+  const { categories, selectedText }: Props = $props();
 
   function handleAudioClick(original: string) {
     // TODO: Implement audio playback for example sentence
@@ -28,7 +28,7 @@
 <Tabs
   tabStyle="pill"
   class="w-full"
-  classes={{ content: 'bg-transparent p-0 grid grid-cols-[1fr_auto] gap-4 text-sm' }}>
+  classes={{ content: 'bg-transparent p-0 grid grid-cols-[auto_1fr] gap-4 text-sm' }}>
   {#each categories as category, index (index)}
     <TabItem open={index === 0} title={category.name} classes={{ button: 'px-2 py-1 text-nowrap' }}>
       {#each category.examples as example, exampleIndex (exampleIndex)}

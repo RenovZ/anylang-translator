@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Tooltip } from 'flowbite-svelte';
   import { twMerge } from 'tailwind-merge';
 
   import LocalIcon from '@/components/LocalIcon.svelte';
@@ -52,7 +53,7 @@
           icon={getProviderIcon($config[field].provider)}
           class="w-4" />
         {#if $config[field].provider}
-          <span class="line-clamp-1 w-full text-left">
+          <span class="line-clamp-1 w-full text-left break-all">
             {$config[field].provider.name}
             {#if isPaidProvider($config[field].provider)}
               ({$config[field].provider.model})
@@ -60,6 +61,14 @@
               ({$config[field].provider.model.name})
             {/if}
           </span>
+          <Tooltip class="max-w-80 text-left text-xs">
+            {$config[field].provider.name}
+            {#if isPaidProvider($config[field].provider)}
+              ({$config[field].provider.model})
+            {:else if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
+              ({$config[field].provider.model.name})
+            {/if}
+          </Tooltip>
         {:else}
           <span class="line-clamp-1 w-full text-slate-300 dark:text-slate-500">
             {'-'.repeat(6)}

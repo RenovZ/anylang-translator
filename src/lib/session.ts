@@ -3,6 +3,8 @@ import { browser } from 'wxt/browser';
 import { storage, type WxtStorageItem } from 'wxt/utils/storage';
 import z from 'zod';
 
+import { LangCode, langCodeSchema } from '@/types/lang';
+
 import logger from './logger';
 
 export const translateStateSchema = z.object({
@@ -135,4 +137,10 @@ export const adaptiveTranslateSession = new SessionStore<TranslateState>(
   'adaptive-translate-state',
   translateStateSchema,
   { enabled: false }
+);
+
+export const langDetectionSession = new SessionStore<LangCode>(
+  'lang-detection',
+  langCodeSchema,
+  'en'
 );

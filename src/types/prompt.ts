@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { featureKeys } from '@/preset/provider';
 
+import type { DetectedLangCode, LangCode } from './lang';
 import { CustomProvider } from './provider';
 
 // OutputSchema types
@@ -41,12 +42,24 @@ export interface PromptResult {
 
 export type PromptResolver<TContext = unknown> = (
   providerConfig: CustomProvider,
-  targetLang: string,
+  targetLangCode: LangCode,
   input: string,
   options?: PromptOptions<TContext>
-) => PromptResult;
+) => Promise<PromptResult>;
 
-export interface SubtitlePromptContext {
+export interface BilingualSubtitlesContext {
   videoTitle?: string | null;
   videoSummary?: string | null;
+}
+
+export interface AdaptiveTranslateContext {
+  webTitle?: string | null;
+  webContent?: string | null;
+  webSummary?: string | null;
+}
+
+export interface InstantLookupContext {
+  webTitle?: string | null;
+  webSummary?: string | null;
+  detectedLangCode?: DetectedLangCode;
 }

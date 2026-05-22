@@ -14,9 +14,9 @@ import {
   WALKED_ATTRIBUTE
 } from '@/preset/dom';
 import type { TranslateMode } from '@/types/config';
-import type { WebPagePromptContext } from '@/types/content';
 import type { TransNode } from '@/types/dom';
 import type { LangCode } from '@/types/lang';
+import type { AdaptiveTranslateContext } from '@/types/prompt';
 import { isLLMProvider, type ProviderConfig } from '@/types/provider';
 import type { TranslateOptions } from '@/types/translate';
 
@@ -441,7 +441,7 @@ async function buildWebPageHashComponents(
   sourceLangCode: LangCode | 'auto' | 'default',
   targetLangCode: LangCode,
   enableAIContentAware: boolean,
-  webPageContext?: WebPagePromptContext
+  webPageContext?: AdaptiveTranslateContext
 ): Promise<string[]> {
   const preparedText = translateUtils.prepareTranslationText(text);
   const context = translateUtils.normalizeWebPagePromptContext(webPageContext);
@@ -454,7 +454,7 @@ async function buildWebPageHashComponents(
 
   if (!isLLMProvider(providerConfig)) return hashComponents;
 
-  const { systemPrompt, prompt } = getTranslatePrompt(
+  const { systemPrompt, prompt } = await getTranslatePrompt(
     providerConfig,
     targetLangCode,
     preparedText,
@@ -495,7 +495,7 @@ export async function translateTextCore(
     Omit<TranslateOptions, 'text'> & {
       enableAIContentAware?: boolean;
       extraHashTags?: string[];
-      webPageContext?: WebPagePromptContext;
+      webPageContext?: AdaptiveTranslateContext;
     }
 ): Promise<string> {
   const {

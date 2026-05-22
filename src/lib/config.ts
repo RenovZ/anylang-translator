@@ -13,7 +13,7 @@ import {
   triggerOnHoverSchema,
   type Config
 } from '@/types/config';
-import { LangCode, langCodeSchema } from '@/types/lang';
+import { langCodeSchema } from '@/types/lang';
 import { displayStyleSchema } from '@/types/translate';
 
 import logger from './logger';
@@ -31,8 +31,8 @@ const defaultConfig: Config = configSchema.parse({
 
   langDetection: {
     mode: langDetectionModeSchema.parse('basic'),
-    provider: null,
-    langCode: langCodeSchema.parse('en')
+    provider: null
+    // langCode: langCodeSchema.parse('en')
   },
 
   providers: [
@@ -68,7 +68,7 @@ const defaultConfig: Config = configSchema.parse({
 
   instantLookup: {
     icon: 'lucide:book-open-text',
-    provider: structuredClone(freeProviders[0]),
+    provider: null,
     shortcut: ['Alt', 'Q'],
     disabledSites: [],
     disabledLangs: [],
@@ -189,17 +189,17 @@ class ConfigStore {
     await this.storage.removeValue();
   }
 
-  async setDetectedLangCode(langCode: LangCode | 'und'): Promise<void> {
-    await this.init();
-    try {
-      await this.update((config) => {
-        config.langDetection.langCode = langCode;
-        return config;
-      });
-    } catch (error) {
-      logger.error('Failed to sync detected lang code from browser', { error });
-    }
-  }
+  // async setDetectedLangCode(langCode: LangCode | 'und'): Promise<void> {
+  //   await this.init();
+  //   try {
+  //     await this.update((config) => {
+  //       config.langDetection.langCode = langCode;
+  //       return config;
+  //     });
+  //   } catch (error) {
+  //     logger.error('Failed to sync detected lang code from browser', { error });
+  //   }
+  // }
 
   isSitesAutoApplied(sites: string[], url: string | URL): boolean {
     const hostname = typeof url === 'string' ? new URL(url).hostname : url.hostname;

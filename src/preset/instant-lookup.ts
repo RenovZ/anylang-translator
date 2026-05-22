@@ -1,10 +1,16 @@
-import type { DictionaryEntry } from './types';
+import i18n from '@/lib/i18n';
+import type { DictionaryData, ExamplesData, UsageData } from '@/types/instant-lookup';
 
-export const mockDictionaryEntry: DictionaryEntry = {
+export const REGION_OPTIONS = [
+  { value: 'UK', label: i18n('uk', { defaultValue: '英' }) },
+  { value: 'US', label: i18n('us', { defaultValue: '美' }) }
+] as const;
+
+export const mockDictionaryData: DictionaryData = {
   word: 'select',
   pronunciations: [
-    { region: '英', phonetic: '/sɪˈlekt/' },
-    { region: '美', phonetic: '/sɪˈlekt/' }
+    { region: 'UK', phonetic: '/sɪˈlekt/' },
+    { region: 'US', phonetic: '/sɪˈlekt/' }
   ],
   definitions: [
     {
@@ -28,53 +34,58 @@ export const mockDictionaryEntry: DictionaryEntry = {
     { label: '比较级', value: 'more select' },
     { label: '最高级', value: 'most select' }
   ],
-  examLabels: ['高中', 'CET4', 'CET6', '考研', 'IELTS', 'GMAT', '商务英语'],
-  exampleCategories: [
-    {
-      name: '双语例句',
-      examples: [
-        {
-          original: 'At the end of this chapter there is a select bibliography of useful books.',
-          translation: '本章末尾附着有用书籍的精选书目。',
-          source: '《柯林斯英汉双解大词典》'
-        },
-        {
-          original:
-            'Select the text you want to format by holding down the left button on your mouse.',
-          translation: '按住鼠标左键选取你想要格式化的文本。',
-          source: '《牛津词典》'
-        }
-      ]
-    },
-    {
-      name: '原声例句',
-      examples: [
-        {
-          original: 'Please select your preferred language.',
-          translation: '请选择您喜欢的语言。'
-        },
-        {
-          original: 'You can select multiple items at once.',
-          translation: '您可以一次选择多个项目。'
-        }
-      ]
-    },
-    {
-      name: '权威例句',
-      examples: [
-        {
-          original: 'The committee will select the winner from among the finalists.',
-          translation: '委员会将从入围者中选出获胜者。',
-          source: '《剑桥词典》'
-        },
-        {
-          original: 'Only a select few were invited to the meeting.',
-          translation: '只有少数精选的人被邀请参加会议。',
-          source: '《麦克米伦词典》'
-        }
-      ]
-    }
-  ],
+  examLabels: ['高中', 'CET4', 'CET6', '考研', 'IELTS', 'GMAT', '商务英语']
+};
+
+export const mockExamplesData: ExamplesData = [
+  {
+    name: '双语例句',
+    examples: [
+      {
+        original: 'At the end of this chapter there is a select bibliography of useful books.',
+        translation: '本章末尾附着有用书籍的精选书目。',
+        source: '《柯林斯英汉双解大词典》'
+      },
+      {
+        original:
+          'Select the text you want to format by holding down the left button on your mouse.',
+        translation: '按住鼠标左键选取你想要格式化的文本。',
+        source: '《牛津词典》'
+      }
+    ]
+  },
+  {
+    name: '原声例句',
+    examples: [
+      {
+        original: 'Please select your preferred language.',
+        translation: '请选择您喜欢的语言。'
+      },
+      {
+        original: 'You can select multiple items at once.',
+        translation: '您可以一次选择多个项目。'
+      }
+    ]
+  },
+  {
+    name: '权威例句',
+    examples: [
+      {
+        original: 'The committee will select the winner from among the finalists.',
+        translation: '委员会将从入围者中选出获胜者。',
+        source: '《剑桥词典》'
+      },
+      {
+        original: 'Only a select few were invited to the meeting.',
+        translation: '只有少数精选的人被邀请参加会议。',
+        source: '《麦克米伦词典》'
+      }
+    ]
+  }
+];
+
+export const mockUsageData: UsageData = {
+  word: 'select',
   phrases: [
     { phrase: 'select all', meaning: '全选；选择所有；全部选择；选择全部' },
     { phrase: 'Mensa Select', meaning: '门萨首选' },

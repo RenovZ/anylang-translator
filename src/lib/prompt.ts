@@ -1,41 +1,43 @@
+import configStore from '@/lib/config';
+import lang from '@/lib/lang';
 import {
   DEFAULT_BATCH_TRANSLATE_PROMPT,
   DEFAULT_SUBTITLE_TRANSLATE_SYSTEM_PROMPT,
   DEFAULT_TRANSLATE_PROMPT,
   DEFAULT_TRANSLATE_SYSTEM_PROMPT,
+  DICTIONARY_SYSTEM_PROMPT,
+  DICTIONARY_USER_PROMPT,
   getTokenCellText,
   INPUT,
+  SOURCE_LANGUAGE,
   TARGET_LANGUAGE,
   VIDEO_SUMMARY,
   VIDEO_TITLE,
   WEB_CONTENT,
   WEB_SUMMARY,
-  WEB_TITLE
+  WEB_TITLE,
+  WORD
 } from '@/preset/prompt';
-import { WebPagePromptContext } from '@/types/content';
-import { SubtitlePromptContext } from '@/types/prompt';
+import { LangCode } from '@/types/lang';
+import type {
+  AdaptiveTranslateContext,
+  BilingualSubtitlesContext,
+  InstantLookupContext,
+  PromptOptions,
+  PromptResult
+} from '@/types/prompt';
 import { AIProvider } from '@/types/provider';
-
-export interface TranslatePromptOptions<TContext = unknown> {
-  isBatch?: boolean;
-  context?: TContext;
-}
-
-export interface TranslatePromptResult {
-  systemPrompt: string;
-  prompt: string;
-}
 
 function resolvePromptReplacementValue(value: string | null | undefined, fallback: string): string {
   return typeof value === 'string' && value.trim() !== '' ? value : fallback;
 }
 
-export function getTranslatePrompt(
+export async function getTranslatePrompt(
   providerConfig: AIProvider,
-  targetLang: string,
+  targetLangCode: LangCode,
   input: string,
-  options?: TranslatePromptOptions<WebPagePromptContext>
-): TranslatePromptResult {
+  options?: PromptOptions<AdaptiveTranslateContext>
+): Promise<PromptResult> {
   const promptConfig = providerConfig.prompt || {};
   let systemPrompt = promptConfig.system || DEFAULT_TRANSLATE_SYSTEM_PROMPT;
   const prompt = promptConfig.prompt || DEFAULT_TRANSLATE_PROMPT;
@@ -55,6 +57,13 @@ ${DEFAULT_BATCH_TRANSLATE_PROMPT}`;
     options?.context?.webSummary,
     'No summary available'
   );
+
+  const { uiLangCode } = configStore.get();
+  const targetLang = lang.getLangName(targetLangCode, uiLangCode);
+  if (!targetLang) {
+    throw new Error(`Unexpected target language code: ${targetLangCode}`);
+  }
+
   // Replace tokens in both prompts
   const replaceTokens = (text: string) =>
     text
@@ -69,12 +78,55 @@ ${DEFAULT_BATCH_TRANSLATE_PROMPT}`;
   };
 }
 
-export function getSubtitlesTranslatePrompt(
+export async function getDictionaryPrompt(
   providerConfig: AIProvider,
-  targetLang: string,
+  targetLangCode: LangCode,
+  word: string,
+  options?: PromptOptions<InstantLookupContext>
+): Promise<PromptResult> {
+  const promptConfig = providerConfig.prompt || {};
+  const systemPrompt = promptConfig.system || DICTIONARY_SYSTEM_PROMPT;
+  const prompt = promptConfig.prompt || DICTIONARY_USER_PROMPT;
+  const { uiLangCode } = configStore.get();
+
+  const { detectedLangCode } = options?.context ?? {};
+  if (!detectedLangCode) {
+    throw new Error(`Detected language code must be provided`);
+  }
+
+  const sourceLang = lang.getLangName(detectedLangCode, uiLangCode);
+  const targetLang = lang.getLangName(targetLangCode, uiLangCode);
+  if (!sourceLang || !targetLang) {
+    throw new Error(`Unexpected language code: ${detectedLangCode} or ${targetLangCode}`);
+  }
+
+  // Build title and summary replacement values
+  const title = resolvePromptReplacementValue(options?.context?.webTitle, 'No title available');
+  const summary = resolvePromptReplacementValue(
+    options?.context?.webSummary,
+    'No summary available'
+  );
+
+  // Replace tokens in both prompts
+  const replaceTokens = (text: string) =>
+    text
+      .replaceAll(getTokenCellText(SOURCE_LANGUAGE), sourceLang)
+      .replaceAll(getTokenCellText(TARGET_LANGUAGE), targetLang)
+      .replaceAll(getTokenCellText(WORD), word)
+      .replaceAll(getTokenCellText(WEB_TITLE), title)
+      .replaceAll(getTokenCellText(WEB_SUMMARY), summary);
+  return {
+    systemPrompt: replaceTokens(systemPrompt),
+    prompt: replaceTokens(prompt)
+  };
+}
+
+export async function getSubtitlesTranslatePrompt(
+  providerConfig: AIProvider,
+  targetLangCode: LangCode,
   input: string,
-  options?: TranslatePromptOptions<SubtitlePromptContext>
-): TranslatePromptResult {
+  options?: PromptOptions<BilingualSubtitlesContext>
+): Promise<PromptResult> {
   let { system: systemPrompt = DEFAULT_SUBTITLE_TRANSLATE_SYSTEM_PROMPT } = providerConfig.prompt;
   const { prompt = DEFAULT_TRANSLATE_PROMPT } = providerConfig.prompt;
 
@@ -91,6 +143,12 @@ export function getSubtitlesTranslatePrompt(
     options?.context?.videoSummary,
     'No summary available'
   );
+
+  const { uiLangCode } = configStore.get();
+  const targetLang = lang.getLangName(targetLangCode, uiLangCode);
+  if (!targetLang) {
+    throw new Error(`Unexpected target language code: ${targetLangCode}`);
+  }
 
   // Replace tokens in both prompts
   const replaceTokens = (text: string) =>

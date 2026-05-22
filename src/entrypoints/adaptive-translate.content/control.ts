@@ -21,6 +21,7 @@ import { TRIGGER_HOTKEY_MAP } from '@/preset/translate';
 import { FeatureUsageContext } from '@/types/analytics';
 import type { Config } from '@/types/config';
 import type { Point } from '@/types/dom';
+import type { DetectedLangCode } from '@/types/lang';
 import { isLLMProvider } from '@/types/provider';
 
 class NodeTranslation {
@@ -98,7 +99,7 @@ class NodeTranslation {
   }
 
   private trigger(pos: Point, config: Config): void {
-    void removeOrShowNodeTranslation(pos, {
+    void removeOrShowNodeTranslation(undefined, pos, {
       providerConfig: config.adaptiveTranslate.provider,
       sourceLangCode: config.sourceLangCode ?? 'auto',
       targetLangCode: config.targetLangCode,
@@ -309,6 +310,8 @@ export class PageTranslateManager {
   private lastAppliedTranslatedTitle: string | null = null;
   private titleRequestVersion = 0;
 
+  private _detectedLangCode: DetectedLangCode = null;
+
   constructor(intersectionOptions: SimpleIntersectionOptions = {}) {
     if (intersectionOptions.threshold !== undefined) {
       if (intersectionOptions.threshold < 0 || intersectionOptions.threshold > 1) {
@@ -320,6 +323,14 @@ export class PageTranslateManager {
       ...this.DEFAULT_INTERSECTION_OPTIONS,
       ...intersectionOptions
     };
+  }
+
+  set detectedLangCode(code: DetectedLangCode) {
+    this._detectedLangCode = code;
+  }
+
+  get detectedLangCode(): DetectedLangCode {
+    return this._detectedLangCode;
   }
 
   /**
@@ -342,7 +353,8 @@ export class PageTranslateManager {
 
     const trackedContext = window === window.top ? analyticsContext : undefined;
 
-    if (!validateTranslationConfigAndToast()) {
+    const detectedLangCode = this.detectedLangCode;
+    if (!validateTranslationConfigAndToast(detectedLangCode)) {
       if (trackedContext) {
         void analyticsManager.trackFeatureUsed({
           ...trackedContext,

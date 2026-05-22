@@ -3,7 +3,7 @@ import { defineExtensionMessaging } from '@webext-core/messaging';
 import type { FeatureUsedEvent } from '@/types/analytics';
 import type { GenerateTextParams, GenerateTextResult } from '@/types/background';
 import type { FeaturePayload } from '@/types/feature';
-import type { LangCode } from '@/types/lang';
+import type { DetectedLangCode, LangCode } from '@/types/lang';
 import type { ProviderConfig } from '@/types/provider';
 
 interface Protocol {
@@ -22,7 +22,7 @@ interface Protocol {
   // checkAutoPageTranslation: for auto start page translation
   checkAutoAdaptiveTranslate: (data: {
     url: string;
-    detectedCodeOrUnd: LangCode | 'und';
+    detectedCodeOrUnd: DetectedLangCode;
   }) => Promise<void>;
   // enqueueTranslateRequest
   enqueueAdaptiveTranslateRequest: (data: {

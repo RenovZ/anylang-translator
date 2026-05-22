@@ -61,7 +61,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
           langDetectionMode
         });
         logger.trace({ detectedCodeOrUnd });
-        await configStore.setDetectedLangCode(detectedCodeOrUnd);
+        manager.detectedLangCode = detectedCodeOrUnd;
 
         logger.debug('checkAutoAdaptiveTranslate', { to, detectedCodeOrUnd });
         // Notify background script that URL has changed, let it decide whether to automatically enable translation
@@ -110,7 +110,7 @@ export async function bootstrap(ctx: ContentScriptContext) {
       pageRange,
       langDetectionMode
     });
-    await configStore.setDetectedLangCode(detectedCodeOrUnd);
+    manager.detectedLangCode = detectedCodeOrUnd;
 
     logger.debug('checkAutoAdaptiveTranslate', { url: window.location.href, detectedCodeOrUnd });
     // Check if auto-translation should be enabled for initial page load

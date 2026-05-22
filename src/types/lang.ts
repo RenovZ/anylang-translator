@@ -10,3 +10,5 @@ export const uiLangCodeSchema = z.custom<keyof typeof LANG_CODE_MAP>(
     typeof val === 'string' && Object.hasOwn(LANG_CODE_MAP, val)
 );
 export type UILangCode = z.infer<typeof uiLangCodeSchema>;
+
+export type DetectedLangCode = LangCode | 'und' | undefined | null;

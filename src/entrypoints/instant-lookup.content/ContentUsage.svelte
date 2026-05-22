@@ -1,13 +1,14 @@
 <script lang="ts">
   import { TabItem, Tabs } from 'flowbite-svelte';
 
-  import type { DictionaryEntry } from './types';
+  import type { UsageData } from '@/types/instant-lookup';
 
   interface Props {
-    data: DictionaryEntry;
+    data: UsageData;
+    selectedText: string;
   }
 
-  const { data }: Props = $props();
+  const { data, selectedText }: Props = $props();
 
   function handlePhraseClick(phrase: string) {
     // TODO: Lookup the phrase
@@ -25,10 +26,10 @@
 <Tabs
   tabStyle="pill"
   class="w-full"
-  classes={{ content: 'bg-transparent p-0 grid grid-cols-[1fr_auto] gap-4 text-sm' }}>
+  classes={{ content: 'bg-transparent p-0 grid grid-cols-[auto_1fr] gap-4 text-sm' }}>
   <!-- 词典短语 -->
   <TabItem open title="词典短语" classes={tabItemClasses}>
-    {#each data.phrases as phrase, index (index)}
+    {#each data.phrases ?? [] as phrase, index (index)}
       <span class="font-medium text-gray-400 dark:text-gray-500">{index + 1}</span>
       <div class="flex flex-col gap-1">
         <button
@@ -44,7 +45,7 @@
 
   <!-- 同近义词 -->
   <TabItem title="同近义词" classes={tabItemClasses}>
-    {#each data.synonyms as group (group.pos + group.meaning)}
+    {#each data.synonyms ?? [] as group (group.pos + group.meaning)}
       <span class="font-medium text-gray-400 italic dark:text-gray-500">
         {group.pos}
       </span>
@@ -76,7 +77,7 @@
       onclick={() => handleWordClick(data.word)}>
       {data.word}
     </button>
-    {#each data.cognates as group (group.pos)}
+    {#each data.cognates ?? [] as group (group.pos)}
       <span class="font-medium text-gray-400 italic dark:text-gray-500">{group.pos}</span>
       <div class="flex flex-wrap gap-1">
         {#each group.words as item (item.word)}
@@ -96,7 +97,7 @@
 
   <!-- 词源 -->
   <TabItem title="词源" classes={tabItemClasses}>
-    {#each data.etymology as item, index (index)}
+    {#each data.etymology ?? [] as item, index (index)}
       <span class="text-gray-400 dark:text-gray-500">{index + 1}</span>
       <div class="flex flex-wrap gap-1">
         <span class="font-medium text-gray-800 dark:text-gray-200">

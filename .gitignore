@@ -33,3 +33,4 @@ migrate.md
 AGENTS.md
 
 .env.*
+/.data

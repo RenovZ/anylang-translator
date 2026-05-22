@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, Dropdown, DropdownItem, Toggle } from 'flowbite-svelte';
+  import { Button, Dropdown, DropdownItem, Toggle, Tooltip } from 'flowbite-svelte';
   import { ChevronDownOutline } from 'flowbite-svelte-icons';
   import { twMerge } from 'tailwind-merge';
 
@@ -31,7 +31,7 @@
         icon={getProviderIcon($config[field].provider)}
         name={$config[field].provider.name}
         class="w-4" />
-      <span>
+      <span class="line-clamp-1 text-left break-all">
         {$config[field].provider.name}
         {#if isPaidProvider($config[field].provider)}
           ({$config[field].provider.model})
@@ -39,6 +39,14 @@
           ({$config[field].provider.model.name})
         {/if}
       </span>
+      <Tooltip class="max-w-80 text-left text-xs">
+        {$config[field].provider.name}
+        {#if isPaidProvider($config[field].provider)}
+          ({$config[field].provider.model})
+        {:else if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
+          ({$config[field].provider.model.name})
+        {/if}
+      </Tooltip>
     {:else}
       <span class="line-clamp-1 text-slate-300 dark:text-slate-500">
         {'-'.repeat(6)}

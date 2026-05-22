@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -56,6 +57,14 @@ function i18nExtractionPlugin() {
   };
 }
 
+function createProfileDir(profileDir: string) {
+  // const profileDir = process.cwd() + '/' + dir;
+  if (!fs.existsSync(profileDir)) {
+    fs.mkdirSync(profileDir, { recursive: true });
+  }
+  return profileDir;
+}
+
 // See https://wxt.dev/api/config.html
 export default defineConfig({
   srcDir: 'src',
@@ -92,6 +101,7 @@ export default defineConfig({
     openDevtools: true,
     // openConsole: true,
     keepProfileChanges: true,
+    chromiumProfile: createProfileDir('.data/chrome-data'),
     chromiumArgs: [
       '--window-position=0,0',
       '--window-size=1700,1000',

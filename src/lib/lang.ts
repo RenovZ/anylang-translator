@@ -3,7 +3,13 @@ import { browser } from 'wxt/browser';
 
 import { LANG_CODE_MAP, UI_LANG_CODES } from '@/preset/lang';
 import { LangDir } from '@/types/content';
-import { langCodeSchema, UILangCode, uiLangCodeSchema, type LangCode } from '@/types/lang';
+import {
+  DetectedLangCode,
+  langCodeSchema,
+  UILangCode,
+  uiLangCodeSchema,
+  type LangCode
+} from '@/types/lang';
 
 import configStore from './config';
 import logger from './logger';
@@ -21,7 +27,7 @@ class LangManager {
     if (success) {
       uiLangCode = data;
     } else {
-      logger.warn('Invalid langCode data, using default:', { rawValue, error });
+      logger.warn('Invalid langCode data, using en as default:', { rawValue, error });
     }
 
     return Object.entries(LANG_CODE_MAP[uiLangCode]).reduce((acc, [langCode, langName]) => {
@@ -37,7 +43,7 @@ class LangManager {
     const { success, data, error } = uiLangCodeSchema.safeParse(rawValue);
     if (success) return LANG_CODE_MAP[data];
 
-    logger.warn('Invalid langCode data, using default:', { rawValue, error });
+    logger.warn('Invalid langCode data, using en as default:', { rawValue, error });
     return LANG_CODE_MAP['en'];
   }
 
@@ -71,9 +77,15 @@ class LangManager {
 
   getFinalLangCode(
     sourceCode: LangCode | 'default' | 'auto',
-    detectedCodeOrUnd: LangCode | 'und'
+    detectedCodeOrUnd: DetectedLangCode
   ): LangCode {
-    return sourceCode === 'auto' || sourceCode === 'default' ? detectedCodeOrUnd : sourceCode;
+    const langCode =
+      sourceCode === 'auto' || sourceCode === 'default' ? detectedCodeOrUnd : sourceCode;
+    if (!langCode) {
+      logger.warn('Invalid langCode data, using en as default:', { sourceCode, detectedCodeOrUnd });
+      return 'en';
+    }
+    return langCode;
   }
 }
 

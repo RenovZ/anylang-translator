@@ -1,3 +1,22 @@
+<script module lang="ts">
+  interface Props {
+    toolbarRef: HTMLDivElement | null;
+    selectedText?: string;
+  }
+
+  type SectionKey = 'dictionary' | 'examples' | 'usage';
+
+  const sections: { key: SectionKey; label: string }[] = [
+    { key: 'dictionary', label: i18n('dictionary', { defaultValue: 'Dictonary' }) },
+    { key: 'examples', label: i18n('examples', { defaultValue: 'Examples' }) },
+    { key: 'usage', label: i18n('usage', { defaultValue: 'Usage' }) }
+  ];
+
+  const activeClass = 'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600';
+  const defaultClass =
+    'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700';
+</script>
+
 <script lang="ts">
   import { Button } from 'flowbite-svelte';
   import { SearchOutline } from 'flowbite-svelte-icons';
@@ -12,35 +31,16 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { FEAT_INSTANT_LOOKUP } from '@/preset/feature';
+  import { mockExamplesData, mockUsageData } from '@/preset/instant-lookup';
 
   import Dictonary from './ContentDictonary.svelte';
   import Examples from './ContentExamples.svelte';
   import Usage from './ContentUsage.svelte';
-  import { mockDictionaryEntry } from './mock-data';
   import { isPopoverOpen, isPopoverPinned } from './state';
-
-  interface Props {
-    toolbarRef: HTMLDivElement | null;
-    selectedText?: string;
-  }
 
   let { toolbarRef, selectedText = '' }: Props = $props();
   let isInputFocused = $state(false);
-
-  type SectionKey = 'dictionary' | 'examples' | 'usage';
-
-  const sections: { key: SectionKey; label: string }[] = [
-    { key: 'dictionary', label: '词典释义' },
-    { key: 'examples', label: '例句' },
-    { key: 'usage', label: '用法' }
-  ];
-
   let activeSection = $state<SectionKey>('dictionary');
-
-  const activeClass = 'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600';
-  const defaultClass =
-    'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700';
-
   let isDraggingHeader = $state(false);
 
   function handleHeaderMouseDown(e: MouseEvent) {
@@ -108,8 +108,8 @@
     window.addEventListener('mouseup', onMouseUp);
   }
 
-  const handleRefresh = () => {
-    console.log('handle refresh');
+  const handleSearch = () => {
+    console.log('handle search');
   };
 </script>
 
@@ -142,7 +142,7 @@
       <Button
         color="alternative"
         class="rounded-lg border-none p-1 text-sm shadow"
-        onclick={() => isPopoverPinned.set(!$isPopoverPinned)}>
+        onclick={handleSearch}>
         <SearchOutline class="size-5 shrink-0" />
       </Button>
     </div>
@@ -173,7 +173,7 @@
   <div class="flex h-0 flex-1 px-2">
     <nav
       class="w-20 shrink-0 border-r border-gray-100 py-2 dark:border-gray-700"
-      aria-label="词典导航">
+      aria-label={sections[0].key}>
       {#each sections as section (section.key)}
         <button
           type="button"
@@ -187,18 +187,19 @@
       {/each}
     </nav>
 
-    <div class="overflow-x-hidden overflow-y-auto p-4">
+    <div class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto p-4">
       {#if activeSection === 'dictionary'}
-        <Dictonary data={mockDictionaryEntry} />
+        <Dictonary bind:selectedText />
       {:else if activeSection === 'examples'}
-        <Examples categories={mockDictionaryEntry.exampleCategories} />
+        <Examples {selectedText} categories={mockExamplesData} />
       {:else if activeSection === 'usage'}
-        <Usage data={mockDictionaryEntry} />
+        <Usage {selectedText} data={mockUsageData} />
       {/if}
     </div>
   </div>
-  <div class="flex items-center justify-between border-t border-gray-100 p-2 dark:border-gray-700">
-    <div class="flex flex-1 gap-2">
+  <div
+    class="flex items-center justify-between gap-4 border-t border-gray-100 p-2 dark:border-gray-700">
+    <div class="flex flex-1 flex-nowrap gap-2">
       <Provider
         field={FEAT_INSTANT_LOOKUP}
         class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />

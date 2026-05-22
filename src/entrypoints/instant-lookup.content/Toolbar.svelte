@@ -5,7 +5,9 @@
 
   import LocalIcon from '@/components/LocalIcon.svelte';
   import config from '@/lib/config';
+  import contentManager from '@/lib/content';
   import lang from '@/lib/lang';
+  import logger from '@/lib/logger';
   import urlUtils from '@/lib/url';
   import { INSTANT_LOOKUP_OVERLAY_ATTRIBUTE, NOTRANSLATE_CLASS } from '@/preset/dom';
 
@@ -13,6 +15,7 @@
   import ContentWrapper from './ContentWrapper.svelte';
   import {
     clearSelectionState,
+    detectedLangCodeOrUnd,
     isPopoverOpen,
     isSelectionToolbarVisible,
     selectionSession,
@@ -53,6 +56,39 @@
   let isPointerDownInsideOverlay = $state(false);
   let preserveSelectionState = $state(false);
 
+  $effect(() => {
+    logger.debug({ $detectedLangCodeOrUnd });
+    let {
+      sourceLangCode,
+      langDetection: { mode: langDetectionMode }
+    } = $config;
+
+    let cancelled = false;
+    if (!sourceLangCode || sourceLangCode === 'auto' || sourceLangCode === 'default') {
+      contentManager
+        .getDocumentInfo({
+          pageRange: 'all',
+          langDetectionMode
+        })
+        .then((result) => {
+          logger.debug({ result });
+          if (cancelled) return;
+          detectedLangCodeOrUnd.set(result.detectedCodeOrUnd);
+        })
+        .catch((error) => {
+          logger.error({ error });
+          if (cancelled) return;
+          detectedLangCodeOrUnd.set('und');
+        });
+    } else {
+      detectedLangCodeOrUnd.set(sourceLangCode);
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  });
+
   const triggerMode = $derived($config.instantLookup.selection.triggerMode);
 
   const isSiteDisabled = $derived(
@@ -62,7 +98,7 @@
   );
 
   const detectedLang = $derived(
-    lang.getFinalLangCode($config.sourceLangCode ?? 'auto', $config.langDetection.langCode)
+    lang.getFinalLangCode($config.sourceLangCode ?? 'auto', $detectedLangCodeOrUnd)
   );
 
   const isLangDisabled = $derived($config.instantLookup.disabledLangs.includes(detectedLang));
