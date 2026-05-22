@@ -700,6 +700,10 @@ Rules:
 4. Do NOT include any fields not listed above.
 5. Ensure all strings are properly escaped in JSON.
 
+## Context
+Webpage title: ${getTokenCellText(WEB_TITLE)}
+Webpage summary: ${getTokenCellText(WEB_SUMMARY)}
+
 ## Examples
 
 ### English to Chinese
@@ -720,13 +724,17 @@ Rules:
 3. Each category object must have:
    - name: string — exactly the provided category name above.
    - examples: array of objects, each with:
-     - original: string — a sentence in ${getTokenCellText(TARGET_LANGUAGE)} containing the target word.
-     - translation: string — the translation in ${getTokenCellText(SOURCE_LANGUAGE)}.
+     - original: string — a sentence in ${getTokenCellText(SOURCE_LANGUAGE)} containing the target word.
+     - translation: string — the translation in ${getTokenCellText(TARGET_LANGUAGE)}.
      - source: optional string — source name (dictionary, media, etc.). Include for bilingual and authoritative examples when available; omit for authentic examples if no specific source.
 4. Provide 3-5 examples per category.
 5. Ensure the target word appears naturally in each original sentence.
 6. Do NOT include any fields not listed above.
 7. Ensure all strings are properly escaped in JSON.
+
+## Context
+Webpage title: ${getTokenCellText(WEB_TITLE)}
+Webpage summary: ${getTokenCellText(WEB_SUMMARY)}
 
 ## Examples
 ${JSON.stringify(mockExamplesData)}`;
@@ -763,6 +771,10 @@ Rules:
 7. Provide 1-2 etymology entries explaining word origin where applicable.
 8. Do NOT include any fields not listed above.
 9. Ensure all strings are properly escaped in JSON.
+
+## Context
+Webpage title: ${getTokenCellText(WEB_TITLE)}
+Webpage summary: ${getTokenCellText(WEB_SUMMARY)}
 
 ## Examples
 ${JSON.stringify(mockUsageData)}`;

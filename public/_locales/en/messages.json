@@ -830,6 +830,12 @@
   "translate_selection_trigger_description": {
     "message": "Customize the hover modifier key or use long press to translate paragraphs"
   },
+  "trigger_mode": {
+    "message": "Trigger mode"
+  },
+  "trigger_mode_description": {
+    "message": "Choose the trigger mode for instant lookup when selecting text."
+  },
   "trigger_on_click_and_hold": {
     "message": "Click and hold to translate paragraph"
   },
@@ -847,12 +853,6 @@
   },
   "trigger_on_select": {
     "message": "Trigger on select"
-  },
-  "trigger_on_selection": {
-    "message": "Trigger mode on selection"
-  },
-  "trigger_on_selection_description": {
-    "message": "Choose the trigger mode for instant lookup when selecting text."
   },
   "trigger_on_selection_directly": {
     "message": "Directly"
@@ -898,6 +898,12 @@
   },
   "web_title_tooltip": {
     "message": "Webpage title"
+  },
+  "with_context": {
+    "message": "With context"
+  },
+  "with_context_description": {
+    "message": "Include the context of the selected text in the lookup."
   },
   "writing_copilot": {
     "message": "Writing Copilot"

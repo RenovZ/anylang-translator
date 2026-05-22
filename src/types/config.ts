@@ -54,6 +54,7 @@ const instantLookupSchema = featureBaseSchema.extend({
   disabledSites: z.array(z.string()).default([]),
   disabledLangs: z.array(langCodeSchema).default([]),
   selection: z.object({
+    withContext: z.boolean().default(false),
     targetLangCode: langCodeSchema.optional(),
     triggerMode: triggerModeOnSelectionSchema.default('directly')
   })

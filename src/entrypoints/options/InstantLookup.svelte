@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Toggle } from 'flowbite-svelte';
+
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
@@ -53,13 +55,28 @@
   </SectionRow>
 
   <SectionRow
-    title={i18n('trigger_on_selection', {
-      defaultValue: 'Trigger mode on selection'
+    title={i18n('trigger_mode', {
+      defaultValue: 'Trigger mode'
     })}
-    description={i18n('trigger_on_selection_description', {
+    description={i18n('trigger_mode_description', {
       defaultValue: 'Choose the trigger mode for instant lookup when selecting text.'
     })}>
     <TriggerModes slot="controls" />
+  </SectionRow>
+
+  <SectionRow
+    title={i18n('with_context', {
+      defaultValue: 'With context'
+    })}
+    description={i18n('with_context_description', {
+      defaultValue: 'Include the context of the selected text in the lookup.'
+    })}>
+    <div slot="controls" class="flex place-content-end">
+      <Toggle
+        class="w-fit"
+        classes={{ span: 'm-0' }}
+        bind:checked={$config.instantLookup.selection.withContext} />
+    </div>
   </SectionRow>
 
   <!-- always apply instant lookup sites -->

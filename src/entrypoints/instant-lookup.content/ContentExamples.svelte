@@ -2,6 +2,7 @@
   import { TabItem, Tabs } from 'flowbite-svelte';
 
   import LocalIcon from '@/components/LocalIcon.svelte';
+  import logger from '@/lib/logger';
   import { getInstantLookupExamplesPrompt } from '@/lib/prompt';
   import type { ExamplesData } from '@/types/instant-lookup';
 
@@ -45,7 +46,8 @@
 
   function splitByKeyword(text: string, keyword: string) {
     const regex = new RegExp(`(${keyword})`, 'gi');
-    return text.split(regex);
+    const result = text.split(regex);
+    return result;
   }
 </script>
 

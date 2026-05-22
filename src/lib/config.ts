@@ -73,6 +73,7 @@ const defaultConfig: Config = configSchema.parse({
     disabledSites: [],
     disabledLangs: [],
     selection: {
+      withContext: false,
       triggerMode: triggerModeOnSelectionSchema.parse('directly')
     }
   },

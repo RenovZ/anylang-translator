@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 import Icons from 'unplugin-icons/vite';
 import { loadEnv } from 'vite';
 import { defineConfig } from 'wxt';
@@ -157,7 +158,16 @@ export default defineConfig({
     viteNode: false
   },
   vite: () => ({
-    plugins: [i18nExtractionPlugin(), loggerCallerPlugin(), Icons({ compiler: 'svelte' })],
+    plugins: [
+      i18nExtractionPlugin(),
+      loggerCallerPlugin(),
+      Icons({
+        compiler: 'svelte',
+        customCollections: {
+          lobehub: FileSystemIconLoader('./node_modules/@lobehub/icons-static-svg/icons')
+        }
+      })
+    ],
     test: { include: ['src/**/*.{test,spec}.{js,ts}'] }
   })
 });

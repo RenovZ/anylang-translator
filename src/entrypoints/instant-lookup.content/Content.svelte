@@ -22,7 +22,7 @@
 </script>
 
 <script lang="ts">
-  import { Button } from 'flowbite-svelte';
+  import { Button, Toggle, Tooltip } from 'flowbite-svelte';
   import { SearchOutline } from 'flowbite-svelte-icons';
   import { twMerge } from 'tailwind-merge';
 
@@ -202,7 +202,7 @@
   </div>
   <div
     class="flex items-center justify-between gap-4 border-t border-gray-100 p-2 dark:border-gray-700">
-    <div class="flex flex-1 flex-nowrap gap-2">
+    <div class="flex flex-1 flex-nowrap items-center gap-2">
       <Provider
         field={FEAT_INSTANT_LOOKUP}
         class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
@@ -212,6 +212,16 @@
         fallbackLangCode={$config.targetLangCode}
         class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
     </div>
-    <TriggerModes class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
+    <div class="flex flex-nowrap items-center gap-2">
+      <Toggle
+        size="small"
+        class="w-fit"
+        classes={{ span: 'm-0' }}
+        bind:checked={$config.instantLookup.selection.withContext} />
+      <Tooltip class="max-w-80 text-xs">
+        {i18n('with_context', { defaultValue: 'With context' })}
+      </Tooltip>
+      <TriggerModes class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
+    </div>
   </div>
 </div>
