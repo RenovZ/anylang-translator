@@ -1,39 +1,39 @@
 <script lang="ts">
-  import { Alert, Spinner } from 'flowbite-svelte';
-  import { InfoCircleSolid } from 'flowbite-svelte-icons';
-
   import LocalIcon from '@/components/LocalIcon.svelte';
-  import config from '@/lib/config';
-  import i18n from '@/lib/i18n';
-  import { getDictionaryPrompt } from '@/lib/prompt';
+  import { getInstantLookupDictionaryPrompt } from '@/lib/prompt';
   import { REGION_OPTIONS } from '@/preset/instant-lookup';
-  import { DictionaryData } from '@/types/instant-lookup';
+  import type { DictionaryData } from '@/types/instant-lookup';
 
   import { getData } from './ContentApi.svelte';
-  // import { mockDictionaryData as data } from '@/preset/instant-lookup';
+  import ContentEmpty from './ContentEmpty.svelte';
   import { detectedLangCodeOrUnd } from './state';
 
   interface Props {
-    // data: DictionaryData;
     selectedText: string;
   }
 
   let { selectedText = $bindable('') }: Props = $props();
 
   let data: DictionaryData | null = $state(null);
+  let loading = $state(false);
   $effect(() => {
     const text = selectedText.trim();
     if (!text) {
       data = null;
+      loading = false;
       return;
     }
 
     let cancelled = false;
-    getData(text, $detectedLangCodeOrUnd, getDictionaryPrompt).then((result) => {
-      if (!cancelled) {
-        data = result;
+    loading = true;
+    getData<DictionaryData>(text, $detectedLangCodeOrUnd, getInstantLookupDictionaryPrompt).then(
+      (result) => {
+        if (!cancelled) {
+          data = result;
+          loading = false;
+        }
       }
-    });
+    );
 
     return () => {
       cancelled = true;
@@ -47,43 +47,8 @@
 </script>
 
 <div class="flex flex-1 flex-col space-y-4">
-  {#if !data}
-    {#if !$config.instantLookup.provider}
-      <Alert color="red" class="font-medium" border>
-        {#snippet icon()}<InfoCircleSolid class="h-5 w-5" />{/snippet}
-        {i18n('instant_lookup_no_llm_provider', {
-          defaultValue: 'No LLM provider selected. Please select a LLM provider in the settings.'
-        })}
-      </Alert>
-    {:else if $config.instantLookup.provider.type === 'free'}
-      <Alert color="red" class="font-medium" border>
-        {#snippet icon()}<InfoCircleSolid class="h-5 w-5" />{/snippet}
-        {i18n('instant_lookup_free_provider_not_supported', {
-          defaultValue:
-            'Instant lookup is not supported for free providers. Please use a LLM provider.'
-        })}
-      </Alert>
-    {:else if !$detectedLangCodeOrUnd || $detectedLangCodeOrUnd === 'und'}
-      <Alert color="yellow" class="font-medium" border>
-        {#snippet icon()}<InfoCircleSolid class="h-5 w-5" />{/snippet}
-        {i18n('instant_lookup_source_language_undetected', {
-          defaultValue:
-            'Source language is undetected, please select a LLM provider for language detection.'
-        })}
-      </Alert>
-    {:else if $detectedLangCodeOrUnd === $config.instantLookup.selection.targetLangCode}
-      <Alert color="secondary" class="font-medium" border>
-        {#snippet icon()}<InfoCircleSolid class="h-5 w-5" />{/snippet}
-        {i18n('instant_lookup_source_language_and_target_language_is_the_same', {
-          defaultValue:
-            'Source language and target language are the same, instant lookup is skipped.'
-        })}
-      </Alert>
-    {:else}
-      <div class="flex min-h-32 w-full items-center justify-center">
-        <Spinner type="bars" color="primary" class="flex self-center" />
-      </div>
-    {/if}
+  {#if !data || loading}
+    <ContentEmpty />
   {:else}
     <!-- Word header -->
     <div class="flex items-baseline gap-3">
@@ -163,8 +128,8 @@
               type="button"
               class="text-blue-600 hover:underline dark:text-blue-400"
               onclick={() => {
-                selectedText = form.value;
                 data = null;
+                selectedText = form.value;
               }}>
               {form.value}
             </button>

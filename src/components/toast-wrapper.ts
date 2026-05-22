@@ -5,11 +5,11 @@ import { ShadowHostBuilder } from '@/lib/dom/shadow';
 import logger from '@/lib/logger';
 import { SHADOW_HOST_CLASS } from '@/preset/dom';
 
-import type { ToastWrapperProp } from './ToastWrapper.svelte';
+import type { ToastProps } from './ToastWrapper.svelte';
 import ToastWrapper from './ToastWrapper.svelte';
 
-type ToastPosition = ToastWrapperProp['position'];
-type ToastType = ToastWrapperProp['type'];
+type ToastPosition = ToastProps['position'];
+type ToastType = ToastProps['type'];
 interface ToastOptions {
   message: string;
   title?: string;

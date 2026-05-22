@@ -1,5 +1,5 @@
 <script module lang="ts">
-  export interface ToastWrapperProp {
+  export interface ToastProps {
     show: boolean;
     type: 'success' | 'error' | 'warn' | 'info' | 'debug';
     message?: string | import('svelte').Snippet;
@@ -31,7 +31,7 @@
     message,
     onclose,
     position = 'top-right'
-  }: ToastWrapperProp & { children?: import('svelte').Snippet } = $props();
+  }: ToastProps & { children?: import('svelte').Snippet } = $props();
 
   function close() {
     show = false;

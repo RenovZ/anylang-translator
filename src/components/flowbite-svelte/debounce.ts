@@ -16,10 +16,18 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Func = (...args: any[]) => unknown;
 
-export function createMutualDebounce<A extends Func, B extends Func>(actionA: A, actionB: B, delayFunc: () => number): [(...args: Parameters<A>) => void, (...args: Parameters<B>) => void] {
+export function createMutualDebounce<A extends Func, B extends Func>(
+  actionA: A,
+  actionB: B,
+  delayFunc: () => number
+): [(...args: Parameters<A>) => void, (...args: Parameters<B>) => void] {
   let rafId: number | null = null;
 
-  function scheduleExecution(func: (...args: unknown[]) => unknown, args: unknown[], startTime: number): void {
+  function scheduleExecution(
+    func: (...args: unknown[]) => unknown,
+    args: unknown[],
+    startTime: number
+  ): void {
     rafId = requestAnimationFrame((currentTime) => {
       const elapsed = currentTime - (startTime || 0);
 

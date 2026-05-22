@@ -188,6 +188,27 @@
   "dictionary": {
     "message": "Dictonary"
   },
+  "dictionary_example_authentic_case": {
+    "message": "Authentic Case"
+  },
+  "dictionary_example_authoritative_case": {
+    "message": "Authoritative Case"
+  },
+  "dictionary_example_bilingual_case": {
+    "message": "Bilingual Case"
+  },
+  "dictionary_usage_cognates": {
+    "message": "Cognates"
+  },
+  "dictionary_usage_etymology": {
+    "message": "Etymology"
+  },
+  "dictionary_usage_phrases": {
+    "message": "Phrases"
+  },
+  "dictionary_usage_synonyms": {
+    "message": "Synonyms"
+  },
   "display_mode_bilingual_mode": {
     "message": "Bilingual Mode"
   },

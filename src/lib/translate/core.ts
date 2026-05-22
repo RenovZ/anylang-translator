@@ -21,7 +21,7 @@ import { isLLMProvider, type ProviderConfig } from '@/types/provider';
 import type { TranslateOptions } from '@/types/translate';
 
 import { getOwnerDocument } from '../dom';
-import { getTranslatePrompt } from '../prompt';
+import { getAdaptiveTranslatePrompt } from '../prompt';
 import { sendMessage } from '../protocol';
 
 import {
@@ -454,7 +454,7 @@ async function buildWebPageHashComponents(
 
   if (!isLLMProvider(providerConfig)) return hashComponents;
 
-  const { systemPrompt, prompt } = await getTranslatePrompt(
+  const { systemPrompt, prompt } = await getAdaptiveTranslatePrompt(
     providerConfig,
     targetLangCode,
     preparedText,

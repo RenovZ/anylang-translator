@@ -11,6 +11,19 @@ import {
 } from './feature';
 import { mockDictionaryData, mockExamplesData, mockUsageData } from './instant-lookup';
 import { LANG_CODE_MAP } from './lang';
+import {
+  AUTHENTIC_CASE,
+  AUTHORITATIVE_CASE,
+  BILINGUAL_CASE,
+  INPUT,
+  SOURCE_LANGUAGE,
+  TARGET_LANGUAGE,
+  VIDEO_SUMMARY,
+  VIDEO_TITLE,
+  WEB_SUMMARY,
+  WEB_TITLE,
+  WORD
+} from './token';
 
 const QUICK_TRANSLATE = {
   feature: FEAT_ADAPTIVE_TRANSLATE,
@@ -479,20 +492,6 @@ export const BATCH_SEPARATOR = '%%';
 // // 默认导出的 token 集合（目前指向网页翻译 token，供通用逻辑使用）
 // export const TOKENS = WEB_PAGE_PROMPT_TOKENS;
 
-export const BILINGUAL_CASE = 'bilingualCase';
-export const AUTHENTIC_CASE = 'authenticCase';
-export const AUTHORITATIVE_CASE = 'authoritativeCase';
-export const WORD = 'word';
-
-export const SOURCE_LANGUAGE = 'sourceLanguage';
-export const TARGET_LANGUAGE = 'targetLanguage';
-export const INPUT = 'input';
-export const WEB_TITLE = 'webTitle';
-export const WEB_CONTENT = 'webContent';
-export const WEB_SUMMARY = 'webSummary';
-export const VIDEO_TITLE = 'videoTitle';
-export const VIDEO_SUMMARY = 'videoSummary';
-
 // 将 token 包装为模板占位符格式，例如 `targetLanguage` → `{{targetLanguage}}`
 // 供 Prompt 组装器（translate.ts / subtitles.ts）做 replaceAll 替换
 export const getTokenCellText = (token: string) => `{{${token}}}`;
@@ -710,7 +709,7 @@ export const DICTIONARY_USER_PROMPT = `Please return the complete dictionary ent
 
 // ========== Examples Data Prompts ==========
 
-export const EXAMPLES_SYSTEM_PROMPT = `You are a precise multilingual example sentence API. Your task is to return structured example sentence data for a word translated from ${getTokenCellText(SOURCE_LANGUAGE)} to ${getTokenCellText(TARGET_LANGUAGE)} in strict JSON format.
+export const DICTIONARY_EXAMPLES_SYSTEM_PROMPT = `You are a precise multilingual example sentence API. Your task is to return structured example sentence data for a word translated from ${getTokenCellText(SOURCE_LANGUAGE)} to ${getTokenCellText(TARGET_LANGUAGE)} in strict JSON format.
 
 Rules:
 1. Return ONLY a valid JSON array. Do NOT wrap it in markdown code blocks (no \`\`\`json).
@@ -724,7 +723,7 @@ Rules:
      - original: string — a sentence in ${getTokenCellText(TARGET_LANGUAGE)} containing the target word.
      - translation: string — the translation in ${getTokenCellText(SOURCE_LANGUAGE)}.
      - source: optional string — source name (dictionary, media, etc.). Include for bilingual and authoritative examples when available; omit for authentic examples if no specific source.
-4. Provide 2-3 examples per category.
+4. Provide 3-5 examples per category.
 5. Ensure the target word appears naturally in each original sentence.
 6. Do NOT include any fields not listed above.
 7. Ensure all strings are properly escaped in JSON.
@@ -732,28 +731,28 @@ Rules:
 ## Examples
 ${JSON.stringify(mockExamplesData)}`;
 
-export const EXAMPLES_USER_PROMPT = `Please return example sentences for the ${getTokenCellText(SOURCE_LANGUAGE)} word "${getTokenCellText(WORD)}" translated into ${getTokenCellText(TARGET_LANGUAGE)}. Use the provided category names exactly as given.`;
+export const DICTIONARY_EXAMPLES_USER_PROMPT = `Please return example sentences for the ${getTokenCellText(SOURCE_LANGUAGE)} word "${getTokenCellText(WORD)}" translated into ${getTokenCellText(TARGET_LANGUAGE)}. Use the provided category names exactly as given.`;
 
 // ========== Usage Data Prompts ==========
 
-export const USAGE_SYSTEM_PROMPT = `You are a precise multilingual word usage API. Your task is to return structured usage data for a word translated from ${getTokenCellText(SOURCE_LANGUAGE)} to ${getTokenCellText(TARGET_LANGUAGE)} in strict JSON format.
+export const DICTIONARY_USAGE_SYSTEM_PROMPT = `You are a precise multilingual word usage API. Your task is to return structured usage data for a word translated from ${getTokenCellText(SOURCE_LANGUAGE)} to ${getTokenCellText(TARGET_LANGUAGE)} in strict JSON format.
 
 Rules:
 1. Return ONLY a valid JSON object. Do NOT wrap it in markdown code blocks (no \`\`\`json).
 2. The JSON must exactly match the following structure and field names:
-   - word: string — the target language word (in ${getTokenCellText(TARGET_LANGUAGE)}).
+   - word: string — the target language word (in ${getTokenCellText(SOURCE_LANGUAGE)}).
    - phrases: array of objects, each with:
-     - phrase: string — a common collocation or phrase in ${getTokenCellText(TARGET_LANGUAGE)} containing the word.
+     - phrase: string — a common collocation or phrase in ${getTokenCellText(SOURCE_LANGUAGE)} containing the word.
      - meaning: string — explanation or translation in ${getTokenCellText(TARGET_LANGUAGE)}.
    - synonyms: array of objects grouped by part of speech, each with:
      - pos: string — part of speech label.
      - meaning: string — shared meaning in ${getTokenCellText(TARGET_LANGUAGE)}.
-     - words: array of strings — synonym words in ${getTokenCellText(TARGET_LANGUAGE)}.
+     - words: array of strings — synonym words in ${getTokenCellText(SOURCE_LANGUAGE)}.
    - cognates: array of objects grouped by part of speech, each with:
      - pos: string — part of speech label.
      - words: array of objects, each with:
        - word: string — the cognate word in ${getTokenCellText(TARGET_LANGUAGE)}.
-       - meaning: string — meaning in ${getTokenCellText(TARGET_LANGUAGE)}.
+       - meaning: string — meaning in ${getTokenCellText(SOURCE_LANGUAGE)}.
    - etymology: array of objects, each with:
      - title: string — short title summarizing the etymology point.
      - content: string — detailed etymology explanation in ${getTokenCellText(TARGET_LANGUAGE)}.
@@ -768,4 +767,4 @@ Rules:
 ## Examples
 ${JSON.stringify(mockUsageData)}`;
 
-export const USAGE_USER_PROMPT = `Please return usage information including common phrases, synonyms, cognates, and etymology for the ${getTokenCellText(SOURCE_LANGUAGE)} word "${getTokenCellText(WORD)}" translated into ${getTokenCellText(TARGET_LANGUAGE)}.`;
+export const DICTIONARY_USAGE_USER_PROMPT = `Please return usage information including common phrases, synonyms, cognates, and etymology for the ${getTokenCellText(SOURCE_LANGUAGE)} word "${getTokenCellText(WORD)}" translated into ${getTokenCellText(TARGET_LANGUAGE)}.`;

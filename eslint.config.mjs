@@ -6,7 +6,7 @@ import js from '@eslint/js';
 
 export default tseslint.config(
   {
-    ignores: ['.git/**', '.output/**', '.wxt/**', 'node_modules/**', 'legacy/**']
+    ignores: ['.git/**', '.output/**', '.wxt/**', 'node_modules/**', 'legacy/**', '.data/**']
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,

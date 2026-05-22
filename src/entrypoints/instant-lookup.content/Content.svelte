@@ -12,9 +12,13 @@
     { key: 'usage', label: i18n('usage', { defaultValue: 'Usage' }) }
   ];
 
-  const activeClass = 'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600';
-  const defaultClass =
+  export const activeClass = 'text-primary-600 bg-slate-100 font-semibold dark:bg-slate-600';
+  export const defaultClass =
     'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700';
+  export const tabItemClasses = { button: 'px-2 py-1 text-nowrap' };
+  export const tabClasses = {
+    content: 'bg-transparent p-0 grid grid-cols-[auto_1fr] gap-4 text-sm'
+  };
 </script>
 
 <script lang="ts">
@@ -31,7 +35,6 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { FEAT_INSTANT_LOOKUP } from '@/preset/feature';
-  import { mockExamplesData, mockUsageData } from '@/preset/instant-lookup';
 
   import Dictonary from './ContentDictonary.svelte';
   import Examples from './ContentExamples.svelte';
@@ -191,9 +194,9 @@
       {#if activeSection === 'dictionary'}
         <Dictonary bind:selectedText />
       {:else if activeSection === 'examples'}
-        <Examples {selectedText} categories={mockExamplesData} />
+        <Examples bind:selectedText />
       {:else if activeSection === 'usage'}
-        <Usage {selectedText} data={mockUsageData} />
+        <Usage bind:selectedText />
       {/if}
     </div>
   </div>

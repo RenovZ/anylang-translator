@@ -2,15 +2,14 @@
   import configStore from '@/lib/config';
   import logger from '@/lib/logger';
   import { translate } from '@/lib/translate/sw';
-  import type { DictionaryData } from '@/types/instant-lookup';
   import type { DetectedLangCode } from '@/types/lang';
   import type { InstantLookupContext, PromptResolver } from '@/types/prompt';
 
-  export async function getData(
+  export async function getData<V>(
     word: string,
     detectedLangCode: DetectedLangCode,
     promptResolver: PromptResolver<InstantLookupContext>
-  ): Promise<DictionaryData | null> {
+  ): Promise<V | null> {
     const config = configStore.get();
     let {
       sourceLangCode,

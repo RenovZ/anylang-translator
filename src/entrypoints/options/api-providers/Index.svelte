@@ -32,7 +32,7 @@
   import i18n from '@/lib/i18n';
   import logger from '@/lib/logger';
   import { uniqueName } from '@/lib/naming';
-  import { getTranslatePrompt } from '@/lib/prompt';
+  import { getAdaptiveTranslatePrompt } from '@/lib/prompt';
   import providerManager from '@/lib/provider';
   import { translate } from '@/lib/translate/sw';
   import type { FeatureKey } from '@/preset/feature';
@@ -158,7 +158,7 @@
         $config.sourceLangCode ?? 'auto',
         $config.targetLangCode,
         $config.providers[selectedIndex],
-        getTranslatePrompt
+        getAdaptiveTranslatePrompt
       );
       toast.success(
         i18n('test_connection_success', { defaultValue: 'Test connection successful' })

@@ -1,6 +1,8 @@
 import i18n from '@/lib/i18n';
 import type { DictionaryData, ExamplesData, UsageData } from '@/types/instant-lookup';
 
+import { AUTHENTIC_CASE, AUTHORITATIVE_CASE, BILINGUAL_CASE } from './token';
+
 export const REGION_OPTIONS = [
   { value: 'UK', label: i18n('uk', { defaultValue: '英' }) },
   { value: 'US', label: i18n('us', { defaultValue: '美' }) }
@@ -36,6 +38,13 @@ export const mockDictionaryData: DictionaryData = {
   ],
   examLabels: ['高中', 'CET4', 'CET6', '考研', 'IELTS', 'GMAT', '商务英语']
 };
+
+// prettier-ignore
+export const DICTIONARY_EXAMPLE_TAB_MAP = {
+  [BILINGUAL_CASE]: i18n('dictionary_example_bilingual_case', { defaultValue: 'Bilingual Case' }),
+  [AUTHENTIC_CASE]: i18n('dictionary_example_authentic_case', { defaultValue: 'Authentic Case' }),
+  [AUTHORITATIVE_CASE]: i18n('dictionary_example_authoritative_case', { defaultValue: 'Authoritative Case' })
+} as const;
 
 export const mockExamplesData: ExamplesData = [
   {
@@ -83,6 +92,13 @@ export const mockExamplesData: ExamplesData = [
     ]
   }
 ];
+
+export const DICTIONARY_USAGE_TAB_MAP = {
+  phrases: i18n('dictionary_usage_phrases', { defaultValue: 'Phrases' }),
+  synonyms: i18n('dictionary_usage_synonyms', { defaultValue: 'Synonyms' }),
+  cognates: i18n('dictionary_usage_cognates', { defaultValue: 'Cognates' }),
+  etymology: i18n('dictionary_usage_etymology', { defaultValue: 'Etymology' })
+} as const;
 
 export const mockUsageData: UsageData = {
   word: 'select',

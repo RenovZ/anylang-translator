@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 import { featureKeys } from '@/preset/provider';
 
-import type { DetectedLangCode, LangCode } from './lang';
-import { CustomProvider } from './provider';
+import type { DetectedLangCode, LangCode, UILangCode } from './lang';
+import { AIProvider } from './provider';
 
 // OutputSchema types
 export const outputTypeSchema = z.enum(['text', 'number']);
@@ -40,8 +40,20 @@ export interface PromptResult {
   prompt: string;
 }
 
+export interface PromptResolverConfig<TContext = unknown> {
+  defaultSystemPrompt: string;
+  defaultUserPrompt: string;
+  supportsBatch?: boolean;
+  resolveTokenValues: (params: {
+    input: string;
+    targetLangCode: LangCode;
+    context: TContext | undefined;
+    uiLangCode: UILangCode | 'auto' | 'default';
+  }) => Record<string, string>;
+}
+
 export type PromptResolver<TContext = unknown> = (
-  providerConfig: CustomProvider,
+  providerConfig: AIProvider,
   targetLangCode: LangCode,
   input: string,
   options?: PromptOptions<TContext>

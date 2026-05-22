@@ -1,7 +1,7 @@
 import db from '@/lib/db';
 import { sha256 } from '@/lib/hash';
 import logger from '@/lib/logger';
-import { getSubtitlesTranslatePrompt, getTranslatePrompt } from '@/lib/prompt';
+import { getAdaptiveTranslatePrompt, getSubtitlesTranslatePrompt } from '@/lib/prompt';
 import { onMessage } from '@/lib/protocol';
 import { BatchQueue } from '@/lib/request/batch-queue';
 import { RequestQueue } from '@/lib/request/request-queue';
@@ -18,8 +18,8 @@ import type {
 import { AIProvider, isLLMProvider, ProviderConfig } from '@/types/provider';
 import type { TranslateBatchData } from '@/types/translate';
 
-export function parseBatchResult(result: string | undefined): string[] {
-  return (result ?? '').split(BATCH_SEPARATOR).map((t) => t.trim());
+export function parseBatchResult(result: string): string[] {
+  return result.split(BATCH_SEPARATOR).map((t) => t.trim());
 }
 
 export function shouldUseBatchQueue(providerConfig: ProviderConfig): boolean {
@@ -153,7 +153,7 @@ async function createTranslationQueues<TContext>(promptResolver: PromptResolver<
 }
 
 export async function setUpWebPageTranslationQueue() {
-  const { requestQueue, batchQueue } = await createTranslationQueues(getTranslatePrompt);
+  const { requestQueue, batchQueue } = await createTranslationQueues(getAdaptiveTranslatePrompt);
 
   onMessage('enqueueAdaptiveTranslateRequest', async (message) => {
     logger.debug({ message });
@@ -200,7 +200,7 @@ export async function setUpWebPageTranslationQueue() {
     } else {
       // Create thunk based on type and params
       const thunk = () =>
-        translate(text, sourceLangCode, targetLangCode, providerConfig, getTranslatePrompt);
+        translate(text, sourceLangCode, targetLangCode, providerConfig, getAdaptiveTranslatePrompt);
       result = await requestQueue.enqueue(thunk, scheduleAt, hash);
     }
 

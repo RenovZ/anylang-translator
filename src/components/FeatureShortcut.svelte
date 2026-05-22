@@ -7,7 +7,7 @@
   import type { FEAT_LANG_DETECTION, FeatureField } from '@/preset/feature';
 
   import SectionRow from './SectionRow.svelte';
-  import type { ToastWrapperProp } from './ToastWrapper.svelte';
+  import type { ToastProps } from './ToastWrapper.svelte';
   import ToastWrapper from './ToastWrapper.svelte';
 
   interface Prop {
@@ -19,7 +19,7 @@
   const { title, description, field }: Prop = $props();
   const shortcutSettings = shortcut.getSettingsUrl();
 
-  let toast = $state<ToastWrapperProp>({
+  let toast = $state<ToastProps>({
     show: false,
     type: 'success',
     message: ''

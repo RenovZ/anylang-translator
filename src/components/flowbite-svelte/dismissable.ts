@@ -1,6 +1,6 @@
-import { getContext, setContext } from "svelte";
+import { getContext, setContext } from 'svelte';
 
-const DISMISSABLE_KEY = Symbol("dismissable");
+const DISMISSABLE_KEY = Symbol('dismissable');
 /**
  * DismissableContext provides a way to dismiss a component or modal.
  * It should be used within a component that needs to provide dismiss functionality.
