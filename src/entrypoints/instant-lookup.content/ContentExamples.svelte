@@ -2,12 +2,15 @@
   import { TabItem, Tabs } from 'flowbite-svelte';
 
   import LocalIcon from '@/components/LocalIcon.svelte';
+  import config from '@/lib/config';
   import logger from '@/lib/logger';
   import { getInstantLookupExamplesPrompt } from '@/lib/prompt';
   import type { ExamplesData } from '@/types/instant-lookup';
+  import type { DetectedLangCode } from '@/types/lang';
 
   import { tabClasses, tabItemClasses } from './Content.svelte';
   import { getData } from './ContentApi.svelte';
+  import ContentAudioButton from './ContentAudioButton.svelte';
   import ContentEmpty from './ContentEmpty.svelte';
   import { detectedLangCodeOrUnd } from './state';
 
@@ -39,11 +42,6 @@
     };
   });
 
-  function handleAudioClick(original: string) {
-    // TODO: Implement audio playback for example sentence
-    console.log('Play audio for:', original);
-  }
-
   function splitByKeyword(text: string, keyword: string) {
     const regex = new RegExp(`(${keyword})`, 'gi');
     const result = text.split(regex);
@@ -68,16 +66,17 @@
                   {part}
                 {/if}
               {/each}
-              <button
-                type="button"
-                class="hover:text-primary-600 dark:hover:text-primary-400 ml-1 inline-flex items-center justify-center rounded-full p-0.5 text-gray-400 transition-colors dark:text-gray-500"
-                onclick={() => handleAudioClick(example.original)}
-                aria-label="play example audio">
-                <LocalIcon icon="tabler:volume" class="h-3.5 w-3.5" />
-              </button>
+              <ContentAudioButton
+                text={example.original}
+                langCode={$detectedLangCodeOrUnd}
+                ariaLabel="play example original text" />
             </p>
             <p class="text-sm text-gray-400 dark:text-gray-500">
               {example.translation}
+              <ContentAudioButton
+                text={example.translation}
+                langCode={$config.instantLookup.selection.targetLangCode}
+                ariaLabel="play example translation text" />
             </p>
             {#if example.source}
               <p class="text-xs text-gray-400 dark:text-gray-500">

@@ -91,7 +91,7 @@
   const adaptiveTranslateId = 'adaptive-translate';
 </script>
 
-<main class="space-y-5 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
+<main class="space-y-4 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
   <!-- header -->
   <header class="flex items-center justify-between">
     <div class="flex items-center justify-between gap-2">

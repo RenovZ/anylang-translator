@@ -41,8 +41,37 @@
   });
 
   function handleAudioClick(region: string | undefined) {
-    // TODO: Implement audio playback for pronunciation
-    console.log('Play audio for', region);
+    const word = data?.word;
+    if (!word) return;
+
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(word);
+
+    // Map region to BCP 47 language tag
+    const regionToLang: Record<string, string> = {
+      UK: 'en-GB',
+      US: 'en-US'
+    };
+
+    // Determine language: region > detected lang > fallback
+    const lang =
+      (region && regionToLang[region.toUpperCase()]) ??
+      ($detectedLangCodeOrUnd && $detectedLangCodeOrUnd !== 'und'
+        ? $detectedLangCodeOrUnd
+        : null) ??
+      'en-US';
+    utterance.lang = lang;
+
+    // Try to find a matching voice
+    const voices = window.speechSynthesis.getVoices();
+    const voice =
+      voices.find((v) => v.lang === lang) ??
+      voices.find((v) => v.lang.startsWith(lang.split('-')[0]));
+    if (voice) utterance.voice = voice;
+
+    window.speechSynthesis.speak(utterance);
   }
 </script>
 
@@ -58,7 +87,7 @@
           <button
             type="button"
             class="hover:text-primary-600 dark:hover:text-primary-400 ml-0.5 inline-flex items-center justify-center rounded-full p-0.5 text-gray-500 transition-colors dark:text-gray-400"
-            onclick={() => handleAudioClick(data?.word)}
+            onclick={() => handleAudioClick(undefined)}
             aria-label="play">
             <LocalIcon icon="tabler:volume" class="h-3.5 w-3.5" />
           </button>

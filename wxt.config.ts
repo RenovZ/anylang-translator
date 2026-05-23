@@ -101,6 +101,7 @@ export default defineConfig({
     // openConsole: true,
     keepProfileChanges: true,
     chromiumProfile: createProfileDir('.data/chrome-data'),
+    firefoxProfile: createProfileDir('.data/firefox-data'),
     chromiumArgs: [
       '--window-position=0,0',
       '--window-size=1700,1000',

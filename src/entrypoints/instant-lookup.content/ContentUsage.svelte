@@ -1,12 +1,14 @@
 <script lang="ts">
   import { TabItem, Tabs } from 'flowbite-svelte';
 
+  import config from '@/lib/config';
   import { getInstantLookupUsagePrompt } from '@/lib/prompt';
   import { DICTIONARY_USAGE_TAB_MAP } from '@/preset/instant-lookup';
   import type { UsageData } from '@/types/instant-lookup';
 
   import { tabClasses, tabItemClasses } from './Content.svelte';
   import { getData } from './ContentApi.svelte';
+  import ContentAudioButton from './ContentAudioButton.svelte';
   import ContentEmpty from './ContentEmpty.svelte';
   import { detectedLangCodeOrUnd } from './state';
 
@@ -54,13 +56,25 @@
       {#each data.phrases ?? [] as phrase, index (index)}
         <span class="font-medium text-gray-400 dark:text-gray-500">{index + 1}</span>
         <div class="flex flex-col gap-1">
-          <button
-            type="button"
-            class="w-fit text-left font-medium text-blue-600 hover:underline dark:text-blue-400"
-            onclick={() => handleClick(phrase.phrase)}>
-            {phrase.phrase}
-          </button>
-          <p class="text-left text-gray-600 dark:text-gray-300">{phrase.meaning}</p>
+          <p>
+            <button
+              type="button"
+              class="w-fit text-left font-medium text-blue-600 hover:underline dark:text-blue-400"
+              onclick={() => handleClick(phrase.phrase)}>
+              {phrase.phrase}
+            </button>
+            <ContentAudioButton
+              text={phrase.phrase}
+              langCode={$detectedLangCodeOrUnd}
+              ariaLabel="play phrase text" />
+          </p>
+          <p class="text-left text-gray-600 dark:text-gray-300">
+            {phrase.meaning}
+            <ContentAudioButton
+              text={phrase.meaning}
+              langCode={$config.instantLookup.selection.targetLangCode}
+              ariaLabel="play phrase meaning text" />
+          </p>
         </div>
       {/each}
     </TabItem>
@@ -72,7 +86,13 @@
           {group.pos}
         </span>
         <div class="flex flex-col gap-1">
-          <span class="text-gray-700 dark:text-gray-300">{group.meaning}</span>
+          <p class="text-gray-700 dark:text-gray-300">
+            {group.meaning}
+            <ContentAudioButton
+              text={group.meaning}
+              langCode={$config.instantLookup.selection.targetLangCode}
+              ariaLabel="play synonym meaning text" />
+          </p>
           <div class="flex flex-wrap gap-0.5">
             {#each group.words as word (word)}
               <button
