@@ -81,6 +81,8 @@ interface Protocol {
     subtitlesContext: string;
     providerConfig: ProviderConfig;
   }) => Promise<string | null>;
+
+  // tts
 }
 
 export const { sendMessage, onMessage } = defineExtensionMessaging<Protocol>();

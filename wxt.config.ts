@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 import Icons from 'unplugin-icons/vite';
-import { loadEnv } from 'vite';
-import { defineConfig } from 'wxt';
+import { loadEnv, type Plugin } from 'vite';
+import { defineConfig, type UserConfig } from 'wxt';
 
 import { loggerCallerPlugin } from './plugins/logger-caller';
 
@@ -28,7 +28,7 @@ function shouldExtract(filePath: string) {
   return filePath.startsWith(sourceRoot) && sourceExtensions.has(path.extname(filePath));
 }
 
-function i18nExtractionPlugin() {
+function i18nExtractionPlugin(): Plugin {
   let timer: ReturnType<typeof setTimeout> | undefined;
 
   const scheduleExtraction = (filePath?: string) => {
@@ -48,9 +48,7 @@ function i18nExtractionPlugin() {
 
   return {
     name: 'anylang-i18n-extraction',
-    configureServer(server: {
-      watcher: { on: (event: 'add' | 'change' | 'unlink', cb: (file: string) => void) => void };
-    }) {
+    configureServer(server) {
       for (const event of ['add', 'change', 'unlink'] as const) {
         server.watcher.on(event, scheduleExtraction);
       }
@@ -170,4 +168,4 @@ export default defineConfig({
     ],
     test: { include: ['src/**/*.{test,spec}.{js,ts}'] }
   })
-});
+} as UserConfig);

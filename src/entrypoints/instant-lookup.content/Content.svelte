@@ -111,9 +111,8 @@
     window.addEventListener('mouseup', onMouseUp);
   }
 
-  const handleSearch = () => {
-    console.log('handle search');
-  };
+  // const handleSearch = () => {
+  // };
 </script>
 
 <!-- TODO: Replace mock data with real API response based on selectedText -->
@@ -142,12 +141,12 @@
           defaultValue: 'Please input the word to lookup'
         })}
       </FloatingLabelInput>
-      <Button
+      <!-- <Button
         color="alternative"
         class="rounded-lg border-none p-1 text-sm shadow"
         onclick={handleSearch}>
         <SearchOutline class="size-5 shrink-0" />
-      </Button>
+      </Button> -->
     </div>
 
     <span
