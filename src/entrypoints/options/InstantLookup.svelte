@@ -3,7 +3,6 @@
 
   import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
-  import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import TriggerModes from '@/components/InstantLookupTriggerModes.svelte';
   import LangDropdown from '@/components/LangDropdown.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
@@ -28,9 +27,9 @@
     })}
     {field} />
 
-  <FeatureShortcut
+  <!-- <FeatureShortcut
     title={i18n('instant_lookup_shortcut', { defaultValue: 'Instant lookup shortcut' })}
-    {field} />
+    {field} /> -->
 
   <!-- api provider -->
   <FeatureProvider

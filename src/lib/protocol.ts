@@ -50,7 +50,6 @@ interface Protocol {
 
   // togglePageTranslation
   adaptiveTranslate: (data: FeaturePayload) => Promise<void>;
-  instantLookup: (data: FeaturePayload) => Promise<void>;
   intelligentInput: (data: FeaturePayload) => Promise<void>;
   bilingualSubtitles: (data: FeaturePayload) => Promise<void>;
   panoramaReading: (data: FeaturePayload) => Promise<void>;

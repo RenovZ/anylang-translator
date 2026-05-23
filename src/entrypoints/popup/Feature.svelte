@@ -7,7 +7,7 @@
   import ProvidersDropdown from '@/components/ProvidersDropdown.svelte';
   import config from '@/lib/config';
   import shortcut from '@/lib/shortcut';
-  import type { FEAT_LANG_DETECTION, FeatureField } from '@/preset/feature';
+  import { FEAT_INSTANT_LOOKUP, FEAT_LANG_DETECTION, type FeatureField } from '@/preset/feature';
   import { getProviderIcon } from '@/preset/provider';
   import { isCustomProvider, isPaidProvider } from '@/types/provider';
 
@@ -34,7 +34,7 @@
   {#if typeof title === 'string'}
     <div class="flex items-center gap-2 text-xs">
       <span>{title}</span>
-      {#if showShortcut && $config[field].shortcut?.length}
+      {#if field !== FEAT_INSTANT_LOOKUP && showShortcut && $config[field].shortcut?.length}
         <span>
           ({shortcut.formatForDisplay($config[field].shortcut).join('')})
         </span>

@@ -69,7 +69,6 @@ const defaultConfig: Config = configSchema.parse({
   instantLookup: {
     icon: 'lucide:book-open-text',
     provider: null,
-    shortcut: ['Alt', 'Q'],
     disabledSites: [],
     disabledLangs: [],
     selection: {

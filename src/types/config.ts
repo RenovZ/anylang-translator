@@ -32,10 +32,10 @@ export type LangDetection = z.infer<typeof langDetectionSchema>;
 
 const featureBaseSchema = z.object({
   icon: z.string(),
-  provider: providerSchema.nullable(),
-  shortcut: z.array(z.string())
+  provider: providerSchema.nullable()
 });
 const adaptiveTranslateSchema = featureBaseSchema.extend({
+  shortcut: z.array(z.string()),
   autoTranslatedSites: z.array(z.string()).default([]),
   autoTranslatedLangs: z.array(langCodeSchema).default([]),
   provider: providerSchema,
@@ -60,18 +60,22 @@ const instantLookupSchema = featureBaseSchema.extend({
   })
 });
 const intelligentInputSchema = featureBaseSchema.extend({
+  shortcut: z.array(z.string()),
   disabledSites: z.array(z.string()).default([]),
   disabledLangs: z.array(langCodeSchema).default([])
 });
 const bilingualSubtitlesSchema = featureBaseSchema.extend({
+  shortcut: z.array(z.string()),
   autoEnabledSites: z.array(z.string()).default([]),
   autoEnabledLangs: z.array(langCodeSchema).default([])
 });
 const panoramaReadingSchema = featureBaseSchema.extend({
+  shortcut: z.array(z.string()),
   disabledSites: z.array(z.string()).default([]),
   disabledLangs: z.array(langCodeSchema).default([])
 });
 const writingCopilotSchema = featureBaseSchema.extend({
+  shortcut: z.array(z.string()),
   disabledSites: z.array(z.string()).default([]),
   disabledLangs: z.array(langCodeSchema).default([])
 });

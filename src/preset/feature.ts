@@ -30,7 +30,7 @@ export type FeatureKey = (typeof featureKeys)[number];
 
 // Browser extension command names (from manifest)
 export const CMD_ADAPTIVE_TRANSLATE = 'adaptive-translate' as const;
-export const CMD_INSTANT_LOOKUP = 'instant-lookup' as const;
+// export const CMD_INSTANT_LOOKUP = 'instant-lookup' as const;
 export const CMD_INTELLIGENT_INPUT = 'intelligent-input' as const;
 export const CMD_BILINGUAL_SUBTITLES = 'bilingual-subtitles' as const;
 export const CMD_PANORAMA_READING = 'panorama-reading' as const;

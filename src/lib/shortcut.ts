@@ -5,13 +5,11 @@ import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
 import {
   CMD_ADAPTIVE_TRANSLATE,
   CMD_BILINGUAL_SUBTITLES,
-  CMD_INSTANT_LOOKUP,
   CMD_INTELLIGENT_INPUT,
   CMD_PANORAMA_READING,
   CMD_WRITING_COPILOT,
   FEAT_ADAPTIVE_TRANSLATE,
   FEAT_BILINGUAL_SUBTITLES,
-  FEAT_INSTANT_LOOKUP,
   FEAT_INTELLIGENT_INPUT,
   FEAT_PANORAMA_READING,
   FEAT_WRITING_COPILOT
@@ -48,7 +46,6 @@ class Shortcut {
 
   private readonly COMMAND_MAP = {
     [CMD_ADAPTIVE_TRANSLATE]: FEAT_ADAPTIVE_TRANSLATE,
-    [CMD_INSTANT_LOOKUP]: FEAT_INSTANT_LOOKUP,
     [CMD_INTELLIGENT_INPUT]: FEAT_INTELLIGENT_INPUT,
     [CMD_BILINGUAL_SUBTITLES]: FEAT_BILINGUAL_SUBTITLES,
     [CMD_PANORAMA_READING]: FEAT_PANORAMA_READING,
@@ -252,14 +249,14 @@ class Shortcut {
         });
         continue;
       }
-      const current = data;
+
+      if (!('shortcut' in data)) continue;
+      const current = data as typeof data & { shortcut: string[] };
 
       if (
         shortcutKeys.length !== current.shortcut.length ||
         !shortcutKeys.every((v, i) => v === current.shortcut[i])
       ) {
-        // Type assertion needed: spreading a validated union member loses
-        // discriminant info, but we know the shape is preserved here
         (newConfig as unknown as Record<string, FeatureConfig>)[featureKey] = {
           ...current,
           shortcut: shortcutKeys

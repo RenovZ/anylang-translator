@@ -44,9 +44,6 @@ export default defineBackground({
     void setUpWebPageTranslationQueue();
     void setUpSubtitlesTranslationQueue();
 
-    onMessage('instantLookup', async (msg) => {
-      logger.debug({ msg });
-    });
     onMessage('intelligentInput', async (msg) => {
       logger.debug({ msg });
     });

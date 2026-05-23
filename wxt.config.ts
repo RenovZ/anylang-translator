@@ -127,12 +127,9 @@ export default defineConfig({
         },
         description: 'Adaptive Translate'
       },
-      'instant-lookup': {
-        suggested_key: {
-          default: 'Alt+Q'
-        },
-        description: 'Instant Lookup'
-      },
+      // 'instant-lookup': {
+      //   description: 'Instant Lookup'
+      // },
       'intelligent-input': {
         suggested_key: {
           default: 'Alt+E'
@@ -140,6 +137,9 @@ export default defineConfig({
         description: 'Intelligent Input'
       },
       'bilingual-subtitles': {
+        suggested_key: {
+          default: 'Alt+S'
+        },
         description: 'Bilingual Subtitles'
       },
       'panorama-reading': {
