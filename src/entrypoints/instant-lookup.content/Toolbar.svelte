@@ -431,15 +431,13 @@
         bind:this={translateBtnRef}
         type="button"
         class={twMerge(
-          'bg-primary-700 hover:bg-primary-800 dark:bg-primary-600 dark:hover:bg-primary-700 focus-within:ring-primary-300 dark:focus-within:ring-primary-800 inline-flex items-center justify-center rounded-lg px-5 py-2.5 text-center text-sm font-medium text-white focus-within:ring-4 focus-within:outline-hidden',
-          'flex h-7 cursor-pointer items-center justify-center px-2',
-          'transition-opacity',
+          'bg-primary-700 hover:bg-primary-800 dark:bg-primary-600 dark:hover:bg-primary-700 focus-within:ring-primary-300 dark:focus-within:ring-primary-800 inline-flex cursor-pointer items-center justify-center rounded-md p-1 text-white transition-opacity focus-within:ring-4 focus-within:outline-hidden',
           triggerMode === 'show icons' && $isSelectionToolbarVisible
-            ? 'opacity-100'
+            ? 'opacity-10 hover:opacity-100'
             : 'pointer-events-none opacity-0'
         )}
         aria-label="Instant Lookup">
-        <LocalIcon icon="lucide:book-open-text" class="h-4.5 w-4.5" />
+        <LocalIcon icon="lucide:book-open-text" class="h-4 w-4" />
       </button>
     </div>
 
