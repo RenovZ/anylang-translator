@@ -10,7 +10,7 @@ import { adaptiveTranslateSession } from '@/lib/session';
 import shortcut from '@/lib/shortcut';
 
 import { registerGenerateText } from './generate-text';
-import { setUpSubtitlesTranslationQueue, setUpWebPageTranslationQueue } from './translate-queue';
+import { setUpWebPageTranslationQueue } from './translate-queue';
 import { registerTranslate } from './translate-signal';
 
 export default defineBackground({
@@ -42,20 +42,6 @@ export default defineBackground({
     registerTranslate();
 
     void setUpWebPageTranslationQueue();
-    void setUpSubtitlesTranslationQueue();
-
-    onMessage('intelligentInput', async (msg) => {
-      logger.debug({ msg });
-    });
-    onMessage('bilingualSubtitles', async (msg) => {
-      logger.debug({ msg });
-    });
-    onMessage('panoramaReading', async (msg) => {
-      logger.debug({ msg });
-    });
-    onMessage('writingCopilot', async (msg) => {
-      logger.debug({ msg });
-    });
 
     onMessage('openPage', async (message) => {
       const { url, active } = message.data;

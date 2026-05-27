@@ -82,10 +82,10 @@ export async function bootstrap(ctx: ContentScriptContext) {
   const cleanupTranslateStateListener = onMessage('adaptiveTranslate', (msg) => {
     const isTranslating = manager.isTranslating;
     logger.debug('adaptiveTranslate', { msg, isTranslating });
-    const { enabled, analyticsContext } = msg.data;
+    const { enabled } = msg.data;
     if (enabled === isTranslating) return;
     if (enabled) {
-      void manager.start(window === window.top ? analyticsContext : undefined);
+      void manager.start();
     } else {
       manager.stop();
     }

@@ -1,17 +1,12 @@
 import { get, writable, type Subscriber } from 'svelte/store';
 import { storage } from 'wxt/utils/storage';
 
-import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
-import { DEFAULT_STYLES } from '@/preset/subtitles';
 import { displayStyles, TRIGGER_HOTKEYS } from '@/preset/translate';
 import {
   configSchema,
   langDetectionModeSchema,
   pageRangeSchema,
-  subtitlesDisplayModeSchema,
-  subtitlesStyleSchema,
-  subtitlesTranslationPositionSchema,
   translateModeSchema,
   triggerModeOnSelectionSchema,
   triggerOnHoverSchema,
@@ -25,10 +20,6 @@ import logger from './logger';
 const env = import.meta.env ?? {};
 
 const defaultConfig: Config = configSchema.parse({
-  installDateTime: null,
-  lastTimeShowingReleaseNotes: null,
-  originalUserAgent: null,
-
   uiLangCode: 'default',
   sourceLangCode: undefined,
   targetLangCode: env.DEV ? env.VITE_TARGET_LANG_CODE : langCodeSchema.parse('en'),
@@ -36,7 +27,6 @@ const defaultConfig: Config = configSchema.parse({
   langDetection: {
     mode: langDetectionModeSchema.parse('basic'),
     provider: null
-    // langCode: langCodeSchema.parse('en')
   },
 
   providers: [
@@ -79,48 +69,7 @@ const defaultConfig: Config = configSchema.parse({
       withContext: false,
       triggerMode: triggerModeOnSelectionSchema.parse('directly')
     }
-  },
-
-  intelligentInput: {
-    icon: 'tabler:keyboard',
-    provider: null,
-    shortcut: ['Alt', 'E'],
-    disabledSites: [],
-    disabledLangs: []
-  },
-
-  bilingualSubtitles: {
-    icon: 'tabler:subtitles',
-    provider: structuredClone(freeProviders[0]),
-    shortcut: ['Alt', 'S'],
-    autoEnabledSites: [],
-    autoEnabledLangs: [],
-    displayMode: subtitlesDisplayModeSchema.parse('bilingual'),
-    translationPosition: subtitlesTranslationPositionSchema.parse('below'),
-    originalStyle: subtitlesStyleSchema.parse(DEFAULT_STYLES),
-    translationStyle: subtitlesStyleSchema.parse(DEFAULT_STYLES),
-    aiSegmentation: false,
-    autoStart: false
-    // position: subtitlePositionSchema.parse(DEFAULT_SUBTITLE_POSITION)
-  },
-
-  panoramaReading: {
-    icon: 'tabler:scan-traces',
-    provider: null,
-    shortcut: [],
-    disabledSites: [],
-    disabledLangs: []
-  },
-
-  writingCopilot: {
-    icon: 'tabler:feather-filled',
-    provider: null,
-    shortcut: ['Alt', 'C'],
-    disabledSites: [],
-    disabledLangs: []
-  },
-
-  customAIPrompts: structuredClone(PROMPT_LIST)
+  }
 });
 
 class ConfigStore {

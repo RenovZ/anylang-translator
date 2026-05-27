@@ -1,4 +1,3 @@
-import analyticsManager from '@/lib/analytics';
 import configStore from '@/lib/config';
 import cryptoPolyfill from '@/lib/crypto-polyfill';
 import domFilter from '@/lib/dom/filter';
@@ -14,11 +13,8 @@ import {
   validateTranslationConfigAndToast
 } from '@/lib/translate/ui';
 import * as webpage from '@/lib/translate/webpage';
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
 import { CONTENT_WRAPPER_CLASS, PARAGRAPH_ATTRIBUTE, WALKED_ATTRIBUTE } from '@/preset/dom';
-import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/feature';
 import { TRIGGER_HOTKEY_MAP } from '@/preset/translate';
-import { FeatureUsageContext } from '@/types/analytics';
 import type { Config } from '@/types/config';
 import type { Point } from '@/types/dom';
 import type { DetectedLangCode } from '@/types/lang';
@@ -344,25 +340,15 @@ export class PageTranslateManager {
    * Starts the automatic page translation functionality
    * Registers observers, touch triggers and set storage
    */
-  async start(analyticsContext?: FeatureUsageContext): Promise<void> {
+  async start(): Promise<void> {
     if (this.isPageTranslating) {
       logger.warn('PageTranslateManager is already active');
       return;
     }
     logger.info('Starting PageTranslateManager');
 
-    const trackedContext = window === window.top ? analyticsContext : undefined;
-
     const detectedLangCode = this.detectedLangCode;
-    if (!validateTranslationConfigAndToast(detectedLangCode)) {
-      if (trackedContext) {
-        void analyticsManager.trackFeatureUsed({
-          ...trackedContext,
-          outcome: 'failure'
-        });
-      }
-      return;
-    }
+    if (!validateTranslationConfigAndToast(detectedLangCode)) return;
 
     try {
       logger.debug('reportAdaptiveTranslateState', { enabled: true });
@@ -408,21 +394,8 @@ export class PageTranslateManager {
 
       // Start observing mutations from document.body and all shadow roots
       this.observeMutations(document.body);
-
-      if (trackedContext) {
-        void analyticsManager.trackFeatureUsed({
-          ...trackedContext,
-          outcome: 'success'
-        });
-      }
     } catch (error) {
       logger.error('Failed to start page translation:', { error });
-      if (trackedContext) {
-        void analyticsManager.trackFeatureUsed({
-          ...trackedContext,
-          outcome: 'failure'
-        });
-      }
       throw error;
     }
     logger.info('Started PageTranslateManager');
@@ -501,12 +474,7 @@ export class PageTranslateManager {
         if (this.isPageTranslating) {
           this.stop();
         } else {
-          void this.start(
-            analyticsManager.createFeatureUsageContext(
-              ANALYTICS_FEATURE[FEAT_ADAPTIVE_TRANSLATE],
-              ANALYTICS_SURFACE.TOUCH_GESTURE
-            )
-          );
+          void this.start();
         }
       }
       reset();

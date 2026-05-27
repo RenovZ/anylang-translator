@@ -1,7 +1,3 @@
-<script module lang="ts">
-  export const apiProvidersId = 'api-providers';
-</script>
-
 <script lang="ts">
   import { A, Dropdown, DropdownGroup, DropdownHeader, DropdownItem } from 'flowbite-svelte';
   import { PlusOutline } from 'flowbite-svelte-icons';
@@ -15,6 +11,7 @@
   import { ICON_BY_NAME, ICON_BY_PROVIDER_ID } from '@/preset/provider';
   import type { CustomProvider, FreeProvider, GoProvider, ZenProvider } from '@/types/provider';
 
+  import { idApiProviders } from './NavIds.svelte';
   import ProviderIcon from './ProviderIcon.svelte';
 
   interface Prop {
@@ -137,7 +134,7 @@
       class="flex items-center gap-2"
       onclick={() =>
         sendMessage('openPage', {
-          url: browser.runtime.getURL(`/options.html#${apiProvidersId}`)
+          url: browser.runtime.getURL(`/options.html#${idApiProviders}`)
         })}>
       <PlusOutline class="h-4 w-4" />
       <span>{i18n('custom_providers', { defaultValue: 'Custom Providers' })}</span>

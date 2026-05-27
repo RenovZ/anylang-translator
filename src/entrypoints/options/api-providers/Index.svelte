@@ -79,8 +79,7 @@
       features: { ...defaultAIFeatures },
       provider: preset.provider,
       model: { isCustom: false, ...(preset.models.length ? { name: preset.models[0] } : {}) },
-      ...(isCompatible ? { baseURL: '' } : {}),
-      prompt: { ...DEFAULT_PROMPT }
+      ...(isCompatible ? { baseURL: '' } : {})
     };
 
     newProvider.name = uniqueName(

@@ -127,31 +127,10 @@ export default defineConfig({
           default: 'Alt+A'
         },
         description: 'Adaptive Translate'
-      },
+      }
       // 'instant-lookup': {
       //   description: 'Instant Lookup'
-      // },
-      'intelligent-input': {
-        suggested_key: {
-          default: 'Alt+E'
-        },
-        description: 'Intelligent Input'
-      },
-      'bilingual-subtitles': {
-        suggested_key: {
-          default: 'Alt+S'
-        },
-        description: 'Bilingual Subtitles'
-      },
-      'panorama-reading': {
-        description: 'Panorama Reading'
-      },
-      'writing-copilot': {
-        suggested_key: {
-          default: 'Alt+C'
-        },
-        description: 'Writing Copilot'
-      }
+      // }
     }
   }),
   experimental: {

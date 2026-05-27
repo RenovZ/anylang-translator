@@ -1,11 +1,8 @@
-import analyticsManager from '@/lib/analytics';
 import configStore from '@/lib/config';
 import logger from '@/lib/logger';
 import { onMessage, sendMessage } from '@/lib/protocol';
 import { adaptiveTranslateSession } from '@/lib/session';
 import { shouldEnableAutoTranslation } from '@/lib/translate/sw';
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
-import { FEAT_ADAPTIVE_TRANSLATE } from '@/preset/feature';
 
 export function registerTranslate() {
   onMessage('getAdaptiveTranslateState', async (msg) => {
@@ -41,11 +38,7 @@ export function registerTranslate() {
         void sendMessage(
           'adaptiveTranslate',
           {
-            enabled: true,
-            analyticsContext: analyticsManager.createFeatureUsageContext(
-              ANALYTICS_FEATURE[FEAT_ADAPTIVE_TRANSLATE],
-              ANALYTICS_SURFACE.PAGE_AUTO
-            )
+            enabled: true
           },
           tabId
         );
@@ -56,27 +49,14 @@ export function registerTranslate() {
   // popup / adaptive-translate
   onMessage('tryAdaptiveTranslate', async (msg) => {
     logger.debug('tryAdaptiveTranslate', { msg });
-    const { tabId, enabled, analyticsContext } = msg.data;
+    const { tabId, enabled } = msg.data;
     if (!tabId) {
       logger.error('tryAdaptiveTranslate no tabId provided', { msg });
       return;
     }
-    logger.debug('adaptiveTranslate', { tabId, enabled, analyticsContext });
-    void sendMessage('adaptiveTranslate', { enabled, analyticsContext }, tabId);
+    logger.debug('adaptiveTranslate', { tabId, enabled });
+    void sendMessage('adaptiveTranslate', { enabled }, tabId);
   });
-
-  // // side.content / floating-button
-  // onMessage('trySetPageTranslationFromContentScript', async (msg) => {
-  //   logger.debug('trySetPageTranslationFromContentScript', { msg });
-  //   const tabId = msg.sender?.tab?.id;
-  //   const { enabled, analyticsContext } = msg.data;
-  //   if (typeof tabId === 'number') {
-  //     logger.debug('adaptiveTranslate', { tabId, enabled, analyticsContext });
-  //     void sendMessage('adaptiveTranslate', { enabled, analyticsContext }, tabId);
-  //   } else {
-  //     logger.error('tabId is not a number', { msg });
-  //   }
-  // });
 
   // page-translation
   onMessage('reportAdaptiveTranslateState', async (msg) => {

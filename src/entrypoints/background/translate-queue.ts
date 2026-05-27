@@ -1,7 +1,7 @@
 import db from '@/lib/db';
 import { sha256 } from '@/lib/hash';
 import logger from '@/lib/logger';
-import { getAdaptiveTranslatePrompt, getSubtitlesTranslatePrompt } from '@/lib/prompt';
+import { getAdaptiveTranslatePrompt } from '@/lib/prompt';
 import { onMessage } from '@/lib/protocol';
 import { BatchQueue } from '@/lib/request/batch-queue';
 import { RequestQueue } from '@/lib/request/request-queue';
@@ -10,11 +10,7 @@ import { translateUtils } from '@/lib/translate/utils';
 import { putBatchRequestRecord } from '@/lib/utils/batch-request-record';
 import { BATCH_SEPARATOR } from '@/preset/prompt';
 import { DEFAULT_BATCH_QUEUE_CONFIG, DEFAULT_REQUEST_QUEUE_CONFIG } from '@/preset/translate';
-import type {
-  AdaptiveTranslateContext,
-  BilingualSubtitlesContext,
-  PromptResolver
-} from '@/types/prompt';
+import type { AdaptiveTranslateContext, PromptResolver } from '@/types/prompt';
 import { AIProvider, isLLMProvider, ProviderConfig } from '@/types/provider';
 import type { TranslateBatchData } from '@/types/translate';
 
@@ -225,140 +221,5 @@ export async function setUpWebPageTranslationQueue() {
     }
 
     return await getOrGenerateWebPageSummary(webTitle, webContent, providerConfig, requestQueue);
-  });
-}
-
-async function getOrGenerateSubtitleSummary(
-  videoTitle: string,
-  subtitlesContext: string,
-  providerConfig: AIProvider,
-  requestQueue: RequestQueue
-): Promise<string | null> {
-  const preparedText = translateUtils.cleanText(subtitlesContext);
-  if (!preparedText) {
-    return null;
-  }
-
-  const textHash = sha256(preparedText);
-  const cacheKey = sha256(textHash, JSON.stringify(providerConfig));
-
-  const cached = await db.articleSummaryCache.get(cacheKey);
-  if (cached) {
-    logger.info('Using cached summary');
-    return cached.summary;
-  }
-
-  const thunk = async () => {
-    const cachedAgain = await db.articleSummaryCache.get(cacheKey);
-    if (cachedAgain) {
-      return cachedAgain.summary;
-    }
-
-    const summary = await generateArticleSummary(videoTitle, subtitlesContext, providerConfig);
-    if (!summary) {
-      return '';
-    }
-
-    await db.articleSummaryCache.put({
-      key: cacheKey,
-      summary,
-      createdAt: new Date()
-    });
-
-    logger.info('Generated and cached new summary');
-    return summary;
-  };
-
-  try {
-    const summary = await requestQueue.enqueue(thunk, Date.now(), cacheKey);
-    return summary || null;
-  } catch (error) {
-    logger.warn('Failed to get/generate summary:', { error });
-    return null;
-  }
-}
-
-/**
- * Set up subtitles translation queue and message handlers
- */
-export async function setUpSubtitlesTranslationQueue() {
-  const { requestQueue, batchQueue } = await createTranslationQueues(getSubtitlesTranslatePrompt);
-
-  onMessage('enqueueSubtitlesTranslateRequest', async (message) => {
-    logger.trace('enqueueSubtitlesTranslateRequest', { message });
-    const {
-      data: {
-        text,
-        sourceLangCode,
-        targetLangCode,
-        providerConfig,
-        scheduleAt,
-        hash,
-        videoTitle,
-        summary
-      }
-    } = message;
-
-    if (hash) {
-      const cached = await db.translationCache.get(hash);
-      if (cached) {
-        return cached.translation;
-      }
-    }
-
-    let result: string | undefined;
-    const context: BilingualSubtitlesContext = {
-      videoTitle: translateUtils.normalize(videoTitle),
-      videoSummary: translateUtils.normalize(summary)
-    };
-
-    if (shouldUseBatchQueue(providerConfig)) {
-      const data = {
-        text,
-        sourceLangCode,
-        targetLangCode,
-        providerConfig,
-        hash,
-        scheduleAt,
-        context
-      };
-      result = await batchQueue.enqueue(data);
-    } else {
-      const thunk = () =>
-        translate(
-          text,
-          sourceLangCode,
-          targetLangCode,
-          providerConfig,
-          getSubtitlesTranslatePrompt
-        );
-      result = await requestQueue.enqueue(thunk, scheduleAt, hash);
-    }
-
-    if (result && hash) {
-      await db.translationCache.put({
-        key: hash,
-        translation: result,
-        createdAt: new Date()
-      });
-    }
-
-    return result;
-  });
-
-  onMessage('getSubtitlesSummary', async (message) => {
-    logger.trace('getSubtitlesSummary', { message });
-    const { videoTitle, subtitlesContext, providerConfig } = message.data;
-
-    if (!isLLMProvider(providerConfig) || !videoTitle || !subtitlesContext) {
-      return null;
-    }
-
-    return await getOrGenerateSubtitleSummary(
-      videoTitle,
-      subtitlesContext,
-      providerConfig,
-      requestQueue
-    );
   });
 }

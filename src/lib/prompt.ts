@@ -3,7 +3,6 @@ import lang from '@/lib/lang';
 import { DICTIONARY_EXAMPLE_TAB_MAP } from '@/preset/instant-lookup';
 import {
   DEFAULT_BATCH_TRANSLATE_PROMPT,
-  DEFAULT_SUBTITLE_TRANSLATE_SYSTEM_PROMPT,
   DEFAULT_TRANSLATE_PROMPT,
   DEFAULT_TRANSLATE_SYSTEM_PROMPT,
   DICTIONARY_EXAMPLES_SYSTEM_PROMPT,
@@ -21,8 +20,6 @@ import {
   INPUT,
   SOURCE_LANGUAGE,
   TARGET_LANGUAGE,
-  VIDEO_SUMMARY,
-  VIDEO_TITLE,
   WEB_CONTENT,
   WEB_SUMMARY,
   WEB_TITLE,
@@ -30,7 +27,6 @@ import {
 } from '@/preset/token';
 import type {
   AdaptiveTranslateContext,
-  BilingualSubtitlesContext,
   InstantLookupContext,
   PromptResolver,
   PromptResolverConfig
@@ -52,9 +48,8 @@ function createPromptResolver<TContext>(
   config: PromptResolverConfig<TContext>
 ): PromptResolver<TContext> {
   return async (providerConfig, targetLangCode, input, options) => {
-    const promptConfig = providerConfig.prompt || {};
-    let systemPrompt = promptConfig.system || config.defaultSystemPrompt;
-    const userPrompt = promptConfig.prompt || config.defaultUserPrompt;
+    let systemPrompt = config.defaultSystemPrompt;
+    const userPrompt = config.defaultUserPrompt;
 
     if (config.supportsBatch && options?.isBatch) {
       systemPrompt = `${systemPrompt}\n${DEFAULT_BATCH_TRANSLATE_PROMPT}`;
@@ -162,24 +157,6 @@ export const getInstantLookupUsagePrompt = createPromptResolver<InstantLookupCon
       [WORD]: input,
       [WEB_TITLE]: resolvePromptReplacementValue(context?.webTitle, 'No title available'),
       [WEB_SUMMARY]: resolvePromptReplacementValue(context?.webSummary, 'No summary available')
-    };
-  }
-});
-
-export const getSubtitlesTranslatePrompt = createPromptResolver<BilingualSubtitlesContext>({
-  defaultSystemPrompt: DEFAULT_SUBTITLE_TRANSLATE_SYSTEM_PROMPT,
-  defaultUserPrompt: DEFAULT_TRANSLATE_PROMPT,
-  supportsBatch: true,
-  resolveTokenValues: ({ input, targetLangCode, context, uiLangCode }) => {
-    const targetLang = lang.getLangName(targetLangCode, uiLangCode);
-    if (!targetLang) {
-      throw new Error(`Unexpected target language code:`, { cause: { targetLangCode } });
-    }
-    return {
-      [TARGET_LANGUAGE]: targetLang,
-      [INPUT]: input,
-      [VIDEO_TITLE]: resolvePromptReplacementValue(context?.videoTitle, 'No title available'),
-      [VIDEO_SUMMARY]: resolvePromptReplacementValue(context?.videoSummary, 'No summary available')
     };
   }
 });

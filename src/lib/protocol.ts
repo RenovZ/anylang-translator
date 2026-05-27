@@ -1,6 +1,5 @@
 import { defineExtensionMessaging } from '@webext-core/messaging';
 
-import type { FeatureUsedEvent } from '@/types/analytics';
 import type { GenerateTextParams, GenerateTextResult } from '@/types/background';
 import type { FeaturePayload } from '@/types/feature';
 import type { DetectedLangCode, LangCode } from '@/types/lang';
@@ -37,25 +36,7 @@ interface Protocol {
     webSummary?: string | null;
   }) => Promise<string>;
 
-  // popup / floating button → background → content script
-  // trySetPageTranslationByTabId: (data: {
-  //   tabId: number;
-  //   enabled: boolean;
-  //   analyticsContext?: FeatureUsageContext;
-  // }) => Promise<void>;
-  // trySetPageTranslationFromContentScript: (data: {
-  //   enabled: boolean;
-  //   analyticsContext?: FeatureUsageContext;
-  // }) => Promise<void>;
-
   adaptiveTranslate: (data: FeaturePayload) => Promise<void>; // togglePageTranslation
-  intelligentInput: (data: FeaturePayload) => Promise<void>;
-  bilingualSubtitles: (data: FeaturePayload) => Promise<void>;
-  panoramaReading: (data: FeaturePayload) => Promise<void>;
-  writingCopilot: (data: FeaturePayload) => Promise<void>;
-
-  // analytics
-  trackFeatureUsedEvent: (data: FeatureUsedEvent) => Promise<void>;
 
   // page translate
   // getOrGenerateWebPageSummary
@@ -64,33 +45,6 @@ interface Protocol {
     webContent: string;
     providerConfig: ProviderConfig;
   }) => Promise<string | null>;
-
-  enqueueSubtitlesTranslateRequest: (data: {
-    text: string;
-    sourceLangCode: LangCode | 'auto' | 'default';
-    targetLangCode: LangCode;
-    providerConfig: ProviderConfig;
-    scheduleAt: number;
-    hash: string;
-    videoTitle?: string | null;
-    summary?: string | null;
-  }) => Promise<string>;
-  getSubtitlesSummary: (data: {
-    videoTitle: string;
-    subtitlesContext: string;
-    providerConfig: ProviderConfig;
-  }) => Promise<string | null>;
-  // AI subtitle segmentation
-  aiSegmentSubtitles: (data: { jsonContent: string; providerId: string }) => Promise<string>;
-  // // Subtitle-specific queue config messages
-  // setSubtitlesRequestQueueConfig: (data: Partial<RequestQueueConfig>) => void;
-  // setSubtitlesBatchQueueConfig: (data: Partial<BatchQueueConfig>) => void;
-  // // microsoft batch translation
-  // microsoftBatchTranslate: (data: {
-  //   texts: string[];
-  //   fromLang: string;
-  //   toLang: string;
-  // }) => Promise<string[]>;
 }
 
 export const { sendMessage, onMessage } = defineExtensionMessaging<Protocol>();

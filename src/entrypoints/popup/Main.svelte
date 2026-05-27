@@ -17,7 +17,6 @@
   import TranslateModes, { translateModeOptions } from '@/components/AdaptiveTranslateModes.svelte';
   import DisplayStyle from '@/components/DisplayStyle.svelte';
   import LocalIcon from '@/components/LocalIcon.svelte';
-  import analyticsManager from '@/lib/analytics';
   import avatar from '@/lib/avatar';
   import config from '@/lib/config';
   import { languageOptions } from '@/lib/data';
@@ -27,18 +26,10 @@
   import { sendMessage } from '@/lib/protocol';
   import { adaptiveTranslateSession } from '@/lib/session';
   import shortcut from '@/lib/shortcut';
-  import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
-  import {
-    FEAT_ADAPTIVE_TRANSLATE,
-    FEAT_BILINGUAL_SUBTITLES,
-    FEAT_INSTANT_LOOKUP,
-    FEAT_INTELLIGENT_INPUT,
-    FEAT_PANORAMA_READING,
-    FEAT_WRITING_COPILOT
-  } from '@/preset/feature';
+  import { FEAT_ADAPTIVE_TRANSLATE, FEAT_INSTANT_LOOKUP } from '@/preset/feature';
   import { DISPLAY_STYLES, TRIGGER_ON_HOVER } from '@/preset/translate';
 
-  import { moreItems, quickActions, selectionTranslateToggle } from './data';
+  import { moreItems } from './data';
   import Feature from './Feature.svelte';
 
   let currentHostname = $state('');
@@ -78,13 +69,7 @@
     logger.debug({ isTranslating, tabId, tab });
     void sendMessage('tryAdaptiveTranslate', {
       tabId,
-      enabled: isTranslating,
-      analyticsContext: isTranslating
-        ? analyticsManager.createFeatureUsageContext(
-            ANALYTICS_FEATURE[FEAT_ADAPTIVE_TRANSLATE],
-            ANALYTICS_SURFACE.POPUP
-          )
-        : undefined
+      enabled: isTranslating
     });
   };
 
@@ -318,25 +303,9 @@
   <!-- features -->
   <section class="rounded-xl bg-slate-50 shadow dark:bg-slate-700">
     <Feature
-      classes={{ main: 'rounded-t-xl px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
+      classes={{ main: 'rounded-xl px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
       title={i18n('instant_lookup', { defaultValue: 'Instant Lookup' })}
       field={FEAT_INSTANT_LOOKUP} />
-    <Feature
-      classes={{ main: 'px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
-      title={i18n('intelligent_input', { defaultValue: 'Intelligent Input' })}
-      field={FEAT_INTELLIGENT_INPUT} />
-    <Feature
-      classes={{ main: 'px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
-      title={i18n('bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' })}
-      field={FEAT_BILINGUAL_SUBTITLES} />
-    <Feature
-      classes={{ main: 'px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
-      title={i18n('panorama_reading', { defaultValue: 'Panorama Reading' })}
-      field={FEAT_PANORAMA_READING} />
-    <Feature
-      classes={{ main: 'rounded-b-xl px-3 py-2 hover:bg-slate-100/70 hover:dark:bg-slate-600' }}
-      title={i18n('writing_copilot', { defaultValue: 'Writing Copilot' })}
-      field={FEAT_WRITING_COPILOT} />
   </section>
 </main>
 
@@ -356,11 +325,13 @@
     </button>
     <Dropdown simple placement="bottom-end" class="max-h-96 overflow-y-auto shadow-md">
       {#each moreItems as item (item.label)}
-        <DropdownItem>
-          <span class="flex items-center gap-2">
-            <span>{item.icon}</span>
-            <span>{item.label}</span>
-          </span>
+        <DropdownItem
+          class="flex items-center gap-2"
+          onclick={() =>
+            sendMessage('openPage', {
+              url: browser.runtime.getURL(`/options.html#${item.id}`)
+            })}>
+          {item.label}
         </DropdownItem>
       {/each}
     </Dropdown>

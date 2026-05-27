@@ -10,7 +10,6 @@ import {
 } from '@/preset/provider';
 
 import { featuresSchema } from './feature';
-import { promptSchema } from './prompt';
 
 // Provider types
 export const aiProviderTypeSchema = z.enum(['go', 'zen', 'custom']);
@@ -58,14 +57,7 @@ export type FreeProvider = z.infer<typeof freeProviderSchema>;
 export const goProviderSchema = baseProviderSchema.extend({
   type: z.literal('go'),
   model: z.string(),
-  temperature: z.number().min(0).optional(),
-  prompt: promptSchema
-    .pick({
-      system: true,
-      prompt: true,
-      output: true
-    })
-    .partial()
+  temperature: z.number().min(0).optional()
 });
 export type GoProvider = z.infer<typeof goProviderSchema>;
 
@@ -91,12 +83,7 @@ function createCustomProviderSchema(
     providerOptions: z.record(z.string(), z.any()).optional(),
     connectionOptions: z.record(z.string(), z.any()).optional(),
     headers: z.record(z.string(), z.any()).optional(),
-    model: modelSchema,
-    prompt: promptSchema.pick({
-      system: true,
-      prompt: true,
-      output: true
-    })
+    model: modelSchema
   });
   type CustomProvider = z.infer<typeof customProviderSchema>;
 

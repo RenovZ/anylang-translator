@@ -1,19 +1,6 @@
 import { browser } from 'wxt/browser';
 
-import analyticsManager from '@/lib/analytics';
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from '@/preset/analytics';
-import {
-  CMD_ADAPTIVE_TRANSLATE,
-  CMD_BILINGUAL_SUBTITLES,
-  CMD_INTELLIGENT_INPUT,
-  CMD_PANORAMA_READING,
-  CMD_WRITING_COPILOT,
-  FEAT_ADAPTIVE_TRANSLATE,
-  FEAT_BILINGUAL_SUBTITLES,
-  FEAT_INTELLIGENT_INPUT,
-  FEAT_PANORAMA_READING,
-  FEAT_WRITING_COPILOT
-} from '@/preset/feature';
+import { CMD_ADAPTIVE_TRANSLATE, FEAT_ADAPTIVE_TRANSLATE } from '@/preset/feature';
 import { featureConfigSchema, type FeatureConfig } from '@/types/config';
 
 import configStore from './config';
@@ -45,11 +32,7 @@ class Shortcut {
   };
 
   private readonly COMMAND_MAP = {
-    [CMD_ADAPTIVE_TRANSLATE]: FEAT_ADAPTIVE_TRANSLATE,
-    [CMD_INTELLIGENT_INPUT]: FEAT_INTELLIGENT_INPUT,
-    [CMD_BILINGUAL_SUBTITLES]: FEAT_BILINGUAL_SUBTITLES,
-    [CMD_PANORAMA_READING]: FEAT_PANORAMA_READING,
-    [CMD_WRITING_COPILOT]: FEAT_WRITING_COPILOT
+    [CMD_ADAPTIVE_TRANSLATE]: FEAT_ADAPTIVE_TRANSLATE
   } as const;
 
   private readonly SETTINGS_URLS: Record<string, { url: string; description: string }> = {
@@ -169,16 +152,12 @@ class Shortcut {
         logger.debug('No active tab found');
         return;
       }
-      const analyticsContext = analyticsManager.createFeatureUsageContext(
-        ANALYTICS_FEATURE[featureKey as keyof typeof ANALYTICS_FEATURE],
-        ANALYTICS_SURFACE.SHORTCUT
-      );
       if (featureKey === 'adaptiveTranslate') {
         const rawTranslateState = adaptiveTranslateSession.get(tabId);
         const enabled = rawTranslateState ? !rawTranslateState.enabled : true;
-        return await sendMessage(featureKey, { enabled, analyticsContext }, tabId);
+        return await sendMessage(featureKey, { enabled }, tabId);
       }
-      return await sendMessage(featureKey, { enabled: true, analyticsContext }, tabId);
+      return await sendMessage(featureKey, { enabled: true }, tabId);
     });
   }
 

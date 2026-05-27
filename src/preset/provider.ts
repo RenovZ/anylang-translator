@@ -28,22 +28,6 @@ export const featureItems: FeatureItem[] = [
   {
     key: 'instantLookup',
     label: i18n('feature_instant_lookup', { defaultValue: 'Instant Lookup' })
-  },
-  {
-    key: 'intelligentInput',
-    label: i18n('feature_intelligent_input', { defaultValue: 'Intelligent Input' })
-  },
-  {
-    key: 'bilingualSubtitles',
-    label: i18n('feature_bilingual_subtitles', { defaultValue: 'Bilingual Subtitles' })
-  },
-  {
-    key: 'panoramaReading',
-    label: i18n('feature_panorama_reading', { defaultValue: 'Panorama Reading' })
-  },
-  {
-    key: 'writingCopilot',
-    label: i18n('feature_writing_copilot', { defaultValue: 'Writing Copilot' })
   }
 ];
 
@@ -53,21 +37,13 @@ export const featureKeys: FeatureKey[] = featureItems.map((f) => f.key);
 export const defaultAIFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
   langDetection: { state: false },
   adaptiveTranslate: { state: false },
-  bilingualSubtitles: { state: false },
-  instantLookup: { state: false },
-  intelligentInput: { state: false },
-  writingCopilot: { state: false },
-  panoramaReading: { state: false }
+  instantLookup: { state: false }
 };
 
 export const defaultOpenedFeatures: Partial<Record<FeatureKey, FeatureValue>> = {
   langDetection: { disabled: true, state: true },
   adaptiveTranslate: { disabled: true, state: true },
-  bilingualSubtitles: { disabled: true, state: true },
-  instantLookup: { disabled: true, state: true },
-  intelligentInput: { disabled: true, state: true },
-  writingCopilot: { disabled: true, state: true },
-  panoramaReading: { disabled: true, state: true }
+  instantLookup: { disabled: true, state: true }
 } as const;
 
 export const FREE_PROVIDERS = [
@@ -142,7 +118,6 @@ export const goProviders = GO_PROVIDERS.map(
       type: 'go' as const,
       provider: p.provider,
       model: p.model,
-      prompt: {},
       name: p.name,
       enabled: true,
       features: { ...defaultOpenedFeatures } as const
@@ -176,7 +151,6 @@ export const zenProviders = ZEN_PROVIDERS.map(
       type: 'zen' as const,
       provider: p.provider,
       model: p.model,
-      prompt: {},
       name: p.name,
       enabled: true,
       features: { ...defaultOpenedFeatures } as const

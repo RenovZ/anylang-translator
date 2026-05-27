@@ -2,9 +2,6 @@
   "about": {
     "message": "About"
   },
-  "action_palette": {
-    "message": "Action Palette"
-  },
   "adaptive_translate": {
     "message": "Adaptive Translate"
   },
@@ -41,32 +38,14 @@
   "add": {
     "message": "Add"
   },
-  "add_ai_prompt": {
-    "message": "Add AI Prompt"
-  },
-  "add_ai_prompt_description": {
-    "message": "Select a template to quickly create a new AI prompt, or start from scratch."
-  },
-  "add_field": {
-    "message": "Add Field"
-  },
   "add_new_provider": {
     "message": "Add New Provider"
-  },
-  "add_output_field": {
-    "message": "Add Output Field"
   },
   "add_provider": {
     "message": "Add Provider"
   },
   "advanced_options": {
     "message": "Advanced Options"
-  },
-  "ai_prompts": {
-    "message": "AI Prompts"
-  },
-  "ai_prompts_description": {
-    "message": "Configure prompts for custom API providers. Customize model instructions to shape responses and behavior across providers."
   },
   "always_auto_translate_this_site": {
     "message": "Always auto-translate this site"
@@ -107,39 +86,6 @@
   "batch_ops": {
     "message": "Batch operations"
   },
-  "bilingual_subtitles": {
-    "message": "Bilingual Subtitles"
-  },
-  "bilingual_subtitles_auto_enabled_langs": {
-    "message": "Auto-enabled languages"
-  },
-  "bilingual_subtitles_auto_enabled_langs_description": {
-    "message": "When the page language matches one of these, bilingual subtitles will be automatically enabled. Site rules take priority on conflicts."
-  },
-  "bilingual_subtitles_auto_enabled_sites": {
-    "message": "Auto-enabled sites"
-  },
-  "bilingual_subtitles_auto_enabled_sites_description": {
-    "message": "When visiting these sites, bilingual subtitles will be automatically enabled. Site rules take priority over language rules."
-  },
-  "bilingual_subtitles_description": {
-    "message": "Real-time bilingual subtitles powered by contextual AI, making video content clearer, richer, and easier to follow."
-  },
-  "bilingual_subtitles_icon": {
-    "message": "Bilingual subtitles icon"
-  },
-  "bilingual_subtitles_provider": {
-    "message": "Bilingual subtitles provider"
-  },
-  "bilingual_subtitles_provider_description": {
-    "message": "Choose from a variety of API providers to power your bilingual subtitles."
-  },
-  "bilingual_subtitles_shortcut": {
-    "message": "Bilingual subtitles shortcut"
-  },
-  "bilingual_subtitles_subtitle": {
-    "message": "Watch in two languages at once."
-  },
   "cancel": {
     "message": "Cancel"
   },
@@ -151,9 +97,6 @@
   },
   "character_edge_style": {
     "message": "Character edge style"
-  },
-  "choose_a_template": {
-    "message": "Choose a Template"
   },
   "click_to_test_this_provider": {
     "message": "Click to test this provider"
@@ -170,12 +113,6 @@
   "delete": {
     "message": "Delete"
   },
-  "delete_ai_prompt_description": {
-    "message": "Are you sure to delete this AI prompt?"
-  },
-  "delete_ai_prompt_title": {
-    "message": "Delete AI Prompt?"
-  },
   "delete_provider_description": {
     "message": "Are you sure to delete this provider?"
   },
@@ -184,12 +121,6 @@
   },
   "delete_selected": {
     "message": "Delete selected"
-  },
-  "description": {
-    "message": "Description"
-  },
-  "description_placeholder": {
-    "message": "Describe what this field should contain..."
   },
   "dictionary": {
     "message": "Dictonary"
@@ -278,20 +209,11 @@
   "display_style_weaken": {
     "message": "Weaken Effect"
   },
-  "docs": {
-    "message": "Documentation"
-  },
   "edit": {
     "message": "Edit"
   },
-  "edit_output_field": {
-    "message": "Edit Output Field"
-  },
   "enable_auto_translate": {
     "message": "Enable auto-translate feature"
-  },
-  "enable_speaking": {
-    "message": "Enable speaking"
   },
   "enter_the_model_name": {
     "message": "Enter the model name"
@@ -302,38 +224,20 @@
   "feature_adaptive_translate": {
     "message": "Adaptive Translate"
   },
-  "feature_bilingual_subtitles": {
-    "message": "Bilingual Subtitles"
-  },
   "feature_instant_lookup": {
     "message": "Instant Lookup"
-  },
-  "feature_intelligent_input": {
-    "message": "Intelligent Input"
   },
   "feature_lang_detection": {
     "message": "Language Detection"
   },
-  "feature_panorama_reading": {
-    "message": "Panorama Reading"
-  },
   "feature_providers": {
     "message": "Feature Providers"
-  },
-  "feature_writing_copilot": {
-    "message": "Writing Copilot"
   },
   "feedback": {
     "message": "Feedback"
   },
   "fetch_available_models": {
     "message": "Fetch Available Models"
-  },
-  "field_name": {
-    "message": "Field Name"
-  },
-  "field_type": {
-    "message": "Field Type"
   },
   "find_more_icons": {
     "message": "Find more icons"
@@ -413,39 +317,6 @@
   "instant_lookup_subtitle": {
     "message": "More than a dictionary."
   },
-  "intelligent_input": {
-    "message": "Intelligent Input"
-  },
-  "intelligent_input_description": {
-    "message": "Generate polished multilingual text directly where you type — from quick replies to forms and everyday writing."
-  },
-  "intelligent_input_disabled_langs": {
-    "message": "Disabled languages"
-  },
-  "intelligent_input_disabled_langs_description": {
-    "message": "When the page language matches one of these, intelligent input will be disabled. Site rules take priority on conflicts."
-  },
-  "intelligent_input_disabled_sites": {
-    "message": "Disabled sites"
-  },
-  "intelligent_input_disabled_sites_description": {
-    "message": "When visiting these sites, intelligent input will be disabled. Site rules take priority over language rules."
-  },
-  "intelligent_input_icon": {
-    "message": "Intelligent input icon"
-  },
-  "intelligent_input_provider": {
-    "message": "Intelligent input provider"
-  },
-  "intelligent_input_provider_description": {
-    "message": "Choose from a variety of API providers to power your intelligent input."
-  },
-  "intelligent_input_shortcut": {
-    "message": "Intelligent input shortcut"
-  },
-  "intelligent_input_subtitle": {
-    "message": "Think less. Express more."
-  },
   "language_detection": {
     "message": "Language detection"
   },
@@ -470,65 +341,23 @@
   "more": {
     "message": "More"
   },
-  "more_item_about_feedback": {
-    "message": "About - Feedback"
+  "more_items_about": {
+    "message": "About"
   },
-  "more_item_ai_pdf_pro_translate": {
-    "message": "AI-powered PDF Pro translation"
+  "more_items_adaptive_translate": {
+    "message": "Adaptive translate"
   },
-  "more_item_babeldoc_pdf_translate": {
-    "message": "BabelDOC layout-preserving PDF translation"
+  "more_items_api_providers": {
+    "message": "API providers"
   },
-  "more_item_clear_cache": {
-    "message": "Clear cache"
+  "more_items_feedback": {
+    "message": "Feedback"
   },
-  "more_item_disable_floating_ball": {
-    "message": "Disable floating ball"
+  "more_items_general": {
+    "message": "General"
   },
-  "more_item_enable_edit_translation": {
-    "message": "Temporarily enable translation editing"
-  },
-  "more_item_enable_sidebar": {
-    "message": "Enable sidebar translation"
-  },
-  "more_item_feedback_page_translation": {
-    "message": "Report translation issue on this page"
-  },
-  "more_item_html_txt_translate": {
-    "message": "Translate HTML/txt files"
-  },
-  "more_item_local_pdf_translate": {
-    "message": "Translate local PDF file"
-  },
-  "more_item_make_bilingual_epub": {
-    "message": "Create bilingual EPUB e-book"
-  },
-  "more_item_rate_store": {
-    "message": "Rate in store"
-  },
-  "more_item_read_local_ebook": {
-    "message": "Read local e-book"
-  },
-  "more_item_subtitle_file_translate": {
-    "message": "Translate local subtitle files"
-  },
-  "more_item_temp_translation_only": {
-    "message": "Temporarily set default mode to translation-only"
-  },
-  "more_item_translate_all_regions": {
-    "message": "Switch to translating all regions"
-  },
-  "more_item_translate_to_bottom": {
-    "message": "Translate to page bottom now"
-  },
-  "more_item_try_pro": {
-    "message": "Try Pro membership for free"
-  },
-  "more_item_user_guide": {
-    "message": "User guide"
-  },
-  "name": {
-    "message": "Name"
+  "more_items_instant_lookup": {
+    "message": "Instant lookup"
   },
   "no": {
     "message": "No"
@@ -565,15 +394,6 @@
   },
   "options_changelog_item_3": {
     "message": "Supports bilingual webpage translation"
-  },
-  "options_docs_official_description": {
-    "message": "Detailed docs and FAQ for all features"
-  },
-  "options_docs_official_title": {
-    "message": "Official docs"
-  },
-  "options_docs_open_button": {
-    "message": "Open docs"
   },
   "options_feedback_discord_button": {
     "message": "Join Discord community"
@@ -617,47 +437,11 @@
   "options_title_extension_name": {
     "message": "Anylang Translator"
   },
-  "output_schema": {
-    "message": "Output Schema"
-  },
   "page_range_all": {
     "message": "All Content"
   },
   "page_range_main": {
     "message": "Main Content"
-  },
-  "panorama_reading": {
-    "message": "Panorama Reading"
-  },
-  "panorama_reading_description": {
-    "message": "Extract key ideas, surface critical details, and grasp context faster with AI-enhanced reading intelligence."
-  },
-  "panorama_reading_disabled_langs": {
-    "message": "Disabled languages"
-  },
-  "panorama_reading_disabled_langs_description": {
-    "message": "When the page language matches one of these, panorama reading will be disabled. Site rules take priority on conflicts."
-  },
-  "panorama_reading_disabled_sites": {
-    "message": "Disabled sites"
-  },
-  "panorama_reading_disabled_sites_description": {
-    "message": "When visiting these sites, panorama reading will be disabled. Site rules take priority over language rules."
-  },
-  "panorama_reading_icon": {
-    "message": "Panorama reading icon"
-  },
-  "panorama_reading_provider": {
-    "message": "Panorama reading provider"
-  },
-  "panorama_reading_provider_description": {
-    "message": "Choose from a variety of API providers to power your panorama reading."
-  },
-  "panorama_reading_shortcut": {
-    "message": "Panorama reading shortcut"
-  },
-  "panorama_reading_subtitle": {
-    "message": "See the whole picture."
   },
   "paragraphs_tooltip": {
     "message": "Intersecting paragraph text joined with blank lines, truncated to the first 2000 characters when sent to custom AI actions"
@@ -667,9 +451,6 @@
   },
   "pricing": {
     "message": "Pricing"
-  },
-  "prompt": {
-    "message": "Prompt"
   },
   "provider_description": {
     "message": "Description"
@@ -695,18 +476,6 @@
   "provider_options_tooltip": {
     "message": "Provider-specific options for non-standard API features like thinking/reasoning mode. See the Vercel AI SDK docs or your provider's official documentation for configuration details."
   },
-  "quick_action_doc_translate": {
-    "message": "Document Translate"
-  },
-  "quick_action_doc_translate_description": {
-    "message": "Translate PDF, ePub, docx, srt, ass, HTML, TXT, and Markdown files."
-  },
-  "quick_action_text_translate": {
-    "message": "Text Translate"
-  },
-  "quick_action_toolbox": {
-    "message": "Toolbox"
-  },
   "recommended": {
     "message": "Recommended"
   },
@@ -722,9 +491,6 @@
   "select_a_navigation_item_to_access": {
     "message": "Select a navigation item to access"
   },
-  "select_ai_prompt_to_configure": {
-    "message": "Select an AI Prompt to configure"
-  },
   "select_languages": {
     "message": "Select languages"
   },
@@ -733,15 +499,6 @@
   },
   "selection_tooltip": {
     "message": "Selected text content"
-  },
-  "selection_translate": {
-    "message": "Selection translate"
-  },
-  "selection_translate_directly": {
-    "message": "Directly"
-  },
-  "selection_translate_show_icons": {
-    "message": "Show icons"
   },
   "settings": {
     "message": "Settings"
@@ -775,9 +532,6 @@
   },
   "system_default": {
     "message": "System Default"
-  },
-  "system_prompt": {
-    "message": "System Prompt"
   },
   "target_language": {
     "message": "Target language"
@@ -925,39 +679,6 @@
   },
   "with_context_description": {
     "message": "Include the context of the selected text in the lookup."
-  },
-  "writing_copilot": {
-    "message": "Writing Copilot"
-  },
-  "writing_copilot_auto_apply_langs": {
-    "message": "Automatically apply for languages"
-  },
-  "writing_copilot_auto_apply_langs_description": {
-    "message": "When the page language matches one of these, writing copilot will be automatically applied. Site rules take priority on conflicts."
-  },
-  "writing_copilot_auto_apply_sites": {
-    "message": "Automatically apply on sites"
-  },
-  "writing_copilot_auto_apply_sites_description": {
-    "message": "When visiting these sites, writing copilot will be automatically applied. Site rules take priority over language rules."
-  },
-  "writing_copilot_description": {
-    "message": "Draft, refine, and elevate your writing with context-aware assistance for clarity, tone, and precision."
-  },
-  "writing_copilot_icon": {
-    "message": "Writing copilot icon"
-  },
-  "writing_copilot_provider": {
-    "message": "Writing copilot provider"
-  },
-  "writing_copilot_provider_description": {
-    "message": "Choose from a variety of API providers to power your writing copilot."
-  },
-  "writing_copilot_shortcut": {
-    "message": "Writing copilot shortcut"
-  },
-  "writing_copilot_subtitle": {
-    "message": "Write with an AI co-author."
   },
   "yes": {
     "message": "Yes, I'm sure"
