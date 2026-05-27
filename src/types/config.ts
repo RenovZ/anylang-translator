@@ -2,6 +2,13 @@ import { z } from 'zod';
 
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
+import {
+  DEFAULT_STYLES,
+  FONT_COLOR_OPTIONS,
+  FONT_FAMILY_OPTIONS,
+  FONT_SIZE_OPTIONS,
+  FONT_WEIGHT_OPTIONS
+} from '@/preset/subtitles';
 import { displayStyles, TRIGGER_HOTKEYS } from '@/preset/translate';
 import { aiProviderSchema, providerSchema, type ProviderConfig } from '@/types/provider';
 
@@ -64,10 +71,50 @@ const intelligentInputSchema = featureBaseSchema.extend({
   disabledSites: z.array(z.string()).default([]),
   disabledLangs: z.array(langCodeSchema).default([])
 });
+// --- Subtitles style schemas ---
+export const subtitlesDisplayModeSchema = z.enum([
+  'bilingual',
+  'original_only',
+  'translation_only'
+]);
+export type SubtitlesDisplayMode = z.infer<typeof subtitlesDisplayModeSchema>;
+export const subtitlesTranslationPositionSchema = z.enum(['above', 'below']);
+export type SubtitlesTranslationPosition = z.infer<typeof subtitlesTranslationPositionSchema>;
+export const subtitlesFontFamilySchema = z.enum(FONT_FAMILY_OPTIONS);
+export type SubtitlesFontFamily = z.infer<typeof subtitlesFontFamilySchema>;
+export const subtitlesFontColorSchema = z.enum(FONT_COLOR_OPTIONS);
+export type SubtitlesFontColor = z.infer<typeof subtitlesFontColorSchema>;
+export const subtitlesFontSizeSchema = z.enum(FONT_SIZE_OPTIONS);
+export type SubtitlesFontSize = z.infer<typeof subtitlesFontSizeSchema>;
+export const subtitlesFontWeightSchema = z.enum(FONT_WEIGHT_OPTIONS);
+export type SubtitlesFontWeight = z.infer<typeof subtitlesFontWeightSchema>;
+export const subtitlesFontOpacitySchema = z.number().min(0).max(100);
+export type SubtitlesFontOpacity = z.infer<typeof subtitlesFontOpacitySchema>;
+export const subtitlesBackgroundOpacitySchema = z.number().min(0).max(100);
+export type SubtitlesBackgroundOpacity = z.infer<typeof subtitlesBackgroundOpacitySchema>;
+
+export const subtitlesStyleSchema = z.object({
+  fontFamily: subtitlesFontFamilySchema.default(FONT_FAMILY_OPTIONS[0]),
+  fontColor: subtitlesFontColorSchema.default('white'),
+  fontSize: subtitlesFontSizeSchema.default('100%'),
+  fontWeight: subtitlesFontWeightSchema.default(FONT_WEIGHT_OPTIONS[0]),
+  fontOpacity: subtitlesFontOpacitySchema.default(100),
+  backgroundColor: subtitlesFontColorSchema.default('black'),
+  backgroundOpacity: subtitlesBackgroundOpacitySchema.default(75)
+});
+export type SubtitlesStyle = z.infer<typeof subtitlesStyleSchema>;
+
 const bilingualSubtitlesSchema = featureBaseSchema.extend({
   shortcut: z.array(z.string()),
   autoEnabledSites: z.array(z.string()).default([]),
-  autoEnabledLangs: z.array(langCodeSchema).default([])
+  autoEnabledLangs: z.array(langCodeSchema).default([]),
+  displayMode: subtitlesDisplayModeSchema.default('bilingual'),
+  translationPosition: subtitlesTranslationPositionSchema.default('below'),
+  originalStyle: subtitlesStyleSchema.default(DEFAULT_STYLES),
+  translationStyle: subtitlesStyleSchema.default(DEFAULT_STYLES),
+  aiSegmentation: z.boolean().default(false),
+  autoStart: z.boolean().default(false)
+  // position: subtitlePositionSchema.default(DEFAULT_SUBTITLE_POSITION)
 });
 const panoramaReadingSchema = featureBaseSchema.extend({
   shortcut: z.array(z.string()),
@@ -144,21 +191,3 @@ export const configSchema = z.object({
 });
 
 export type Config = z.infer<typeof configSchema>;
-
-// export type XLangsField = {
-//   [K in FeatureField]: Config[K] extends
-//     | { autoAppliedLangs?: LangCode[] }
-//     | { autoEnabledLangs?: LangCode[] }
-//     | { disabledLangs?: LangCode[] }
-//     ? K
-//     : never;
-// }[FeatureField];
-
-// export type XSitesField = {
-//   [K in FeatureField]: Config[K] extends
-//     | { autoAppliedSites?: string[] }
-//     | { autoEnabledSites?: string[] }
-//     | { disabledSites?: string[] }
-//     ? K
-//     : never;
-// }[FeatureField];

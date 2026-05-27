@@ -1,5 +1,5 @@
 <script lang="ts">
-  import FeatureIcon from '@/components/FeatureIcon.svelte';
+  // import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import XLangs from '@/components/XLangs.svelte';
@@ -16,11 +16,11 @@
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
   <!-- icon -->
-  <FeatureIcon
+  <!-- <FeatureIcon
     title={i18n('panorama_reading_icon', {
       defaultValue: 'Panorama reading icon'
     })}
-    {field} />
+    {field} /> -->
 
   <FeatureShortcut
     title={i18n('panorama_reading_shortcut', { defaultValue: 'Panorama reading shortcut' })}

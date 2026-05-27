@@ -1,3 +1,5 @@
+/// <reference types="@poppanator/sveltekit-svg/dist/svg.d.ts" />
+
 // import type { I18n } from "../lib/I18n";
 
 declare global {

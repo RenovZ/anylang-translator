@@ -3,7 +3,7 @@
   import { SvelteSet } from 'svelte/reactivity';
   import { twMerge } from 'tailwind-merge';
 
-  import LocalIcon from '@/components/LocalIcon.svelte';
+  import Logo from '@/assets/logo.svg?component';
   import config from '@/lib/config';
   import contentManager from '@/lib/content';
   import lang from '@/lib/lang';
@@ -431,13 +431,13 @@
         bind:this={translateBtnRef}
         type="button"
         class={twMerge(
-          'bg-primary-700 hover:bg-primary-800 dark:bg-primary-600 dark:hover:bg-primary-700 focus-within:ring-primary-300 dark:focus-within:ring-primary-800 inline-flex cursor-pointer items-center justify-center rounded-md p-1 text-white transition-opacity focus-within:ring-4 focus-within:outline-hidden',
+          'inline-flex cursor-pointer items-center justify-center rounded-md text-white transition-opacity focus-within:ring-4 focus-within:outline-hidden',
           triggerMode === 'show icons' && $isSelectionToolbarVisible
             ? 'opacity-10 hover:opacity-100'
             : 'pointer-events-none opacity-0'
         )}
         aria-label="Instant Lookup">
-        <LocalIcon icon="lucide:book-open-text" class="h-4 w-4" />
+        <Logo class="h-5 w-5" />
       </button>
     </div>
 

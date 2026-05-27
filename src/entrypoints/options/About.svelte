@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button } from 'flowbite-svelte';
-  import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
 
+  import Logo from '@/assets/logo.svg?component';
   import i18n from '@/lib/i18n';
 
   import { aboutNav } from './data';
@@ -12,9 +12,7 @@
   <!-- About Content -->
   <div class="flex flex-col items-center justify-center py-8">
     <!-- Logo -->
-    <div class="bg-primary-500 mb-4 rounded-2xl p-4 text-white shadow-lg">
-      <WandMagicSparklesSolid class="h-10 w-10" />
-    </div>
+    <Logo class="mb-4 h-14 w-14" />
 
     <!-- Product Info -->
     <h3 class="text-xl font-bold dark:text-slate-100">

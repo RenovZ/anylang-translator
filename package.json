@@ -38,6 +38,7 @@
     "@iconify-json/ri": "^1.2.10",
     "@iconify-json/tabler": "^1.2.35",
     "@lobehub/icons-static-svg": "^1.90.0",
+    "@poppanator/sveltekit-svg": "^7.0.0",
     "@tailwindcss/postcss": "^4.3.0",
     "@tsconfig/svelte": "^5.0.8",
     "@types/eslint": "^9.6.1",

@@ -1,0 +1,8 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+    <title id="title">Anylang coral monogram logo</title>
+    <desc id="desc">A minimal coral A mark for Anylang Translator.</desc>
+    <rect width="512" height="512" rx="112" fill="#EB4F27"/>
+    <path d="M128 388L200 228C205 217 218 217 223 228L295 388" stroke="#FFFFFF" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M170 326H254" stroke="#FFFFFF" stroke-width="32" stroke-linecap="round"/>
+    <path d="M352 66L377 138L449 163L377 188L352 260L327 188L255 163L327 138L352 66Z" fill="#FFFFFF"/>
+</svg>

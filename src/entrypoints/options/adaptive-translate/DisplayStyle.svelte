@@ -161,7 +161,7 @@
           class="h-full border-none bg-gray-50 px-1.5 py-1 shadow dark:bg-gray-600" />
       </Label>
       <Label class="grid grid-cols-[1fr_200px] items-center gap-4">
-        <span>{i18n('font_size', { defaultValue: 'Font size (px)' })}</span>
+        <span>{i18n('font_size_px', { defaultValue: 'Font size (px)' })}</span>
         <Input
           class="border-none bg-gray-50 shadow dark:bg-gray-600"
           type="number"

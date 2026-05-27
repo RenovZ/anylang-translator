@@ -92,6 +92,9 @@
   "background_color": {
     "message": "Background color"
   },
+  "background_opacity": {
+    "message": "Background opacity"
+  },
   "base_url": {
     "message": "Base URL"
   },
@@ -145,6 +148,9 @@
   },
   "changelog": {
     "message": "Changelog"
+  },
+  "character_edge_style": {
+    "message": "Character edge style"
   },
   "choose_a_template": {
     "message": "Choose a Template"
@@ -332,11 +338,20 @@
   "find_more_icons": {
     "message": "Find more icons"
   },
+  "font_color": {
+    "message": "Font color"
+  },
   "font_family": {
     "message": "Font family"
   },
-  "font_size": {
+  "font_opacity": {
+    "message": "Font opacity"
+  },
+  "font_size_px": {
     "message": "Font size (px)"
+  },
+  "font_size_scale": {
+    "message": "Font size"
   },
   "font_weight": {
     "message": "Font weight"
@@ -898,6 +913,12 @@
   },
   "web_title_tooltip": {
     "message": "Webpage title"
+  },
+  "window_color": {
+    "message": "Window color"
+  },
+  "window_opacity": {
+    "message": "Window opacity"
   },
   "with_context": {
     "message": "With context"

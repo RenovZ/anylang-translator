@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { Button, Indicator, Toast } from 'flowbite-svelte';
-  import { WandMagicSparklesSolid } from 'flowbite-svelte-icons';
+  import { Button, Indicator } from 'flowbite-svelte';
   import { onMount } from 'svelte';
   import { twMerge } from 'tailwind-merge';
+
+  import Logo from '@/assets/logo.svg?component';
 
   import '@/assets/app.css';
 
@@ -40,9 +41,7 @@
 <header
   class="sticky top-0 z-99 flex shrink-0 items-center justify-between bg-white/80 px-6 py-4 shadow backdrop-blur-xs dark:bg-slate-900/80">
   <div class="flex items-center gap-3">
-    <div class="bg-primary-500 rounded-xl p-2 text-white shadow-md">
-      <WandMagicSparklesSolid class="h-5 w-5" />
-    </div>
+    <Logo class="h-8 w-8" />
     <div class="flex items-center gap-3">
       <span class="text-lg font-semibold">
         {i18n('options_title_extension_name', { defaultValue: 'Anylang Translator' })}

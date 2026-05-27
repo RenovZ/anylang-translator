@@ -48,8 +48,7 @@ interface Protocol {
   //   analyticsContext?: FeatureUsageContext;
   // }) => Promise<void>;
 
-  // togglePageTranslation
-  adaptiveTranslate: (data: FeaturePayload) => Promise<void>;
+  adaptiveTranslate: (data: FeaturePayload) => Promise<void>; // togglePageTranslation
   intelligentInput: (data: FeaturePayload) => Promise<void>;
   bilingualSubtitles: (data: FeaturePayload) => Promise<void>;
   panoramaReading: (data: FeaturePayload) => Promise<void>;
@@ -65,6 +64,7 @@ interface Protocol {
     webContent: string;
     providerConfig: ProviderConfig;
   }) => Promise<string | null>;
+
   enqueueSubtitlesTranslateRequest: (data: {
     text: string;
     sourceLangCode: LangCode | 'auto' | 'default';
@@ -80,8 +80,17 @@ interface Protocol {
     subtitlesContext: string;
     providerConfig: ProviderConfig;
   }) => Promise<string | null>;
-
-  // tts
+  // AI subtitle segmentation
+  aiSegmentSubtitles: (data: { jsonContent: string; providerId: string }) => Promise<string>;
+  // // Subtitle-specific queue config messages
+  // setSubtitlesRequestQueueConfig: (data: Partial<RequestQueueConfig>) => void;
+  // setSubtitlesBatchQueueConfig: (data: Partial<BatchQueueConfig>) => void;
+  // // microsoft batch translation
+  // microsoftBatchTranslate: (data: {
+  //   texts: string[];
+  //   fromLang: string;
+  //   toLang: string;
+  // }) => Promise<string[]>;
 }
 
 export const { sendMessage, onMessage } = defineExtensionMessaging<Protocol>();

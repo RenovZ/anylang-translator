@@ -7,6 +7,7 @@ import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 import Icons from 'unplugin-icons/vite';
 import { loadEnv, type Plugin } from 'vite';
 import { defineConfig, type UserConfig } from 'wxt';
+import svg from '@poppanator/sveltekit-svg';
 
 import { loggerCallerPlugin } from './plugins/logger-caller';
 
@@ -165,7 +166,8 @@ export default defineConfig({
         customCollections: {
           lobehub: FileSystemIconLoader('./node_modules/@lobehub/icons-static-svg/icons')
         }
-      })
+      }),
+      svg()
     ],
     test: { include: ['src/**/*.{test,spec}.{js,ts}'] }
   })

@@ -1,24 +1,24 @@
 <script module lang="ts">
-  import IconBookOpenText from '~icons/lucide/book-open-text';
-  import IconTranslate from '~icons/ri/translate';
-  import IconTranslateAi from '~icons/ri/translate-ai';
+  // import IconBookOpenText from '~icons/lucide/book-open-text';
+  // import IconTranslate from '~icons/ri/translate';
+  // import IconTranslateAi from '~icons/ri/translate-ai';
   import IconAdjustments from '~icons/tabler/adjustments';
   import IconAdjustmentsCog from '~icons/tabler/adjustments-cog';
   import IconAlertCircle from '~icons/tabler/alert-circle';
   import IconArrowRight from '~icons/tabler/arrow-right';
   import IconChevronDown from '~icons/tabler/chevron-down';
   import IconCommand from '~icons/tabler/command';
-  import IconFeatherFilled from '~icons/tabler/feather-filled';
+  // import IconFeatherFilled from '~icons/tabler/feather-filled';
   import IconGripHorizontal from '~icons/tabler/grip-horizontal';
   import IconGripVertical from '~icons/tabler/grip-vertical';
-  import IconKeyboard from '~icons/tabler/keyboard';
+  // import IconKeyboard from '~icons/tabler/keyboard';
   import IconListSearch from '~icons/tabler/list-search';
   import IconPin from '~icons/tabler/pin';
   import IconPinned from '~icons/tabler/pinned';
   import IconRefresh from '~icons/tabler/refresh';
   import IconReload from '~icons/tabler/reload';
-  import IconScanTraces from '~icons/tabler/scan-traces';
-  import IconSubtitles from '~icons/tabler/subtitles';
+  // import IconScanTraces from '~icons/tabler/scan-traces';
+  // import IconSubtitles from '~icons/tabler/subtitles';
   import IconVolume from '~icons/tabler/volume';
   import IconX from '~icons/tabler/x';
 
@@ -30,25 +30,25 @@
     'tabler:grip-vertical': IconGripVertical,
     'tabler:grip-horizontal': IconGripHorizontal,
     'tabler:list-search': IconListSearch,
-    'tabler:scan-traces': IconScanTraces,
-    'tabler:feather-filled': IconFeatherFilled,
-    'tabler:keyboard': IconKeyboard,
+    // 'tabler:scan-traces': IconScanTraces,
+    // 'tabler:feather-filled': IconFeatherFilled,
+    // 'tabler:keyboard': IconKeyboard,
     'tabler:pin': IconPin,
     'tabler:pinned': IconPinned,
     'tabler:refresh': IconRefresh,
-    'tabler:subtitles': IconSubtitles,
+    // 'tabler:subtitles': IconSubtitles,
     'tabler:command': IconCommand,
     'tabler:reload': IconReload,
     'tabler:alert-circle': IconAlertCircle,
     'tabler:adjustments': IconAdjustments,
     'tabler:adjustments-cog': IconAdjustmentsCog,
     'tabler:volume': IconVolume,
-    'tabler:x': IconX,
+    'tabler:x': IconX
 
-    'lucide:book-open-text': IconBookOpenText,
+    // 'lucide:book-open-text': IconBookOpenText,
 
-    'ri:translate': IconTranslate,
-    'ri:translate-ai': IconTranslateAi
+    // 'ri:translate': IconTranslate,
+    // 'ri:translate-ai': IconTranslateAi
   };
 </script>
 

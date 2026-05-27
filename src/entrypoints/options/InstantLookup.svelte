@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Toggle } from 'flowbite-svelte';
 
-  import FeatureIcon from '@/components/FeatureIcon.svelte';
+  // import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import TriggerModes from '@/components/InstantLookupTriggerModes.svelte';
   import LangDropdown from '@/components/LangDropdown.svelte';
@@ -21,11 +21,11 @@
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
   <!-- icon -->
-  <FeatureIcon
+  <!-- <FeatureIcon
     title={i18n('instant_lookup_icon', {
       defaultValue: 'Instant lookup icon'
     })}
-    {field} />
+    {field} /> -->
 
   <!-- <FeatureShortcut
     title={i18n('instant_lookup_shortcut', { defaultValue: 'Instant lookup shortcut' })}

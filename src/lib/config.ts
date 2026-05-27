@@ -3,11 +3,15 @@ import { storage } from 'wxt/utils/storage';
 
 import { PROMPT_LIST } from '@/preset/prompt';
 import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
+import { DEFAULT_STYLES } from '@/preset/subtitles';
 import { displayStyles, TRIGGER_HOTKEYS } from '@/preset/translate';
 import {
   configSchema,
   langDetectionModeSchema,
   pageRangeSchema,
+  subtitlesDisplayModeSchema,
+  subtitlesStyleSchema,
+  subtitlesTranslationPositionSchema,
   translateModeSchema,
   triggerModeOnSelectionSchema,
   triggerOnHoverSchema,
@@ -88,9 +92,16 @@ const defaultConfig: Config = configSchema.parse({
   bilingualSubtitles: {
     icon: 'tabler:subtitles',
     provider: structuredClone(freeProviders[0]),
-    shortcut: [],
+    shortcut: ['Alt', 'S'],
     autoEnabledSites: [],
-    autoEnabledLangs: []
+    autoEnabledLangs: [],
+    displayMode: subtitlesDisplayModeSchema.parse('bilingual'),
+    translationPosition: subtitlesTranslationPositionSchema.parse('below'),
+    originalStyle: subtitlesStyleSchema.parse(DEFAULT_STYLES),
+    translationStyle: subtitlesStyleSchema.parse(DEFAULT_STYLES),
+    aiSegmentation: false,
+    autoStart: false
+    // position: subtitlePositionSchema.parse(DEFAULT_SUBTITLE_POSITION)
   },
 
   panoramaReading: {
@@ -188,18 +199,6 @@ class ConfigStore {
     this.store.set(defaultConfig);
     await this.storage.removeValue();
   }
-
-  // async setDetectedLangCode(langCode: LangCode | 'und'): Promise<void> {
-  //   await this.init();
-  //   try {
-  //     await this.update((config) => {
-  //       config.langDetection.langCode = langCode;
-  //       return config;
-  //     });
-  //   } catch (error) {
-  //     logger.error('Failed to sync detected lang code from browser', { error });
-  //   }
-  // }
 
   isSitesAutoApplied(sites: string[], url: string | URL): boolean {
     const hostname = typeof url === 'string' ? new URL(url).hostname : url.hostname;

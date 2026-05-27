@@ -1,5 +1,5 @@
 <script lang="ts">
-  import FeatureIcon from '@/components/FeatureIcon.svelte';
+  // import FeatureIcon from '@/components/FeatureIcon.svelte';
   import FeatureProvider from '@/components/FeatureProvider.svelte';
   import FeatureShortcut from '@/components/FeatureShortcut.svelte';
   import XLangs from '@/components/XLangs.svelte';
@@ -21,11 +21,11 @@
 
 <Section title={nav.title} subtitle={nav.subtitle} description={nav.description}>
   <!-- adaptive translate icon -->
-  <FeatureIcon
+  <!-- <FeatureIcon
     title={i18n('adaptive_translate_icon', {
       defaultValue: 'Adaptive translate icon'
     })}
-    {field} />
+    {field} /> -->
 
   <FeatureShortcut
     title={i18n('adaptive_translate_shortcut', { defaultValue: 'Adaptive translate shortcut' })}
