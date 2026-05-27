@@ -56,7 +56,7 @@
   </div>
 {/snippet}
 
-<ModalWrapper bind:open>
+<ModalWrapper bind:open class="bg-white/80 backdrop-blur-xs dark:bg-slate-900/80">
   <div class="space-y-8">
     <Heading tag="h5" class="font-medium">
       {i18n('add_new_provider', { defaultValue: 'Add New Provider' })}

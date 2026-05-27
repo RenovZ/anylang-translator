@@ -20,10 +20,12 @@
 
   interface Props extends PopperProps {
     closeOnClickOutsideCallback?: () => boolean;
+    overflowVisible?: boolean;
   }
 
   let {
     closeOnClickOutsideCallback = () => true,
+    overflowVisible = true,
     triggeredBy,
     triggerDelay = DEFAULT_TRIGGER_DELAY,
     trigger = 'click',
@@ -270,7 +272,7 @@
     popover="manual"
     {role}
     bind:this={popover}
-    class:overflow-visible={true}
+    class:overflow-visible={overflowVisible}
     onfocusout={close_popover}
     onmouseleave={hoverable ? close_popover : undefined}
     onmouseenter={hoverable ? open_popover : undefined}

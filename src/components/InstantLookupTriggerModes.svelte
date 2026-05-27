@@ -29,9 +29,15 @@
     class?: string;
     children?: Snippet;
     showTooltip?: boolean;
+    placement?: 'bottom-end' | 'top-end';
   }
 
-  const { class: className, children, showTooltip = false }: Props = $props();
+  const {
+    class: className,
+    children,
+    showTooltip = false,
+    placement = 'bottom-end'
+  }: Props = $props();
 </script>
 
 {#if children}
@@ -55,7 +61,10 @@
     <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
   </Button>
 {/if}
-<Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
+<Dropdown
+  simple
+  {placement}
+  class="max-h-80 overflow-y-auto bg-white/80 shadow-md backdrop-blur-xs dark:bg-slate-900/80">
   {#each triggerModeOptions as option (option.value)}
     <DropdownItem
       onclick={() =>

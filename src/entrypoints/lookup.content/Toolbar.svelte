@@ -427,11 +427,14 @@
         This button wrapper is the previousElementSibling of the Popover's
         internal hidden div, making it the Popper trigger element.
       -->
+      <!--
+      focus-within:ring-primary-300 dark:focus-within:ring-primary-800 focus-within:ring-4 focus-within:outline-hidden
+      -->
       <button
         bind:this={translateBtnRef}
         type="button"
         class={twMerge(
-          'inline-flex cursor-pointer items-center justify-center rounded-md text-white transition-opacity focus-within:ring-4 focus-within:outline-hidden',
+          'focus-within:ring-primary-300 inline-flex cursor-pointer items-center justify-center rounded-md transition-opacity focus-within:ring-4 focus-within:outline-hidden',
           triggerMode === 'show icons' && $isSelectionToolbarVisible
             ? 'opacity-10 hover:opacity-100'
             : 'pointer-events-none opacity-0'

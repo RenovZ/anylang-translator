@@ -54,7 +54,7 @@
     <!-- 词典短语 -->
     <TabItem open title={DICTIONARY_USAGE_TAB_MAP.phrases} classes={tabItemClasses}>
       {#each data.phrases ?? [] as phrase, index (index)}
-        <span class="font-medium text-gray-400 dark:text-gray-500">{index + 1}</span>
+        <span class="text-gray-500 dark:text-gray-400">{index + 1}</span>
         <div class="flex flex-col gap-1">
           <p>
             <button
@@ -82,11 +82,11 @@
     <!-- 同近义词 -->
     <TabItem title={DICTIONARY_USAGE_TAB_MAP.synonyms} classes={tabItemClasses}>
       {#each data.synonyms ?? [] as group (group.pos + group.meaning)}
-        <span class="font-medium text-gray-400 italic dark:text-gray-500">
+        <span class="text-gray-500 dark:text-gray-400">
           {group.pos}
         </span>
         <div class="flex flex-col gap-1">
-          <p class="text-gray-700 dark:text-gray-300">
+          <p class="text-gray-600 dark:text-gray-300">
             {group.meaning}
             <ContentAudioButton
               text={group.meaning}
@@ -102,7 +102,7 @@
                 {word}
               </button>
               {#if word !== group.words[group.words.length - 1]}
-                <span class="text-gray-400 dark:text-gray-500">/</span>
+                <span class="text-gray-500 dark:text-gray-400">/</span>
               {/if}
             {/each}
           </div>
@@ -112,7 +112,7 @@
 
     <!-- 同根词 -->
     <TabItem title={DICTIONARY_USAGE_TAB_MAP.cognates} classes={tabItemClasses}>
-      <span class="font-medium text-nowrap text-gray-700 dark:text-gray-200">词根:</span>
+      <span class="text-nowrap text-gray-500 dark:text-gray-400">词根:</span>
       <button
         type="button"
         class="text-left text-blue-600 hover:underline dark:text-blue-400"
@@ -120,7 +120,7 @@
         {data.word}
       </button>
       {#each data.cognates ?? [] as group (group.pos)}
-        <span class="font-medium text-gray-400 italic dark:text-gray-500">{group.pos}</span>
+        <span class="text-gray-500 dark:text-gray-400">{group.pos}</span>
         <div class="flex flex-wrap gap-1">
           {#each group.words as item (item.word)}
             <div class="flex items-baseline gap-2">
@@ -140,7 +140,7 @@
     <!-- 词源 -->
     <TabItem title={DICTIONARY_USAGE_TAB_MAP.etymology} classes={tabItemClasses}>
       {#each data.etymology ?? [] as item, index (index)}
-        <span class="text-gray-400 dark:text-gray-500">{index + 1}</span>
+        <span class="text-gray-500 dark:text-gray-400">{index + 1}</span>
         <div class="flex flex-wrap gap-1">
           <span class="font-medium text-gray-800 dark:text-gray-200">
             {item.title}

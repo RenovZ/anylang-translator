@@ -52,7 +52,10 @@
 <Dropdown
   simple
   placement="bottom-end"
-  class={twMerge('max-h-72 overflow-y-auto shadow-md', className)}>
+  class={twMerge(
+    'max-h-72 overflow-y-auto bg-white/80 shadow-md backdrop-blur-xs dark:bg-slate-900/80',
+    className
+  )}>
   {#if showFreeProviders}
     <DropdownGroup class="py-0">
       <DropdownHeader class="py-1 text-sm text-slate-400">

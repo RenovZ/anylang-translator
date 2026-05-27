@@ -289,7 +289,7 @@ export async function decorateTranslationNode(
  * Uses Web Animations API instead of CSS keyframes to avoid DOM injection
  * This is significantly faster than the React-based spinner for bulk operations
  */
-export function createLightweightSpinner(ownerDoc: Document): HTMLElement {
+function createLightweightSpinner(ownerDoc: Document): HTMLElement {
   const spinner = ownerDoc.createElement('span');
   spinner.className = SPINNER_CLASS;
   // Inline styles keep the spinner resilient against host page CSS overrides.
@@ -308,7 +308,7 @@ export function createLightweightSpinner(ownerDoc: Document): HTMLElement {
     padding: 0 !important;
     vertical-align: middle !important;
     border: 1.5px solid transparent !important;
-    border-top: 1.5px solid var(--anylang-muted-foreground) !important;
+    border-top: 1.5px solid var(--anylang-muted) !important;
     border-radius: 50% !important;
     box-sizing: content-box !important;
     flex-shrink: 0 !important;
@@ -332,7 +332,7 @@ export function createLightweightSpinner(ownerDoc: Document): HTMLElement {
     // For reduced motion or when Web Animations API isn't available,
     // keep a static muted segment so the loading state stays visible
     // without requiring animation.
-    spinner.style.borderTopColor = 'var(--anylang-muted-foreground)';
+    spinner.style.borderTopColor = 'var(--anylang-muted)';
   }
 
   return spinner;
@@ -467,23 +467,6 @@ async function translateTextUsingPageConfig(
     return '';
   }
 
-  // NOTE: we dont need this check anymore
-  // // Skip translation if text is in skipLanguages list (page translation only)
-  // const { skipLanguages } = config.quickTranslate.translate;
-  // if (skipLanguages.length > 0 && preparedText.length >= MIN_SKIP_LEN) {
-  //   const shouldSkip = await translateText.shouldSkipLang(
-  //     preparedText,
-  //     skipLanguages as LangCode[],
-  //     config.langDetection.mode === 'llm'
-  //   );
-  //   if (shouldSkip) {
-  //     logger.info(
-  //       `translateTextForPage: skipping translation because text is in skip language list. text: ${preparedText}`
-  //     );
-  //     return '';
-  //   }
-  // }
-
   return translateTextCore({
     ...options,
     extraHashTags,
@@ -527,20 +510,6 @@ export async function translateTextForPageTitle(
     }
   });
 }
-
-// async function resolveLang(
-//   lang: InputTranslationLang,
-//   sourceLangCode: LangCode | 'auto' | 'default',
-//   targetLangCode: LangCode
-// ): Promise<LangCode> {
-//   if (lang === 'sourceCode') {
-//     return (sourceLangCode ?? targetLangCode) as LangCode;
-//   }
-//   if (lang === 'targetCode') {
-//     return targetLangCode;
-//   }
-//   return lang as LangCode;
-// }
 
 /**
  * Input translation — translates user-typed text using configured languages.

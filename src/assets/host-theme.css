@@ -1,8 +1,7 @@
 :root {
   --anylang-background: color-mix(in srgb, #ffbcad 20%, transparent);
   --anylang-primary: color-mix(in srgb, #fe795d 40%, transparent);
-  --anylang-muted: color-mix(in srgb, #fff1ee 40%, transparent);
-  --anylang-muted-foreground: color-mix(in srgb, #6b7280 40%, transparent);
+  --anylang-muted: color-mix(in srgb, #ef562f 80%, transparent);
   --anylang-weaken: color-mix(in srgb, #6b7280 20%, transparent);
   --anylang-mark: color-mix(in srgb, #dda15e 20%, transparent);
 }
@@ -11,8 +10,7 @@
   :root {
     --anylang-background: color-mix(in srgb, #ffbcad 40%, transparent);
     --anylang-primary: color-mix(in srgb, #fe795d 60%, transparent);
-    --anylang-muted: color-mix(in srgb, #fff1ee 60%, transparent);
-    --anylang-muted-foreground: color-mix(in srgb, #6b7280 20%, transparent);
+    --anylang-muted: color-mix(in srgb, #fff1ee 80%, transparent);
     --anylang-weaken: color-mix(in srgb, #6b7280 40%, transparent);
     --anylang-mark: color-mix(in srgb, #dda15e 40%, transparent);
   }

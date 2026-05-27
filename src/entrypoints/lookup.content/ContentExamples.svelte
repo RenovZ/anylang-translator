@@ -54,7 +54,7 @@
     {#each data as category, index (index)}
       <TabItem open={index === 0} title={category.name} classes={tabItemClasses}>
         {#each category.examples as example, exampleIndex (exampleIndex)}
-          <span class="text-gray-400 dark:text-gray-500">
+          <span class="text-gray-500 dark:text-gray-400">
             {exampleIndex + 1}
           </span>
           <div class="flex flex-col gap-1">
@@ -71,7 +71,7 @@
                 langCode={$detectedLangCodeOrUnd}
                 ariaLabel="play example original text" />
             </p>
-            <p class="text-sm text-gray-400 dark:text-gray-500">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
               {example.translation}
               <ContentAudioButton
                 text={example.translation}
@@ -79,7 +79,7 @@
                 ariaLabel="play example translation text" />
             </p>
             {#if example.source}
-              <p class="text-xs text-gray-400 dark:text-gray-500">
+              <p class="text-xs text-gray-500 dark:text-gray-400">
                 {example.source}
               </p>
             {/if}

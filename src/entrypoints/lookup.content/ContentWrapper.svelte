@@ -24,6 +24,7 @@
 </script>
 
 <Popper
+  overflowVisible={false}
   closeOnClickOutsideCallback={() => {
     if ($isPopoverOpen && $isPopoverPinned) return false;
     return true;
@@ -35,7 +36,7 @@
   trigger="click"
   placement="bottom"
   class={twMerge(
-    'z-2147483647 max-h-120 w-140 rounded-xl border-none bg-white/80 p-0 shadow-xl dark:bg-slate-900/80',
+    'z-2147483647 flex max-h-120 w-140 flex-col overflow-hidden rounded-xl border-none bg-white/80 p-0 shadow-xl backdrop-blur-xs dark:bg-slate-900/80',
     className
   )}>
   {@render children?.()}

@@ -117,7 +117,7 @@
     <Dropdown
       simple
       placement={position === 'source' ? 'bottom-start' : 'bottom-end'}
-      class="max-h-80 overflow-y-auto shadow-md">
+      class="max-h-80 overflow-y-auto bg-white/80 shadow-md backdrop-blur-xs dark:bg-slate-900/80">
       <DropdownItem
         onclick={() => {
           if (position === 'source') {
@@ -190,7 +190,7 @@
         }}
         title={i18n('display_style', { defaultValue: 'Display Style' })}>
         <div class="flex place-content-end items-center gap-2">
-          <DisplayStyle classes={{ dropdown: 'max-h-56' }}>
+          <DisplayStyle classes={{ dropdown: 'max-h-48' }}>
             {#snippet button()}
               <button
                 type="button"
@@ -268,7 +268,10 @@
         </span>
         <LocalIcon icon="tabler:chevron-down" class="h-4 w-4" />
       </button>
-      <Dropdown simple placement="bottom-end" class="max-h-56 overflow-y-auto shadow-md">
+      <Dropdown
+        simple
+        placement="top-end"
+        class="max-h-56 overflow-y-auto bg-white/80 shadow-md backdrop-blur-xs dark:bg-slate-900/80">
         {#each TRIGGER_ON_HOVER as { hotkey, label } (hotkey)}
           <DropdownItem
             class="flex items-center gap-2"
@@ -324,7 +327,10 @@
       <span class="font-medium">{i18n('more', { defaultValue: 'More' })}</span>
       <ChevronDownOutline class="h-6 w-6 text-slate-400" />
     </button>
-    <Dropdown simple placement="bottom-end" class="max-h-96 overflow-y-auto shadow-md">
+    <Dropdown
+      simple
+      placement="bottom-end"
+      class="max-h-96 overflow-y-auto bg-white/80 shadow-md backdrop-blur-xs dark:bg-slate-900/80">
       {#each moreItems as item (item.label)}
         <DropdownItem
           class="flex items-center gap-2"

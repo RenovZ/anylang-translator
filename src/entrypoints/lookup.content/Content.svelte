@@ -17,7 +17,8 @@
     'text-slate-600 hover:bg-slate-50 dark:text-slate-100 hover:dark:bg-slate-700';
   export const tabItemClasses = { button: 'px-2 py-1 text-nowrap' };
   export const tabClasses = {
-    content: 'bg-transparent p-0 grid grid-cols-[auto_1fr] gap-4 text-sm'
+    content:
+      'bg-transparent dark:bg-transparent p-0 grid grid-cols-[auto_1fr] gap-4 text-sm overflow-y-auto overflow-x-auto'
   };
 </script>
 
@@ -114,13 +115,13 @@
   // };
 </script>
 
-<div class="flex w-full flex-col rounded-xl bg-white">
+<div class="flex min-h-0 w-full flex-col rounded-xl">
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     role="region"
     aria-label="Popover header"
     class={twMerge(
-      'group relative flex items-center justify-between gap-4 border-b border-gray-100 p-2 dark:border-gray-700',
+      'group relative flex items-center justify-between gap-4 border-b border-gray-100 p-2 dark:border-gray-700/80',
       isDraggingHeader ? 'cursor-grabbing' : 'cursor-grab'
     )}
     onmousedown={handleHeaderMouseDown}>
@@ -130,10 +131,10 @@
         size="small"
         type="text"
         bind:value={selectedText}
-        class="w-full bg-white/80 dark:bg-slate-900/80"
+        class="w-full"
         classes={{
           label: twMerge('w-full top-1 truncate', isInputFocused || selectedText ? 'hidden' : ''),
-          input: 'border-gray-100 pt-0 dark:border-gray-700'
+          input: 'border-gray-100 pt-0 dark:border-gray-700/50 bg-transparent dark:bg-transparent'
         }}>
         {i18n('please_input_the_word_to_lookup', {
           defaultValue: 'Please input the word to lookup'
@@ -170,9 +171,9 @@
       </Button>
     </div>
   </div>
-  <div class="flex h-0 flex-1 px-2">
+  <div class="flex h-0 min-h-0 flex-1 px-2">
     <nav
-      class="w-20 shrink-0 border-r border-gray-100 py-2 dark:border-gray-700"
+      class="w-20 shrink-0 border-r border-gray-100 py-2 dark:border-gray-700/80"
       aria-label={sections[0].key}>
       {#each sections as section (section.key)}
         <button
@@ -187,7 +188,7 @@
       {/each}
     </nav>
 
-    <div class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto p-4">
+    <div class="flex flex-1 flex-col p-4">
       {#if activeSection === 'dictionary'}
         <Dictonary bind:selectedText />
       {:else if activeSection === 'examples'}
@@ -198,16 +199,16 @@
     </div>
   </div>
   <div
-    class="flex items-center justify-between gap-4 border-t border-gray-100 p-2 dark:border-gray-700">
+    class="flex items-center justify-between gap-4 border-t border-gray-100 p-2 dark:border-gray-700/80">
     <div class="flex flex-1 flex-nowrap items-center gap-2">
       <Provider
         field={FEAT_INSTANT_LOOKUP}
-        class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
+        class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80 dark:hover:bg-slate-700" />
       <LangDropdown
         langCodeType="target"
         bind:langCode={$config.instantLookup.selection.targetLangCode}
         fallbackLangCode={$config.targetLangCode}
-        class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
+        class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80 dark:hover:bg-slate-700" />
     </div>
     <div class="flex flex-nowrap items-center gap-2">
       <Toggle
@@ -218,7 +219,8 @@
       <Tooltip class="max-w-80 text-xs">
         {i18n('with_context', { defaultValue: 'With context' })}
       </Tooltip>
-      <TriggerModes class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80" />
+      <TriggerModes
+        class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80 dark:hover:bg-slate-700" />
     </div>
   </div>
 </div>

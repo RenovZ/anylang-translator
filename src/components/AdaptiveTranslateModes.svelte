@@ -44,7 +44,10 @@
     <ChevronDownOutline class="ms-2 h-6 w-6 text-slate-400" />
   </Button>
 {/if}
-<Dropdown simple placement="bottom-end" class="max-h-80 overflow-y-auto shadow-md">
+<Dropdown
+  simple
+  placement="bottom-end"
+  class="max-h-80 overflow-y-auto bg-white/80 shadow-md backdrop-blur-xs dark:bg-slate-900/80">
   {#each translateModeOptions as option (option.value)}
     <DropdownItem
       onclick={() =>

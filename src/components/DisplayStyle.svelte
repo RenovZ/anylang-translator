@@ -40,7 +40,10 @@
 <Dropdown
   simple
   placement="bottom-end"
-  class={twMerge('max-h-80 overflow-y-auto shadow-md', classes.dropdown)}>
+  class={twMerge(
+    'max-h-80 overflow-y-auto bg-white/80 shadow-md backdrop-blur-xs dark:bg-slate-900/80',
+    classes.dropdown
+  )}>
   {#each DISPLAY_STYLES as item (item)}
     <DropdownItem
       onclick={() => {

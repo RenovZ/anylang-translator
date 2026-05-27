@@ -75,7 +75,7 @@
   }
 </script>
 
-<div class="flex flex-1 flex-col space-y-4">
+<div class="flex flex-1 flex-col space-y-4 overflow-y-auto">
   {#if !data || loading}
     <ContentEmpty />
   {:else}
@@ -136,11 +136,11 @@
 
     <!-- Exam labels -->
     {#if data.examLabels.length > 0}
-      <div class="flex flex-wrap items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+      <div class="flex flex-wrap items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
         {#each data.examLabels as label, index (index)}
-          <span>{label}</span>
+          <span class="font-medium">{label}</span>
           {#if index < data.examLabels.length - 1}
-            <span class="text-gray-300 dark:text-gray-600">/</span>
+            <span>/</span>
           {/if}
         {/each}
       </div>
@@ -151,7 +151,7 @@
       <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
         {#each data.wordForms as form (form.label)}
           <div class="flex items-center gap-2">
-            <span class="text-gray-400 dark:text-gray-500">{form.label}</span>
+            <span class="text-gray-500 dark:text-gray-400">{form.label}</span>
             <button
               type="button"
               class="text-blue-600 hover:underline dark:text-blue-400"
