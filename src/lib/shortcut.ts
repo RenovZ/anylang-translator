@@ -157,7 +157,6 @@ class Shortcut {
         const enabled = rawTranslateState ? !rawTranslateState.enabled : true;
         return await sendMessage(featureKey, { enabled }, tabId);
       }
-      return await sendMessage(featureKey, { enabled: true }, tabId);
     });
   }
 
