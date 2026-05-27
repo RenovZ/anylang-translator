@@ -95,45 +95,67 @@ export const MAX_CUSTOM_CSS_LENGTH = 8192;
 
 export const displayStylePresets: string[] = displayStyles.map((s) => s.preset);
 
-// TODO: 这里的字体现在没有用到
 export const fontFamilyOptions = [
+  // System default
   { value: '', label: i18n('system_default', { defaultValue: 'System Default' }) },
+
+  // Western sans-serif / serif / monospace
   { value: 'Arial, sans-serif', label: 'Arial' },
-  { value: 'Helvetica, sans-serif', label: 'Helvetica' },
-  { value: 'Georgia, serif', label: 'Georgia' },
-  { value: 'Verdana, sans-serif', label: 'Verdana' },
-  { value: 'Times New Roman, Times, serif', label: 'Times New Roman' },
+  { value: 'Arial Unicode MS, Arial, sans-serif', label: 'Arial Unicode MS' },
   { value: 'Courier New, monospace', label: 'Courier New' },
-  { value: 'PingFang SC, Microsoft YaHei, sans-serif', label: 'PingFang SC' },
-  { value: 'Microsoft YaHei, PingFang SC, sans-serif', label: 'Microsoft YaHei' },
-  { value: 'Source Han Sans SC, Noto Sans SC, sans-serif', label: 'Source Han Sans SC' },
-  { value: 'Noto Sans SC, Source Han Sans SC, sans-serif', label: 'Noto Sans SC' }
+  { value: 'Georgia, serif', label: 'Georgia' },
+  { value: 'Helvetica Neue, Helvetica, Arial, sans-serif', label: 'Helvetica Neue' },
+  { value: 'Helvetica, sans-serif', label: 'Helvetica' },
+  { value: 'Tahoma, sans-serif', label: 'Tahoma' },
+  { value: 'Times New Roman, Times, serif', label: 'Times New Roman' },
+  { value: 'Trebuchet MS, sans-serif', label: 'Trebuchet MS' },
+  { value: 'Verdana, sans-serif', label: 'Verdana' },
+
+  // Chinese - macOS system fonts
+  { value: 'PingFang SC, Microsoft YaHei, sans-serif', label: '苹方 (PingFang SC)' },
+  { value: 'Hiragino Sans GB, Microsoft YaHei, sans-serif', label: '冬青黑体 (Hiragino Sans GB)' },
+  { value: 'Lantinghei SC, Microsoft YaHei, sans-serif', label: '兰亭黑 (Lantinghei)' },
+  { value: 'STHeiti, Heiti SC, Microsoft YaHei, sans-serif', label: '华文黑体 (STHeiti)' },
+  { value: 'STKaiti, KaiTi, serif', label: '华文楷体 (STKaiti)' },
+  { value: 'STSong, SimSun, serif', label: '华文宋体 (STSong)' },
+  { value: 'STFangsong, FangSong, serif', label: '华文仿宋 (STFangsong)' },
+  { value: 'Xingkai SC, STXingkai, KaiTi, serif', label: '行楷 (Xingkai)' },
+  { value: 'Yuanti SC, Hiragino Maru Gothic ProN, sans-serif', label: '圆体 (Yuanti)' },
+
+  // Chinese - Windows / generic
+  { value: 'Microsoft YaHei, PingFang SC, sans-serif', label: '微软雅黑 (Microsoft YaHei)' },
+  { value: 'SimSun, STSong, serif', label: '宋体 (SimSun)' },
+
+  // Chinese - Open source / cross-platform
+  { value: 'Noto Sans SC, Source Han Sans SC, sans-serif', label: 'Noto Sans SC' },
+  { value: 'Source Han Sans SC, Noto Sans SC, sans-serif', label: '思源黑体 (Source Han Sans SC)' },
+
+  // Chinese - Bundled open-source fonts
+  { value: 'LXGW WenKai, STKaiti, KaiTi, serif', label: '霞鹜文楷 (LXGW WenKai)' },
+  { value: 'Smiley Sans, Microsoft YaHei, sans-serif', label: '得意黑 (Smiley Sans)' },
+  { value: 'ZCOOL KuaiLe, Yuanti SC, sans-serif', label: '站酷快乐体 (ZCOOL KuaiLe)' },
+  { value: 'Ma Shan Zheng, STKaiti, KaiTi, serif', label: '马善政毛笔楷书 (Ma Shan Zheng)' },
+
+  // Japanese
+  {
+    value: 'Hiragino Kaku Gothic ProN, Yu Gothic, Meiryo, sans-serif',
+    label: 'Hiragino Kaku Gothic ProN'
+  },
+  { value: 'Hiragino Mincho ProN, Yu Mincho, serif', label: 'Hiragino Mincho ProN' },
+
+  // Korean
+  { value: 'Apple SD Gothic Neo, Nanum Gothic, sans-serif', label: 'Apple SD Gothic Neo' },
+  { value: 'Nanum Gothic, Apple SD Gothic Neo, sans-serif', label: 'Nanum Gothic' },
+
+  // Indic scripts
+  { value: 'Devanagari MT, Kohinoor Devanagari, sans-serif', label: 'Devanagari MT' },
+  { value: 'Kohinoor Devanagari, Devanagari MT, sans-serif', label: 'Kohinoor Devanagari' }
 ];
-
-// export const HOTKEYS = ['ctrl', 'alt', 'shift', 'clickAndHold'] as const;
-
-// export const HOTKEY_ICONS: Record<(typeof HOTKEYS)[number], string> = {
-//   ctrl: '⌃',
-//   alt: '⌥',
-//   shift: '⇧',
-//   // backtick: '`',
-//   clickAndHold: '⏱'
-// };
-
-// // Maps to actual keyboard event key (for keydown/keyup detection)
-// export const HOTKEY_EVENT_KEYS: Record<(typeof HOTKEYS)[number], string> = {
-//   ctrl: 'Control',
-//   alt: 'Alt',
-//   shift: 'Shift',
-//   // backtick: 'Backtick',
-//   clickAndHold: 'ClickAndHold' // Special handling, not a keyboard event
-// };
 
 export const TRIGGER_HOTKEY_MAP = {
   ctrl: { icon: '⌃', key: 'Control' },
   alt: { icon: '⌥', key: 'Alt' },
   shift: { icon: '⇧', key: 'Shift' },
-  // backtick: {icon: '`', key: 'Backtick'},
   clickAndHold: { icon: '⏱', key: 'ClickAndHold' } // Special handling, not a keyboard event
 } as const;
 
@@ -152,10 +174,6 @@ export const TRIGGER_ON_HOVER = [
     hotkey: 'shift',
     label: i18n('trigger_on_hover_shift', { defaultValue: 'Hover + Shift to translate paragraph' })
   },
-  // {
-  //   hotkey: 'backtick',
-  //   label: i18n('trigger_on_hover_backtick', { defaultValue: 'Hover + Backtick to translate paragraph' })
-  // },
   {
     hotkey: 'clickAndHold',
     // prettier-ignore

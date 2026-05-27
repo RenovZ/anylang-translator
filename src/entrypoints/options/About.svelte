@@ -23,17 +23,5 @@
       {i18n('options_about_version', { defaultValue: 'Version' })}
       {APP_VERSION}
     </p>
-
-    <!-- Action Buttons -->
-    <div class="mt-6 flex gap-4">
-      <Button
-        color="alternative"
-        class="rounded-xl dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
-        >{i18n('options_about_check_update', { defaultValue: 'Check for updates' })}</Button>
-      <Button
-        color="alternative"
-        class="rounded-xl dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
-        >{i18n('options_about_website', { defaultValue: 'Official website' })}</Button>
-    </div>
   </div>
 </Section>

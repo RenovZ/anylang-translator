@@ -22,7 +22,7 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
-  import logger, { formatError } from '@/lib/logger';
+  import logger from '@/lib/logger';
   import { sendMessage } from '@/lib/protocol';
   import { adaptiveTranslateSession } from '@/lib/session';
   import shortcut from '@/lib/shortcut';

@@ -22,7 +22,7 @@ import { isPaidProvider } from '@/types/provider';
 import configStore from './config';
 import i18n from './i18n';
 import langManager from './lang';
-import logger, { formatError } from './logger';
+import logger from './logger';
 import { sendMessage } from './protocol';
 import providerManager from './provider';
 
@@ -291,9 +291,7 @@ class ContentManager {
           return { langCode: llmResult, detectMethod: 'llm' };
         }
       } catch (error) {
-        logger.warn('falling back to franc', {
-          error: formatError(error)
-        });
+        logger.warn('falling back to franc', { error });
         toast.warn(
           i18n('toast_llm_language_detection_fallback', {
             defaultValue: 'LLM language detection failed, using franc instead'
@@ -391,9 +389,7 @@ class ContentManager {
 
       return null;
     } catch (error) {
-      logger.error({
-        error: formatError(error)
-      });
+      logger.error({ error });
       return null;
     }
   }

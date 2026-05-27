@@ -1,6 +1,8 @@
 import { APICallError } from 'ai';
+import { browser } from 'wxt/browser';
 
 import appCss from '@/assets/app.css?inline';
+import bundledFontsCss from '@/assets/bundled-fonts.css?raw';
 import customTranslationNodeCss from '@/assets/custom-translation-node.css?raw';
 import hostThemeCss from '@/assets/host-theme.css?raw';
 import textCss from '@/assets/text.css?inline';
@@ -39,7 +41,12 @@ type StyleRoot = Document | ShadowRoot;
 
 class StyleInjector {
   private readonly BASE_PRESET_CSS =
-    customTranslationNodeCss.replace(/@import[^;]+;/g, '') + translationNodePresetCss;
+    customTranslationNodeCss.replace(/@import[^;]+;/g, '') +
+    translationNodePresetCss +
+    bundledFontsCss.replace(
+      /url\(['"']?(\/fonts\/[^'"')]+)['"']?\)/g,
+      (_, p1) => `url('${browser.runtime.getURL(p1)}')`
+    );
   private readonly DOCUMENT_PRESET_CSS = hostThemeCss + this.BASE_PRESET_CSS;
   private readonly SHADOW_PRESET_CSS =
     hostThemeCss.replace(/:root/g, ':host') + this.BASE_PRESET_CSS;
@@ -358,6 +365,7 @@ export async function getTranslatedTextAndRemoveSpinner(
   try {
     translatedText = await translateTextForPage(options);
   } catch (error) {
+    logger.error({ error });
     const props: TranslateErrorProp = {
       nodes,
       error: error as APICallError,

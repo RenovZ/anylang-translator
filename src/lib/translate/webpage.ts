@@ -1,6 +1,6 @@
 import { Readability } from '@mozilla/readability';
 
-import logger, { formatError } from '@/lib/logger';
+import logger from '@/lib/logger';
 import type { TranslatePageRange } from '@/types/config';
 import type { CachedWebPageContext } from '@/types/content';
 import type { ProviderConfig } from '@/types/provider';
@@ -29,9 +29,7 @@ class Context {
       const article = new Readability(documentClone, { serializer: (el) => el }).parse();
       if (article?.textContent) return article.textContent;
     } catch (error) {
-      logger.warn('Readability parsing failed, falling back to body textContent:', {
-        error: formatError(error)
-      });
+      logger.warn('Readability parsing failed, falling back to body textContent:', { error });
     }
     return document.body?.textContent || '';
   }

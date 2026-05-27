@@ -1,7 +1,7 @@
 import { generateText } from 'ai';
 
 import lang from '@/lib/lang';
-import logger, { formatError } from '@/lib/logger';
+import logger from '@/lib/logger';
 import providerManager from '@/lib/provider';
 import urlUtils from '@/lib/url';
 import type { DetectedLangCode, LangCode } from '@/types/lang';
@@ -150,9 +150,7 @@ ${preparedText}`;
 
     return cleanedSummary;
   } catch (error) {
-    logger.error({
-      error: formatError(error)
-    });
+    logger.error({ error });
     return null;
   }
 }

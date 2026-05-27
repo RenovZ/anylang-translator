@@ -5,6 +5,7 @@
 
   import CodeMirrorWrapper from '@/components/CodeMirrorWrapper.svelte';
   import DisplayStyle from '@/components/DisplayStyle.svelte';
+  import FontDropdown from '@/components/FontDropdown.svelte';
   import SectionRow from '@/components/SectionRow.svelte';
   import { toast } from '@/components/toast-wrapper';
   import config from '@/lib/config';
@@ -14,7 +15,6 @@
   import { BLOCK_CONTENT_CLASS, CONTENT_WRAPPER_CLASS, TRANS_STYLE_ATTR } from '@/preset/dom';
   import {
     defaultCustomDisplayStyles,
-    fontFamilyOptions,
     MAX_CUSTOM_CSS_LENGTH,
     PREVIEW_TEXT_MAP
   } from '@/preset/translate';
@@ -40,8 +40,8 @@
     if (displayStyle.preset !== 'custom') return;
 
     const current = $config.adaptiveTranslate.translate.displayStyle;
-    const styles = { ...current.customStyles, [key]: value };
-    const { success, data, error } = displayStyleSchema.safeParse({ ...current, styles });
+    const customStyles = { ...current.customStyles, [key]: value };
+    const { success, data, error } = displayStyleSchema.safeParse({ ...current, customStyles });
     if (!success) {
       logger.error('Failed to update custom display style: ', { error });
       toast.error(i18n('display_style_invalid', { defaultValue: 'Invalid display style' }));
@@ -174,22 +174,22 @@
         <Input
           class="border-none bg-gray-50 shadow dark:bg-gray-600"
           type="number"
+          step="100"
           value={customStyles.fontWeight}
           onchange={(e) =>
             setCustomStyle('fontWeight', parseInt(e.currentTarget.value, 10) || 400)} />
       </Label>
-      <Label class="grid grid-cols-[1fr_200px] items-center gap-4">
+      <div class="grid grid-cols-[1fr_200px] items-center gap-4">
         <span>{i18n('font_family', { defaultValue: 'Font family' })}</span>
-        <Select
-          classes={{ select: 'border-none bg-gray-50 shadow dark:bg-gray-600' }}
+        <FontDropdown
+          classes={{
+            button:
+              'border-none bg-gray-50 shadow dark:bg-gray-600 rounded-lg hover:bg-none dark:hover:bg-none'
+          }}
           value={customStyles?.fontFamily ?? ''}
-          onchange={(e) =>
-            setCustomStyle('fontFamily', (e.currentTarget as HTMLSelectElement).value)}>
-          {#each fontFamilyOptions as option (option.value)}
-            <option value={option.value}>{option.label}</option>
-          {/each}
-        </Select>
-      </Label>
+          onChange={(value) => setCustomStyle('fontFamily', value)}
+          showTooltip />
+      </div>
     </div>
   {/if}
 

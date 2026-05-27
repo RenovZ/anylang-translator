@@ -371,17 +371,11 @@
   "open_display_style_settings": {
     "message": "Open display style settings"
   },
-  "options_about_check_update": {
-    "message": "Check for updates"
-  },
   "options_about_product_name": {
     "message": "Anylang Translator"
   },
   "options_about_version": {
     "message": "Version"
-  },
-  "options_about_website": {
-    "message": "Official website"
   },
   "options_changelog_item_1": {
     "message": "Initial release"
@@ -607,9 +601,6 @@
   },
   "trigger_on_hover_alt": {
     "message": "Hover + Alt to translate paragraph"
-  },
-  "trigger_on_hover_backtick": {
-    "message": "Hover + Backtick to translate paragraph"
   },
   "trigger_on_hover_ctrl": {
     "message": "Hover + Ctrl to translate paragraph"

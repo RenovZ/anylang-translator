@@ -14,13 +14,6 @@ interface CallerInfo {
   fn: string;
 }
 
-/**
- * Format unknown error to string message
- */
-export function formatError(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
-
 const isNode = typeof window === 'undefined' && typeof process !== 'undefined';
 
 // ANSI 颜色码（Node 终端）
