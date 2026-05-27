@@ -119,9 +119,6 @@ async function bilingualMode(
       .trim();
     if (!text || translateUtils.isNumericContent(text)) return;
 
-    // TODO: 不确定是否需要这个
-    // if (await shouldFilterSmallParagraph(textContent, config)) return;
-
     const ownerDoc = getOwnerDocument(targetNode);
     const translatedWrapperNode = ownerDoc.createElement('span');
     translatedWrapperNode.className = `${NOTRANSLATE_CLASS} ${CONTENT_WRAPPER_CLASS}`;
@@ -273,9 +270,6 @@ async function translationOnlyMode(
       .map((node) => domTraversal.extractTextContent(node, options.pageRange))
       .join('');
     if (!innerTextContent.trim() || translateUtils.isNumericContent(innerTextContent)) return;
-
-    // TODO: 不确定是否需要这个
-    // if (await shouldFilterSmallParagraph(innerTextContent, config)) return;
 
     const cleanTextContent = (content: string): string => {
       if (!content) return content;

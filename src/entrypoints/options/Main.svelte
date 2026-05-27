@@ -7,6 +7,7 @@
 
   import '@/assets/app.css';
 
+  import { APP_VERSION } from '@/lib/app';
   import i18n from '@/lib/i18n';
   import shortcut from '@/lib/shortcut';
 
@@ -46,14 +47,9 @@
       <span class="text-lg font-semibold">
         {i18n('options_title_extension_name', { defaultValue: 'Anylang Translator' })}
       </span>
-      <span class="text-slate-400">v0.0.1</span>
+      <span class="text-slate-400">{APP_VERSION}</span>
     </div>
   </div>
-  <Button
-    color="alternative"
-    class="rounded-xl px-4 py-2 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700">
-    ⚒️ {i18n('options_button_toolbox', { defaultValue: 'Toolbox' })}
-  </Button>
 </header>
 
 <!-- Main Content -->

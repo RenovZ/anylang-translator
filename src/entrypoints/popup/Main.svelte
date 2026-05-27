@@ -17,9 +17,9 @@
   import TranslateModes, { translateModeOptions } from '@/components/AdaptiveTranslateModes.svelte';
   import DisplayStyle from '@/components/DisplayStyle.svelte';
   import LocalIcon from '@/components/LocalIcon.svelte';
+  import { APP_VERSION } from '@/lib/app';
   import avatar from '@/lib/avatar';
   import config from '@/lib/config';
-  import { languageOptions } from '@/lib/data';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
   import logger, { formatError } from '@/lib/logger';
@@ -27,6 +27,7 @@
   import { adaptiveTranslateSession } from '@/lib/session';
   import shortcut from '@/lib/shortcut';
   import { FEAT_ADAPTIVE_TRANSLATE, FEAT_INSTANT_LOOKUP } from '@/preset/feature';
+  import { languageOptions } from '@/preset/lang';
   import { DISPLAY_STYLES, TRIGGER_ON_HOVER } from '@/preset/translate';
 
   import { moreItems } from './data';
@@ -317,7 +318,7 @@
     <CogOutline class="h-4 w-4 shrink-0" />
     <span>{i18n('settings', { defaultValue: 'Settings' })}</span>
   </button>
-  <div class="text-slate-400">v0.0.1</div>
+  <div class="text-slate-400">{APP_VERSION}</div>
   <div>
     <button type="button" class="flex min-w-0 items-center">
       <span class="font-medium">{i18n('more', { defaultValue: 'More' })}</span>

@@ -128,7 +128,6 @@ class DomFind {
   }
 
   /**
-   * TODO: will be removed in the future
    * Smash the truncation style of the node if it has truncation style
    * @param element - The node to smash the truncation style
    */
@@ -160,18 +159,12 @@ class DomFind {
         element.style.maxHeight = 'unset';
       }
 
-      // fix this issue: https://github.com/mengxi-ream/read-frog/issues/222
-      // if (computedStyle.overflow === 'hidden') {
-      //   element.style.overflow = 'visible'
-      // }
-
       if (computedStyle.textOverflow === 'ellipsis') {
         element.style.textOverflow = 'unset';
       }
     });
   }
 
-  // TODO: will be removed in the future
   async unwrapDeepestOnlyHTMLChild(element: HTMLElement, pageRange: TranslatePageRange) {
     let currentElement = element;
     while (currentElement) {
@@ -204,7 +197,6 @@ class DomFind {
   }
 
   /**
-   * TODO: will be removed in the future
    * Find the nearest translated content wrapper ancestor
    * @param node - The node should be a translated content node
    */

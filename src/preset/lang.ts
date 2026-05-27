@@ -1,3 +1,5 @@
+import i18n from '@/lib/i18n';
+
 export const LANG_CODE_MAP = {
   af: {
     aa: 'Afar Dili',
@@ -12048,3 +12050,8 @@ export const supportedLangs = {
     'zu'
   ]
 };
+
+export const languageOptions = [
+  i18n('source_language', { defaultValue: 'Source language' }),
+  i18n('target_language', { defaultValue: 'Target language' })
+];

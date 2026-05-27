@@ -29,16 +29,6 @@ export function removeShadowHostInTranslatedWrapper(wrapper: HTMLElement): void 
   // Remove React shadow hosts (for error components)
   const translationShadowHost = wrapper.querySelector(`.${SHADOW_HOST_CLASS}`);
   if (translationShadowHost && domFilter.isHTMLElement(translationShadowHost)) {
-    // function removeReactShadowHost(shadowHost: HTMLElement) {
-    //   if (!(shadowHost as any).__reactShadowContainerCleaned) {
-    //     (shadowHost as any).__reactShadowContainerCleanup?.();
-    //     (shadowHost as any).__reactShadowContainerCleaned = true;
-    //   }
-    //   shadowHost.remove();
-    // }
-    // removeReactShadowHost(translationShadowHost)
-
-    // TODO: Is this good enough?
     translationShadowHost.remove();
   }
 

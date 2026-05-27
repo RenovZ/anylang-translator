@@ -43,8 +43,6 @@ export function shouldEnableAutoTranslation(
  * This function is the thin dispatch layer that validates input and routes
  * to the appropriate backend — it is intentionally kept provider-agnostic
  * so that the content script never embeds API keys or network logic.
- *
- * TODO: Wire up per-provider dispatch once translate/api/* is implemented.
  */
 export async function translate<TContext>(
   text: string,

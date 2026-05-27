@@ -378,13 +378,10 @@
     "message": "Anylang Translator"
   },
   "options_about_version": {
-    "message": "Version 0.0.1"
+    "message": "Version"
   },
   "options_about_website": {
     "message": "Official website"
-  },
-  "options_button_toolbox": {
-    "message": "Toolbox"
   },
   "options_changelog_item_1": {
     "message": "Initial release"

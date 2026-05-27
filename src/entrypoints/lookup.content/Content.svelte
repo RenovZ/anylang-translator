@@ -114,7 +114,6 @@
   // };
 </script>
 
-<!-- TODO: Replace mock data with real API response based on selectedText -->
 <div class="flex w-full flex-col rounded-xl bg-white">
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div

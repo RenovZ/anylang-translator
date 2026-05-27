@@ -2,6 +2,7 @@
   import { Button } from 'flowbite-svelte';
 
   import Logo from '@/assets/logo.svg?component';
+  import { APP_VERSION } from '@/lib/app';
   import i18n from '@/lib/i18n';
 
   import { aboutNav } from './data';
@@ -19,7 +20,8 @@
       {i18n('options_about_product_name', { defaultValue: 'Anylang Translator' })}
     </h3>
     <p class="mt-2 text-slate-500 dark:text-slate-400">
-      {i18n('options_about_version', { defaultValue: 'Version 0.0.1' })}
+      {i18n('options_about_version', { defaultValue: 'Version' })}
+      {APP_VERSION}
     </p>
 
     <!-- Action Buttons -->

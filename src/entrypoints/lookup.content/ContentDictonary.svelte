@@ -152,7 +152,6 @@
         {#each data.wordForms as form (form.label)}
           <div class="flex items-center gap-2">
             <span class="text-gray-400 dark:text-gray-500">{form.label}</span>
-            <!-- TODO: Link to lookup this word form -->
             <button
               type="button"
               class="text-blue-600 hover:underline dark:text-blue-400"

@@ -397,18 +397,6 @@ export function validateTranslationConfigAndToast(detectedCode: DetectedLangCode
     return false;
   }
 
-  // TODO: 是否需要验证apiKey
-  // // check if the API key is configured
-  // if (
-  //   isAPIProviderConfig(providerConfig) &&
-  //   !providerConfig.apiKey?.trim() &&
-  //   !['deeplx', 'ollama'].includes(providerConfig.provider)
-  // ) {
-  //   toast.error(...)
-  //   logger.info('skipped on no API key found');
-  //   return false;
-  // }
-
   return true;
 }
 
@@ -428,22 +416,6 @@ export async function removeOrShowNodeTranslation(
   domTraversal.walkAndLabelElement(node, id, options.pageRange);
   await translateWalkedElement(node, id, options, true);
 }
-
-// TODO: 不确定是否要这个功能
-// async shouldFilterSmallParagraph(text: string): Promise<boolean> {
-//   const config = configStore.get();
-//   const { minCharactersPerNode, minWordsPerNode } = config.quickTranslate.translate.page;
-//   const { sourceCode } = config.sourceLangCode;
-
-//   if (minCharactersPerNode > 0 && text.length < minCharactersPerNode) return true;
-
-//   if (minWordsPerNode > 0) {
-//     const finalSourceCode = await getSourceCode(sourceCode);
-//     if (countWords(text, finalSourceCode) < minWordsPerNode) return true;
-//   }
-
-//   return false;
-// }
 
 async function getWebPagePromptContext(
   options: Pick<TranslateOptions, 'providerConfig' | 'pageRange'>,

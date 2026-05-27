@@ -286,7 +286,6 @@ type SimpleIntersectionOptions = Omit<IntersectionObserverInit, 'threshold'> & {
 export class PageTranslateManager {
   private readonly MAX_DURATION = 500;
   private readonly MOVE_THRESHOLD = 30 * 30;
-  // TODO: 我们需要这个吗?
   // Pre-translate Range
   // Control how much content below the viewport gets pre-translated to save API costs
   private readonly DEFAULT_INTERSECTION_OPTIONS: SimpleIntersectionOptions = {
@@ -779,53 +778,6 @@ export class PageTranslateManager {
       }
     }
   }
-}
-
-/**
- * TODO: Maybe same as the native shortcut key binding and will be remove in the future
- * Binds page translation shortcut key from the given config.
- * Uses sync cached config inside the hotkey callback to avoid async overhead.
- */
-export function bindTranslationShortcutKey(
-  pageTranslationManager: PageTranslateManager
-): () => void {
-  const config = configStore.get();
-  const { shortcut } = config.adaptiveTranslate;
-  if (!shortcut || shortcut.length === 0) {
-    return () => {};
-  }
-
-  const keyCombo = shortcut.join('+');
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (event.target instanceof HTMLElement && domFilter.isEditable(event.target)) return;
-
-    const keys: string[] = [];
-    if (event.altKey) keys.push('Alt');
-    if (event.ctrlKey) keys.push('Control');
-    if (event.shiftKey) keys.push('Shift');
-    if (event.metaKey) keys.push('Meta');
-    // NOTE: This is a fix for browser shortcut binding.
-    keys.push(event.key.length === 1 ? event.key.toUpperCase() : event.key);
-
-    const pressedCombo = keys.join('+');
-    if (pressedCombo === keyCombo) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (pageTranslationManager.isTranslating) {
-        pageTranslationManager.stop();
-      } else {
-        void pageTranslationManager.start();
-      }
-    }
-  };
-
-  document.addEventListener('keydown', handleKeyDown, { capture: true });
-
-  return () => {
-    document.removeEventListener('keydown', handleKeyDown, { capture: true });
-  };
 }
 
 /**
