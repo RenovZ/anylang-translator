@@ -4,9 +4,6 @@
 
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
-  import { getInstantLookupDictionaryPrompt } from '@/lib/prompt';
-  import { REGION_OPTIONS } from '@/preset/instant-lookup';
-  import type { DictionaryData } from '@/types/instant-lookup';
 
   import { detectedLangCodeOrUnd } from './state';
 </script>

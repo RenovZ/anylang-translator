@@ -30,12 +30,12 @@
   }: Prop = $props();
 </script>
 
-<div class={twMerge('grid grid-cols-[144px_1fr] items-center gap-2', classes.main)}>
+<div class={twMerge('grid grid-cols-[1fr_auto] items-center gap-4', classes.main)}>
   {#if typeof title === 'string'}
-    <div class="flex items-center gap-2 text-xs">
-      <span>{title}</span>
+    <div class="flex flex-nowrap items-center gap-2 text-xs">
+      <span class="text-nowrap">{title}</span>
       {#if field !== FEAT_INSTANT_LOOKUP && showShortcut && $config[field].shortcut?.length}
-        <span>
+        <span class="text-nowrap">
           ({shortcut.formatForDisplay($config[field].shortcut).join('')})
         </span>
       {/if}

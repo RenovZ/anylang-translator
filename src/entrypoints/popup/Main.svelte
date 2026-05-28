@@ -153,7 +153,7 @@
       showFreeProviders={true}
       showShortcut={false}
       classes={{
-        main: 'grid-cols-[96px_1fr]',
+        main: 'grid-cols-[auto_1fr]',
         button:
           'rounded-lg border-none bg-slate-50 px-1 py-1.5 text-slate-900 shadow hover:bg-slate-100/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600'
       }}
@@ -163,7 +163,7 @@
       showFreeProviders={true}
       showShortcut={false}
       classes={{
-        main: 'grid-cols-[96px_1fr]'
+        main: 'grid-cols-[auto_1fr]'
       }}
       title={i18n('translate_mode', { defaultValue: 'Translate Mode' })}>
       <TranslateModes>
@@ -186,7 +186,7 @@
         showFreeProviders={true}
         showShortcut={false}
         classes={{
-          main: 'grid-cols-[96px_1fr]'
+          main: 'grid-cols-[auto_1fr]'
         }}
         title={i18n('display_style', { defaultValue: 'Display Style' })}>
         <div class="flex place-content-end items-center gap-2">
@@ -224,7 +224,7 @@
         </div>
       </Feature>
     {/if}
-    <div class="flex items-center justify-between gap-2">
+    <div class="flex items-center justify-between gap-4">
       <span
         class="line-clamp-1 font-medium aria-disabled:text-gray-400"
         aria-disabled={currentHostname
@@ -256,7 +256,7 @@
           span: 'cursor-pointer bg-slate-100 dark:bg-slate-600 m-0'
         }} />
     </div>
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between gap-4">
       <button
         type="button"
         disabled={!$config.adaptiveTranslate.translate.triggerOnHover.enabled}

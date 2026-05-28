@@ -1,12 +1,9 @@
 <script lang="ts">
   import { TabItem, Tabs } from 'flowbite-svelte';
 
-  import LocalIcon from '@/components/LocalIcon.svelte';
   import config from '@/lib/config';
-  import logger from '@/lib/logger';
   import { getInstantLookupExamplesPrompt } from '@/lib/prompt';
   import type { ExamplesData } from '@/types/instant-lookup';
-  import type { DetectedLangCode } from '@/types/lang';
 
   import { tabClasses, tabItemClasses } from './Content.svelte';
   import { getData } from './ContentApi.svelte';
