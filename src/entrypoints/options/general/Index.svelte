@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Avatar, Badge, Button, Radio } from 'flowbite-svelte';
+  import { Avatar, Badge, Button, Radio, Toggle } from 'flowbite-svelte';
 
   import LangDropdown from '@/components/LangDropdown.svelte';
   import Provider from '@/components/Provider.svelte';
@@ -96,6 +96,20 @@
       {#if $config.langDetection.mode === 'llm'}
         <Provider field="langDetection" showFreeProviders={false} />
       {/if}
+    </div>
+  </SectionRow>
+
+  <!-- developer mode -->
+  <SectionRow
+    title={i18n('developer_mode', { defaultValue: 'Developer mode' })}
+    description={i18n('developer_mode_hint', {
+      defaultValue: 'Enable developer mode to see detailed logs and debug information'
+    })}>
+    <div slot="controls" class="flex place-content-end">
+      <Toggle
+        class="w-fit cursor-pointer"
+        classes={{ span: 'm-0' }}
+        bind:checked={$config.devMode} />
     </div>
   </SectionRow>
 </Section>

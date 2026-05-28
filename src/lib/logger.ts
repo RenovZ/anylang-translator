@@ -80,14 +80,19 @@ function abbreviateModuleName(filename: string): string {
 }
 
 class Logger {
-  private minLevel: Level = 'trace';
+  private minLevel: Level = isDev ? 'trace' : 'debug';
+  private _devMode: boolean = isDev;
 
   setLevel(level: Level): void {
     this.minLevel = level;
   }
 
+  set devMode(devMode: boolean) {
+    this._devMode = devMode;
+  }
+
   private isEnabled(level: Level): boolean {
-    return isDev && LEVELS[level] >= LEVELS[this.minLevel];
+    return this._devMode && LEVELS[level] >= LEVELS[this.minLevel];
   }
 
   private isCallerInfo(x: unknown): x is CallerInfo {

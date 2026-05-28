@@ -322,7 +322,7 @@
     <span>{i18n('settings', { defaultValue: 'Settings' })}</span>
   </button>
   <div class="text-slate-400">{APP_VERSION}</div>
-  <div>
+  <div class="flex items-center gap-2">
     <button type="button" class="flex min-w-0 items-center">
       <span class="font-medium">{i18n('more', { defaultValue: 'More' })}</span>
       <ChevronDownOutline class="h-6 w-6 text-slate-400" />
@@ -341,6 +341,14 @@
           {item.label}
         </DropdownItem>
       {/each}
+      <DropdownItem class="flex items-center justify-between gap-2">
+        {i18n('developer_mode', { defaultValue: 'Developer mode' })}
+        <Toggle
+          size="small"
+          class="w-fit cursor-pointer"
+          classes={{ span: 'cursor-pointer bg-slate-200 dark:bg-slate-700 m-0' }}
+          bind:checked={$config.devMode} />
+      </DropdownItem>
     </Dropdown>
   </div>
 </footer>

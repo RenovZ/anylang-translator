@@ -21,6 +21,8 @@ import logger from './logger';
 const env = import.meta.env ?? {};
 
 const defaultConfig: Config = configSchema.parse({
+  devMode: false,
+
   uiLangCode: 'default',
   sourceLangCode: undefined,
   targetLangCode: env.DEV ? env.VITE_TARGET_LANG_CODE : langCodeSchema.parse('en'),
@@ -78,7 +80,7 @@ class ConfigStore {
   private store = {
     subscribe: (run: Subscriber<Config>) => {
       return this._store.subscribe((config) => {
-        run(this.syncProviders(config));
+        run(this.sync(config));
       });
     },
     set: (value: Config) => this._store.set(value),
@@ -89,7 +91,7 @@ class ConfigStore {
     fallback: defaultConfig
   });
 
-  private syncProviders(config: Config): Config {
+  private sync(config: Config): Config {
     const providerMap = new Map(config.providers.map((p) => [p.name, p]));
 
     const syncProvider = (provider: ProviderConfig | null): ProviderConfig | null => {
@@ -102,6 +104,8 @@ class ConfigStore {
       const synced = providerMap.get(provider.name);
       return synced && isLLMProvider(synced) ? synced : provider;
     };
+
+    logger.devMode = config.devMode;
 
     return {
       ...config,
@@ -131,17 +135,17 @@ class ConfigStore {
     const rawValue = await this.storage.getValue();
     const { success, data, error } = configSchema.safeParse(rawValue);
     if (success) {
-      this._store.set(this.syncProviders(data));
+      this._store.set(this.sync(data));
     } else {
       logger.warn('Invalid config data, using default:', { error });
-      this._store.set(this.syncProviders(defaultConfig));
+      this._store.set(this.sync(defaultConfig));
       await this.storage.setValue(defaultConfig);
     }
 
     this.storage.watch((newValue) => {
       const { success, data, error } = configSchema.safeParse(newValue);
       if (success) {
-        this._store.set(this.syncProviders(data));
+        this._store.set(this.sync(data));
       } else {
         logger.warn('Invalid config update, ignoring:', { error });
       }
@@ -162,7 +166,7 @@ class ConfigStore {
     await this.init();
     const { success, data, error } = configSchema.safeParse(value);
     if (success) {
-      const synced = this.syncProviders(data);
+      const synced = this.sync(data);
       const reparsed = configSchema.safeParse(synced);
       if (reparsed.success) {
         this._store.set(reparsed.data);
@@ -179,7 +183,7 @@ class ConfigStore {
     await this.init();
     this._store.update((current) => {
       const newValue = fn(current);
-      const synced = this.syncProviders(newValue);
+      const synced = this.sync(newValue);
       const { success, data, error } = configSchema.safeParse(synced);
       if (success) {
         this.storage.setValue(data);

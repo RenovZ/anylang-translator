@@ -61,6 +61,8 @@ export const featureConfigSchema = z.union([
 export type FeatureConfig = z.infer<typeof featureConfigSchema>;
 
 export const configSchema = z.object({
+  devMode: z.boolean().default(false),
+
   uiLangCode: uiLangCodeSchema.or(z.literal('default')),
   sourceLangCode: langCodeSchema.optional(),
   targetLangCode: langCodeSchema,

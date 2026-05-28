@@ -72,7 +72,7 @@
     })}>
     <div slot="controls" class="flex place-content-end">
       <Toggle
-        class="w-fit"
+        class="w-fit cursor-pointer"
         classes={{ span: 'm-0' }}
         bind:checked={$config.instantLookup.selection.withContext} />
     </div>

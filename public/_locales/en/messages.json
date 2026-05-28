@@ -122,6 +122,12 @@
   "delete_selected": {
     "message": "Delete selected"
   },
+  "developer_mode": {
+    "message": "Developer mode"
+  },
+  "developer_mode_hint": {
+    "message": "Enable developer mode to see detailed logs and debug information"
+  },
   "dictionary": {
     "message": "Dictonary"
   },
