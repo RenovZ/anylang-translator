@@ -284,7 +284,7 @@
         bind:checked={$config.adaptiveTranslate.translate.triggerOnHover.enabled}
         size="small"
         classes={{
-          span: 'cursor-pointer bg-slate-200 dark:bg-slate-600 m-0'
+          span: 'cursor-pointer bg-slate-100 dark:bg-slate-600 m-0'
         }} />
     </div>
   </section>
