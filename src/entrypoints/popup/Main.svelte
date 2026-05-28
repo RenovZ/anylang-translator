@@ -99,7 +99,7 @@
   {#snippet languageDropdown(position: 'source' | 'target')}
     {@const currentLang = position === 'source' ? $config.sourceLangCode : $config.targetLangCode}
     <Button
-      class="rounded-xl border-none bg-slate-50 p-1 text-slate-900 shadow hover:bg-slate-100/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
+      class="justify-between rounded-xl border-none bg-slate-50 p-1 text-slate-900 shadow hover:bg-slate-100/70 dark:bg-slate-700 dark:text-slate-100 hover:dark:bg-slate-600">
       <div class="flex flex-col text-left">
         <span class="line-clamp-1 font-medium">
           {currentLang
