@@ -184,7 +184,7 @@
         <FontDropdown
           classes={{
             button:
-              'border-none bg-gray-50 shadow dark:bg-gray-600 rounded-lg hover:bg-none dark:hover:bg-none'
+              'border-none bg-gray-50 shadow dark:bg-gray-600 rounded-lg hover:bg-transparent dark:hover:bg-transparent'
           }}
           value={customStyles?.fontFamily ?? ''}
           onChange={(value) => setCustomStyle('fontFamily', value)}

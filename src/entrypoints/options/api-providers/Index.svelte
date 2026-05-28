@@ -350,7 +350,9 @@
                 </Select>
               {/if}
               <Checkbox
-                bind:checked={($config.providers[selectedIndex] as CustomProvider).model.isCustom}>
+                bind:checked={($config.providers[selectedIndex] as CustomProvider).model.isCustom}
+                onchange={() =>
+                  (($config.providers[selectedIndex] as CustomProvider).model.name = undefined)}>
                 {i18n('enter_the_model_name', { defaultValue: 'Enter the model name' })}
               </Checkbox>
             </div>

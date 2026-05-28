@@ -97,7 +97,7 @@ function createCustomProviderSchema(
         if (!data.model.name) return true;
         const provider = providers.find((p) => p.provider === data.provider);
         if (!provider) return true;
-        if (data.provider === OPENAI_COMPATIBLE_PROVIDER) {
+        if (data.provider === OPENAI_COMPATIBLE_PROVIDER || data.model.isCustom) {
           return data.model.name.trim().length > 0;
         }
         return (provider.models as readonly string[]).includes(data.model.name);

@@ -13,6 +13,7 @@ import {
   type Config
 } from '@/types/config';
 import { langCodeSchema } from '@/types/lang';
+import { isLLMProvider, type AIProvider, type ProviderConfig } from '@/types/provider';
 import { displayStyleSchema } from '@/types/translate';
 
 import logger from './logger';
@@ -73,11 +74,52 @@ const defaultConfig: Config = configSchema.parse({
 });
 
 class ConfigStore {
-  private store = writable<Config>(defaultConfig);
+  private _store = writable<Config>(defaultConfig);
+  private store = {
+    subscribe: (run: Subscriber<Config>) => {
+      return this._store.subscribe((config) => {
+        run(this.syncProviders(config));
+      });
+    },
+    set: (value: Config) => this._store.set(value),
+    update: (fn: (value: Config) => Config) => this._store.update(fn)
+  };
   private initPromise: Promise<void> | null = null;
   private storage = storage.defineItem<unknown>('local:config_v1', {
     fallback: defaultConfig
   });
+
+  private syncProviders(config: Config): Config {
+    const providerMap = new Map(config.providers.map((p) => [p.name, p]));
+
+    const syncProvider = (provider: ProviderConfig | null): ProviderConfig | null => {
+      if (!provider) return null;
+      return providerMap.get(provider.name) ?? provider;
+    };
+
+    const syncAIProvider = (provider: AIProvider | null): AIProvider | null => {
+      if (!provider) return null;
+      const synced = providerMap.get(provider.name);
+      return synced && isLLMProvider(synced) ? synced : provider;
+    };
+
+    return {
+      ...config,
+      langDetection: {
+        ...config.langDetection,
+        provider: syncAIProvider(config.langDetection.provider)
+      },
+      adaptiveTranslate: {
+        ...config.adaptiveTranslate,
+        provider:
+          syncProvider(config.adaptiveTranslate.provider) ?? config.adaptiveTranslate.provider
+      },
+      instantLookup: {
+        ...config.instantLookup,
+        provider: syncProvider(config.instantLookup.provider)
+      }
+    };
+  }
 
   async init(): Promise<void> {
     if (this.initPromise) return this.initPromise;
@@ -89,17 +131,17 @@ class ConfigStore {
     const rawValue = await this.storage.getValue();
     const { success, data, error } = configSchema.safeParse(rawValue);
     if (success) {
-      this.store.set(data);
+      this._store.set(this.syncProviders(data));
     } else {
       logger.warn('Invalid config data, using default:', { error });
-      this.store.set(defaultConfig);
+      this._store.set(this.syncProviders(defaultConfig));
       await this.storage.setValue(defaultConfig);
     }
 
     this.storage.watch((newValue) => {
       const { success, data, error } = configSchema.safeParse(newValue);
       if (success) {
-        this.store.set(data);
+        this._store.set(this.syncProviders(data));
       } else {
         logger.warn('Invalid config update, ignoring:', { error });
       }
@@ -120,19 +162,25 @@ class ConfigStore {
     await this.init();
     const { success, data, error } = configSchema.safeParse(value);
     if (success) {
-      this.store.set(data);
-      await this.storage.setValue(data);
+      const synced = this.syncProviders(data);
+      const reparsed = configSchema.safeParse(synced);
+      if (reparsed.success) {
+        this._store.set(reparsed.data);
+        await this.storage.setValue(reparsed.data);
+      } else {
+        logger.error('Invalid config after provider sync:', { error: reparsed.error });
+      }
     } else {
       logger.error('Invalid config value:', { error });
-      // throw new Error('Invalid config value');
     }
   }
 
   async update(fn: (value: Config) => Config): Promise<void> {
     await this.init();
-    this.store.update((current) => {
+    this._store.update((current) => {
       const newValue = fn(current);
-      const { success, data, error } = configSchema.safeParse(newValue);
+      const synced = this.syncProviders(newValue);
+      const { success, data, error } = configSchema.safeParse(synced);
       if (success) {
         this.storage.setValue(data);
         return data;
