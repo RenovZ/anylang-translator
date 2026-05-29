@@ -6,7 +6,7 @@
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { getProviderIcon } from '@/preset/provider';
-  import { isPaidProvider, type AIProviderType } from '@/types/provider';
+  import type { AIProviderType } from '@/types/provider';
 
   interface Props {
     title: string;
@@ -47,14 +47,6 @@
         <ProviderIcon name={provider.name} icon={getProviderIcon(provider)} class="w-6" />
         {#if provider.type === 'free'}
           <span class="line-clamp-1 flex flex-1 text-sm font-medium">{provider.name}</span>
-        {:else if isPaidProvider(provider)}
-          <div class="flex w-full items-center justify-between text-sm font-medium">
-            <span class="line-clamp-1 flex">{provider.model}</span>
-            <!--
-            TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
-            -->
-            <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
-          </div>
         {:else if provider.type === 'custom'}
           <div class="line-clamp-1 w-full text-sm font-medium">
             <span>{provider.name}</span>

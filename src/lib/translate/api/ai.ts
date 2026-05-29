@@ -5,7 +5,7 @@ import logger from '@/lib/logger';
 import providerManager from '@/lib/provider';
 import type { LangCode } from '@/types/lang';
 import type { PromptResolver } from '@/types/prompt';
-import { isPaidProvider, type AIProvider } from '@/types/provider';
+import type { AIProvider } from '@/types/provider';
 
 const THINK_TAG_RE = /<\/think>([\s\S]*)/;
 
@@ -17,11 +17,6 @@ export async function aiTranslate<TContext>(
   promptResolver: PromptResolver<TContext>,
   options?: { isBatch?: boolean; context?: TContext }
 ) {
-  if (isPaidProvider(providerConfig)) {
-    // TODO: Implement go/zen provider aiTranslate
-    throw new Error('aiTranslate: go/zen provider will come soon');
-  }
-
   const {
     model,
     name: providerName,

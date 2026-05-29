@@ -6,7 +6,7 @@
   import config from '@/lib/config';
   import type { FeatureField } from '@/preset/feature';
   import { getProviderIcon } from '@/preset/provider';
-  import { isCustomProvider, isPaidProvider } from '@/types/provider';
+  import { isCustomProvider } from '@/types/provider';
 
   import ProviderIcon from './ProviderIcon.svelte';
   import ProvidersDropdown from './ProvidersDropdown.svelte';
@@ -33,17 +33,13 @@
         class="w-4" />
       <span class="line-clamp-1 text-left break-all">
         {$config[field].provider.name}
-        {#if isPaidProvider($config[field].provider)}
-          ({$config[field].provider.model})
-        {:else if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
+        {#if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
           ({$config[field].provider.model.name})
         {/if}
       </span>
       <Tooltip class="max-w-80 text-left text-xs">
         {$config[field].provider.name}
-        {#if isPaidProvider($config[field].provider)}
-          ({$config[field].provider.model})
-        {:else if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
+        {#if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
           ({$config[field].provider.model.name})
         {/if}
       </Tooltip>

@@ -1,7 +1,7 @@
 import { get, writable, type Subscriber } from 'svelte/store';
 import { storage } from 'wxt/utils/storage';
 
-import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
+import { freeProviders } from '@/preset/provider';
 import { displayStyles, TRIGGER_HOTKEYS } from '@/preset/translate';
 import {
   configSchema,
@@ -32,11 +32,7 @@ const defaultConfig: Config = configSchema.parse({
     provider: null
   },
 
-  providers: [
-    ...structuredClone(freeProviders),
-    ...structuredClone(goProviders),
-    ...structuredClone(zenProviders)
-  ],
+  providers: [...structuredClone(freeProviders)],
 
   adaptiveTranslate: {
     icon: 'ri:translate-ai',

@@ -12,7 +12,7 @@ import {
 import { featuresSchema } from './feature';
 
 // Provider types
-export const aiProviderTypeSchema = z.enum(['go', 'zen', 'custom']);
+export const aiProviderTypeSchema = z.enum(['custom']);
 export type AIProviderType = z.infer<typeof aiProviderTypeSchema>;
 
 export const providerTypeSchema = z.enum(ALL_PROVIDER_TYPES);
@@ -35,12 +35,6 @@ export function isCustomProvider(config: Pick<ProviderConfig, 'type'>): config i
   return config.type === 'custom';
 }
 
-export function isPaidProvider(
-  config: Pick<ProviderConfig, 'type'>
-): config is GoProvider | ZenProvider {
-  return config.type === 'go' || config.type === 'zen';
-}
-
 const baseProviderSchema = z.object({
   provider: providerTypeSchema,
   name: z.string(),
@@ -53,18 +47,6 @@ export const freeProviderSchema = baseProviderSchema.extend({
   type: z.literal('free')
 });
 export type FreeProvider = z.infer<typeof freeProviderSchema>;
-
-export const goProviderSchema = baseProviderSchema.extend({
-  type: z.literal('go'),
-  model: z.string(),
-  temperature: z.number().min(0).optional()
-});
-export type GoProvider = z.infer<typeof goProviderSchema>;
-
-export const zenProviderSchema = goProviderSchema.extend({
-  type: z.literal('zen')
-});
-export type ZenProvider = z.infer<typeof zenProviderSchema>;
 
 function createCustomProviderSchema(
   providers: readonly { provider: ProviderType; models: readonly string[] }[],
@@ -135,11 +117,7 @@ export const compatibleProviderSchema = createCustomProviderSchema(COMPATIBLE_PR
 export const customProviderSchema = z.union([builtinProviderSchema, compatibleProviderSchema]);
 export type CustomProvider = z.infer<typeof customProviderSchema>;
 
-export const aiProviderSchema = z.union([
-  goProviderSchema,
-  zenProviderSchema,
-  customProviderSchema
-]);
+export const aiProviderSchema = customProviderSchema;
 export type AIProvider = z.infer<typeof aiProviderSchema>;
 
 // Provider union type with custom type to match existing usage

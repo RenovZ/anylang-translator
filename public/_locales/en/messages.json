@@ -266,9 +266,6 @@
   "general": {
     "message": "General"
   },
-  "go_users": {
-    "message": "Go Users"
-  },
   "instant_lookup": {
     "message": "Instant Lookup"
   },
@@ -569,9 +566,6 @@
   "unsupported_trigger": {
     "message": "Unsupported Trigger"
   },
-  "upgrade": {
-    "message": "Upgrade"
-  },
   "us": {
     "message": "美"
   },
@@ -601,8 +595,5 @@
   },
   "yes": {
     "message": "Yes, I'm sure"
-  },
-  "zen_users": {
-    "message": "Zen Users"
   }
 }

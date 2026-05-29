@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { freeProviders, goProviders, zenProviders } from '@/preset/provider';
+import { freeProviders } from '@/preset/provider';
 import { displayStyles, TRIGGER_HOTKEYS } from '@/preset/translate';
 import { aiProviderSchema, providerSchema, type ProviderConfig } from '@/types/provider';
 
@@ -84,7 +84,7 @@ export const configSchema = z.object({
         nameSet.add(provider.name);
       });
     })
-    .default([...freeProviders, ...goProviders, ...zenProviders]),
+    .default([...freeProviders]),
 
   adaptiveTranslate: adaptiveTranslateSchema,
   instantLookup: instantLookupSchema

@@ -9,7 +9,7 @@
   import { sendMessage } from '@/lib/protocol';
   import type { FeatureField } from '@/preset/feature';
   import { ICON_BY_NAME, ICON_BY_PROVIDER_ID } from '@/preset/provider';
-  import type { CustomProvider, FreeProvider, GoProvider, ZenProvider } from '@/types/provider';
+  import type { CustomProvider, FreeProvider } from '@/types/provider';
 
   import { idApiProviders } from './NavIds.svelte';
   import ProviderIcon from './ProviderIcon.svelte';
@@ -27,18 +27,6 @@
     $config.providers.filter(
       (item): item is FreeProvider =>
         item.type === 'free' && item.enabled && !!item.features[field]?.state
-    )
-  );
-  const goProvidersList = $derived(
-    $config.providers.filter(
-      (item): item is GoProvider =>
-        item.type === 'go' && item.enabled && !!item.features[field]?.state
-    )
-  );
-  const zenProvidersList = $derived(
-    $config.providers.filter(
-      (item): item is ZenProvider =>
-        item.type === 'zen' && item.enabled && !!item.features[field]?.state
     )
   );
   const customProvidersList = $derived(
@@ -71,48 +59,7 @@
       {/each}
     </DropdownGroup>
   {/if}
-  <DropdownGroup class="py-0">
-    <DropdownHeader class="py-1 text-sm text-slate-400">
-      {i18n('go_users', { defaultValue: 'Go Users' })}
-    </DropdownHeader>
-    {#each goProvidersList as provider (provider.name)}
-      <DropdownItem
-        class="flex items-center gap-2"
-        onclick={() => ($config[field].provider = { ...provider })}>
-        <ProviderIcon name={provider.name} icon={ICON_BY_NAME[provider.name]} class="w-4" />
-        <div class="flex w-full items-center justify-between text-sm font-medium">
-          <!--
-          TODO: 判断用户是否需要升级, 否则就正常展示+去掉upgrade升级提示
-          -->
-          <span class={`line-clamp-1 flex ${true ? 'cursor-not-allowed text-slate-400' : ''}`}>
-            {provider.model}
-          </span>
-          <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
-        </div>
-      </DropdownItem>
-    {/each}
-  </DropdownGroup>
-  <DropdownGroup class="py-0">
-    <DropdownHeader class="py-1 text-sm text-slate-400">
-      {i18n('zen_users', { defaultValue: 'Zen Users' })}
-    </DropdownHeader>
-    {#each zenProvidersList as provider (provider.name)}
-      <DropdownItem
-        class="flex items-center gap-2"
-        onclick={() => ($config[field].provider = { ...provider })}>
-        <ProviderIcon name={provider.name} icon={ICON_BY_NAME[provider.name]} class="w-4" />
-        <div class="flex w-full items-center justify-between text-sm font-medium">
-          <!--
-          TODO: 判断用户是否需要升级, 否则就正常展示+去掉upgrade升级提示
-          -->
-          <span class={`line-clamp-1 flex ${true ? 'cursor-not-allowed text-slate-400' : ''}`}>
-            {provider.model}
-          </span>
-          <A>{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
-        </div>
-      </DropdownItem>
-    {/each}
-  </DropdownGroup>
+
   <DropdownGroup class="py-0">
     <DropdownHeader class="py-1 text-sm text-slate-400">
       {i18n('custom', { defaultValue: 'Custom' })}

@@ -13,7 +13,7 @@ import type { XaiProviderOptions } from '@ai-sdk/xai';
 import i18n from '@/lib/i18n';
 import type { FeatureKey } from '@/preset/feature';
 import type { FeatureItem, FeatureValue } from '@/types/feature';
-import type { FreeProvider, GoProvider, ZenProvider } from '@/types/provider';
+import type { FreeProvider } from '@/types/provider';
 
 // Ordered feature definitions for consistent UI rendering (array order = display order)
 export const featureItems: FeatureItem[] = [
@@ -69,92 +69,6 @@ export const freeProviders = FREE_PROVIDERS.map(
         adaptiveTranslate: { state: true }
       }
     }) satisfies FreeProvider
-);
-
-export const GO_PROVIDERS = [
-  {
-    provider: 'deepseek',
-    name: 'DeepSeek',
-    model: 'DeepSeek-V4-Pro',
-    icon: 'deepseek'
-  },
-  {
-    provider: 'zai',
-    name: 'Z.ai',
-    model: 'GLM-5.1',
-    icon: 'zai'
-  },
-  {
-    provider: 'kimi',
-    name: 'Kimi',
-    company: 'Moonshot',
-    model: 'Kimi K2.6',
-    icon: 'kimi'
-  },
-  {
-    provider: 'mimo',
-    name: 'MiMo',
-    company: 'Xiaomi',
-    model: 'MiMo-V2-Pro',
-    icon: 'xiaomimimo'
-  },
-  {
-    provider: 'minimax',
-    name: 'MiniMax',
-    model: 'MiniMax M2.7',
-    icon: 'minimax'
-  },
-  {
-    provider: 'qwen',
-    name: 'Qwen',
-    company: 'Alibaba',
-    model: 'Qwen3.6 Plus',
-    icon: 'qwen'
-  }
-].toSorted((a, b) => a.name.localeCompare(b.name));
-export const goProviders = GO_PROVIDERS.map(
-  (p) =>
-    ({
-      type: 'go' as const,
-      provider: p.provider,
-      model: p.model,
-      name: p.name,
-      enabled: true,
-      features: { ...defaultOpenedFeatures } as const
-    }) satisfies GoProvider
-);
-
-export const ZEN_PROVIDERS = [
-  {
-    provider: 'anthropic',
-    name: 'Anthropic',
-    model: 'Claude Opus 4.7',
-    icon: 'anthropic'
-  },
-  {
-    provider: 'openai',
-    name: 'OpenAI',
-    model: 'GPT 5.4 Pro',
-    icon: 'openai'
-  },
-  {
-    provider: 'gemini',
-    name: 'Gemini',
-    company: 'Google',
-    model: 'Gemini 3.1 Pro',
-    icon: 'gemini'
-  }
-].toSorted((a, b) => a.name.localeCompare(b.name));
-export const zenProviders = ZEN_PROVIDERS.map(
-  (p) =>
-    ({
-      type: 'zen' as const,
-      provider: p.provider,
-      model: p.model,
-      name: p.name,
-      enabled: true,
-      features: { ...defaultOpenedFeatures } as const
-    }) satisfies ZenProvider
 );
 
 type OpenAIReasoningEffort = Exclude<OpenAIResponsesProviderOptions['reasoningEffort'], undefined>;
@@ -832,9 +746,7 @@ export const MODEL_OPTIONS: Array<{
  * Icon lookup keyed by display name (covers Free, Go, and Zen preset providers).
  */
 export const ICON_BY_NAME: Readonly<Record<string, string | undefined>> = Object.fromEntries([
-  ...FREE_PROVIDERS.map((p) => [p.name, p.icon] as const),
-  ...GO_PROVIDERS.map((p) => [p.name, p.icon] as const),
-  ...ZEN_PROVIDERS.map((p) => [p.name, p.icon] as const)
+  ...FREE_PROVIDERS.map((p) => [p.name, p.icon] as const)
 ]);
 
 /**
@@ -875,14 +787,6 @@ export function getModelsForProvider(provider: {
   name?: string;
   provider?: string;
 }): readonly string[] {
-  if (provider.type === 'go') {
-    const preset = GO_PROVIDERS.find((p) => p.name === provider.name);
-    return preset ? [preset.model] : [];
-  }
-  if (provider.type === 'zen') {
-    const preset = ZEN_PROVIDERS.find((p) => p.name === provider.name);
-    return preset ? [preset.model] : [];
-  }
   if (provider.type === 'custom' && provider.provider) {
     const builtin = BUILTIN_PROVIDERS.find((p) => p.provider === provider.provider);
     if (builtin) return builtin.models;
@@ -894,18 +798,13 @@ export function getModelsForProvider(provider: {
 
 export const ALL_PROVIDER_TYPES = [
   ...FREE_PROVIDERS,
-  ...GO_PROVIDERS,
-  ...ZEN_PROVIDERS,
   ...BUILTIN_PROVIDERS,
   ...COMPATIBLE_PROVIDERS
 ].map((p) => p.provider);
 
-export const LLM_PROVIDER_TYPES = [
-  ...GO_PROVIDERS,
-  ...ZEN_PROVIDERS,
-  ...BUILTIN_PROVIDERS,
-  ...COMPATIBLE_PROVIDERS
-].map((p) => p.provider);
+export const LLM_PROVIDER_TYPES = [...BUILTIN_PROVIDERS, ...COMPATIBLE_PROVIDERS].map(
+  (p) => p.provider
+);
 
 export const CUSTOM_PROVIDER_TYPES = [...BUILTIN_PROVIDERS, ...COMPATIBLE_PROVIDERS].map(
   (p) => p.provider

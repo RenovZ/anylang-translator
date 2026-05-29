@@ -9,7 +9,7 @@
   import shortcut from '@/lib/shortcut';
   import { FEAT_INSTANT_LOOKUP, FEAT_LANG_DETECTION, type FeatureField } from '@/preset/feature';
   import { getProviderIcon } from '@/preset/provider';
-  import { isCustomProvider, isPaidProvider } from '@/types/provider';
+  import { isCustomProvider } from '@/types/provider';
 
   interface Prop {
     title: string | import('svelte').Snippet;
@@ -55,17 +55,13 @@
         {#if $config[field].provider}
           <span class="line-clamp-1 w-full text-left break-all">
             {$config[field].provider.name}
-            {#if isPaidProvider($config[field].provider)}
-              ({$config[field].provider.model})
-            {:else if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
+            {#if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
               ({$config[field].provider.model.name})
             {/if}
           </span>
           <Tooltip class="max-w-80 text-left text-xs">
             {$config[field].provider.name}
-            {#if isPaidProvider($config[field].provider)}
-              ({$config[field].provider.model})
-            {:else if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
+            {#if isCustomProvider($config[field].provider) && $config[field].provider.model.name}
               ({$config[field].provider.model.name})
             {/if}
           </Tooltip>

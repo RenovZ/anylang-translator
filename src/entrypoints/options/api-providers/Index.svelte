@@ -49,7 +49,6 @@
     customProviderSchema,
     isCompatibleProvider,
     isCustomProvider,
-    isPaidProvider,
     type AIProvider,
     type CustomProvider,
     type PresetItem,
@@ -187,16 +186,6 @@
           bind:selectedIndex />
         <ProviderGroup
           open
-          title={i18n('go_users', { defaultValue: 'Go Users' })}
-          currentType="go"
-          bind:selectedIndex />
-        <ProviderGroup
-          open
-          title={i18n('zen_users', { defaultValue: 'Zen Users' })}
-          currentType="zen"
-          bind:selectedIndex />
-        <ProviderGroup
-          open
           title={i18n('custom', { defaultValue: 'Custom' })}
           currentType="custom"
           bind:selectedIndex />
@@ -220,12 +209,6 @@
               name={$config.providers[selectedIndex].name}
               icon={getProviderIcon($config.providers[selectedIndex])} />
             <span class="text-lg font-semibold">{$config.providers[selectedIndex].name}</span>
-            {#if isPaidProvider($config.providers[selectedIndex])}
-              <!--
-                TODO: 判断用户是否需要升级, 否则就去掉upgrade升级提示
-                -->
-              <A class="font-medium">{i18n('upgrade', { defaultValue: 'Upgrade' })}</A>
-            {/if}
           </div>
           <button type="button" class="text-sm underline" onclick={handleTest}>
             {i18n('click_to_test_this_provider', { defaultValue: 'Click to test this provider' })}

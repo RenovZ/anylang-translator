@@ -3,7 +3,6 @@ import '@/zod-config';
 import { browser } from 'wxt/browser';
 import { defineBackground } from 'wxt/utils/define-background';
 
-import config from '@/lib/config';
 import logger from '@/lib/logger';
 import { onMessage } from '@/lib/protocol';
 import { adaptiveTranslateSession } from '@/lib/session';
@@ -18,21 +17,6 @@ export default defineBackground({
   main: () => {
     logger.info('Welcome.');
     logger.debug({ id: browser.runtime.id });
-
-    browser.runtime.onInstalled.addListener(async (details) => {
-      await config.init();
-
-      // Open tutorial page when extension is installed
-      if (details.reason === 'install') {
-        // TODO: do something on install
-      }
-
-      // Clear blog cache on extension update to fetch latest blog posts
-      if (details.reason === 'update') {
-        logger.info('Extension updated, fetching latest change logs');
-        // TODO: fetch latest change logs
-      }
-    });
 
     void shortcut.main();
 

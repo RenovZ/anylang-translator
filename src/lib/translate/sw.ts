@@ -6,7 +6,7 @@ import providerManager from '@/lib/provider';
 import urlUtils from '@/lib/url';
 import type { DetectedLangCode, LangCode } from '@/types/lang';
 import type { PromptResolver } from '@/types/prompt';
-import { AIProvider, isPaidProvider, type ProviderConfig } from '@/types/provider';
+import { AIProvider, type ProviderConfig } from '@/types/provider';
 
 import { aiTranslate } from './api/ai';
 import { bingTranslate } from './api/bing';
@@ -79,11 +79,6 @@ export async function translate<TContext>(
     return '';
   }
 
-  if (isPaidProvider(providerConfig)) {
-    // TODO: route to appropriate free/go/zen provider call
-    throw new Error('translate: go/zen provider not yet implemented');
-  }
-
   if (type === 'custom') {
     return await aiTranslate(
       preparedText,
@@ -108,11 +103,6 @@ export async function generateArticleSummary(
 ): Promise<string | null> {
   const preparedText = translateUtils.cleanText(textContent);
   if (!preparedText) return null;
-
-  // TODO: Implement go/zen provider detection
-  if (isPaidProvider(providerConfig)) {
-    throw new Error('generateArticleSummary: go/zen provider will come soon');
-  }
 
   const {
     model,

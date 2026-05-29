@@ -1,7 +1,7 @@
 import cryptoPolyfill from '@/lib/crypto-polyfill';
 import db from '@/lib/db';
 import logger from '@/lib/logger';
-import { isLLMProvider, isPaidProvider } from '@/types/provider';
+import { isLLMProvider } from '@/types/provider';
 import type { ProviderConfig } from '@/types/provider';
 
 export async function putBatchRequestRecord({
@@ -12,10 +12,6 @@ export async function putBatchRequestRecord({
   providerConfig: ProviderConfig;
 }) {
   if (!isLLMProvider(providerConfig)) return;
-
-  if (isPaidProvider(providerConfig)) {
-    throw new Error('putBatchRequestRecord: go/zen provider not implemented');
-  }
 
   const { provider, model } = providerConfig;
   if (!model.name) {

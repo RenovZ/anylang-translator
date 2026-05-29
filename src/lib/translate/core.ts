@@ -459,9 +459,7 @@ async function buildWebPageHashComponents(
   );
   hashComponents.push(systemPrompt, prompt);
   hashComponents.push(
-    enableAIContentAware
-      ? 'enableAIContentAware=true' // TODO: 这是什么意思
-      : 'enableAIContentAware=false'
+    enableAIContentAware ? 'enableAIContentAware=true' : 'enableAIContentAware=false'
   );
 
   if (enableAIContentAware && context) {

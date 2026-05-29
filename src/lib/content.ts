@@ -17,7 +17,6 @@ import type {
   LangDirection
 } from '@/types/content';
 import { langCodeSchema, type LangCode } from '@/types/lang';
-import { isPaidProvider } from '@/types/provider';
 
 import configStore from './config';
 import i18n from './i18n';
@@ -342,11 +341,6 @@ class ContentManager {
     if (!providerConfig.enabled) {
       logger.warn('Provider is disabled');
       return null;
-    }
-
-    // TODO: Implement go/zen provider detection
-    if (isPaidProvider(providerConfig)) {
-      throw new Error('detectLanguageWithLLM: go/zen provider will come soon');
     }
 
     const {
