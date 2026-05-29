@@ -62,8 +62,8 @@ class NodeTranslation {
 
     // Mousemove handler with throttle + distance threshold
     document.addEventListener('mousemove', this.onMouseMove, opts);
-    document.addEventListener('mousedown', this.onMouseDown, opts);
-    document.addEventListener('mouseup', this.onMouseUp, opts);
+    // document.addEventListener('mousedown', this.onMouseDown, opts);
+    // document.addEventListener('mouseup', this.onMouseUp, opts);
     document.addEventListener('keydown', this.onKeyDown, opts);
     document.addEventListener('keyup', this.onKeyUp, opts);
 
@@ -89,10 +89,11 @@ class NodeTranslation {
     return configStore.get();
   }
 
-  private inTriggerMode(config: Config): boolean {
-    const { hotkey, enabled } = config.adaptiveTranslate.translate.triggerOnHover;
-    return !!config.adaptiveTranslate.provider && enabled && hotkey !== 'clickAndHold';
-  }
+  // private inTriggerMode(config: Config, withClickAndHold: boolean): boolean {
+  //   const { hotkey, enabled } = config.adaptiveTranslate.translate.triggerOnHover;
+  //   if (withClickAndHold) return enabled && hotkey === 'clickAndHold';
+  //   return enabled && hotkey !== 'clickAndHold';
+  // }
 
   private trigger(pos: Point, config: Config): void {
     void removeOrShowNodeTranslation(undefined, pos, {
@@ -163,46 +164,46 @@ class NodeTranslation {
     this.lastMoveY = e.clientY;
   };
 
-  private onMouseDown = (e: MouseEvent): void => {
-    // logger.debug('onMouseDown', { e });
-    if (e.button !== 0) return;
-    if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
+  // private onMouseDown = (e: MouseEvent): void => {
+  //   // logger.debug('onMouseDown', { e });
+  //   if (e.button !== 0) return;
+  //   if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
-    const config = this.getCurrentConfig();
-    if (!config || !this.inTriggerMode(config)) return;
+  //   const config = this.getCurrentConfig();
+  //   if (!config || !this.inTriggerMode(config, false)) return;
 
-    this.isMousePressed = true;
-    this.clickAndHoldTriggered = false;
-    this.mousePressPosition = { x: e.clientX, y: e.clientY };
+  //   this.isMousePressed = true;
+  //   this.clickAndHoldTriggered = false;
+  //   this.mousePressPosition = { x: e.clientX, y: e.clientY };
 
-    this.clearClickAndHoldTimer();
-    this.clickAndHoldTimerId = setTimeout(() => {
-      if (!this.isMousePressed || !this.mousePressPosition || this.clickAndHoldTriggered) return;
+  //   this.clearClickAndHoldTimer();
+  //   this.clickAndHoldTimerId = setTimeout(() => {
+  //     if (!this.isMousePressed || !this.mousePressPosition || this.clickAndHoldTriggered) return;
 
-      const current = this.getCurrentConfig();
-      if (!current || !this.inTriggerMode(current)) return;
+  //     const current = this.getCurrentConfig();
+  //     if (!current || !this.inTriggerMode(current, false)) return;
 
-      this.trigger(this.mousePressPosition, current);
-      this.clickAndHoldTriggered = true;
-    }, this.CLICK_AND_HOLD_TRIGGER_MS);
-  };
+  //     this.trigger(this.mousePressPosition, current);
+  //     this.clickAndHoldTriggered = true;
+  //   }, this.CLICK_AND_HOLD_TRIGGER_MS);
+  // };
 
-  private onMouseUp = (e: MouseEvent): void => {
-    // logger.debug('onMouseUp', { e });
-    if (e.button !== 0) return;
-    if (!this.isMousePressed && !this.clickAndHoldTimerId) return;
+  // private onMouseUp = (e: MouseEvent): void => {
+  //   // logger.debug('onMouseUp', { e });
+  //   if (e.button !== 0) return;
+  //   if (!this.isMousePressed && !this.clickAndHoldTimerId) return;
 
-    this.isMousePressed = false;
-    this.clickAndHoldTriggered = false;
-    this.mousePressPosition = null;
-    this.clearClickAndHoldTimer();
-  };
+  //   this.isMousePressed = false;
+  //   this.clickAndHoldTriggered = false;
+  //   this.mousePressPosition = null;
+  //   this.clearClickAndHoldTimer();
+  // };
 
   private onKeyDown = (e: KeyboardEvent): void => {
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
     const config = this.getCurrentConfig();
-    if (!config || !this.inTriggerMode(config)) {
+    if (!config || !config.adaptiveTranslate.translate.triggerOnHover.enabled) {
       this.resetHotkeySession();
       return;
     }
@@ -221,7 +222,7 @@ class NodeTranslation {
         }
 
         const current = this.getCurrentConfig();
-        if (!current || !this.inTriggerMode(current)) {
+        if (!current || !current.adaptiveTranslate.translate.triggerOnHover.enabled) {
           this.timerId = null;
           return;
         }
@@ -253,7 +254,7 @@ class NodeTranslation {
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
 
     const config = this.getCurrentConfig();
-    if (!config || !this.inTriggerMode(config)) {
+    if (!config || !config.adaptiveTranslate.translate.triggerOnHover.enabled) {
       if (e.key === this.activeHotkeyEventKey) this.resetHotkeySession();
       return;
     }
@@ -268,7 +269,7 @@ class NodeTranslation {
         }
         if (!this.actionTriggered) {
           const current = this.getCurrentConfig();
-          if (!current || !this.inTriggerMode(current)) return;
+          if (!current || !current.adaptiveTranslate.translate.triggerOnHover.enabled) return;
           this.trigger(this.mousePosition, current);
         }
       }

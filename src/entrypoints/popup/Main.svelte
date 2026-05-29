@@ -261,7 +261,7 @@
         type="button"
         disabled={!$config.adaptiveTranslate.translate.triggerOnHover.enabled}
         class="flex items-center justify-between gap-2 disabled:text-gray-400">
-        <span class="line-clamp-1 font-medium">
+        <span class="line-clamp-1 text-left font-medium">
           {TRIGGER_ON_HOVER.find(
             (item) => item.hotkey === $config.adaptiveTranslate.translate.triggerOnHover.hotkey
           )?.label ?? i18n('unsupported_trigger', { defaultValue: 'Unsupported Trigger' })}

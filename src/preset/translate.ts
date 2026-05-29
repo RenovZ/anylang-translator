@@ -155,11 +155,13 @@ export const fontFamilyOptions = [
 export const TRIGGER_HOTKEY_MAP = {
   ctrl: { icon: '⌃', key: 'Control' },
   alt: { icon: '⌥', key: 'Alt' },
-  shift: { icon: '⇧', key: 'Shift' },
-  clickAndHold: { icon: '⏱', key: 'ClickAndHold' } // Special handling, not a keyboard event
+  shift: { icon: '⇧', key: 'Shift' }
+  // clickAndHold: { icon: '⏱', key: 'ClickAndHold' } // Special handling, not a keyboard event
 } as const;
 
-export const TRIGGER_HOTKEYS = Object.keys(TRIGGER_HOTKEY_MAP);
+export const TRIGGER_HOTKEYS = Object.keys(TRIGGER_HOTKEY_MAP) as Array<
+  keyof typeof TRIGGER_HOTKEY_MAP
+>;
 
 export const TRIGGER_ON_HOVER = [
   {
@@ -173,12 +175,12 @@ export const TRIGGER_ON_HOVER = [
   {
     hotkey: 'shift',
     label: i18n('trigger_on_hover_shift', { defaultValue: 'Hover + Shift to translate paragraph' })
-  },
-  {
-    hotkey: 'clickAndHold',
-    // prettier-ignore
-    label: i18n('trigger_on_click_and_hold', { defaultValue: 'Click and hold to translate paragraph' })
   }
+  // {
+  //   hotkey: 'clickAndHold',
+  //   // prettier-ignore
+  //   label: i18n('trigger_on_click_and_hold', { defaultValue: 'Click and hold to translate paragraph' })
+  // }
 ] as const;
 
 export const DEFAULT_REQUEST_QUEUE_CONFIG = {

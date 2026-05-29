@@ -23,7 +23,7 @@
 </script>
 
 <script lang="ts">
-  import { Button, Toggle, Tooltip } from 'flowbite-svelte';
+  import { Button, Heading, Toggle, Tooltip } from 'flowbite-svelte';
   import { twMerge } from 'tailwind-merge';
 
   import FloatingLabelInput from '@/components/flowbite-svelte/FloatingLabelInput.svelte';
@@ -32,6 +32,7 @@
   import LangDropdown from '@/components/LangDropdown.svelte';
   import LocalIcon from '@/components/LocalIcon.svelte';
   import Provider from '@/components/Provider.svelte';
+  import { APP_NAME } from '@/lib/app';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import { FEAT_INSTANT_LOOKUP } from '@/preset/feature';
@@ -147,7 +148,10 @@
         <SearchOutline class="size-5 shrink-0" />
       </Button> -->
     </div>
-
+    <span
+      class="inline-flex h-full self-baseline-last text-xs font-extrabold text-gray-200 dark:text-gray-700">
+      {APP_NAME}
+    </span>
     <span
       class="absolute top-0 left-1/2 rounded-lg border-none p-1 text-sm opacity-0 transition-opacity group-hover:opacity-100">
       <LocalIcon icon="tabler:grip-horizontal" class="w-5" />
