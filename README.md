@@ -1,6 +1,6 @@
 # Anylang Translator
 
-可能是这个世界上最好的浏览器翻译助手了。
+Perhaps the best browser translation assistant in the world.
 
 A powerful browser translation extension supporting 20+ LLM models. Built with WXT + Svelte 5 + Tailwind CSS v4.
 
@@ -38,4 +38,12 @@ pnpm check            # Svelte type checking
 pnpm lint             # ESLint + Prettier
 pnpm format           # Format all files with Prettier
 pnpm test             # Run tests
+```
+
+## Credits
+
+This project incorporates design ideas from the following open-source projects:
+
+- [read-frog](https://github.com/mengxi-ream/read-frog)
+- [Traduzir-paginas-web](https://github.com/FilipePS/Traduzir-paginas-web)
 ```
