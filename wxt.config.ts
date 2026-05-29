@@ -87,7 +87,7 @@ export default defineConfig({
       '--window-size=1700,1000',
       '--auto-open-devtools-for-tabs'
     ],
-    startUrls: env.START_URLS.split(',')
+    startUrls: (env.START_URLS ?? '').split(',').filter(Boolean)
   },
   hooks: {
     'build:before': () => {
