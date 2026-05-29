@@ -95,9 +95,12 @@ jobs:
       - name: Build and zip for ${{ matrix.browser }}
         run: pnpm zip:${{ matrix.browser }}
 
+      - name: Copy zip to workspace root
+        run: cp .output/*.zip .
+
       - name: Upload zip artifact
         uses: actions/upload-artifact@v4
         with:
           name: anylang-translator-${{ matrix.browser }}
-          path: .output/*.zip
+          path: *.zip
           if-no-files-found: error
