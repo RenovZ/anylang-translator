@@ -1,6 +1,7 @@
 {
   "name": "anylang-translator",
   "description": "A powerful browser translation extension supporting 20+ LLM models. Adaptive translation and instant lookup on any webpage.",
+  "packageManager": "pnpm@11.3.0",
   "private": true,
   "version": "0.0.1",
   "type": "module",
