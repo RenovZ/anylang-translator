@@ -45,6 +45,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
 
+      - name: Update fonts
+        run: node scripts/update-fonts.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -63,7 +68,7 @@ jobs:
     needs: quality
     strategy:
       matrix:
-        browser: [chrome, firefox, safari, opera, edge]
+        browser: [chrome, firefox, safari, opera, edge, zen, brave, vivaldi]
       fail-fast: false
 
     steps:
@@ -78,6 +83,11 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+
+      - name: Update fonts
+        run: node scripts/update-fonts.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

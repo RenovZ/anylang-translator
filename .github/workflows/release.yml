@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'  # e.g. v1.0.0, v2.3.4-beta
+      - 'v*'
   workflow_dispatch:
     inputs:
       tag:
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser: [chrome, firefox, safari, opera, edge]
+        browser: [chrome, firefox, safari, opera, edge, zen, brave, vivaldi]
       fail-fast: false
 
     steps:
@@ -35,6 +35,11 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+
+      - name: Update fonts
+        run: node scripts/update-fonts.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Resolve version from tag
         run: |

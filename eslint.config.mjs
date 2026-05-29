@@ -25,6 +25,9 @@ export default tseslint.config(
       parserOptions: {
         extraFileExtensions: ['.svelte'],
         parser: tseslint.parser
+      },
+      globals: {
+        ChildNode: 'readonly'
       }
     },
     rules: {

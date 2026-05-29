@@ -6,12 +6,12 @@ import logger from '../logger';
 
 import { BinaryHeapPQ } from './priority-queue';
 
-export interface RequestTask {
+export interface RequestTask<T = unknown> {
   id: string;
-  thunk: () => Promise<any>;
-  promise: Promise<any>;
-  resolve: (value: any) => void;
-  reject: (error: any) => void;
+  thunk: () => Promise<T>;
+  promise: Promise<T>;
+  resolve: (value: T | PromiseLike<T>) => void;
+  reject: (reason: unknown) => void;
   scheduleAt: number;
   createdAt: number;
   retryCount: number;
@@ -43,20 +43,20 @@ export class RequestQueue {
   }
 
   enqueue<T>(thunk: () => Promise<T>, scheduleAt: number, hash: string): Promise<T> {
-    const duplicateTask = this.duplicateTask(hash);
+    const duplicateTask = this.duplicateTask(hash) as RequestTask<T> | undefined;
     if (duplicateTask) {
       logger.info(`🔄 Found duplicate task for hash: ${hash}, returning existing promise`);
       return duplicateTask.promise;
     }
 
-    let resolve!: (value: T) => void;
-    let reject!: (error: Error) => void;
+    let resolve!: (value: T | PromiseLike<T>) => void;
+    let reject!: (reason: unknown) => void;
     const promise = new Promise<T>((res, rej) => {
       resolve = res;
       reject = rej;
     });
 
-    const task: RequestTask = {
+    const task: RequestTask<T> = {
       id: cryptoPolyfill.getUUID(),
       thunk,
       promise,
@@ -67,8 +67,8 @@ export class RequestQueue {
       retryCount: 0
     };
 
-    this.waitingTasks.set(hash, task);
-    this.waitingQueue.push({ ...task, hash }, scheduleAt);
+    this.waitingTasks.set(hash, task as RequestTask);
+    this.waitingQueue.push({ ...task, hash } as RequestTask & { hash: string }, scheduleAt);
 
     logger.info(
       `✅ Task ${task.id} added to queue. Queue size: ${this.waitingQueue.size()}, waiting: ${this.waitingTasks.size}, executing: ${this.executingTasks.size}`

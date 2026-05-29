@@ -11,7 +11,8 @@ const browsers = [
   'safari',
   'opera',
   'brave',
-  'vivaldi'
+  'vivaldi',
+  'zen'
 ];
 
 logger.info('Building for all browsers...\n');
