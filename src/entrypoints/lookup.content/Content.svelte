@@ -23,7 +23,7 @@
 </script>
 
 <script lang="ts">
-  import { Button, Heading, Toggle, Tooltip } from 'flowbite-svelte';
+  import { Button, Toggle, Tooltip } from 'flowbite-svelte';
   import { twMerge } from 'tailwind-merge';
 
   import FloatingLabelInput from '@/components/flowbite-svelte/FloatingLabelInput.svelte';

@@ -2,8 +2,24 @@
 /* Do NOT edit manually. Run: node scripts/update-fonts.mjs */
 
 @font-face {
+  font-family: 'LXGW WenKai';
+  src: url('/fonts/LXGWWenKai-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Smiley Sans';
+  src: url('/fonts/SmileySans-Oblique.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'ZCOOL KuaiLe';
-  src: url('/fonts/ZCOOLKuaiLe-Regular.ttf') format('ttf');
+  src: url('/fonts/ZCOOLKuaiLe-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11,7 +27,7 @@
 
 @font-face {
   font-family: 'Ma Shan Zheng';
-  src: url('/fonts/MaShanZheng-Regular.ttf') format('ttf');
+  src: url('/fonts/MaShanZheng-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

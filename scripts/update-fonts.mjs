@@ -155,7 +155,7 @@ async function processFont(font) {
   return {
     ...font,
     filename: finalName,
-    format: finalName.endsWith('.woff2') ? 'woff2' : 'ttf'
+    format: finalName.endsWith('.woff2') ? 'woff2' : 'truetype'
   };
 }
 
