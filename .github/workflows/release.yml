@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: anylang-translator-zip-${{ matrix.browser }}
-          path: *.zip
+          path: '*.zip'
           if-no-files-found: error
 
   release:
