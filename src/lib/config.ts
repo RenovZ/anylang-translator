@@ -66,7 +66,7 @@ const defaultConfig: Config = configSchema.parse({
     disabledLangs: [],
     selection: {
       withContext: false,
-      triggerMode: triggerModeOnSelectionSchema.parse('directly')
+      triggerMode: triggerModeOnSelectionSchema.parse('show icons')
     }
   }
 });

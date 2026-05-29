@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button } from 'flowbite-svelte';
+  import { A, Button } from 'flowbite-svelte';
 
   import Logo from '@/assets/logo.svg?component';
   import { APP_VERSION } from '@/lib/app';
@@ -11,7 +11,7 @@
 
 <Section title={aboutNav.title}>
   <!-- About Content -->
-  <div class="flex flex-col items-center justify-center py-8">
+  <div class="flex flex-col items-center justify-center gap-4 py-8">
     <!-- Logo -->
     <Logo class="mb-4 h-14 w-14" />
 
@@ -19,9 +19,12 @@
     <h3 class="text-xl font-bold dark:text-slate-100">
       {i18n('options_about_product_name', { defaultValue: 'Anylang Translator' })}
     </h3>
-    <p class="mt-2 text-slate-500 dark:text-slate-400">
+    <p class="text-slate-500 dark:text-slate-400">
       {i18n('options_about_version', { defaultValue: 'Version' })}
       {APP_VERSION}
     </p>
+    <A href="https://github.com/RenovZ/anylang-translator" target="_blank">
+      https://github.com/RenovZ/anylang-translator
+    </A>
   </div>
 </Section>

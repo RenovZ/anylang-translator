@@ -224,6 +224,7 @@
         {i18n('with_context', { defaultValue: 'With context' })}
       </Tooltip>
       <TriggerModes
+        showTooltip
         class="w-fit bg-white/80 px-2 py-1 shadow dark:bg-slate-900/80 dark:hover:bg-slate-700" />
     </div>
   </div>

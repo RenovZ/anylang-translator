@@ -49,7 +49,7 @@ const instantLookupSchema = featureBaseSchema.extend({
   selection: z.object({
     withContext: z.boolean().default(false),
     targetLangCode: langCodeSchema.optional(),
-    triggerMode: triggerModeOnSelectionSchema.default('directly')
+    triggerMode: triggerModeOnSelectionSchema.default('show icons')
   })
 });
 
