@@ -35,3 +35,4 @@ AGENTS.md
 .env.*
 /.data
 /TODO.md
+/.release

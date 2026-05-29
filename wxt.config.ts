@@ -72,8 +72,8 @@ export default defineConfig({
   dev: {
     reloadCommand: false
   },
-  suppressWarnings: {
-    firefoxDataCollection: true
+  zip: {
+    exclude: ['**/*.map']
   },
   webExt: {
     firefoxArgs: ['--width=1600', '--height=1000'],
@@ -94,12 +94,21 @@ export default defineConfig({
       runI18nExtraction();
     }
   },
+  manifestVersion: 3,
   manifest: () => ({
     name: 'Anylang Translator',
     description:
-      'Anylang Translator is a carefully designed browser translation extension with two core features: adaptive translation and instant lookup. Supports 20+ preset LLM models, OpenAI-compatible APIs, and more.',
+      'Anylang Translator — A smart browser translation extension. Translate entire web pages or look up words instantly. Powered by 20+ AI models including ChatGPT, Claude, Gemini, DeepSeek, and more.',
     default_locale: 'en',
     permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'webNavigation'],
+    browser_specific_settings: {
+      gecko: {
+        id: 'anylang-translator@anylang.io',
+        data_collection_permissions: {
+          required: ['websiteContent', 'websiteActivity']
+        }
+      }
+    },
     host_permissions: [
       '*://*/*' // Required for scripting.executeScript in any frame
     ],
