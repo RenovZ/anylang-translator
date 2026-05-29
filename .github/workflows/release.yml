@@ -1,0 +1,220 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # e.g. v1.0.0, v2.3.4-beta
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g. v1.0.0)'
+        required: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  zip:
+    name: Build & Zip (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox, safari, opera, edge]
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Resolve version from tag
+        run: |
+          TAG=${{ github.ref_name }}
+          VERSION="${TAG#v}"
+          echo "Version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Update package.json version
+        run: |
+          jq --arg ver "$VERSION" '.version = $ver' package.json > package.json.tmp
+          mv package.json.tmp package.json
+          echo "Updated package.json version to $VERSION"
+          node -e "console.log('version:', require('./package.json').version)"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and zip for ${{ matrix.browser }}
+        run: pnpm zip:${{ matrix.browser }}
+
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: anylang-translator-zip-${{ matrix.browser }}
+          path: .output/*.zip
+          if-no-files-found: error
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: zip
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all zip artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: anylang-translator-zip-*
+          merge-multiple: true
+
+      - name: List artifacts
+        run: ls -la *.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            ./*.zip
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Store Publishing (optional, requires secrets configured) ──────────────
+
+  publish-chrome:
+    name: Publish to Chrome Web Store
+    runs-on: ubuntu-latest
+    needs: zip
+    if: |
+      secrets.CHROME_EXTENSION_ID != '' &&
+      secrets.CHROME_CLIENT_ID != '' &&
+      secrets.CHROME_CLIENT_SECRET != '' &&
+      secrets.CHROME_REFRESH_TOKEN != ''
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download Chrome zip
+        uses: actions/download-artifact@v4
+        with:
+          name: anylang-translator-zip-chrome
+
+      - name: Submit to Chrome Web Store
+        run: |
+          pnpm wxt submit \
+            --chrome-zip ./*-chrome.zip
+        env:
+          CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
+          CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
+          CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
+          CHROME_REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
+
+  publish-firefox:
+    name: Publish to Firefox Addon Store
+    runs-on: ubuntu-latest
+    needs: zip
+    if: |
+      secrets.FIREFOX_EXTENSION_ID != '' &&
+      secrets.FIREFOX_JWT_ISSUER != '' &&
+      secrets.FIREFOX_JWT_SECRET != ''
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download Firefox zip
+        uses: actions/download-artifact@v4
+        with:
+          name: anylang-translator-zip-firefox
+
+      - name: Download Firefox sources zip
+        run: |
+          # WXT generates sources zip alongside Firefox zip
+          ls -la ./*.zip
+
+      - name: Submit to Firefox Addon Store
+        run: |
+          pnpm wxt submit \
+            --firefox-zip ./*-firefox.zip \
+            --firefox-sources-zip ./*-sources.zip
+        env:
+          FIREFOX_EXTENSION_ID: ${{ secrets.FIREFOX_EXTENSION_ID }}
+          FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
+          FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
+
+  publish-edge:
+    name: Publish to Edge Addons
+    runs-on: ubuntu-latest
+    needs: zip
+    if: |
+      secrets.EDGE_PRODUCT_ID != '' &&
+      secrets.EDGE_CLIENT_ID != '' &&
+      secrets.EDGE_API_KEY != ''
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download Edge zip
+        uses: actions/download-artifact@v4
+        with:
+          name: anylang-translator-zip-edge
+
+      - name: Submit to Edge Addons
+        run: |
+          pnpm wxt submit \
+            --edge-zip ./*-edge.zip
+        env:
+          EDGE_PRODUCT_ID: ${{ secrets.EDGE_PRODUCT_ID }}
+          EDGE_CLIENT_ID: ${{ secrets.EDGE_CLIENT_ID }}
+          EDGE_API_KEY: ${{ secrets.EDGE_API_KEY }}

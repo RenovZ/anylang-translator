@@ -77,27 +77,6 @@ export default defineConfig({
   },
   webExt: {
     firefoxArgs: ['--width=1600', '--height=1000'],
-    firefoxPref: {
-      // 核心：禁用欢迎页
-      'browser.aboutwelcome.enabled': false,
-      'browser.startup.homepage_override.mstone': 'ignore',
-      'startup.homepage_welcome_url': '',
-      'startup.homepage_override_url': '',
-      'browser.shell.checkDefaultBrowser': false,
-      // 控制启动行为
-      'browser.startup.homepage': 'about:blank',
-      'browser.startup.page': 0, // 0=空白页, 1=主页, 3=恢复上次会话
-      // 禁用首次运行体验
-      'browser.startup.firstrunSkipsHomepage': true,
-      'browser.feeds.showFirstRunUI': false,
-      'browser.uitour.enabled': false,
-      // 禁用 ASRouter 推荐内容
-      'browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons': false,
-      'browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features': false,
-      // 禁用新标签页的推荐内容
-      'browser.newtabpage.activity-stream.feeds.section.topstories': false,
-      'browser.newtabpage.activity-stream.showSearch': false
-    },
     openDevtools: true,
     // openConsole: true,
     keepProfileChanges: true,

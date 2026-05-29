@@ -46,4 +46,3 @@ This project incorporates design ideas from the following open-source projects:
 
 - [read-frog](https://github.com/mengxi-ream/read-frog)
 - [Traduzir-paginas-web](https://github.com/FilipePS/Traduzir-paginas-web)
-```
