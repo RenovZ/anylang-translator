@@ -116,6 +116,9 @@ export default defineConfig({
     }
   },
   manifest: () => ({
+    name: 'Anylang Translator',
+    description:
+      'Anylang Translator is a carefully designed browser translation extension with two core features: adaptive translation and instant lookup. Supports 20+ preset LLM models, OpenAI-compatible APIs, and more.',
     default_locale: 'en',
     permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'webNavigation'],
     host_permissions: [

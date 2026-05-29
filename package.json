@@ -1,8 +1,8 @@
 {
-  "name": "wxt-svelte-starter",
-  "description": "manifest.json description",
+  "name": "anylang-translator",
+  "description": "A powerful browser translation extension supporting 20+ LLM models. Adaptive translation and instant lookup on any webpage.",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "i18n:extract": "node scripts/extract-i18n.mjs",
@@ -21,7 +21,6 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "postinstall": "wxt prepare",
     "update": "npm-check-updates",
-    "dprint": "dprint fmt",
     "lint": "prettier --check . && eslint .",
     "fix": "eslint . --fix",
     "format": "prettier --write .",

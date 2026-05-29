@@ -2,11 +2,8 @@ import {
   idAbout,
   idAdaptiveTranslate,
   idApiProviders,
-  idChangelog,
-  idFeedback,
   idGeneral,
-  idInstantLookup,
-  idPricing
+  idInstantLookup
 } from '@/components/NavIds.svelte';
 import i18n from '@/lib/i18n';
 import type { OptionsNavItem } from '@/types/options';
@@ -14,11 +11,8 @@ import type { OptionsNavItem } from '@/types/options';
 import About from './About.svelte';
 import AdaptiveTranslate from './adaptive-translate/Index.svelte';
 import APIProviders from './api-providers/Index.svelte';
-import Changelog from './Changelog.svelte';
-import Feedback from './Feedback.svelte';
 import General from './general/Index.svelte';
 import InstantLookup from './InstantLookup.svelte';
-import Pricing from './Pricing.svelte';
 
 export const generalNav: OptionsNavItem = {
   id: idGeneral,
@@ -82,31 +76,7 @@ export const aboutNav = {
   component: About
 } as const;
 
-export const pricingNav = {
-  id: idPricing,
-  title: i18n('pricing', { defaultValue: 'Pricing' }),
-  position: 'bottom',
-  component: Pricing
-} as const;
-
-export const changelogNav = {
-  id: idChangelog,
-  title: i18n('changelog', { defaultValue: 'Changelog' }),
-  position: 'bottom',
-  component: Changelog
-} as const;
-
-export const feedbackNav = {
-  id: idFeedback,
-  title: i18n('feedback', { defaultValue: 'Feedback' }),
-  position: 'bottom',
-  component: Feedback
-} as const;
-
 // prettier-ignore
 export const bottomNavItems = [
   aboutNav,
-  pricingNav,
-  changelogNav,
-  feedbackNav,
 ] as const;

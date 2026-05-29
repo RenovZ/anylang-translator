@@ -13,37 +13,6 @@
 </script>
 
 <Section title={generalNav.title}>
-  <!-- header buttons -->
-  {#snippet headerActions()}
-    <div class="text-primary-600 flex items-center gap-4 text-sm">
-      <button type="button" onclick={() => config.reset()}>
-        {i18n('reset_settings', { defaultValue: 'Reset settings' })}
-      </button>
-    </div>
-  {/snippet}
-
-  <!-- login state -->
-  <div
-    class="flex items-center justify-between rounded-2xl bg-gray-50 p-6 shadow-inner dark:bg-gray-700">
-    <div class="flex items-center gap-4">
-      <Avatar
-        class="h-14 w-14"
-        src={avatar.anylang({
-          chars: 1,
-          backgroundType: ['gradientLinear']
-        })}
-        size="lg" />
-      <Button class="font-medium">
-        {i18n('login', { defaultValue: 'Login' })}
-      </Button>
-    </div>
-    <button type="button" class="text-primary-600 text-sm hover:underline">
-      {i18n('login_hint', {
-        defaultValue: 'Unlock membership after login'
-      })}
-    </button>
-  </div>
-
   <!-- target language -->
   <SectionRow
     title={i18n('target_language', { defaultValue: 'Target language' })}

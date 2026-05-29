@@ -92,9 +92,6 @@
   "cancel_batch": {
     "message": "Cancel batch"
   },
-  "changelog": {
-    "message": "Changelog"
-  },
   "character_edge_style": {
     "message": "Character edge style"
   },
@@ -239,9 +236,6 @@
   "feature_providers": {
     "message": "Feature Providers"
   },
-  "feedback": {
-    "message": "Feedback"
-  },
   "fetch_available_models": {
     "message": "Fetch Available Models"
   },
@@ -274,9 +268,6 @@
   },
   "go_users": {
     "message": "Go Users"
-  },
-  "guest": {
-    "message": "Guest"
   },
   "instant_lookup": {
     "message": "Instant Lookup"
@@ -335,12 +326,6 @@
   "llm_detection_desc": {
     "message": "Higher accuracy AI detection"
   },
-  "login": {
-    "message": "Login"
-  },
-  "login_hint": {
-    "message": "Unlock membership after login"
-  },
   "model": {
     "message": "Model"
   },
@@ -355,9 +340,6 @@
   },
   "more_items_api_providers": {
     "message": "API providers"
-  },
-  "more_items_feedback": {
-    "message": "Feedback"
   },
   "more_items_general": {
     "message": "General"
@@ -383,54 +365,6 @@
   "options_about_version": {
     "message": "Version"
   },
-  "options_changelog_item_1": {
-    "message": "Initial release"
-  },
-  "options_changelog_item_2": {
-    "message": "Supports multiple AI translation services"
-  },
-  "options_changelog_item_3": {
-    "message": "Supports bilingual webpage translation"
-  },
-  "options_feedback_discord_button": {
-    "message": "Join Discord community"
-  },
-  "options_feedback_github_button": {
-    "message": "GitHub Issues"
-  },
-  "options_feedback_submit_description": {
-    "message": "Open a GitHub issue or join community discussions"
-  },
-  "options_feedback_submit_title": {
-    "message": "Submit feedback"
-  },
-  "options_floating_site_rule_button": {
-    "message": "View site rule guide"
-  },
-  "options_floating_site_rule_description": {
-    "message": "To adjust auto-translation sites, open the site list in General settings."
-  },
-  "options_floating_site_rule_title": {
-    "message": "Site rules"
-  },
-  "options_floating_strategy_body": {
-    "message": "The floating ball does not save its own switch yet and follows page translation and site rules."
-  },
-  "options_floating_strategy_description": {
-    "message": "Floating ball follows page translation rules; standalone behavior controls are planned for later versions."
-  },
-  "options_floating_strategy_title": {
-    "message": "Current strategy"
-  },
-  "options_pricing_pro_description": {
-    "message": "Enjoy premium services like DeepL and OpenAI translation"
-  },
-  "options_pricing_pro_title": {
-    "message": "Pro membership"
-  },
-  "options_pricing_upgrade_button": {
-    "message": "Upgrade now"
-  },
   "options_title_extension_name": {
     "message": "Anylang Translator"
   },
@@ -445,9 +379,6 @@
   },
   "please_input_the_word_to_lookup": {
     "message": "Please input the word to lookup"
-  },
-  "pricing": {
-    "message": "Pricing"
   },
   "provider_description": {
     "message": "Description"
@@ -475,9 +406,6 @@
   },
   "recommended": {
     "message": "Recommended"
-  },
-  "reset_settings": {
-    "message": "Reset settings"
   },
   "retry": {
     "message": "Retry"
@@ -601,9 +529,6 @@
   },
   "trigger_mode_description": {
     "message": "Choose the trigger mode for instant lookup when selecting text."
-  },
-  "trigger_on_click_and_hold": {
-    "message": "Click and hold to translate paragraph"
   },
   "trigger_on_hover_alt": {
     "message": "Hover + Alt to translate paragraph"

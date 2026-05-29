@@ -38,7 +38,6 @@ class NodeTranslation {
 
   // --- Click-and-hold ---
   private isMousePressed = false;
-  private clickAndHoldTriggered = false;
   private mousePressPosition: Point | null = null;
   private clickAndHoldTimerId: ReturnType<typeof setTimeout> | null = null;
 
@@ -62,8 +61,6 @@ class NodeTranslation {
 
     // Mousemove handler with throttle + distance threshold
     document.addEventListener('mousemove', this.onMouseMove, opts);
-    // document.addEventListener('mousedown', this.onMouseDown, opts);
-    // document.addEventListener('mouseup', this.onMouseUp, opts);
     document.addEventListener('keydown', this.onKeyDown, opts);
     document.addEventListener('keyup', this.onKeyUp, opts);
 
@@ -88,12 +85,6 @@ class NodeTranslation {
     if (this.ac?.signal.aborted) return null;
     return configStore.get();
   }
-
-  // private inTriggerMode(config: Config, withClickAndHold: boolean): boolean {
-  //   const { hotkey, enabled } = config.adaptiveTranslate.translate.triggerOnHover;
-  //   if (withClickAndHold) return enabled && hotkey === 'clickAndHold';
-  //   return enabled && hotkey !== 'clickAndHold';
-  // }
 
   private trigger(pos: Point, config: Config): void {
     void removeOrShowNodeTranslation(undefined, pos, {
@@ -163,41 +154,6 @@ class NodeTranslation {
     this.lastMoveX = e.clientX;
     this.lastMoveY = e.clientY;
   };
-
-  // private onMouseDown = (e: MouseEvent): void => {
-  //   // logger.debug('onMouseDown', { e });
-  //   if (e.button !== 0) return;
-  //   if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;
-
-  //   const config = this.getCurrentConfig();
-  //   if (!config || !this.inTriggerMode(config, false)) return;
-
-  //   this.isMousePressed = true;
-  //   this.clickAndHoldTriggered = false;
-  //   this.mousePressPosition = { x: e.clientX, y: e.clientY };
-
-  //   this.clearClickAndHoldTimer();
-  //   this.clickAndHoldTimerId = setTimeout(() => {
-  //     if (!this.isMousePressed || !this.mousePressPosition || this.clickAndHoldTriggered) return;
-
-  //     const current = this.getCurrentConfig();
-  //     if (!current || !this.inTriggerMode(current, false)) return;
-
-  //     this.trigger(this.mousePressPosition, current);
-  //     this.clickAndHoldTriggered = true;
-  //   }, this.CLICK_AND_HOLD_TRIGGER_MS);
-  // };
-
-  // private onMouseUp = (e: MouseEvent): void => {
-  //   // logger.debug('onMouseUp', { e });
-  //   if (e.button !== 0) return;
-  //   if (!this.isMousePressed && !this.clickAndHoldTimerId) return;
-
-  //   this.isMousePressed = false;
-  //   this.clickAndHoldTriggered = false;
-  //   this.mousePressPosition = null;
-  //   this.clearClickAndHoldTimer();
-  // };
 
   private onKeyDown = (e: KeyboardEvent): void => {
     if (e.target instanceof HTMLElement && domFilter.isEditable(e.target)) return;

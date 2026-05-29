@@ -2,7 +2,6 @@ import {
   idAbout,
   idAdaptiveTranslate,
   idApiProviders,
-  idFeedback,
   idGeneral,
   idInstantLookup
 } from '@/components/NavIds.svelte';
@@ -21,10 +20,6 @@ export const moreItems = [
   {
     id: idInstantLookup,
     label: i18n('more_items_instant_lookup', { defaultValue: 'Instant lookup' })
-  },
-  {
-    id: idFeedback,
-    label: i18n('more_items_feedback', { defaultValue: 'Feedback' })
   },
   {
     id: idAbout,

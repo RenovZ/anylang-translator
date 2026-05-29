@@ -1,13 +1,5 @@
 <script lang="ts">
-  import {
-    Avatar,
-    Button,
-    Dropdown,
-    DropdownItem,
-    GradientButton,
-    Toggle,
-    Tooltip
-  } from 'flowbite-svelte';
+  import { Button, Dropdown, DropdownItem, Toggle, Tooltip } from 'flowbite-svelte';
   import { ChevronDownOutline, CogOutline } from 'flowbite-svelte-icons';
   import { onMount } from 'svelte';
   import { browser } from 'wxt/browser';
@@ -18,7 +10,6 @@
   import DisplayStyle from '@/components/DisplayStyle.svelte';
   import LocalIcon from '@/components/LocalIcon.svelte';
   import { APP_VERSION } from '@/lib/app';
-  import avatar from '@/lib/avatar';
   import config from '@/lib/config';
   import i18n from '@/lib/i18n';
   import lang from '@/lib/lang';
@@ -78,24 +69,6 @@
 </script>
 
 <main class="space-y-4 rounded-b-2xl bg-white p-4 dark:bg-slate-900">
-  <!-- header -->
-  <header class="flex items-center justify-between">
-    <div class="flex items-center justify-between gap-2">
-      <Avatar
-        class="flex h-6 w-6 items-center justify-center"
-        src={avatar.dicebear('RenovZ', {
-          chars: 1,
-          backgroundType: ['gradientLinear']
-        })}
-        size="xs" />
-      <span class="text-xs">{i18n('guest', { defaultValue: 'Guest' })}</span>
-      <GradientButton color="purpleToBlue" pill class="px-2 py-1 text-xs">
-        <span>⚡</span>
-        <span>{i18n('upgrade', { defaultValue: 'Upgrade' })}</span>
-      </GradientButton>
-    </div>
-  </header>
-
   {#snippet languageDropdown(position: 'source' | 'target')}
     {@const currentLang = position === 'source' ? $config.sourceLangCode : $config.targetLangCode}
     <Button
@@ -111,7 +84,6 @@
         </span>
         <Tooltip class="text-xs">{languageOptions[position === 'source' ? 0 : 1]}</Tooltip>
       </div>
-      <!-- <ChevronDownOutline class="h-5 w-5 text-slate-400" /> -->
       <LocalIcon icon="tabler:chevron-down" class="h-4 w-4" />
     </Button>
     <Dropdown
@@ -141,7 +113,6 @@
   <!-- languages -->
   <section class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
     {@render languageDropdown('source')}
-    <!-- <ArrowRightOutline class="h-6 w-6 text-slate-400" /> -->
     <LocalIcon icon="tabler:arrow-right" class="h-5 w-5" />
     {@render languageDropdown('target')}
   </section>

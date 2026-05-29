@@ -4,7 +4,4 @@
   export const idAdaptiveTranslate = 'adaptive-translate';
   export const idInstantLookup = 'instant-lookup';
   export const idAbout = 'about';
-  export const idChangelog = 'changelog';
-  export const idPricing = 'pricing';
-  export const idFeedback = 'feedback';
 </script>
