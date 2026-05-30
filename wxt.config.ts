@@ -98,7 +98,7 @@ export default defineConfig({
   manifest: () => ({
     name: 'Anylang Translator',
     description:
-      'Anylang Translator — A smart browser translation extension. Translate entire web pages or look up words instantly. Powered by 20+ AI models including ChatGPT, Claude, Gemini, DeepSeek, and more.',
+      'A smart browser translation extension. Translate entire web pages or look up words instantly. Powered by 20+ AI models.',
     default_locale: 'en',
     permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'webNavigation'],
     browser_specific_settings: {

@@ -141,13 +141,13 @@ class Shortcut {
   }
 
   private register() {
-    browser.commands.onCommand.addListener(async (command) => {
-      logger.info({ command });
+    browser.commands.onCommand.addListener(async (command, tab) => {
+      logger.info({ command, tab });
       const featureKey = this.COMMAND_MAP[command as keyof typeof this.COMMAND_MAP];
       if (!featureKey) return;
-      const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+
       const tabId = tab?.id;
-      logger.debug({ tabId, featureKey, command });
+      logger.debug({ tabId, featureKey });
       if (!tabId) {
         logger.debug('No active tab found');
         return;

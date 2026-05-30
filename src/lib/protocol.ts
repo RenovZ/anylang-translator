@@ -14,16 +14,12 @@ interface Protocol {
 
   // features
   tryAdaptiveTranslate: (data: FeaturePayload) => Promise<void>;
-  // getPageTranslationActive
   getAdaptiveTranslateState: (data: { tabId?: number }) => Promise<boolean>;
-  // reportPageTranslateState
   reportAdaptiveTranslateState: (data: { enabled: boolean }) => Promise<void>;
-  // checkAutoPageTranslation: for auto start page translation
   checkAutoAdaptiveTranslate: (data: {
     url: string;
     detectedCodeOrUnd: DetectedLangCode;
   }) => Promise<void>;
-  // enqueueTranslateRequest
   enqueueAdaptiveTranslateRequest: (data: {
     text: string;
     sourceLangCode: LangCode | 'auto' | 'default';
@@ -36,10 +32,8 @@ interface Protocol {
     webSummary?: string | null;
   }) => Promise<string>;
 
-  adaptiveTranslate: (data: FeaturePayload) => Promise<void>; // togglePageTranslation
+  adaptiveTranslate: (data: FeaturePayload) => Promise<void>;
 
-  // page translate
-  // getOrGenerateWebPageSummary
   getOrGenerateWebPageSummary: (data: {
     webTitle: string;
     webContent: string;
