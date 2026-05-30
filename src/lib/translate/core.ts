@@ -189,12 +189,12 @@ async function translationOnlyMode(
   // snapshot the outer parent element, to prevent lose it if we go to deeper by unwrapDeepestOnlyHTMLChild
   // test case is:
   // <div data-testid="test-node">
-  //   <span style={{ display: 'inline' }}>原文</span> // get the outer parent snapshot before go to inner element
+  //   <span style={{ display: 'inline' }}>original text</span> // get the outer parent snapshot before go to inner element
   //   <br />
-  //   <span style={{ display: 'inline' }}>原文</span>
-  //   原文
+  //   <span style={{ display: 'inline' }}>original text</span>
+  //   original text
   //   <br />
-  //   <span style={{ display: 'inline' }}>原文</span>
+  //   <span style={{ display: 'inline' }}>original text</span>
   // </div>,
   // Only save originalContent when there's no existing translation wrapper
   // If wrapper exists, we're removing translation and should restore from saved content

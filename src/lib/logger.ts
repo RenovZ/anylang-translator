@@ -16,7 +16,7 @@ interface CallerInfo {
 
 const isNode = typeof window === 'undefined' && typeof process !== 'undefined';
 
-// ANSI 颜色码（Node 终端）
+// ANSI color codes (Node terminal)
 const ansi: Record<Level, string> = {
   trace: '\x1B[90m', // gray
   debug: '\x1B[36m', // cyan
@@ -26,7 +26,7 @@ const ansi: Record<Level, string> = {
 };
 const ansiReset = '\x1B[0m';
 
-// CSS 样式（浏览器环境）
+// CSS styles (browser environment)
 const css: Record<Level, string> = {
   trace: 'color:#9ca3af;font-size:11px',
   debug: 'color:#6b7280;font-size:11px',
@@ -35,33 +35,33 @@ const css: Record<Level, string> = {
   error: 'color:#ef4444;font-weight:bold'
 };
 
-// 从 stack 提取文件名
+// Extract filename from stack trace
 function getFilenameFromStack(): string {
   const stack = new Error().stack;
   if (!stack) return 'unknown';
 
   const lines = stack.split('\n');
-  // 第 4 行是实际调用处
+  // Line 4 is the actual call site
   const callerLine = lines[4] || lines[3];
   if (!callerLine) return 'unknown';
 
-  // 匹配 (path/to/file.ts:12:34) 或 path/to/file.ts:12:34
+  // Match (path/to/file.ts:12:34) or path/to/file.ts:12:34
   const match = callerLine.match(/\s+at\s+(?:.*?\s+\()?([^)]+)\)?$/);
   if (!match) return 'unknown';
 
   const fullPath = match[1];
-  // 提取路径部分（去掉行号）
+  // Extract path portion (remove line number)
   const pathPart = fullPath.split(':')[0];
-  // 取最后几段路径
+  // Take last segments of path
   const parts = pathPart.split('/');
-  return parts.slice(-3).join('/'); // 最多取最后3段
+  return parts.slice(-3).join('/'); // Keep at most last 3 segments
 }
 
-// 缩写模块名
+// Abbreviate module name
 // background/foo/a.ts → b/f/a
 // options/api-providers/Index → o/a/Index
 function abbreviateModuleName(filename: string): string {
-  // 移除后缀和 chunk hash
+  // Remove suffix and chunk hash
   const clean = filename.replace(/\.(js|ts|svelte)$/, '').replace(/-[a-zA-Z0-9_-]{8}$/i, '');
 
   const parts = clean.split('/');
@@ -69,7 +69,7 @@ function abbreviateModuleName(filename: string): string {
   if (parts.length === 0) return 'app';
   if (parts.length === 1) return parts[0];
 
-  // 前面各段取首字母，最后一段保留完整名
+  // Take first letter of each leading segment, keep last segment complete
   const abbreviated = parts
     .slice(0, -1)
     .map((p) => p[0])

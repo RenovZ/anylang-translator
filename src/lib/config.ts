@@ -206,19 +206,19 @@ class ConfigStore {
   }
 
   /**
-   * 检查域名是否匹配规则（支持 * 通配符）
+   * Check if a domain matches the pattern (supports * wildcard)
    */
   private matchSitePattern(hostname: string, pattern: string): boolean {
-    // 精确匹配
+    // Exact match
     if (pattern === hostname) return true;
 
-    // 处理通配符 *.example.com
+    // Handle wildcard *.example.com
     if (pattern.startsWith('*.')) {
-      const suffix = pattern.slice(2); // 去掉 *. 得到 "medium.com"
-      // 检查 hostname 是否以 suffix 结尾，且前面有内容
+      const suffix = pattern.slice(2); // remove *. to get "medium.com"
+      // Check if hostname ends with suffix and has content before it
       if (hostname.endsWith(suffix)) {
         const prefix = hostname.slice(0, -suffix.length);
-        // prefix 应该以 . 结尾（子域名）或者是空（但这样就和原域名一样了）
+        // prefix should end with . (subdomain) or be empty (but that would be the same as the original domain)
         return prefix.endsWith('.') && prefix.length > 1;
       }
     }

@@ -51,7 +51,7 @@ export class TranslateUtils {
    */
   cleanText(textContent: string, maxLength: number = MAX_TEXT_LENGTH): string {
     const cleaned = textContent
-      .replace(ZERO_WIDTH_CHARS_RE, '') // 零宽字符
+      .replace(ZERO_WIDTH_CHARS_RE, '') // zero-width characters
       .replace(WHITESPACE_RUN_RE, ' ')
       .trim();
 

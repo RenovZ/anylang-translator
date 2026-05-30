@@ -47,10 +47,10 @@ export const BATCH_SEPARATOR = '%%';
 export const getTokenCellText = (token: string) => `{{${token}}}`;
 
 /**
- * 网页翻译默认 System Prompt。
- * 使用场景：用户未选择自定义 Prompt 时（promptId === null），
- * 由 `src/utils/prompts/translate.ts` 读取并替换其中的 {{token}} 后发给 LLM。
- * 若开启批量翻译（isBatch=true），会在末尾追加 DEFAULT_BATCH_TRANSLATE_PROMPT。
+ * Default System Prompt for webpage translation.
+ * Usage: when the user hasn't selected a custom Prompt (promptId === null),
+ * read by `src/utils/prompts/translate.ts` which replaces {{token}} placeholders before sending to LLM.
+ * If batch translation is enabled (isBatch=true), DEFAULT_BATCH_TRANSLATE_PROMPT is appended at the end.
  */
 export const DEFAULT_TRANSLATE_SYSTEM_PROMPT = `You are a professional ${getTokenCellText(TARGET_LANGUAGE)} native translator who needs to fluently translate text into ${getTokenCellText(TARGET_LANGUAGE)}.
 
@@ -65,10 +65,10 @@ Webpage title: ${getTokenCellText(WEB_TITLE)}
 Webpage summary: ${getTokenCellText(WEB_SUMMARY)}`;
 
 /**
- * 字幕翻译默认 System Prompt。
- * 使用场景：用户未选择自定义 Prompt 时，
- * 由 `src/utils/prompts/subtitles.ts` 读取并替换 {{token}} 后发给 LLM。
- * 与网页翻译的区别：规则针对字幕场景优化（保留换行、语气、时间边界等）。
+ * Default System Prompt for subtitle translation.
+ * Usage: when the user hasn't selected a custom Prompt,
+ * read by `src/utils/prompts/subtitles.ts` which replaces {{token}} placeholders before sending to LLM.
+ * Difference from webpage translation: rules are optimized for subtitle scenarios (preserving line breaks, tone, timing boundaries, etc.).
  */
 export const DEFAULT_SUBTITLE_TRANSLATE_SYSTEM_PROMPT = `You are a professional ${getTokenCellText(TARGET_LANGUAGE)} native translator who needs to fluently translate subtitles into ${getTokenCellText(TARGET_LANGUAGE)}.
 
@@ -83,8 +83,8 @@ Video title: ${getTokenCellText(VIDEO_TITLE)}
 Video summary: ${getTokenCellText(VIDEO_SUMMARY)}`;
 
 /**
- * 网页/字幕翻译默认 User Prompt（用户输入部分）。
- * 由 Prompt 组装器替换 {{targetLanguage}} 和 {{input}} 后，作为用户消息发给 LLM。
+ * Default User Prompt for webpage/subtitle translation (user input section).
+ * Replaces {{targetLanguage}} and {{input}} via the Prompt assembler before sending as a user message to the LLM.
  */
 export const DEFAULT_TRANSLATE_PROMPT = `Translate to ${getTokenCellText(TARGET_LANGUAGE)}:
 
@@ -92,10 +92,10 @@ export const DEFAULT_TRANSLATE_PROMPT = `Translate to ${getTokenCellText(TARGET_
 ${getTokenCellText(INPUT)}`;
 
 /**
- * 批量翻译追加规则。
- * 当开启批量模式（isBatch=true）时，Prompt 组装器会将其追加到 System Prompt 末尾，
- * 指导 AI 如何识别和保留 `%%` 分隔符，以便后台队列能将结果正确拆分为多段翻译。
- * 相关拆分逻辑见 `src/entrypoints/background/translation-queues.ts` 中的 `parseBatchResult()`。
+ * Batch translation append rules.
+ * When batch mode is enabled (isBatch=true), the Prompt assembler appends this to the end of the System Prompt,
+ * instructing the AI how to recognize and preserve `%%` delimiters, so the background queue can correctly split the result into multiple translation segments.
+ * See `parseBatchResult()` in `src/entrypoints/background/translation-queues.ts` for the splitting logic.
  */
 export const DEFAULT_BATCH_TRANSLATE_PROMPT = `## Multi-paragraph Translation Rules
 1. If input contains ${BATCH_SEPARATOR}, use ${BATCH_SEPARATOR} in your output, if input has no ${BATCH_SEPARATOR}, don't use ${BATCH_SEPARATOR} in your output

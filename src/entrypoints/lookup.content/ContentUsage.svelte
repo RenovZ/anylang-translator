@@ -51,7 +51,7 @@
   {#if !data || loading}
     <ContentEmpty />
   {:else}
-    <!-- 词典短语 -->
+    <!-- Dictionary phrases -->
     <TabItem open title={DICTIONARY_USAGE_TAB_MAP.phrases} classes={tabItemClasses}>
       {#each data.phrases ?? [] as phrase, index (index)}
         <span class="text-gray-500 dark:text-gray-400">{index + 1}</span>
@@ -79,7 +79,7 @@
       {/each}
     </TabItem>
 
-    <!-- 同近义词 -->
+    <!-- Synonyms -->
     <TabItem title={DICTIONARY_USAGE_TAB_MAP.synonyms} classes={tabItemClasses}>
       {#each data.synonyms ?? [] as group (group.pos + group.meaning)}
         <span class="text-gray-500 dark:text-gray-400">
@@ -110,7 +110,7 @@
       {/each}
     </TabItem>
 
-    <!-- 同根词 -->
+    <!-- Cognates -->
     <TabItem title={DICTIONARY_USAGE_TAB_MAP.cognates} classes={tabItemClasses}>
       <span class="text-nowrap text-gray-500 dark:text-gray-400">词根:</span>
       <button
@@ -137,7 +137,7 @@
       {/each}
     </TabItem>
 
-    <!-- 词源 -->
+    <!-- Etymology -->
     <TabItem title={DICTIONARY_USAGE_TAB_MAP.etymology} classes={tabItemClasses}>
       {#each data.etymology ?? [] as item, index (index)}
         <span class="text-gray-500 dark:text-gray-400">{index + 1}</span>

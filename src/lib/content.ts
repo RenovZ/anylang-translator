@@ -78,14 +78,14 @@ class ContentManager {
   }
 
   /**
-   * 扁平化提取"块级叶子"中的文本段落，并返回扁平化后的文本数组。
+   * Flatten and extract text paragraphs from "block-level leaves", returning a flat text array.
    */
   private flattenToParagraphs(root: Node): string[] {
     const TRAILING_PUNCTUATION_RE = /[.!?,:;'"…)}\]]$/;
     const WHITESPACE_RUN_RE = /\s+/g;
     const MIN_PARAGRAPH_LENGTH = 20;
 
-    // —— 1. 定义哪些标签（或 computedStyle）算"块级"
+    // —— 1. Define which tags (or computedStyle) count as "block-level"
     const semanticBlocks = new Set([
       'p',
       'article',
@@ -111,20 +111,20 @@ class ContentManager {
     ]);
 
     const isBlockLevel = (node: Node): boolean => {
-      // 只有元素节点才能是块级
+      // Only element nodes can be block-level
       if (node.nodeType !== Node.ELEMENT_NODE) return false;
       const el = node as Element;
-      // 如果标签名在列表里，或者 computedStyle.display=block
+      // If tag name is in the list, or computedStyle.display=block
       if (semanticBlocks.has(el.tagName.toLowerCase())) return true;
       const disp = window.getComputedStyle(el).display;
       return disp === 'block' || disp === 'list-item';
     };
 
     const hasBlockDescendant = (node: Node): boolean => {
-      // 非元素节点不会有块级后代
+      // Non-element nodes won't have block-level descendants
       if (node.nodeType !== Node.ELEMENT_NODE) return false;
       const el = node as Element;
-      // 检查子孙是否存在任一块级元素
+      // Check if any descendant is a block-level element
       for (let i = 0; i < el.children.length; i++) {
         const child = el.children[i];
         if (isBlockLevel(child) || hasBlockDescendant(child)) {
@@ -136,10 +136,10 @@ class ContentManager {
 
     const paragraphs: string[] = [];
 
-    // 获取元素的文本内容，同时考虑内联元素之间的空格
+    // Get element text content while considering spaces between inline elements
     const getTextWithSpaces = (element: Element): string => {
       let text = '';
-      // 为每个子节点递归处理
+      // Recursively process each child node
       for (const child of Array.from(element.childNodes)) {
         let childText = '';
         if (child.nodeType === Node.TEXT_NODE) {
@@ -156,29 +156,29 @@ class ContentManager {
     };
 
     const walk = (node: Node) => {
-      // 跳过注释节点、处理指令等非内容节点
+      // Skip comment nodes, processing instructions, etc.
       if (node.nodeType !== Node.ELEMENT_NODE && node.nodeType !== Node.TEXT_NODE) {
         return;
       }
 
       if (node.nodeType === Node.ELEMENT_NODE) {
         const element = node as Element;
-        // 如果它是一个"块级叶子"，就提取成段落；否则下降
+        // If it's a "block-level leaf", extract as paragraph; otherwise descend
         if (isBlockLevel(element) && !hasBlockDescendant(element)) {
-          // 使用新的方法获取文本，保留内联元素之间的空格
+          // Use the new method to get text, preserving spaces between inline elements
           const raw = getTextWithSpaces(element).replace(WHITESPACE_RUN_RE, ' ').trim();
           if (raw?.length && raw.length > MIN_PARAGRAPH_LENGTH) {
-            // 可根据需求调整最小长度过滤
+            // Can adjust minimum length filter as needed
             paragraphs.push(raw);
           }
         } else {
-          // 继续遍历子节点
+          // Continue traversing child nodes
           for (const child of Array.from(element.childNodes)) {
             walk(child);
           }
         }
       }
-      // 如果是文本节点，且其父容器也不是"块级叶子"时，可以视作一个独立段落
+      // If it's a text node and its parent is not a "block-level leaf", treat as a standalone paragraph
       else if (node.nodeType === Node.TEXT_NODE) {
         const txt = node.textContent?.replace(WHITESPACE_RUN_RE, ' ').trim();
         if (txt?.length && txt.length > MIN_PARAGRAPH_LENGTH) {
@@ -187,9 +187,9 @@ class ContentManager {
       }
     };
 
-    // 从 root 开始遍历
+    // Start traversal from root
     walk(root);
-    // 返回段落数组
+    // Return paragraphs array
     return paragraphs;
   }
 
@@ -197,7 +197,7 @@ class ContentManager {
    * Get the favicon url
    */
   getFaviconUrl(): string {
-    // 优先级列表：常见 rel 属性
+    // Priority list: common rel attributes
     const relList = [
       'icon',
       'shortcut icon',
@@ -229,10 +229,10 @@ class ContentManager {
       });
     }
 
-    // 按以下优先级排序：
-    // 1. 更大的尺寸优先
-    // 2. SVG 格式优先（通常更清晰）
-    // 3. PNG 格式优先于 ICO
+    // Sort by priority:
+    // 1. Larger size first
+    // 2. SVG format preferred (usually sharper)
+    // 3. PNG format preferred over ICO
     candidates.sort((a, b) => {
       if (a.size !== b.size) return b.size - a.size;
       if (a.type === 'image/svg+xml' && b.type !== 'image/svg+xml') return -1;
@@ -242,12 +242,12 @@ class ContentManager {
       return 0;
     });
 
-    // 如果找到了候选图标，返回最优的那个
+    // If candidates found, return the best one
     if (candidates.length > 0) {
       return candidates[0].url;
     }
 
-    // 如果依然没找到，就回退到站点根目录的 /favicon.ico
+    // If still not found, fall back to /favicon.ico at site root
     const { origin } = window.location;
     return `${origin}/favicon.ico`;
   }

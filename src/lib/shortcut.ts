@@ -10,10 +10,10 @@ import { sendMessage } from './protocol';
 import { adaptiveTranslateSession } from './session';
 
 /**
- * 快捷键管理器 - 统一处理快捷键的显示、解析和同步
+ * Shortcut manager - unified handling of shortcut display, parsing, and syncing
  */
 class Shortcut {
-  // ========== 静态配置 ==========
+  // ========== Static config ==========
   private readonly KEY_MAP: Record<string, { win: string; mac: string }> = {
     Alt: { win: 'Alt', mac: '⌥' },
     Ctrl: { win: 'Ctrl', mac: '⌃' },
@@ -66,15 +66,15 @@ class Shortcut {
 
   private initialized = false;
 
-  // ========== 平台检测 ==========
+  // ========== Platform detection ==========
   isMac(): boolean {
     if (typeof navigator === 'undefined') return false;
     return navigator.userAgent.toUpperCase().includes('MAC');
   }
 
-  // ========== 格式化 ==========
+  // ========== Formatting ==========
   /**
-   * 将单个键名格式化为当前平台的显示名称
+   * Format a single key name for the current platform's display
    * Windows/Linux: Alt → Alt
    * macOS: Alt → ⌥
    */
@@ -85,7 +85,7 @@ class Shortcut {
   }
 
   /**
-   * 将快捷键数组格式化为当前平台的显示数组
+   * Format shortcut array for the current platform's display
    * ['Alt', 'Q'] → ['⌥', 'Q'] (macOS)
    */
   formatForDisplay(shortcut: string[]): string[] {
@@ -94,7 +94,7 @@ class Shortcut {
   }
 
   /**
-   * 将快捷键数组格式化为字符串（用于 manifest）
+   * Format shortcut array as string (for manifest)
    * ['Alt', 'Q'] → 'Alt+Q'
    */
   toString(shortcut: string[]): string {
@@ -102,13 +102,13 @@ class Shortcut {
     return shortcut.join('+');
   }
 
-  // ========== 解析 ==========
+  // ========== Parsing ==========
   /**
-   * 将快捷键字符串解析为数组
-   * 支持格式："Alt+Q", "Alt+Shift+Q", "⌥C", "⌘⇧A"
+   * Parse shortcut string into array
+   * Supported formats: "Alt+Q", "Alt+Shift+Q", "⌥C", "⌘⇧A"
    */
   parse(shortcut: string): string[] {
-    // 先处理特殊符号，再按 + 分割
+    // First handle special symbols, then split by +
     const normalized = shortcut
       .replace(/[⌥⌘⇧⌃⎇]/g, (match) => `${this.MAC_SYMBOL_MAP[match]}+`)
       .replace(/\+$/, '');
@@ -117,16 +117,16 @@ class Shortcut {
       const key = k.trim();
       if (key === 'Command' || key === 'Cmd') return 'Command';
       if (key === 'Option') return 'Alt';
-      // 单个字母/数字直接大写
+      // Single letter/digit → uppercase
       if (key.length === 1) return key.toUpperCase();
-      // 其他键名首字母大写
+      // Other key names → capitalize first letter
       return key.charAt(0).toUpperCase() + key.slice(1).toLowerCase();
     });
   }
 
-  // ========== 浏览器设置 ==========
+  // ========== Browser settings ==========
   /**
-   * 获取快捷键设置页面的 URL 和说明
+   * Get shortcut settings page URL and description
    */
   getSettingsUrl(): { url: string; description: string } {
     const browser = import.meta.env.BROWSER;
@@ -176,7 +176,7 @@ class Shortcut {
   }
 
   /**
-   * 尝试打开快捷键设置页面
+   * Try to open the shortcut settings page
    */
   async tryOpenSettings(
     onCopySuccess?: (url: string) => void,
@@ -184,7 +184,7 @@ class Shortcut {
   ): Promise<void> {
     const { url } = this.getSettingsUrl();
 
-    // 尝试直接打开页面；某些 URL（如 Firefox 的 about:addons）无法通过 tabs.create 打开
+    // Try to open the page directly; some URLs (like Firefox's about:addons) cannot be opened via tabs.create
     try {
       if (url.startsWith('about:') || url.startsWith('x-apple.')) {
         await sendMessage('openPage', { url });

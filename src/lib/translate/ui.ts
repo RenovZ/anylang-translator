@@ -59,7 +59,7 @@ class StyleInjector {
   private customCSSMap = new WeakMap<StyleRoot, CSSStyleSheet>();
   private documentCachedCSS: string | null = null;
 
-  // 共享单例 — 因为 custom styles 是全局用户设置，所有 root 注入相同 CSS
+  // Shared singleton — custom styles are a global user setting, inject same CSS into all roots
   private customStylesSheet: CSSStyleSheet | null = null;
   private customStylesCachedCSS: string | null = null;
   private customStylesAdoptedRoots = new WeakSet<StyleRoot>();
