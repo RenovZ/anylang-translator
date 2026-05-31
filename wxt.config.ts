@@ -101,6 +101,12 @@ export default defineConfig({
       'A smart browser translation extension. Translate entire web pages or look up words instantly. Powered by 20+ AI models.',
     default_locale: 'en',
     permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'webNavigation'],
+    web_accessible_resources: [
+      {
+        resources: ['fonts/*.woff2'],
+        matches: ['<all_urls>']
+      }
+    ],
     browser_specific_settings: {
       gecko: {
         id: 'anylang-translator@anylang.io',
