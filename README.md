@@ -4,6 +4,8 @@ Perhaps the best browser translation assistant in the world.
 
 A powerful browser translation extension supporting 20+ LLM models. Built with WXT + Svelte 5 + Tailwind CSS v4.
 
+If this repo helps you, star it — every ⭐ means a lot.
+
 ## Features
 
 - **Adaptive Translation** — Seamlessly translate web pages with smart detection
