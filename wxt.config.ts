@@ -100,7 +100,7 @@ export default defineConfig({
     description:
       'A smart browser translation extension. Translate entire web pages or look up words instantly. Powered by 20+ AI models.',
     default_locale: 'en',
-    permissions: ['storage', 'scripting', 'activeTab', 'tabs', 'webNavigation'],
+    permissions: ['storage', 'activeTab', 'tabs', 'webNavigation'],
     web_accessible_resources: [
       {
         resources: ['fonts/*.woff2'],
@@ -115,9 +115,7 @@ export default defineConfig({
         }
       }
     },
-    host_permissions: [
-      '*://*/*' // Required for scripting.executeScript in any frame
-    ],
+    host_permissions: ['*://*/*'],
     commands: {
       'adaptive-translate': {
         suggested_key: {
